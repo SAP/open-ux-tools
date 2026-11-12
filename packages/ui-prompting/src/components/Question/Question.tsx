@@ -75,7 +75,7 @@ export const Question = (props: QuestionProps) => {
             );
             break;
         }
-        case 'list': {
+        case 'select': {
             questionInput = (
                 <Select
                     // change to pass the relevant answer

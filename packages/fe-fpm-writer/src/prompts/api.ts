@@ -107,9 +107,13 @@ export class PromptsAPI {
         try {
             const prompt = this.cache[type] ?? (await this.getPrompts(type));
             const question = prompt.questions.find((question) => question.name === fieldName);
-            if (question && (question.type === 'list' || question.type === 'checkbox')) {
+            if (question && (question.type === 'select' || question.type === 'checkbox')) {
                 const choices =
-                    typeof question.choices === 'function' ? await question.choices(answers) : question.choices;
+                    typeof question.choices === 'function'
+                        ? await (question.choices as (answers: T) => PromptListChoices | Promise<PromptListChoices>)(
+                              answers
+                          )
+                        : (question.choices as PromptListChoices);
                 return choices ?? [];
             }
         } catch (error) {
@@ -134,7 +138,7 @@ export class PromptsAPI {
         const originalPrompts = this.cache[type] ?? (await this.getPrompts(type));
         const result: ValidationResults = {};
         if (!questions) {
-            questions = originalPrompts.questions;
+            questions = originalPrompts.questions as unknown as Question[];
         }
         for (const q of questions) {
             const question: PromptQuestion | undefined = originalPrompts.questions.find(

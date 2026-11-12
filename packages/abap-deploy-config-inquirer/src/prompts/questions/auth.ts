@@ -1,8 +1,13 @@
 import { t } from '../../i18n.js';
 import { showPasswordQuestion, showUsernameQuestion } from '../conditions.js';
 import { validateCredentials } from '../validators.js';
-import { promptNames, type AbapDeployConfigAnswersInternal, type AbapDeployConfigPromptOptions } from '../../types.js';
-import type { InputQuestion, PasswordQuestion, Question } from 'inquirer';
+import {
+    promptNames,
+    type AbapDeployConfigAnswersInternal,
+    type AbapDeployConfigPromptOptions,
+    type AbapDeployConfigQuestion
+} from '../../types.js';
+import type { InputQuestion, PasswordQuestion } from '@sap-ux/inquirer-common';
 import type { IValidationLink } from '@sap-devx/yeoman-ui-types';
 
 /**
@@ -11,7 +16,7 @@ import type { IValidationLink } from '@sap-devx/yeoman-ui-types';
  * @param options - abap deploy config prompt options
  * @returns input question for username
  */
-function getUsernamePrompt(options: AbapDeployConfigPromptOptions): Question<AbapDeployConfigAnswersInternal> {
+function getUsernamePrompt(options: AbapDeployConfigPromptOptions): AbapDeployConfigQuestion {
     return {
         when: (): Promise<boolean> => showUsernameQuestion(options.backendTarget),
         type: 'input',
@@ -29,7 +34,7 @@ function getUsernamePrompt(options: AbapDeployConfigPromptOptions): Question<Aba
  * @param options - abap deploy config prompt options
  * @returns password question for password
  */
-function getPasswordPrompt(options: AbapDeployConfigPromptOptions): Question<AbapDeployConfigAnswersInternal> {
+function getPasswordPrompt(options: AbapDeployConfigPromptOptions): AbapDeployConfigQuestion {
     return {
         when: (): boolean => showPasswordQuestion(),
         type: 'password',
@@ -47,7 +52,7 @@ function getPasswordPrompt(options: AbapDeployConfigPromptOptions): Question<Aba
             previousAnswers: AbapDeployConfigAnswersInternal
         ): Promise<boolean | string | IValidationLink> =>
             await validateCredentials(input, previousAnswers, options.backendTarget, options.adpProjectType)
-    } as PasswordQuestion<AbapDeployConfigAnswersInternal>;
+    } as unknown as PasswordQuestion<AbapDeployConfigAnswersInternal>;
 }
 
 /**
@@ -56,6 +61,6 @@ function getPasswordPrompt(options: AbapDeployConfigPromptOptions): Question<Aba
  * @param options - abap deploy config prompt options
  * @returns list of questions for auth prompting
  */
-export function getAuthPrompts(options: AbapDeployConfigPromptOptions): Question<AbapDeployConfigAnswersInternal>[] {
+export function getAuthPrompts(options: AbapDeployConfigPromptOptions): AbapDeployConfigQuestion[] {
     return [getUsernamePrompt(options), getPasswordPrompt(options)];
 }

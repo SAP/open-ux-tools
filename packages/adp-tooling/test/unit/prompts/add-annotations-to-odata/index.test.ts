@@ -74,7 +74,7 @@ describe('getPrompts', () => {
 
         expect(prompts).toEqual([
             {
-                type: 'list',
+                type: 'select',
                 name: 'id',
                 message: i18n.t('prompts.oDataSourceLabel'),
                 choices: dataSourceIds,
@@ -86,7 +86,7 @@ describe('getPrompts', () => {
                 }
             },
             {
-                type: 'list',
+                type: 'select',
                 name: 'fileSelectOption',
                 message: i18n.t('prompts.fileSelectOptionLabel'),
                 choices: annotationFileSelectOptions,
@@ -124,7 +124,7 @@ describe('getPrompts', () => {
 
         expect(prompts).toEqual([
             {
-                type: 'list',
+                type: 'select',
                 name: 'id',
                 message: i18n.t('prompts.oDataSourceLabel'),
                 choices: [],
@@ -136,7 +136,7 @@ describe('getPrompts', () => {
                 }
             },
             {
-                type: 'list',
+                type: 'select',
                 name: 'fileSelectOption',
                 message: i18n.t('prompts.fileSelectOptionLabel'),
                 choices: annotationFileSelectOptions,

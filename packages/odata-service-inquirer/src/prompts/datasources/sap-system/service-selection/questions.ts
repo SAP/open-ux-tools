@@ -7,18 +7,21 @@ import { AbapServiceProvider, ODataVersion } from '@sap-ux/axios-extension';
 import type { Destination } from '@sap-ux/btp-utils';
 import { hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import {
+    type ChoiceOptions,
     type CommonPromptOptions,
     ERROR_TYPE,
     ErrorHandler,
     extendWithOptions,
+    type ListQuestion,
     searchChoices,
+    type SearchQuestion,
     type ValidationLink,
     withCondition,
     type YUIQuestion
 } from '@sap-ux/inquirer-common';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
-import type { Answers, ListChoiceOptions, Question } from 'inquirer';
+import type { Answers } from 'inquirer';
 import { t } from '../../../../i18n.js';
 import type { ServiceSelectionPromptOptions, OdataServicePromptOptions } from '../../../../types.js';
 
@@ -60,8 +63,8 @@ export function getSystemServiceQuestion(
     promptNamespace: string,
     promptOptions?: ServiceSelectionPromptOptions,
     hideValueHelpDownloadPrompt = true
-): Question<ServiceAnswer>[] {
-    let serviceChoices: ListChoiceOptions<ServiceAnswer>[] = [];
+): YUIQuestion<ServiceAnswer>[] {
+    let serviceChoices: ChoiceOptions<ServiceAnswer>[] = [];
     // Prevent re-requesting services repeatedly by only requesting them once and when the system or client is changed
     let previousSystemUrl: string | undefined;
     let previousClient: string | undefined;
@@ -79,11 +82,69 @@ export function getSystemServiceQuestion(
     const requiredOdataVersion = promptOptions?.requiredOdataVersion;
     const serviceSelectionPromptName = `${promptNamespace}:${promptNames.serviceSelection}`;
 
-    let systemServiceQuestion = {
+    // SystemSelectionAnswers should not be needed here in the interest of keeping these prompts decoupled but TelemetryHelper is used here and it requires the previously selected destination
+    const loadServiceChoices = async (answers?: SystemSelectionAnswers): Promise<ChoiceOptions<ServiceAnswer>[]> => {
+        if (
+            serviceChoices.length === 0 ||
+            previousSystemUrl !== connectValidator.validatedUrl ||
+            previousClient !== connectValidator.validatedClient ||
+            !areArraysEquivalent(previousServiceFilter, promptOptions?.serviceFilter)
+        ) {
+            // if we have a catalog, use it to list services
+            if (connectValidator.catalogs[OdataVersion.v2] || connectValidator.catalogs[OdataVersion.v4]) {
+                serviceChoices = await createServiceChoicesFromCatalog(
+                    connectValidator.catalogs,
+                    requiredOdataVersion,
+                    promptOptions?.serviceFilter
+                );
+                previousSystemUrl = connectValidator.validatedUrl;
+                previousClient = connectValidator.validatedClient;
+                previousServiceFilter = promptOptions?.serviceFilter ? [...promptOptions.serviceFilter] : undefined;
+
+                // Telemetry event for successful service listing using a destination
+                if (answers?.[`${promptNames.systemSelection}`]?.type === 'destination') {
+                    sendDestinationServiceSuccessTelemetryEvent(
+                        answers?.[`${promptNames.systemSelection}`]?.system as Destination
+                    );
+                }
+            } else if (
+                connectValidator.odataService &&
+                connectValidator.validatedUrl &&
+                !(await connectValidator.isAuthRequired())
+            ) {
+                // We have connected to a service endpoint, use this service as the only choice
+                const serviceUrl = new URL(connectValidator.destinationUrl ?? connectValidator.validatedUrl);
+                serviceChoices = [
+                    {
+                        name: serviceUrl.toString(),
+                        value: {
+                            servicePath: serviceUrl.pathname
+                        } as ServiceAnswer
+                    }
+                ];
+                // Telemetry event for successful service listing using a destination
+                if (answers?.[`${promptNames.systemSelection}`]?.type === 'destination') {
+                    sendDestinationServiceSuccessTelemetryEvent(
+                        answers?.[`${promptNames.systemSelection}`]?.system as Destination
+                    );
+                }
+            } else {
+                LoggerHelper.logger.error(t('errors.noCatalogOrServiceAvailable'));
+            }
+        }
+        return serviceChoices;
+    };
+
+    // inquirer 13's native `search` arm no longer passes the previous answers to `source`;
+    // the latest answers are captured from the `choices`/`validate` cycle via this closure instead.
+    let searchAnswers: SystemSelectionAnswers | undefined;
+
+    // `base` holds the shared fields; `validate` may yield a rich `ValidationLink` so it is left to
+    // inference here and the concrete question shape is enforced by the arm casts below.
+    const base = {
         when: (): boolean =>
             connectValidator.validity.authenticated || connectValidator.validity.authRequired === false,
         name: serviceSelectionPromptName,
-        type: promptOptions?.useAutoComplete ? 'autocomplete' : 'list',
         message: () => getSelectedServiceLabel(connectValidator.connectedUserName),
         guiOptions: {
             breadcrumb: t('prompts.systemService.breadcrumb'),
@@ -91,61 +152,8 @@ export function getSystemServiceQuestion(
             applyDefaultWhenDirty: true
         },
         showOutputTabLink: 'validationMessageOverflow',
-        source: (prevAnswers: unknown, input: string) => searchChoices(input, serviceChoices as ListChoiceOptions[]),
-        // SystemSelectionAnswers should not be needed here in the interest of keeping these prompts decoupled but TelemetryHelper is used here and it requires the previously selected destination
-        choices: async (answers: SystemSelectionAnswers) => {
-            if (
-                serviceChoices.length === 0 ||
-                previousSystemUrl !== connectValidator.validatedUrl ||
-                previousClient !== connectValidator.validatedClient ||
-                !areArraysEquivalent(previousServiceFilter, promptOptions?.serviceFilter)
-            ) {
-                // if we have a catalog, use it to list services
-                if (connectValidator.catalogs[OdataVersion.v2] || connectValidator.catalogs[OdataVersion.v4]) {
-                    serviceChoices = await createServiceChoicesFromCatalog(
-                        connectValidator.catalogs,
-                        requiredOdataVersion,
-                        promptOptions?.serviceFilter
-                    );
-                    previousSystemUrl = connectValidator.validatedUrl;
-                    previousClient = connectValidator.validatedClient;
-                    previousServiceFilter = promptOptions?.serviceFilter ? [...promptOptions.serviceFilter] : undefined;
-
-                    // Telemetry event for successful service listing using a destination
-                    if (answers?.[`${promptNames.systemSelection}`]?.type === 'destination') {
-                        sendDestinationServiceSuccessTelemetryEvent(
-                            answers?.[`${promptNames.systemSelection}`]?.system as Destination
-                        );
-                    }
-                } else if (
-                    connectValidator.odataService &&
-                    connectValidator.validatedUrl &&
-                    !(await connectValidator.isAuthRequired())
-                ) {
-                    // We have connected to a service endpoint, use this service as the only choice
-                    const serviceUrl = new URL(connectValidator.destinationUrl ?? connectValidator.validatedUrl);
-                    serviceChoices = [
-                        {
-                            name: serviceUrl.toString(),
-                            value: {
-                                servicePath: serviceUrl.pathname
-                            } as ServiceAnswer
-                        }
-                    ];
-                    // Telemetry event for successful service listing using a destination
-                    if (answers?.[`${promptNames.systemSelection}`]?.type === 'destination') {
-                        sendDestinationServiceSuccessTelemetryEvent(
-                            answers?.[`${promptNames.systemSelection}`]?.system as Destination
-                        );
-                    }
-                } else {
-                    LoggerHelper.logger.error(t('errors.noCatalogOrServiceAvailable'));
-                }
-            }
-            return serviceChoices;
-        },
-        additionalMessages: (selectedService: ServiceAnswer) =>
-            getSelectedServiceMessage(serviceChoices, selectedService, connectValidator, {
+        additionalMessages: (selectedService?: unknown) =>
+            getSelectedServiceMessage(serviceChoices, selectedService as ServiceAnswer, connectValidator, {
                 requiredOdataVersion,
                 hasAnnotations: hasBackendAnnotations,
                 showCollabDraftWarnOptions: convertedMetadataRef.convertedMetadata
@@ -156,16 +164,9 @@ export function getSystemServiceQuestion(
                     : undefined,
                 serviceFilter: promptOptions?.serviceFilter
             }),
-        default: () => getDefaultChoiceIndex(serviceChoices as Answers[]),
-        // Warning: only executes in YUI and cli when automcomplete is used
-        validate: async (
-            service: ServiceAnswer | ListChoiceOptions<ServiceAnswer>
-        ): Promise<string | boolean | ValidationLink> => {
-            let serviceAnswer = service as ServiceAnswer;
-            // Autocomplete passes the entire choice object as the answer, so we need to extract the value
-            if (promptOptions?.useAutoComplete && (service as ListChoiceOptions).value) {
-                serviceAnswer = (service as ListChoiceOptions).value;
-            }
+        validate: async (service: unknown, answers?: Answers): Promise<string | boolean | ValidationLink> => {
+            searchAnswers = answers as SystemSelectionAnswers | undefined;
+            const serviceAnswer = service as ServiceAnswer;
 
             if (!connectValidator.validatedUrl) {
                 return false;
@@ -190,7 +191,29 @@ export function getSystemServiceQuestion(
             }
             return true;
         }
-    } as Question<ServiceAnswer>;
+    };
+
+    // inquirer 13's `select`/`search` default is a choice value (not the inquirer 8 list index); map the
+    // former index-returning default logic to the choice value at that index.
+    const getDefaultServiceValue = (): ServiceAnswer | undefined => {
+        const defaultIndex = getDefaultChoiceIndex(serviceChoices as Answers[]);
+        return defaultIndex === undefined ? undefined : serviceChoices[defaultIndex]?.value;
+    };
+
+    let systemServiceQuestion: YUIQuestion<ServiceAnswer> = (promptOptions?.useAutoComplete
+        ? ({
+              ...base,
+              type: 'search',
+              source: async (term: string | undefined): Promise<ChoiceOptions[]> =>
+                  searchChoices(term ?? '', (await loadServiceChoices(searchAnswers)) as ChoiceOptions[]),
+              default: getDefaultServiceValue
+          } as SearchQuestion<ServiceAnswer>)
+        : ({
+              ...base,
+              type: 'select',
+              choices: async (answers: SystemSelectionAnswers) => loadServiceChoices(answers),
+              default: getDefaultServiceValue
+          } as ListQuestion<ServiceAnswer>)) as unknown as YUIQuestion<ServiceAnswer>;
 
     // Add additional messages to prompts if specified in the prompt options
     if (promptOptions?.additionalMessages) {
@@ -201,12 +224,12 @@ export function getSystemServiceQuestion(
             [systemServiceQuestion] as YUIQuestion[],
             promptOptsToApply,
             PromptState.odataService
-        )[0];
+        )[0] as unknown as YUIQuestion<ServiceAnswer>;
     }
 
-    const questions: Question<ServiceAnswer>[] = [systemServiceQuestion];
+    const questions: YUIQuestion<ServiceAnswer>[] = [systemServiceQuestion];
 
-    // Only for CLI use as `list` prompt validation does not run on CLI unless autocomplete plugin is used
+    // Only for CLI use as `select` prompt validation does not run on CLI unless autocomplete is used
     if (getPromptHostEnvironment() === hostEnvironment.cli && !promptOptions?.useAutoComplete) {
         questions.push({
             when: async (answers: Answers): Promise<boolean> => {
@@ -230,7 +253,7 @@ export function getSystemServiceQuestion(
                 return false;
             },
             name: `${promptNamespace}:${cliServicePromptName}`
-        } as Question);
+        } as unknown as YUIQuestion<ServiceAnswer>);
     }
 
     if (!hideValueHelpDownloadPrompt) {
@@ -238,13 +261,14 @@ export function getSystemServiceQuestion(
          * Only show the value help download prompt when a service has been validated (convertedMetadata is set), is odata version v4 and is an abap connection
          */
         questions.push(
-            ...withCondition(
+            ...(withCondition(
                 getValueHelpDownloadPrompt(connectValidator, promptNamespace, convertedMetadataRef),
-                (answers: { [serviceSelectionPromptName]?: ServiceAnswer }) =>
+                (answers: Answers) =>
                     !!(connectValidator.serviceProvider instanceof AbapServiceProvider) &&
                     !!convertedMetadataRef.convertedMetadata &&
-                    answers?.[serviceSelectionPromptName]?.serviceODataVersion === ODataVersion.v4
-            )
+                    (answers as { [serviceSelectionPromptName]?: ServiceAnswer })?.[serviceSelectionPromptName]
+                        ?.serviceODataVersion === ODataVersion.v4
+            ) as unknown as YUIQuestion<ServiceAnswer>[])
         );
     }
 
@@ -262,7 +286,7 @@ async function createServiceChoicesFromCatalog(
     availableCatalogs: Record<ODataVersion, CatalogService | undefined>,
     requiredOdataVersion?: OdataVersion,
     serviceFilter?: string[]
-): Promise<ListChoiceOptions<ServiceAnswer>[]> {
+): Promise<ChoiceOptions<ServiceAnswer>[]> {
     let catalogs: CatalogService[] = [];
     if (requiredOdataVersion && availableCatalogs[requiredOdataVersion]) {
         catalogs.push(availableCatalogs[requiredOdataVersion] as CatalogService);

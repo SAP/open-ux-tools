@@ -188,11 +188,18 @@ export type PasswordQuestion<A extends Answers = Answers> = Omit<QuestionArm<'pa
 
 export interface FileBrowserQuestion<A extends Answers = Answers>
     extends Omit<QuestionArm<'input', A>, 'type' | 'validate'>, YUIQuestionExtensions, YUIValidate<A> {
-    type?: 'input';
+    type: 'input';
     guiType: 'file-browser' | 'folder-browser';
 }
 // The list prompt was renamed to `select` in inquirer 13; `ListQuestion` maps to that arm.
 export type ListQuestion<A extends Answers = Answers> = Omit<QuestionArm<'select', A>, 'validate'> &
+    YUIQuestionExtensions &
+    YUIValidate<A> &
+    StoreOption;
+
+// inquirer 13's `search` arm replaces the former `inquirer-autocomplete-prompt` plugin. It carries a
+// `source` callback instead of static `choices`; the two cannot coexist on one object.
+export type SearchQuestion<A extends Answers = Answers> = Omit<QuestionArm<'search', A>, 'validate'> &
     YUIQuestionExtensions &
     YUIValidate<A> &
     StoreOption;

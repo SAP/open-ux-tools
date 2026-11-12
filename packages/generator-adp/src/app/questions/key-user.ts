@@ -160,7 +160,7 @@ export class KeyUserImportPrompter {
      */
     private getSystemPrompt(options?: KeyUserSystemPromptOptions): KeyUserImportQuestion {
         return {
-            type: 'list',
+            type: 'select',
             name: keyUserPromptNames.keyUserSystem,
             message: t('prompts.systemLabel'),
             choices: async () => {
@@ -229,7 +229,7 @@ export class KeyUserImportPrompter {
      */
     private getAdaptationPrompt(_?: KeyUserAdaptationPromptOptions): KeyUserImportQuestion {
         return {
-            type: 'list',
+            type: 'select',
             name: keyUserPromptNames.keyUserAdaptation,
             message: t('prompts.keyUserAdaptationLabel'),
             guiOptions: {
@@ -264,7 +264,7 @@ export class KeyUserImportPrompter {
                 }
                 return false;
             }
-        } as KeyUserImportQuestion;
+        } as unknown as KeyUserImportQuestion;
     }
 
     /**
@@ -287,7 +287,7 @@ export class KeyUserImportPrompter {
                 }
                 return false;
             }
-        } as KeyUserImportQuestion;
+        } as unknown as KeyUserImportQuestion;
     }
 
     /**
@@ -308,7 +308,7 @@ export class KeyUserImportPrompter {
                 }
             },
             when: () => this.detectRestrictedViews()
-        } as InputQuestion<KeyUserImportAnswers>;
+        } as unknown as InputQuestion<KeyUserImportAnswers>;
     }
 
     /**

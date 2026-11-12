@@ -30,7 +30,7 @@ export async function getPageBuildingBlockPrompts(context: PromptContext): Promi
                 ? []
                 : [
                       {
-                          type: 'list' as const,
+                          type: 'select' as const,
                           name: 'buildingBlockData.templateType',
                           message: t('templateType.message') as string,
                           default: PageTemplateType.Basic,

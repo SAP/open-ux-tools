@@ -12,6 +12,7 @@ import prompts, { type PromptObject } from 'prompts';
 import type { AbapDeployConfig } from '@sap-ux/ui5-config';
 import type { Command } from 'commander';
 import { promptYUIQuestions } from '../../common/index.js';
+import type { YUIQuestion } from '@sap-ux/inquirer-common';
 import { getExistingAdpProjectType } from '@sap-ux/adp-tooling';
 import { AdaptationProjectType } from '@sap-ux/axios-extension';
 
@@ -136,7 +137,12 @@ async function addDeployConfig(
             );
 
             const answers = reconcileAnswers(
-                await promptYUIQuestions<AbapDeployConfigAnswers>(abapPrompts, false),
+                // Cast widens the question `name` key set: AbapDeployConfigQuestion is keyed on the
+                // internal answers type, a superset of AbapDeployConfigAnswers.
+                await promptYUIQuestions<AbapDeployConfigAnswers>(
+                    abapPrompts as unknown as YUIQuestion<AbapDeployConfigAnswers>[],
+                    false
+                ),
                 abapAnswers
             );
 

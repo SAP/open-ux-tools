@@ -134,7 +134,7 @@ export function extendWithOptions<T extends YUIQuestion = YUIQuestion>(
     questions: T[],
     promptOptions: Record<string, Omit<CommonPromptOptions, 'hide'> & PromptDefaultValue<string | boolean>>,
     promptState?: Answers
-): YUIQuestion[] {
+): T[] {
     questions.forEach((question: YUIQuestion) => {
         const promptOptKey = question.name;
         const promptOpt = promptOptions[question.name];

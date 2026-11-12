@@ -321,7 +321,7 @@ export async function getPrompts(
 
     return [
         {
-            type: 'list',
+            type: 'select',
             name: 'serviceType',
             message: t('prompts.serviceTypeLabel'),
             choices: isCFEnv ? serviceTypeChoices : serviceTypeChoices.filter((c) => c.value !== ServiceType.HTTP),
@@ -333,7 +333,7 @@ export async function getPrompts(
             }
         } as ListQuestion<NewModelAnswers>,
         {
-            type: 'list',
+            type: 'select',
             name: 'destination',
             message: t('prompts.destinationLabel'),
             choices: (): { name: string; value: Destination }[] => destinationChoices ?? [],
@@ -414,7 +414,8 @@ export async function getPrompts(
             when: (answers: NewModelAnswers) => answers.addAnnotationMode,
             additionalMessages: (uri: unknown, previousAnswers?: NewModelAnswers): IMessageSeverity | undefined =>
                 buildResultingUrlMessage('prompts.resultingAnnotationUrl', uri, previousAnswers)
-        } as InputQuestion<NewModelAnswers>,
+            // name belongs to the WithAnnotations branch of the discriminated union; keyof the union excludes it
+        } as unknown as InputQuestion<NewModelAnswers>,
         {
             type: 'editor',
             name: 'annotationSettings',
@@ -425,7 +426,8 @@ export async function getPrompts(
                 hint: t('prompts.oDataAnnotationSettingsTooltip')
             },
             when: (answers: NewModelAnswers) => answers.addAnnotationMode
-        } as EditorQuestion<NewModelAnswers>
+            // name belongs to the WithAnnotations branch of the discriminated union; keyof the union excludes it
+        } as unknown as EditorQuestion<NewModelAnswers>
     ];
 }
 

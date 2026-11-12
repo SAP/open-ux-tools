@@ -109,7 +109,7 @@ class AddNewModelGenerator extends SubGeneratorBase {
             return;
         }
 
-        this.answers = await this.prompt(
+        this.answers = await this.prompt<NewModelAnswers>(
             await getPromptsForNewModel(this.projectPath, this.variant.layer, this.logger, this.appWizard)
         );
         this.logger.log(`Current answers\n${JSON.stringify(this.answers, null, 2)}`);

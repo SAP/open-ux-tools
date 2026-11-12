@@ -44,9 +44,9 @@ const getTargetFolderPrompt = (appRootPath?: string, appId?: string): FileBrowse
             mandatory: true,
             breadcrumb: t('prompts.targetPath.breadcrumb')
         },
-        validate: async (target, answers: RepoAppDownloadAnswers): Promise<boolean | string> => {
+        validate: async (target: unknown, answers: RepoAppDownloadAnswers): Promise<boolean | string> => {
             const selectedAppId = answers.selectedApp?.appId ?? appId;
-            return await validateFioriAppTargetFolder(target, selectedAppId, true);
+            return await validateFioriAppTargetFolder(String(target ?? ''), selectedAppId, true);
         },
         default: () => appRootPath
     } as FileBrowserQuestion<RepoAppDownloadAnswers>;
@@ -134,9 +134,12 @@ export async function getPrompts(
                     }
                     return !!systemQuestions.answers.connectedSystem?.serviceProvider;
                 },
-                type: 'list',
+                type: 'select',
                 name: PromptNames.selectedApp,
-                default: (): number | undefined => (quickDeployedAppConfig?.appId ? 0 : undefined),
+                // inquirer 13's `select` default matches a choice value, not an index. When a quick-deployed
+                // appId is supplied, pre-select the first formatted choice's value (the AppInfo).
+                default: (): AppInfo | undefined =>
+                    quickDeployedAppConfig?.appId && appList.length ? formatAppChoices(appList)[0]?.value : undefined,
                 guiOptions: {
                     mandatory: !!appList.length,
                     breadcrumb: t('prompts.appSelection.breadcrumb'),
@@ -155,7 +158,7 @@ export async function getPrompts(
                 }
             }
         ];
-        // Only for CLI use as `list` prompt validation does not run on CLI unless autocomplete plugin is used
+        // Only for CLI use as `select` prompt validation does not run on CLI unless the native search arm is used
         if (isCli) {
             appSelectionPrompts?.push(getCliValidatePrompts(appList, quickDeployedAppConfig, appWizard, downloadType));
         }

@@ -48,7 +48,7 @@ describe('advanced prompts', () => {
             const prompt = getInboundIdsPrompt(inbounds);
 
             expect(prompt).toEqual({
-                type: 'list',
+                type: 'select',
                 name: promptNames.inboundId,
                 message: t('prompts.inboundIds'),
                 choices: choices,

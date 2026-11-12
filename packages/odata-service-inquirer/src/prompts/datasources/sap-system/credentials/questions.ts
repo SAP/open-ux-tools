@@ -62,8 +62,8 @@ export function getCredentialsPrompts<T extends Answers>(
                 mandatory: true
             },
             default: '',
-            validate: (user: string) => user?.length > 0
-        } as InputQuestion<T>,
+            validate: (user: unknown) => (user as string)?.length > 0
+        } as unknown as InputQuestion<T>,
         {
             when: () =>
                 !!(connectionValidator.systemAuthType === 'basic' && authRequired && (!sapClient || sapClient.isValid)),
@@ -78,7 +78,8 @@ export function getCredentialsPrompts<T extends Answers>(
             message: t('prompts.systemPassword.message'),
             mask: '*',
             default: '',
-            validate: async (password: string, answers: T): Promise<ValidationResult> => {
+            validate: async (passwordInput: unknown, answers: T): Promise<ValidationResult> => {
+                const password = passwordInput as string;
                 if (!(
                     connectionValidator.validatedUrl &&
                     answers?.[usernamePromptName] &&
@@ -120,7 +121,7 @@ export function getCredentialsPrompts<T extends Answers>(
                 }
                 return valResult;
             },
-            additionalMessages: (password: string, answers: T) => {
+            additionalMessages: (password: unknown, answers: T) => {
                 // Since the odata service URL prompt has its own credentials prompts its safe to assume
                 // that `ignoreCertError` when true means that the user has set the node setting to ignore cert errors and
                 // not that the user has chosen to ignore the cert error for this specific connection (this is only supported by the odata service URL prompts).
@@ -135,10 +136,10 @@ export function getCredentialsPrompts<T extends Answers>(
                     };
                 }
             }
-        } as PasswordQuestion<T>
+        } as unknown as PasswordQuestion<T>
     ];
 
-    const confirmCredentialStoragePrompt: ConfirmQuestion<T> = {
+    const confirmCredentialStoragePrompt = {
         when: (answers: T) =>
             !!(
                 connectionValidator.systemAuthType === 'basic' &&
@@ -153,16 +154,16 @@ export function getCredentialsPrompts<T extends Answers>(
         guiOptions: {
             breadcrumb: t('prompts.storeSystemCredentials.breadcrumb')
         },
-        validate: async (storeCredentials: boolean): Promise<boolean> => {
+        validate: async (storeCredentials: unknown): Promise<boolean> => {
             if (PromptState.odataService.connectedSystem?.backendSystem) {
                 const backendSystem = PromptState.odataService.connectedSystem.backendSystem;
                 PromptState.odataService.connectedSystem.backendSystem = Object.assign(backendSystem, {
-                    newOrUpdated: storeCredentials
+                    newOrUpdated: storeCredentials as boolean
                 });
             }
             return true;
         },
-        additionalMessages: (storeCredentials: boolean) => {
+        additionalMessages: (storeCredentials: unknown) => {
             if (storeCredentials === true) {
                 return {
                     message: t('texts.passwordStoreWarning'),
@@ -170,7 +171,7 @@ export function getCredentialsPrompts<T extends Answers>(
                 };
             }
         }
-    } as ConfirmQuestion<T>;
+    } as unknown as ConfirmQuestion<T>;
 
     if (!isAppStudio()) {
         credentialsPrompts.push(confirmCredentialStoragePrompt);

@@ -166,7 +166,7 @@ function getNamespacePrompt(isCustomerBase: boolean, options?: NamespacePromptOp
             applyDefaultWhenDirty: true
         },
         store: false
-    } as InputQuestion;
+    } as unknown as InputQuestion<AttributesAnswers>;
 
     if (!isCustomerBase) {
         prompt.guiOptions!.type = 'label';
@@ -174,8 +174,8 @@ function getNamespacePrompt(isCustomerBase: boolean, options?: NamespacePromptOp
     } else {
         prompt.guiOptions!.mandatory = true;
         prompt.guiOptions!.breadcrumb = true;
-        prompt.validate = (value, answers: AttributesAnswers) =>
-            validateNamespaceAdp(value, answers.projectName, isCustomerBase);
+        prompt.validate = (value: unknown, answers?: Partial<AttributesAnswers>) =>
+            validateNamespaceAdp(value as string, answers?.projectName ?? '', isCustomerBase);
     }
 
     return prompt;
@@ -218,7 +218,7 @@ function getUi5VersionPrompt(
     systemType?: SystemType
 ): AttributesQuestion {
     return {
-        type: 'list',
+        type: 'select',
         name: attributePromptNames.ui5Version,
         message: t('prompts.ui5VersionLabel'),
         when: systemType !== SystemType.CLOUD_READY,
@@ -232,7 +232,7 @@ function getUi5VersionPrompt(
         validate: async (version: string) => await validateUI5VersionExists(version),
         default: async () => await getDefaultVersion(ui5Versions),
         additionalMessages: () => getVersionAdditionalMessages(isVersionDetected)
-    } as ListQuestion<AttributesAnswers>;
+    } as unknown as ListQuestion<AttributesAnswers>;
 }
 
 /**
@@ -255,7 +255,7 @@ function getUi5VersionValidationPromptForCli(): YUIQuestion<AttributesAnswers> {
 
             return false;
         }
-    } as YUIQuestion;
+    } as unknown as YUIQuestion<AttributesAnswers>;
 }
 
 /**

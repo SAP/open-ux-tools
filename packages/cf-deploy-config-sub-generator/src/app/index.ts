@@ -34,7 +34,6 @@ import {
 } from '@sap-ux/deploy-config-generator-shared';
 import { t, initI18n, DESTINATION_AUTHTYPE_NOTFOUND, API_BUSINESS_HUB_ENTERPRISE_PREFIX } from '../utils/index.js';
 import { loadManifest } from './utils.js';
-import type { InquirerAdapter } from '@sap-ux/inquirer-common';
 import { getMtaPath, findCapProjectRoot, FileName, type Package } from '@sap-ux/project-access';
 import { EventName } from '../telemetryEvents/index.js';
 import { getCFQuestions, getCAPMTAQuestions } from './questions.js';
@@ -247,8 +246,7 @@ export default class extends DeploymentGenerator {
                 this.launchStandaloneFromYui,
                 this.options.overwrite
             ),
-            apiHubConfig: this.apiHubConfig,
-            promptModule: (this.env?.adapter as InquirerAdapter | undefined)?.promptModule
+            apiHubConfig: this.apiHubConfig
         });
     }
 

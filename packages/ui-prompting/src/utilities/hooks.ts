@@ -2,7 +2,13 @@ import { useEffect, useRef, useState, useMemo } from 'react';
 import type { UIComboBoxOption, UISelectableOption } from '@sap-ux/ui-components';
 import { convertChoicesToOptions, getAnswer, getDynamicQuestions, isDeepEqual, setAnswer } from './utils.js';
 import type { PromptQuestion, DynamicChoices, PromptListChoices } from '../types.js';
-import type { Answers, ChoiceOptions, AsyncDynamicQuestionProperty } from 'inquirer';
+import type { Answers, ChoiceOptions } from 'inquirer';
+
+/**
+ * Resolved shape of an inquirer `message` property: either a static string or a
+ * (possibly async) getter. inquirer 13 allows the getter to return `void`.
+ */
+type PromptMessage = string | ((answers: Answers) => string | void | Promise<string | void>);
 
 interface RequestedChoices {
     [key: string]: boolean;
@@ -109,7 +115,7 @@ export function useMultiSelectKeys(
  * @param answers - Current answers object to pass to message
  * @returns The resolved message string
  */
-export function usePromptMessage(message?: AsyncDynamicQuestionProperty<string, Answers>, answers?: any): string {
+export function usePromptMessage(message?: PromptMessage, answers?: any): string {
     const [resolvedMessage, setResolvedMessage] = useState<string>('');
     useEffect(() => {
         if (typeof message === 'function') {

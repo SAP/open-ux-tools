@@ -1,7 +1,6 @@
 import { jest } from '@jest/globals';
 import { promptNames, PackageInputChoices } from '../../../../src/types.js';
-import type { ListQuestion } from '@sap-ux/inquirer-common';
-import type { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
+import type { ListQuestion, SearchQuestion } from '@sap-ux/inquirer-common';
 import { Severity } from '@sap-devx/yeoman-ui-types';
 
 const mockShowPackageInputChoiceQuestion = jest.fn<typeof actualConditions.showPackageInputChoiceQuestion>();
@@ -60,7 +59,7 @@ describe('getPackagePrompts', () => {
                 },
                 "message": "Select How You Want to Enter the Package",
                 "name": "packageInputChoice",
-                "type": "list",
+                "type": "select",
                 "validate": [Function],
                 "when": [Function],
               },
@@ -93,7 +92,7 @@ describe('getPackagePrompts', () => {
                 "message": "Package (Type to filter matching records)",
                 "name": "packageAutocomplete",
                 "source": [Function],
-                "type": "autocomplete",
+                "type": "search",
                 "validate": [Function],
                 "when": [Function],
               },
@@ -206,9 +205,10 @@ describe('getPackagePrompts', () => {
                 true
             );
             PromptState.isYUI = false;
-            expect(
-                await ((packageAutocompletePrompt as AutocompleteQuestionOptions).source as Function)()
-            ).toStrictEqual(['TEST_PACKAGE_1', 'TEST_PACKAGE_2']);
+            expect(await ((packageAutocompletePrompt as SearchQuestion).source as Function)()).toStrictEqual([
+                'TEST_PACKAGE_1',
+                'TEST_PACKAGE_2'
+            ]);
             expect(((packageAutocompletePrompt as any).additionalInfo as Function)()).toBe('Test additional msg');
             expect(await (packageAutocompletePrompt.validate as Function)({ name: '$TMP', value: '$TMP' })).toBe(true);
         }

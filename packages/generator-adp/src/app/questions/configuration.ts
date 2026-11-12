@@ -303,7 +303,7 @@ export class ConfigPrompter {
      */
     private getSystemListPrompt(_?: SystemPromptOptions): ListQuestion<ConfigAnswers> {
         return {
-            type: 'list',
+            type: 'select',
             name: configPromptNames.system,
             message: t('prompts.systemLabel'),
             choices: async () => {
@@ -324,7 +324,7 @@ export class ConfigPrompter {
                 );
                 return this.systemAdditionalMessage;
             }
-        };
+        } as unknown as ListQuestion<ConfigAnswers>;
     }
 
     /**
@@ -347,7 +347,7 @@ export class ConfigPrompter {
 
                 return false;
             }
-        } as YUIQuestion;
+        } as unknown as YUIQuestion<ConfigAnswers>;
     }
 
     /**
@@ -369,7 +369,7 @@ export class ConfigPrompter {
             filter: (val: string): string => val.trim(),
             validate: (val: string) => validateEmptyString(val),
             when: (answers: ConfigAnswers) => showCredentialQuestion(answers, this.isAuthRequired)
-        };
+        } as unknown as InputQuestion<ConfigAnswers>;
     }
 
     /**
@@ -403,7 +403,7 @@ export class ConfigPrompter {
                 }
                 return undefined;
             }
-        };
+        } as unknown as PasswordQuestion<ConfigAnswers>;
     }
 
     /**
@@ -432,7 +432,7 @@ export class ConfigPrompter {
                     };
                 }
             }
-        };
+        } as unknown as ConfirmQuestion<ConfigAnswers>;
     }
 
     /**
@@ -443,7 +443,7 @@ export class ConfigPrompter {
      */
     private getProjectTypeListPrompt(options?: ApplicationPromptOptions): ListQuestion<ConfigAnswers> {
         return {
-            type: 'list',
+            type: 'select',
             name: configPromptNames.projectType,
             message: t('prompts.projectTypeListLabel'),
             guiOptions: {
@@ -456,7 +456,7 @@ export class ConfigPrompter {
             when: ({ application }: ConfigAnswers) => this.shouldDisplayProjectTypePrompt(application),
             validate: async (projectType: AdaptationProjectType, { application }: ConfigAnswers) =>
                 this.validateProjectTypePrompt(projectType, application),
-            additionalMessages: (_, answers: Answers | undefined) =>
+            additionalMessages: (_: unknown, answers: Answers | undefined) =>
                 getAppAdditionalMessages(
                     answers?.application as SourceApplication,
                     {
@@ -467,7 +467,7 @@ export class ConfigPrompter {
                     },
                     this.isApplicationSupported
                 )
-        };
+        } as unknown as ListQuestion<ConfigAnswers>;
     }
 
     /**
@@ -477,7 +477,7 @@ export class ConfigPrompter {
      *
      * @returns {YUIQuestion} The project type for cli prompt configuration.
      */
-    private getProjectTypeListPromptForCli(): YUIQuestion {
+    private getProjectTypeListPromptForCli(): YUIQuestion<ConfigAnswers> {
         return {
             name: configPromptNames.projectTypeCli,
             when: async ({ application, projectType }: ConfigAnswers): Promise<boolean> => {
@@ -492,7 +492,7 @@ export class ConfigPrompter {
 
                 return false;
             }
-        } as YUIQuestion;
+        } as unknown as YUIQuestion<ConfigAnswers>;
     }
 
     /**
@@ -518,7 +518,7 @@ export class ConfigPrompter {
                 message: t('prompts.projectTypeClassicLabel'),
                 severity: Severity.information
             })
-        };
+        } as unknown as InputQuestion<ConfigAnswers>;
     }
 
     /**
@@ -529,7 +529,7 @@ export class ConfigPrompter {
      */
     private getApplicationListPrompt(options?: ApplicationPromptOptions): ListQuestion<ConfigAnswers> {
         return {
-            type: 'list',
+            type: 'select',
             name: configPromptNames.application,
             message: t('prompts.applicationListLabel'),
             guiOptions: {
@@ -559,7 +559,7 @@ export class ConfigPrompter {
                     this.isAuthRequired,
                     this.isLoginSuccessful
                 ),
-            additionalMessages: (input) => {
+            additionalMessages: (input: unknown) => {
                 const application = input as SourceApplication;
                 if (this.shouldDisplayProjectTypePrompt(application)) {
                     return undefined;
@@ -575,7 +575,7 @@ export class ConfigPrompter {
                     this.isApplicationSupported
                 );
             }
-        };
+        } as unknown as ListQuestion<ConfigAnswers>;
     }
 
     /**
@@ -602,7 +602,7 @@ export class ConfigPrompter {
 
                 return false;
             }
-        } as YUIQuestion;
+        } as unknown as YUIQuestion<ConfigAnswers>;
     }
 
     /**
@@ -620,10 +620,11 @@ export class ConfigPrompter {
                 hint: t('prompts.fioriIdHint'),
                 breadcrumb: true
             },
-            when: (answers) => showInternalQuestions(answers, this.isCustomerBase, this.isApplicationSupported),
+            when: (answers: ConfigAnswers) =>
+                showInternalQuestions(answers, this.isCustomerBase, this.isApplicationSupported),
             default: () => getFioriId(this.appManifest),
             store: false
-        } as InputQuestion<ConfigAnswers>;
+        } as unknown as InputQuestion<ConfigAnswers>;
     }
 
     /**
@@ -642,11 +643,12 @@ export class ConfigPrompter {
                 breadcrumb: true,
                 mandatory: true
             },
-            when: (answers) => showInternalQuestions(answers, this.isCustomerBase, this.isApplicationSupported),
+            when: (answers: ConfigAnswers) =>
+                showInternalQuestions(answers, this.isCustomerBase, this.isApplicationSupported),
             default: () => getAch(this.appManifest),
             validate: (value: string) => validateAch(value, this.isCustomerBase),
             store: false
-        } as InputQuestion<ConfigAnswers>;
+        } as unknown as InputQuestion<ConfigAnswers>;
     }
 
     /**
@@ -687,7 +689,7 @@ export class ConfigPrompter {
                     hasSyncViews: this.containsSyncViews,
                     isExtensibilityExtInstalled: !!options?.isExtensibilityExtInstalled
                 })
-        };
+        } as unknown as ConfirmQuestion<ConfigAnswers>;
     }
 
     /**

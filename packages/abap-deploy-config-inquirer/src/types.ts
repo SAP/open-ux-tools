@@ -169,7 +169,7 @@ export type IndexPromptOptions = {
 export type PackageAutocompletePromptOptions = PackagePromptOptions & {
     /**
      * Determines if the package autocomplete prompt should use auto complete prompt for packages.
-     * Note that the auto-complete module must be registered with the inquirer instance to use this feature.
+     * When enabled, the package prompt is rendered using inquirer's native `search` arm.
      */
     useAutocomplete?: boolean;
 };

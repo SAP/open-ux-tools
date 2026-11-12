@@ -1,6 +1,6 @@
 import { isMTAInstalled, promptNames, t } from '../utils/index.js';
 import type { Target } from '../types/index.js';
-import type { Question, ListQuestion } from 'inquirer';
+import type { Question, ListQuestion } from '@sap-ux/inquirer-common';
 
 /**
  * Returns the deployment target question.
@@ -12,7 +12,7 @@ import type { Question, ListQuestion } from 'inquirer';
 export function getDeployTargetQuestion(supportedTargets: Target[], projectRoot: string): Question[] {
     return [
         {
-            type: 'list',
+            type: 'select',
             name: promptNames.targetName,
             guiOptions: {
                 breadcrumb: t('prompts.deployTarget.breadcrumb')

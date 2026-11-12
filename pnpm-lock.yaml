@@ -540,22 +540,16 @@ importers:
       i18next:
         specifier: 26.5.11
         version: 26.5.11(typescript@6.0.3)
-      inquirer-autocomplete-prompt:
-        specifier: 2.0.1
-        version: 2.0.1(inquirer@8.2.7(@types/node@22.20.1))
     devDependencies:
       '@jest/globals':
         specifier: 30.5.2
         version: 30.5.2(supports-color@8.1.1)
-      '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
-      '@types/inquirer-autocomplete-prompt':
-        specifier: 2.0.2
-        version: 2.0.2
       axios:
         specifier: '>=1.20.0'
         version: 1.20.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+      inquirer:
+        specifier: 13.4.3
+        version: 13.4.3(@types/node@22.20.1)
 
   packages/abap-deploy-config-sub-generator:
     dependencies:
@@ -1346,9 +1340,6 @@ importers:
       i18next:
         specifier: 26.5.11
         version: 26.5.11(typescript@6.0.3)
-      inquirer-autocomplete-prompt:
-        specifier: 2.0.1
-        version: 2.0.1(inquirer@8.2.7(@types/node@22.20.1))
     devDependencies:
       '@jest/globals':
         specifier: 30.5.2
@@ -1362,15 +1353,9 @@ importers:
       '@sap/cf-tools':
         specifier: 3.3.1
         version: 3.3.1
-      '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
-      '@types/inquirer-autocomplete-prompt':
-        specifier: 2.0.2
-        version: 2.0.2
       inquirer:
-        specifier: 8.2.7
-        version: 8.2.7(@types/node@22.20.1)
+        specifier: 13.4.3
+        version: 13.4.3(@types/node@22.20.1)
 
   packages/cf-deploy-config-sub-generator:
     dependencies:
@@ -3761,9 +3746,6 @@ importers:
       i18next:
         specifier: 26.5.11
         version: 26.5.11(typescript@6.0.3)
-      inquirer-autocomplete-prompt:
-        specifier: 2.0.1
-        version: 2.0.1(inquirer@8.2.7(@types/node@22.20.1))
       os-name:
         specifier: 4.0.1
         version: 4.0.1
@@ -3792,12 +3774,9 @@ importers:
       '@sap-ux/vocabularies-types':
         specifier: 0.16.0
         version: 0.16.0
-      '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
-      '@types/inquirer-autocomplete-prompt':
-        specifier: 2.0.2
-        version: 2.0.2
+      inquirer:
+        specifier: 13.4.3
+        version: 13.4.3(@types/node@22.20.1)
       jest-extended:
         specifier: 7.0.0
         version: 7.0.0(jest@30.5.2(@types/node@22.20.1)(babel-plugin-macros@3.1.0)(supports-color@8.1.1)(ts-node@10.9.2(@swc/core@1.15.46(@swc/helpers@0.5.19))(@types/node@22.20.1)(typescript@6.0.3)))(typescript@6.0.3)
@@ -4297,9 +4276,6 @@ importers:
       '@types/inquirer':
         specifier: 8.2.6
         version: 8.2.6
-      '@types/inquirer-autocomplete-prompt':
-        specifier: 2.0.2
-        version: 2.0.2
       '@types/lodash':
         specifier: 4.17.26
         version: 4.17.26
@@ -4324,9 +4300,6 @@ importers:
       fs-extra:
         specifier: 11.4.1
         version: 11.4.1
-      inquirer-autocomplete-prompt:
-        specifier: 2.0.1
-        version: 2.0.1(inquirer@8.2.7(@types/node@22.20.1))
       lodash:
         specifier: 4.18.1
         version: 4.18.1
@@ -4938,9 +4911,6 @@ importers:
       '@types/inquirer':
         specifier: 8.2.6
         version: 8.2.6
-      '@types/inquirer-autocomplete-prompt':
-        specifier: 2.0.2
-        version: 2.0.2
       '@types/yeoman-environment':
         specifier: 2.10.11
         version: 2.10.11
@@ -5074,9 +5044,6 @@ importers:
       i18next:
         specifier: 26.5.11
         version: 26.5.11(typescript@6.0.3)
-      inquirer-autocomplete-prompt:
-        specifier: 2.0.1
-        version: 2.0.1(inquirer@8.2.7(@types/node@22.20.1))
       lodash:
         specifier: 4.18.1
         version: 4.18.1
@@ -5093,12 +5060,6 @@ importers:
       '@sap-ux/cap-config-writer':
         specifier: workspace:*
         version: link:../cap-config-writer
-      '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
-      '@types/inquirer-autocomplete-prompt':
-        specifier: 2.0.2
-        version: 2.0.2
       '@types/lodash':
         specifier: 4.17.26
         version: 4.17.26
@@ -5106,8 +5067,8 @@ importers:
         specifier: 7.8.0
         version: 7.8.0
       inquirer:
-        specifier: 8.2.7
-        version: 8.2.7(@types/node@22.20.1)
+        specifier: 13.4.3
+        version: 13.4.3(@types/node@22.20.1)
 
   packages/ui5-application-writer:
     dependencies:
@@ -5240,22 +5201,13 @@ importers:
       i18next:
         specifier: 26.5.11
         version: 26.5.11(typescript@6.0.3)
-      inquirer-autocomplete-prompt:
-        specifier: 2.0.1
-        version: 2.0.1(inquirer@8.2.7(@types/node@22.20.1))
     devDependencies:
       '@jest/globals':
         specifier: 30.5.2
         version: 30.5.2(supports-color@8.1.1)
-      '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
-      '@types/inquirer-autocomplete-prompt':
-        specifier: 2.0.2
-        version: 2.0.2
       inquirer:
-        specifier: 8.2.7
-        version: 8.2.7(@types/node@22.20.1)
+        specifier: 13.4.3
+        version: 13.4.3(@types/node@22.20.1)
 
   packages/ui5-library-reference-inquirer:
     dependencies:
@@ -10164,9 +10116,6 @@ packages:
   '@types/http-proxy@1.17.17':
     resolution: {integrity: sha512-ED6LB+Z1AVylNTu7hdzuBqOgMnvG/ld6wGCG8wFnAzKX5uyW2K3WD52v0gnLCTK/VLpXtKckgWuyScYK6cSPaw==}
 
-  '@types/inquirer-autocomplete-prompt@2.0.2':
-    resolution: {integrity: sha512-Y7RM1dY3KVg11JnFkaQkTT+2Cgmn9K8De/VtrTT2a5grGIoMfkQuYM5Sss+65oiuqg1h1cTsKHG8pkoPsASdbQ==}
-
   '@types/inquirer@8.2.6':
     resolution: {integrity: sha512-3uT88kxg8lNzY8ay2ZjP44DKcRaTGztqeIvN2zHvhzIBH/uAPaL75aBtdNRKbA7xXoMbBt5kX0M00VKAnfOYlA==}
 
@@ -13977,12 +13926,6 @@ packages:
   ini@7.0.0:
     resolution: {integrity: sha512-ifK0CgjALofS5bkrcTy4RaQ9Vx2Knf/eLeIO+NaswQEpH1UblrtTSCIvN71qQDMq0PeQ/SSPojvEJp9vvvfr+w==}
     engines: {node: ^22.22.2 || ^24.15.0 || >=26.0.0}
-
-  inquirer-autocomplete-prompt@2.0.1:
-    resolution: {integrity: sha512-jUHrH0btO7j5r8DTQgANf2CBkTZChoVySD8zF/wp5fZCOLIuUbleXhf4ZY5jNBOc1owA3gdfWtfZuppfYBhcUg==}
-    engines: {node: '>=12'}
-    peerDependencies:
-      inquirer: ^8.0.0
 
   inquirer@13.4.3:
     resolution: {integrity: sha512-EPd3IqieHSavSOXh+LZhrIkdQcOELWeRblLT6kslQr+cF9XTh/HxZdSt1YkHH1iq4dvqBnV42uwg2YlorgOy6g==}
@@ -24344,10 +24287,6 @@ snapshots:
     dependencies:
       '@types/node': 22.20.1
 
-  '@types/inquirer-autocomplete-prompt@2.0.2':
-    dependencies:
-      '@types/inquirer': 8.2.6
-
   '@types/inquirer@8.2.6':
     dependencies:
       '@types/through': 0.0.33
@@ -28999,15 +28938,6 @@ snapshots:
   ini@5.0.0: {}
 
   ini@7.0.0: {}
-
-  inquirer-autocomplete-prompt@2.0.1(inquirer@8.2.7(@types/node@22.20.1)):
-    dependencies:
-      ansi-escapes: 4.3.2
-      figures: 3.2.0
-      inquirer: 8.2.7(@types/node@22.20.1)
-      picocolors: 1.1.1
-      run-async: 2.4.1
-      rxjs: 7.8.2
 
   inquirer@13.4.3(@types/node@22.20.1):
     dependencies:

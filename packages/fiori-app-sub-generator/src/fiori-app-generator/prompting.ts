@@ -21,7 +21,6 @@ import type {
 } from '@sap-ux/ui5-application-inquirer';
 import { prompt as promptUI5App, promptNames as ui5AppInquirerPromptNames } from '@sap-ux/ui5-application-inquirer';
 import { getSapSystemUI5Version, getUI5Versions, latestVersionString } from '@sap-ux/ui5-info';
-import type { Question } from 'inquirer';
 import merge from 'lodash/merge.js';
 import { join } from 'node:path';
 import type { Adapter } from 'yeoman-environment';
@@ -35,7 +34,7 @@ export interface ViewNameAnswer {
     [viewNamePromptName]: string;
 }
 
-export const getViewQuestion = (): Question<ViewNameAnswer> => {
+export const getViewQuestion = (): InputQuestion<ViewNameAnswer> => {
     return {
         type: 'input',
         name: viewNamePromptName,

@@ -8,10 +8,9 @@ import {
     isPartialUrlDestination,
     listDestinations
 } from '@sap-ux/btp-utils';
-import { ERROR_TYPE } from '@sap-ux/inquirer-common';
+import { ERROR_TYPE, type ChoiceOptions } from '@sap-ux/inquirer-common';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
 import { type BackendSystemKey, type BackendSystem, type BackendSystemFilter } from '@sap-ux/store';
-import type { ListChoiceOptions } from 'inquirer';
 import { t } from '../../../../i18n.js';
 import type { ConnectedSystem, DestinationFilters } from '../../../../types.js';
 import { convertODataVersionType, PromptState, removeCircularFromServiceProvider } from '../../../../utils/index.js';
@@ -221,9 +220,9 @@ export async function createSystemChoices(
     includeCloudFoundryAbapEnvChoice = false,
     hideNewSystem = false,
     backendSystemFilter?: BackendSystemFilter
-): Promise<ListChoiceOptions<SystemSelectionAnswerType>[]> {
-    let systemChoices: ListChoiceOptions<SystemSelectionAnswerType>[] = [];
-    let newSystemChoice: ListChoiceOptions<SystemSelectionAnswerType> | undefined;
+): Promise<ChoiceOptions<SystemSelectionAnswerType>[]> {
+    let systemChoices: ChoiceOptions<SystemSelectionAnswerType>[] = [];
+    let newSystemChoice: ChoiceOptions<SystemSelectionAnswerType> | undefined;
 
     // If this is BAS, return destinations, otherwise return stored backend systems
     if (isAppStudio()) {
@@ -298,7 +297,7 @@ export async function createSystemChoices(
  * @returns the index of the default choice in the system choices list
  */
 export function findDefaultSystemSelectionIndex(
-    systemChoices: ListChoiceOptions<SystemSelectionAnswerType>[],
+    systemChoices: ChoiceOptions<SystemSelectionAnswerType>[],
     defaultChoice: string | { value?: string } | undefined
 ): number {
     const choice = typeof defaultChoice === 'string' ? defaultChoice : defaultChoice?.value;

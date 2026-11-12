@@ -1,8 +1,13 @@
 import { showIndexQuestion } from '../conditions.js';
 import { validateConfirmQuestion } from '../validators.js';
 import { t } from '../../i18n.js';
-import { promptNames, type AbapDeployConfigPromptOptions, type AbapDeployConfigAnswersInternal } from '../../types.js';
-import type { ConfirmQuestion, Question } from 'inquirer';
+import {
+    promptNames,
+    type AbapDeployConfigPromptOptions,
+    type AbapDeployConfigAnswersInternal,
+    type AbapDeployConfigQuestion
+} from '../../types.js';
+import type { ConfirmQuestion } from '@sap-ux/inquirer-common';
 
 /**
  * Returns the index prompt.
@@ -10,7 +15,7 @@ import type { ConfirmQuestion, Question } from 'inquirer';
  * @param options - abap deploy config prompt options
  * @returns  confirm question for generating the index file
  */
-function getIndexPrompt(options: AbapDeployConfigPromptOptions): Question<AbapDeployConfigAnswersInternal> {
+function getIndexPrompt(options: AbapDeployConfigPromptOptions): AbapDeployConfigQuestion {
     return {
         when: (): boolean => showIndexQuestion(options),
         name: promptNames.index,
@@ -28,7 +33,7 @@ function getIndexPrompt(options: AbapDeployConfigPromptOptions): Question<AbapDe
  *
  * @returns confirm question for overwriting the files
  */
-function getOverwritePrompt(): Question<AbapDeployConfigAnswersInternal> {
+function getOverwritePrompt(): AbapDeployConfigQuestion {
     return {
         name: promptNames.overwriteAbapConfig,
         type: 'confirm',
@@ -38,7 +43,7 @@ function getOverwritePrompt(): Question<AbapDeployConfigAnswersInternal> {
         },
         default: true,
         validate: (overwrite: boolean): boolean => validateConfirmQuestion(overwrite)
-    } as ConfirmQuestion<AbapDeployConfigAnswersInternal>;
+    } as unknown as ConfirmQuestion<AbapDeployConfigAnswersInternal>;
 }
 
 /**
@@ -47,7 +52,7 @@ function getOverwritePrompt(): Question<AbapDeployConfigAnswersInternal> {
  * @param options - abap deploy config prompt options
  * @returns list of questions for confirm prompting
  */
-export function getConfirmPrompts(options: AbapDeployConfigPromptOptions): Question<AbapDeployConfigAnswersInternal>[] {
+export function getConfirmPrompts(options: AbapDeployConfigPromptOptions): AbapDeployConfigQuestion[] {
     const questions = [getIndexPrompt(options)];
     if (options.overwriteAbapConfig?.hide !== true) {
         questions.push(getOverwritePrompt());

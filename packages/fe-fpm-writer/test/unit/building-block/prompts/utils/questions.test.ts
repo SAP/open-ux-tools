@@ -512,7 +512,7 @@ describe('utils - questions', () => {
               },
               "message": "message",
               "name": "name",
-              "type": "list",
+              "type": "select",
             }
         `);
     });
@@ -567,7 +567,7 @@ describe('utils - questions', () => {
     test('getFilterBarIdPrompt - list type', async () => {
         const prompt = getFilterBarIdPrompt(context, {
             message: 'message',
-            type: 'list',
+            type: 'select',
             guiOptions: {
                 placeholder: 'Select or enter a filter bar ID',
                 creation: { placeholder: 'Enter a new filter bar ID' }
@@ -585,7 +585,7 @@ describe('utils - questions', () => {
               },
               "message": "message",
               "name": "buildingBlockData.filterBar",
-              "type": "list",
+              "type": "select",
             }
         `);
 
@@ -624,7 +624,7 @@ describe('utils - questions', () => {
               },
               "message": "message",
               "name": "service",
-              "type": "list",
+              "type": "select",
             }
         `);
 
@@ -639,7 +639,7 @@ describe('utils - questions', () => {
                 "selectType": "dynamic",
               },
               "name": "service",
-              "type": "list",
+              "type": "select",
             }
         `);
     });

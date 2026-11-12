@@ -54,8 +54,8 @@ export const BuildingBlockQuestions = (props: {
         setAnswers(newAnswers);
         if (name) {
             if (liveValidation) {
-                await validateAnswers(type, [{ name }], newAnswers).then((validationResults) =>
-                    setValidation({ ...validation, ...validationResults })
+                await validateAnswers(type, [{ name, type: 'input', message: name }], newAnswers).then(
+                    (validationResults) => setValidation({ ...validation, ...validationResults })
                 );
             } else {
                 const clearValidation = { ...validation };

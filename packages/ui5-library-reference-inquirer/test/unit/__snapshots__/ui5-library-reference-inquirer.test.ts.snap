@@ -10,7 +10,7 @@ Array [
     },
     "message": "Project Folder Path",
     "name": "targetProjectFolder",
-    "type": "list",
+    "type": "select",
     "validate": [Function],
   },
   Object {
@@ -26,7 +26,7 @@ Array [
     },
     "message": "Reusable Library Source",
     "name": "source",
-    "type": "list",
+    "type": "select",
   },
   Object {
     "additionalMessages": [Function],

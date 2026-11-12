@@ -43,7 +43,7 @@ function getUsernamePrompt(): InputQuestion<Credentials> {
         guiOptions: {
             mandatory: true
         }
-    };
+    } as unknown as InputQuestion<Credentials>;
 }
 
 /**
@@ -66,13 +66,13 @@ function getPasswordPrompt(abapTarget: AbapTarget, logger: ToolsLogger): Passwor
             applyDefaultWhenDirty: true
         },
         default: '',
-        validate: async (value: string, answers: Credentials): Promise<boolean | string> => {
+        validate: async (value: string, answers?: Partial<Credentials>): Promise<boolean | string> => {
             const validationResult = validateEmptyString(value);
             if (typeof validationResult === 'string') {
                 return validationResult;
             }
 
-            if (!answers.username) {
+            if (!answers?.username) {
                 return t('error.pleaseProvideAllRequiredData');
             }
 
@@ -91,7 +91,7 @@ function getPasswordPrompt(abapTarget: AbapTarget, logger: ToolsLogger): Passwor
                 return e.response ? `Login failed: ${e.response.status} ${e.response.statusText}` : 'Login failed.';
             }
         }
-    };
+    } as unknown as PasswordQuestion<Credentials>;
 }
 
 /**

@@ -16,7 +16,7 @@ describe('getTileSettingsPrompts', () => {
 
         expect(tileActionsPrompt).toEqual(
             expect.objectContaining({
-                type: 'list',
+                type: 'select',
                 name: tilePromptNames.tileHandlingAction,
                 message: t('prompts.tileHandlingAction'),
                 guiOptions: {

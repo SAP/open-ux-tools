@@ -38,14 +38,14 @@ export function getSemanticObjectPrompt(isCLI: boolean, options?: SemanticObject
         type: 'input',
         guiOptions,
         message: t('prompts.semanticObject'),
-        default: (answers: FLPConfigAnswers): string => {
+        default: (answers: Partial<FLPConfigAnswers>): string => {
             if (options?.default) {
                 return options.default;
             }
             return answers?.inboundId?.semanticObject ? `${answers?.inboundId?.semanticObject}_New` : '';
         },
         filter: (val: string): string => val?.trim(),
-        validate: (val) => validateText(val, isCLI, 30, ['_'])
+        validate: (val: unknown) => validateText(String(val ?? ''), isCLI, 30, ['_'])
     };
 }
 
@@ -76,20 +76,20 @@ export function getActionPrompt(
         type: 'input',
         guiOptions,
         message: t('prompts.action'),
-        default: (answers: FLPConfigAnswers): string => {
+        default: (answers: Partial<FLPConfigAnswers>): string => {
             if (options?.default) {
                 return options.default;
             }
             return answers?.inboundId?.action ? `${answers?.inboundId?.action}_New` : '';
         },
         filter: (val: string): string => val?.trim(),
-        validate: (val, answers: FLPConfigAnswers): string | boolean => {
-            const textValidation = validateText(val, isCLI, 60, ['_']);
+        validate: (val: unknown, answers?: Partial<FLPConfigAnswers>): string | boolean => {
+            const textValidation = validateText(String(val ?? ''), isCLI, 60, ['_']);
             if (textValidation !== true) {
                 return textValidation;
             }
 
-            if (!inbounds || !answers.semanticObject) {
+            if (!inbounds || !answers?.semanticObject) {
                 return true;
             }
 
@@ -136,7 +136,7 @@ export function getOverwritePrompt(
             applyDefaultWhenDirty: true
         },
         default: options?.default ?? ((): boolean => !existingKeyRef.value),
-        when: (previousAnswers: FLPConfigAnswers): boolean => {
+        when: (previousAnswers: Partial<FLPConfigAnswers>): boolean => {
             existingKeyRef.value =
                 inboundKeys.indexOf(`${previousAnswers.semanticObject}-${previousAnswers.action}`) > -1;
             return existingKeyRef.value;
@@ -168,7 +168,8 @@ export function getTitlePrompt(
     options?: TitlePromptOptions
 ): FLPConfigQuestion {
     return {
-        when: ({ overwrite }) => overwrite !== false || !existingKeyRef.value || silentOverwrite,
+        when: ({ overwrite }: Partial<FLPConfigAnswers>) =>
+            overwrite !== false || !existingKeyRef.value || silentOverwrite,
         name: promptNames.title,
         type: 'input',
         guiOptions: {
@@ -176,14 +177,14 @@ export function getTitlePrompt(
             breadcrumb: true
         },
         message: t('prompts.title'),
-        default: (answers: FLPConfigAnswers): string => {
+        default: (answers: Partial<FLPConfigAnswers>): string => {
             if (options?.default) {
                 return options.default;
             }
             return answers?.inboundId?.title ?? '';
         },
         filter: (val: string): string => val?.trim(),
-        validate: (val) => validateText(val, isCLI, 0)
+        validate: (val: unknown) => validateText(String(val ?? ''), isCLI, 0)
     };
 }
 
@@ -201,14 +202,15 @@ export function getSubTitlePrompt(
     options?: SubTitlePromptOptions
 ): FLPConfigQuestion {
     return {
-        when: ({ overwrite }) => overwrite !== false || !existingKeyRef.value || silentOverwrite,
+        when: ({ overwrite }: Partial<FLPConfigAnswers>) =>
+            overwrite !== false || !existingKeyRef.value || silentOverwrite,
         name: promptNames.subTitle,
         type: 'input',
         guiOptions: {
             breadcrumb: t('prompts.subTitle')
         },
         message: t('prompts.subTitle'),
-        default: (answers: FLPConfigAnswers): string => {
+        default: (answers: Partial<FLPConfigAnswers>): string => {
             if (options?.default) {
                 return options.default;
             }

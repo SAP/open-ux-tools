@@ -18,9 +18,12 @@ const mockUi5VersionsGrouped = jest.fn() as jest.Mock;
 const mockSearchChoices = jest.fn() as jest.Mock;
 const mockAddi18nResourceBundle = jest.fn() as jest.Mock;
 
+const { searchableListPrompt: actualSearchableListPrompt } = await import('@sap-ux/inquirer-common');
+
 jest.unstable_mockModule('@sap-ux/inquirer-common', () => ({
     ui5VersionsGrouped: mockUi5VersionsGrouped,
     searchChoices: mockSearchChoices,
+    searchableListPrompt: actualSearchableListPrompt,
     addi18nResourceBundle: mockAddi18nResourceBundle
 }));
 
@@ -231,7 +234,7 @@ describe('Enhanced Prompting Tests', () => {
                 const questions = getQuestions(mockUI5Versions);
                 const ui5VersionQ = questions[3] as any;
 
-                expect(ui5VersionQ.type).toBe('list');
+                expect(ui5VersionQ.type).toBe('select');
                 expect(ui5VersionQ.name).toBe('ui5Version');
                 expect(ui5VersionQ.message).toBe(t('prompts.libraryUi5VersionLabel'));
                 expect(ui5VersionQ.guiOptions).toEqual({
@@ -245,7 +248,7 @@ describe('Enhanced Prompting Tests', () => {
                 const questions = getQuestions(mockUI5Versions, options);
                 const ui5VersionQ = questions[3] as any;
 
-                expect(ui5VersionQ.type).toBe('autocomplete');
+                expect(ui5VersionQ.type).toBe('search');
                 expect(ui5VersionQ.name).toBe('ui5Version');
             });
 
@@ -276,18 +279,16 @@ describe('Enhanced Prompting Tests', () => {
                 expect(mockUi5VersionsGrouped).toHaveBeenCalledWith(mockUI5Versions, true);
             });
 
-            it('should handle search functionality for autocomplete', () => {
+            it('should handle search functionality for autocomplete', async () => {
                 const options: UI5LibraryPromptOptions = { useAutocomplete: true };
-                const filteredChoices = [{ name: '1.120.0', value: '1.120.0' }];
-                mockSearchChoices.mockReturnValue(filteredChoices);
 
                 const questions = getQuestions(mockUI5Versions, options);
                 const ui5VersionQ = questions[3] as any;
 
-                const result = ui5VersionQ.source({}, '1.120');
+                // The `search` arm's `source` fuzzy-filters the grouped choices by name
+                const result = await ui5VersionQ.source('1.120');
 
-                expect(result).toEqual(filteredChoices);
-                expect(mockSearchChoices).toHaveBeenCalledWith('1.120', mockVersionChoices);
+                expect(result).toEqual([{ name: '1.120.0 (Maintained, Default)', value: '1.120.0' }]);
             });
         });
 
@@ -339,9 +340,8 @@ describe('Enhanced Prompting Tests', () => {
 
                 // Verify UI5 version uses autocomplete and separators
                 const ui5VersionQ = questions[3] as any;
-                expect(ui5VersionQ.type).toBe('autocomplete');
+                expect(ui5VersionQ.type).toBe('search');
 
-                (ui5VersionQ.choices as Function)();
                 expect(mockUi5VersionsGrouped).toHaveBeenCalledWith(mockUI5Versions, true);
             });
 

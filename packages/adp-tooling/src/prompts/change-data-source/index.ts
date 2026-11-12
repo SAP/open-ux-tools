@@ -76,7 +76,7 @@ export function getPrompts(
     const dataSourceIds = Object.keys(filterDataSourcesByType(dataSources, 'OData'));
     return [
         {
-            type: 'list',
+            type: 'select',
             name: 'id',
             message: t('prompts.oDataSourceLabel'),
             choices: dataSourceIds,

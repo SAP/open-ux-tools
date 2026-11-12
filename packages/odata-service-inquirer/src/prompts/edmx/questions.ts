@@ -6,14 +6,13 @@ import {
     MIN_UI5_VERSION_PAGE_BUILDING_BLOCK,
     MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT
 } from '@sap-ux/fe-fpm-writer';
-import type { ConfirmQuestion, InputQuestion, ListQuestion } from '@sap-ux/inquirer-common';
+import type { ChoiceOptions, ConfirmQuestion, InputQuestion, ListQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
 import {
-    searchChoices,
+    searchableListPrompt,
     getRecursiveHierarchyQualifierForEntitySet,
     findEntitySetByName
 } from '@sap-ux/inquirer-common';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
-import type { ListChoiceOptions, Question } from 'inquirer';
 import { t } from '../../i18n.js';
 import type {
     AlpTableConfigAnswers,
@@ -48,7 +47,7 @@ import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
  * @returns true is validation passes, otherwise a string with the validation message
  */
 function validateEntityChoices(
-    entityChoiceOptions: ListChoiceOptions<EntityAnswer>[],
+    entityChoiceOptions: ChoiceOptions<EntityAnswer>[],
     templateType: TemplateType,
     odataVersion: OdataVersion,
     isCapService: boolean
@@ -88,14 +87,14 @@ export function getEntitySelectionQuestions(
     isCapService = false,
     promptOptions?: EntityPromptOptions,
     annotations?: Annotations
-): Question<
+): YUIQuestion<
     EntitySelectionAnswers &
         TableConfigAnswers &
         AnnotationGenerationAnswers &
         AlpTableConfigAnswers &
         PageBuildingBlockAnswers
 >[] {
-    const useAutoComplete = promptOptions?.useAutoComplete;
+    const useAutoComplete = promptOptions?.useAutoComplete ?? false;
     let entitySetFilter: EntitySetFilter | undefined;
     if (templateType === 'feop' && !!isCapService) {
         entitySetFilter = 'filterDraftEnabled';
@@ -114,7 +113,7 @@ export function getEntitySelectionQuestions(
     }
     const odataVersion = entityChoices.odataVersion;
 
-    const entityQuestions: Question<
+    const entityQuestions: YUIQuestion<
         EntitySelectionAnswers &
             TableConfigAnswers &
             AnnotationGenerationAnswers &
@@ -129,83 +128,89 @@ export function getEntitySelectionQuestions(
         return entityQuestions;
     }
 
-    entityQuestions.push({
-        type: useAutoComplete ? 'autocomplete' : 'list',
-        name: EntityPromptNames.mainEntity,
-        message: t('prompts.mainEntitySelection.message'),
-        guiOptions: {
-            breadcrumb: true,
-            mandatory: true
-        },
-        choices: entityChoices.choices,
-        source: (prevAnswers: unknown, input: string) =>
-            searchChoices(input, entityChoices.choices as ListChoiceOptions[]),
-        default: entityChoices.defaultMainEntityIndex ?? entityChoices.draftRootIndex ?? 0,
-        // Workaround for YUI bug: Despite mandatory=true, YUI allows users to clear/delete list selections.
-        validate: (value: EntityAnswer | null | undefined) => {
-            // First check if there are valid entity choices (handles edge case of no entities in service)
-            const entityChoicesValidation = validateEntityChoices(
-                entityChoices.choices,
-                templateType,
-                odataVersion,
-                isCapService
-            );
-            if (entityChoicesValidation !== true) {
-                return entityChoicesValidation;
-            }
-            // Then check if a value is selected (user hasn't deleted/cleared the field)
-            if (!value) {
-                return t('prompts.mainEntitySelection.requiredError');
-            }
-            return true;
-        },
-        additionalMessages: (mainEntityValue: EntityAnswer | null | undefined) => {
-            if (promptOptions?.defaultMainEntityName && entityChoices.defaultMainEntityIndex === undefined) {
-                return {
-                    message: t('prompts.mainEntitySelection.defaultEntityNameNotFoundWarning'),
-                    severity: Severity.warning
-                };
-            }
-            // Only check mainEntityValue properties if it exists (handle null/undefined from user deleting the field)
-            if (mainEntityValue?.mainEntityParameterName) {
-                // display a warning if the main entity has a mainEntityParameterName
-                return {
-                    message: t('prompts.mainEntitySelection.mainEntityParameterFoundInfo'),
-                    severity: Severity.information
-                };
-            }
-        }
-    } as ListQuestion<EntitySelectionAnswers>);
+    entityQuestions.push(
+        searchableListPrompt<EntitySelectionAnswers>(
+            {
+                name: EntityPromptNames.mainEntity,
+                message: t('prompts.mainEntitySelection.message'),
+                guiOptions: {
+                    breadcrumb: true,
+                    mandatory: true
+                },
+                // Workaround for YUI bug: Despite mandatory=true, YUI allows users to clear/delete list selections.
+                validate: (value?: unknown) => {
+                    // First check if there are valid entity choices (handles edge case of no entities in service)
+                    const entityChoicesValidation = validateEntityChoices(
+                        entityChoices.choices,
+                        templateType,
+                        odataVersion,
+                        isCapService
+                    );
+                    if (entityChoicesValidation !== true) {
+                        return entityChoicesValidation;
+                    }
+                    // Then check if a value is selected (user hasn't deleted/cleared the field)
+                    if (!value) {
+                        return t('prompts.mainEntitySelection.requiredError');
+                    }
+                    return true;
+                },
+                additionalMessages: (mainEntityValue?: unknown) => {
+                    if (promptOptions?.defaultMainEntityName && entityChoices.defaultMainEntityIndex === undefined) {
+                        return {
+                            message: t('prompts.mainEntitySelection.defaultEntityNameNotFoundWarning'),
+                            severity: Severity.warning
+                        };
+                    }
+                    // Only check mainEntityValue properties if it exists (handle null/undefined from user deleting the field)
+                    if ((mainEntityValue as EntityAnswer | null | undefined)?.mainEntityParameterName) {
+                        // display a warning if the main entity has a mainEntityParameterName
+                        return {
+                            message: t('prompts.mainEntitySelection.mainEntityParameterFoundInfo'),
+                            severity: Severity.information
+                        };
+                    }
+                }
+            },
+            entityChoices.choices,
+            useAutoComplete,
+            entityChoices.defaultMainEntityIndex ?? entityChoices.draftRootIndex ?? 0
+        ) as ListQuestion<EntitySelectionAnswers>
+    );
 
     const convertedMetadata = entityChoices.convertedMetadata;
     // No nav entity for FPM
     if (templateType !== 'fpm') {
-        let navigationEntityChoices: ListChoiceOptions<NavigationEntityAnswer>[];
-        entityQuestions.push({
-            when: (answers: EntitySelectionAnswers) => {
-                // Skip navigation entity selection if the selected main entity has mainEntityParameterName.
-                if (answers.mainEntity && !answers.mainEntity.mainEntityParameterName) {
-                    navigationEntityChoices = getNavigationEntityChoices(
-                        convertedMetadata,
-                        odataVersion,
-                        answers.mainEntity.entitySetName
-                    );
-                    return navigationEntityChoices.length > 0;
-                }
-                return false;
-            },
-            type: useAutoComplete ? 'autocomplete' : 'list',
-            name: EntityPromptNames.navigationEntity,
-            message: t('prompts.navigationEntitySelection.message'),
-            guiOptions: {
-                applyDefaultWhenDirty: true, // Selected nav entity may no longer be present if main entity changes
-                breadcrumb: true
-            },
-            choices: () => navigationEntityChoices,
-            source: (preAnswers: EntitySelectionAnswers, input: string) =>
-                searchChoices(input, navigationEntityChoices as ListChoiceOptions[]),
-            default: 0
-        } as ListQuestion<EntitySelectionAnswers>);
+        let navigationEntityChoices: ChoiceOptions<NavigationEntityAnswer>[];
+        entityQuestions.push(
+            searchableListPrompt<EntitySelectionAnswers>(
+                {
+                    when: (answers: EntitySelectionAnswers) => {
+                        // Skip navigation entity selection if the selected main entity has mainEntityParameterName.
+                        if (answers.mainEntity && !answers.mainEntity.mainEntityParameterName) {
+                            navigationEntityChoices = getNavigationEntityChoices(
+                                convertedMetadata,
+                                odataVersion,
+                                answers.mainEntity.entitySetName
+                            );
+                            return navigationEntityChoices.length > 0;
+                        }
+                        return false;
+                    },
+                    name: EntityPromptNames.navigationEntity,
+                    message: t('prompts.navigationEntitySelection.message'),
+                    guiOptions: {
+                        applyDefaultWhenDirty: true, // Selected nav entity may no longer be present if main entity changes
+                        breadcrumb: true
+                    }
+                },
+                // Choices are populated lazily inside `when`; guard against the eager default-index
+                // resolution in `searchableListPrompt` running before the thunk is populated.
+                () => navigationEntityChoices ?? [],
+                useAutoComplete,
+                0
+            ) as ListQuestion<EntitySelectionAnswers>
+        );
     }
 
     if (promptOptions?.displayPageBuildingBlockPrompt) {
@@ -231,7 +236,7 @@ export function getEntitySelectionQuestions(
  *
  * @returns the page building block questions
  */
-function getPageBuildingBlockQuestions(): Question<PageBuildingBlockAnswers>[] {
+function getPageBuildingBlockQuestions(): YUIQuestion<PageBuildingBlockAnswers>[] {
     return [
         {
             type: 'confirm',
@@ -304,7 +309,7 @@ function getTableLayoutQuestions(
     odataVersion: OdataVersion,
     isCapService: boolean,
     metadata: ConvertedMetadata
-): Question<TableConfigAnswers>[] {
+): YUIQuestion<TableConfigAnswers>[] {
     const tableTypeChoices: { name: string; value: TableType }[] = [
         { name: t('prompts.tableType.choiceAnalytical'), value: 'AnalyticalTable' },
         { name: t('prompts.tableType.choiceGrid'), value: 'GridTable' },
@@ -316,7 +321,7 @@ function getTableLayoutQuestions(
     if (templateType !== 'alp') {
         tableTypeChoices.push({ name: t('prompts.tableType.choiceTree'), value: 'TreeTable' });
     }
-    const tableLayoutQuestions: Question<TableConfigAnswers>[] = [];
+    const tableLayoutQuestions: YUIQuestion<TableConfigAnswers>[] = [];
 
     if (templateType === 'lrop' || templateType === 'worklist' || templateType === 'alp') {
         // Variables to track selected entity and default table type
@@ -324,7 +329,7 @@ function getTableLayoutQuestions(
         let defaultTableType: TableType | undefined;
         tableLayoutQuestions.push({
             when: (prevAnswers: EntitySelectionAnswers) => !!prevAnswers.mainEntity,
-            type: 'list',
+            type: 'select',
             name: EntityPromptNames.tableType,
             message: t('prompts.tableType.message'),
             guiOptions: {
@@ -511,18 +516,18 @@ function getAddAnnotationQuestions(
 function getFilterEntitySetQuestions(
     entityChoices: EntityChoiceOptions,
     useAutoComplete = false
-): Question<EntitySelectionAnswers> {
-    return {
-        type: useAutoComplete ? 'autocomplete' : 'list',
-        name: EntityPromptNames.filterEntitySet,
-        message: t('prompts.filterEntitySet.message'),
-        guiOptions: {
-            breadcrumb: true
+): YUIQuestion<EntitySelectionAnswers> {
+    return searchableListPrompt<EntitySelectionAnswers>(
+        {
+            name: EntityPromptNames.filterEntitySet,
+            message: t('prompts.filterEntitySet.message'),
+            guiOptions: {
+                breadcrumb: true
+            },
+            validate: () => (entityChoices.choices.length === 0 ? t('prompts.filterEntitySet.noEntitiesError') : true)
         },
-        choices: entityChoices.choices,
-        source: (preAnswers: EntitySelectionAnswers, input: string) =>
-            searchChoices(input, entityChoices.choices as ListChoiceOptions[]),
-        default: entityChoices.defaultMainEntityIndex ?? entityChoices.draftRootIndex ?? 0,
-        validate: () => (entityChoices.choices.length === 0 ? t('prompts.filterEntitySet.noEntitiesError') : true)
-    } as ListQuestion<EntitySelectionAnswers>;
+        entityChoices.choices,
+        useAutoComplete,
+        entityChoices.defaultMainEntityIndex ?? entityChoices.draftRootIndex ?? 0
+    ) as ListQuestion<EntitySelectionAnswers>;
 }

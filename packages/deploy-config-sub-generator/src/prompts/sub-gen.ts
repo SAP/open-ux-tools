@@ -6,7 +6,7 @@ import { getAbapQuestions, indexHtmlExists } from '@sap-ux/abap-deploy-config-su
 import { getCFQuestions } from '@sap-ux/cf-deploy-config-sub-generator';
 import { FileName } from '@sap-ux/project-access';
 import { getDeployTargetQuestion } from './deploy-target.js';
-import type { CommonPromptOptions, YUIQuestion } from '@sap-ux/inquirer-common';
+import type { Answers, CommonPromptOptions, Question, YUIQuestion } from '@sap-ux/inquirer-common';
 import type { FioriToolsProxyConfigBackend } from '@sap-ux/ui5-config';
 import type { Editor } from 'mem-fs-editor';
 import type {
@@ -19,7 +19,6 @@ import type {
     AbapDeployConfigPromptOptions,
     AbapDeployConfigQuestion
 } from '@sap-ux/abap-deploy-config-sub-generator';
-import type { Answers, Question } from 'inquirer';
 import type { DeployConfigOptions, DeployConfigSubGenPromptOptions, Target } from '../types/index.js';
 
 /**

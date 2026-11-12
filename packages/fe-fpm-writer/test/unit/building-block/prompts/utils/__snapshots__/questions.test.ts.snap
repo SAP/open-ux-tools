@@ -9,7 +9,7 @@ Object {
   },
   "message": "entity",
   "name": "buildingBlockData.metaPath.entitySet",
-  "type": "list",
+  "type": "select",
 }
 `;
 
@@ -57,7 +57,7 @@ Object {
   },
   "message": "AggregationPathMessage",
   "name": "aggregationPath",
-  "type": "list",
+  "type": "select",
 }
 `;
 
@@ -86,7 +86,7 @@ Object {
     "selectType": "dynamic",
   },
   "name": "aggregationPath",
-  "type": "list",
+  "type": "select",
 }
 `;
 
@@ -99,7 +99,7 @@ Object {
   },
   "message": "AggregationPathMessage",
   "name": "aggregationPath",
-  "type": "list",
+  "type": "select",
 }
 `;
 
@@ -129,7 +129,7 @@ Object {
   },
   "message": "testMessage",
   "name": "buildingBlockData.metaPath.qualifier",
-  "type": "list",
+  "type": "select",
 }
 `;
 
@@ -149,7 +149,7 @@ Object {
     "selectType": "dynamic",
   },
   "name": "buildingBlockData.metaPath.qualifier",
-  "type": "list",
+  "type": "select",
 }
 `;
 
@@ -173,7 +173,7 @@ Object {
   },
   "message": "bindingContext",
   "name": "buildingBlockData.metaPath.bindingContextType",
-  "type": "list",
+  "type": "select",
 }
 `;
 
@@ -193,7 +193,7 @@ Object {
     "selectType": "static",
   },
   "name": "buildingBlockData.metaPath.bindingContextType",
-  "type": "list",
+  "type": "select",
 }
 `;
 
@@ -209,7 +209,7 @@ Object {
   },
   "message": "testMessage",
   "name": "viewOrFragmentPath",
-  "type": "list",
+  "type": "select",
   "validate": [Function],
 }
 `;
@@ -222,7 +222,7 @@ Object {
     "selectType": "dynamic",
   },
   "name": "viewOrFragmentPath",
-  "type": "list",
+  "type": "select",
   "validate": [Function],
 }
 `;

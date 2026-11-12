@@ -41,10 +41,6 @@ jest.unstable_mockModule('inquirer', () => ({
     createPromptModule: mockCreatePromptModule
 }));
 
-jest.unstable_mockModule('inquirer-autocomplete-prompt', () => ({
-    default: jest.fn()
-}));
-
 const { getPrompts, prompt } = await import('../../src/index.js');
 const { initI18n } = await import('../../src/i18n.js');
 
@@ -215,7 +211,7 @@ describe('API test', () => {
         `);
         expect(mockGetUI5Versions).toHaveBeenCalled();
         expect(mockGetQuestions).toHaveBeenCalled();
-        expect(mockRegisterPrompt).toHaveBeenCalledWith('autocomplete', expect.any(Function));
+        expect(mockRegisterPrompt).not.toHaveBeenCalled();
         expect(mockPrompt).toHaveBeenCalledWith(questions);
     });
 
@@ -267,6 +263,6 @@ describe('API test', () => {
         expect(mockRegisterPrompt).not.toHaveBeenCalled();
         expect(mockPrompt).not.toHaveBeenCalled();
         expect(mockAdapterPrompt).toHaveBeenCalledWith([{ message: 'Test Prompt', name: 'testPrompt' }]);
-        expect(mockAdapterRegisterPrompt).toHaveBeenCalledWith('autocomplete', expect.any(Function));
+        expect(mockAdapterRegisterPrompt).not.toHaveBeenCalled();
     });
 });

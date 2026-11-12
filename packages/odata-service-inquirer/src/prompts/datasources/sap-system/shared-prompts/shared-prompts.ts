@@ -71,7 +71,8 @@ export function getSystemUrlQuestion<T extends Answers>(
             mandatory: true,
             breadcrumb: true
         },
-        validate: async (url) => {
+        validate: async (urlInput: unknown) => {
+            const url = urlInput as string;
             PromptState.resetConnectedSystem();
             // Backend systems validation supports using a cached connections from a previous step execution to prevent re-authentication (e.g. re-opening a browser window)
             // Only in the case of re-entrance tickets will we reuse an existing connection.

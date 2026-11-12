@@ -8,11 +8,10 @@ import type {
     V4CatalogService
 } from '@sap-ux/axios-extension';
 import { ODataVersion, ServiceType } from '@sap-ux/axios-extension';
-import type { ListQuestion, PromptSeverityMessage } from '@sap-ux/inquirer-common';
+import type { ListQuestion, PromptSeverityMessage, SearchQuestion } from '@sap-ux/inquirer-common';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
 import type { Answers, ChoiceOptions } from 'inquirer';
-import type { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
 import type { ConnectionValidator } from '../../../../../src/prompts/connectionValidator.js';
 import type { ServiceAnswer } from '../../../../../src/prompts/datasources/sap-system/service-selection/index.js';
 import { promptNames } from '../../../../../src/types.js';
@@ -149,8 +148,7 @@ describe('Test new system prompt', () => {
                 "message": [Function],
                 "name": "someNamespace:serviceSelection",
                 "showOutputTabLink": "validationMessageOverflow",
-                "source": [Function],
-                "type": "list",
+                "type": "select",
                 "validate": [Function],
                 "when": [Function],
               },
@@ -539,10 +537,8 @@ describe('Test new system prompt', () => {
         let choices = await ((serviceSelectionPrompt as ListQuestion)?.choices as Function)();
         expect(choices.length).toBe(1);
 
-        let defaultIndex = await ((serviceSelectionPrompt as ListQuestion)?.default as Function)(
-            choices.map((choice: ChoiceOptions) => choice.value)
-        );
-        expect(defaultIndex).toEqual(0);
+        let defaultValue = await ((serviceSelectionPrompt as ListQuestion)?.default as Function)();
+        expect(defaultValue).toEqual(choices[0].value);
 
         // More than one, no pre-selection
         connectionValidatorMock.catalogs = {
@@ -560,8 +556,8 @@ describe('Test new system prompt', () => {
         );
         choices = await ((serviceSelectionPrompt as ListQuestion)?.choices as Function)({});
         expect(choices.length).toBe(2);
-        defaultIndex = await ((serviceSelectionPrompt as ListQuestion)?.default as Function)();
-        expect(defaultIndex).toEqual(undefined);
+        defaultValue = await ((serviceSelectionPrompt as ListQuestion)?.default as Function)();
+        expect(defaultValue).toEqual(undefined);
     });
 
     test('Should validate the selected service by retreiving the service information', async () => {
@@ -710,26 +706,25 @@ describe('Test new system prompt', () => {
         );
         // load choices from mock catalog service and find the choice for the flight service
         const flightChoice = (
-            (await ((serviceSelectionPrompt as ListQuestion)?.choices as Function)()) as {
+            (await ((serviceSelectionPrompt as SearchQuestion)?.source as Function)('')) as {
                 name: string;
                 value: ServiceAnswer;
             }[]
         ).find((choice) => choice.name === 'DMO_GRP > /DMO/FLIGHT (0001) - OData V4');
 
-        expect(serviceSelectionPrompt?.type).toBe('autocomplete');
+        expect(serviceSelectionPrompt?.type).toBe('search');
 
-        let found = await ((serviceSelectionPrompt as AutocompleteQuestionOptions)?.source as Function)({}, 'FLIGHT');
+        let found = await ((serviceSelectionPrompt as SearchQuestion)?.source as Function)('FLIGHT');
         expect(found).toEqual([flightChoice]);
-        found = await ((serviceSelectionPrompt as AutocompleteQuestionOptions)?.source as Function)({}, 'not found');
+        found = await ((serviceSelectionPrompt as SearchQuestion)?.source as Function)('not found');
         expect(found).toEqual([]);
 
-        // autocomplete passes the entire choice object to the validate function instead of the value (as in YUI)
-        // test to ensure this is handled correctly
+        // inquirer 13's native `search` passes the selected choice value to the validate function
         mockValidateService.mockResolvedValue({ validationResult: true });
         connectionValidatorMock.validatedUrl = 'http://some.abap.system:1234';
         // change the choice service path otherwise the validate function not re-request the service details
         flightChoice!.value.servicePath = '/a/different/service/path';
-        const validationResult = await (serviceSelectionPrompt?.validate as Function)(flightChoice);
+        const validationResult = await (serviceSelectionPrompt?.validate as Function)(flightChoice!.value);
         expect(validationResult).toBe(true);
         expect(mockValidateService).toHaveBeenCalledWith(flightChoice?.value, connectionValidatorMock, undefined);
     });

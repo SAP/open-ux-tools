@@ -1,7 +1,7 @@
 import type { CapCustomPaths } from '@sap-ux/project-access';
+import type { ChoiceOptions } from '@sap-ux/inquirer-common';
 import type { CapServiceChoice, promptNames } from '../../../types.js';
 import type { CapService } from '@sap-ux/cap-config-writer';
-import type { ListChoiceOptions } from 'inquirer';
 
 /**
  * Enumeration of internal prompt names used internally and not supported for modification using OdataServiceInquirerPromptOptions
@@ -27,6 +27,6 @@ export type CapProjectRootPath = {
 
 export type CapProjectPaths = CapProjectRootPath & CapCustomPaths;
 
-export interface CapProjectChoice extends ListChoiceOptions {
+export interface CapProjectChoice extends ChoiceOptions {
     value: CapProjectPaths | string;
 }

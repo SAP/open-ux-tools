@@ -2,9 +2,9 @@ import { jest } from '@jest/globals';
 import type { AbapServiceProvider, ServiceProvider, V2CatalogService, V4CatalogService } from '@sap-ux/axios-extension';
 import { ODataVersion } from '@sap-ux/axios-extension';
 import type { Destination, Destinations } from '@sap-ux/btp-utils';
-import type { ListQuestion } from '@sap-ux/inquirer-common';
+import type { ChoiceOptions, ListQuestion } from '@sap-ux/inquirer-common';
 import type { SystemService, BackendSystem } from '@sap-ux/store';
-import type { ListChoiceOptions, Question } from 'inquirer';
+import type { Question } from 'inquirer';
 import type { ValidationResult } from '../../../../../src/prompts/types.js';
 import type { ConnectionValidator } from '../../../../../src/prompts/connectionValidator.js';
 import type { SystemSelectionAnswerType } from '../../../../../src/prompts/datasources/sap-system/system-selection/prompt-helpers.js';
@@ -221,8 +221,7 @@ describe('Test system selection prompts', () => {
         let systemQuestions = await getSystemSelectionQuestions();
         expect(systemQuestions).toMatchSnapshot();
         let systemSelectionPrompt = systemQuestions.find((question) => question.name === 'systemSelection');
-        let systemChoices = (systemSelectionPrompt as ListQuestion)
-            .choices as ListChoiceOptions<SystemSelectionAnswers>[];
+        let systemChoices = (systemSelectionPrompt as ListQuestion).choices as ChoiceOptions<SystemSelectionAnswers>[];
         expect(systemChoices.length).toBe(1);
         expect(systemChoices[0].value as SystemSelectionAnswerType).toEqual({
             type: 'destination',
@@ -234,7 +233,7 @@ describe('Test system selection prompts', () => {
             [promptNames.systemSelection]: { includeCloudFoundryAbapEnvChoice: true }
         });
         systemSelectionPrompt = systemQuestions.find((question) => question.name === 'systemSelection');
-        systemChoices = (systemSelectionPrompt as ListQuestion).choices as ListChoiceOptions<SystemSelectionAnswers>[];
+        systemChoices = (systemSelectionPrompt as ListQuestion).choices as ChoiceOptions<SystemSelectionAnswers>[];
         expect(systemChoices.length).toBe(2);
         expect(systemChoices[0].value as SystemSelectionAnswerType).toEqual({
             type: 'cfAbapEnvService',
@@ -246,7 +245,7 @@ describe('Test system selection prompts', () => {
         systemQuestions = await getSystemSelectionQuestions();
         expect(systemQuestions).toMatchSnapshot();
         systemSelectionPrompt = systemQuestions.find((question) => question.name === 'systemSelection');
-        systemChoices = (systemSelectionPrompt as ListQuestion).choices as ListChoiceOptions<SystemSelectionAnswers>[];
+        systemChoices = (systemSelectionPrompt as ListQuestion).choices as ChoiceOptions<SystemSelectionAnswers>[];
         expect(systemChoices[0].value as SystemSelectionAnswerType).toEqual({
             type: 'newSystemChoice',
             system: NewSystemChoice
@@ -722,12 +721,10 @@ describe('Test system selection prompts', () => {
         let systemSelectionPrompt = systemSelectionQuestions.find(
             (question) => question.name === promptNames.systemSelection
         );
-        let defaultIndex = (systemSelectionPrompt as Question).default();
-        expect(((systemSelectionPrompt as ListQuestion).choices as [])[defaultIndex]).toMatchObject({
-            value: {
-                system: backendSystemReentrance,
-                type: 'backendSystem'
-            }
+        let defaultValue = (systemSelectionPrompt as Question).default();
+        expect(defaultValue).toMatchObject({
+            system: backendSystemReentrance,
+            type: 'backendSystem'
         });
 
         const testBackendSystemDefault: BackendSystem = {
@@ -746,21 +743,17 @@ describe('Test system selection prompts', () => {
         systemSelectionPrompt = systemSelectionQuestions.find(
             (question) => question.name === promptNames.systemSelection
         );
-        defaultIndex = (systemSelectionPrompt as Question).default();
-        expect(((systemSelectionPrompt as ListQuestion).choices as [])[defaultIndex]).toMatchObject({
-            value: {
-                system: testBackendSystemDefault,
-                type: 'backendSystem'
-            }
+        defaultValue = (systemSelectionPrompt as Question).default();
+        expect(defaultValue).toMatchObject({
+            system: testBackendSystemDefault,
+            type: 'backendSystem'
         });
         // Mimic a dynmaic update to the default choice value
         defaultChoiceValue.value = backendSystemReentrance.name;
-        defaultIndex = (systemSelectionPrompt as Question).default();
-        expect(((systemSelectionPrompt as ListQuestion).choices as [])[defaultIndex]).toMatchObject({
-            value: {
-                system: backendSystemReentrance,
-                type: 'backendSystem'
-            }
+        defaultValue = (systemSelectionPrompt as Question).default();
+        expect(defaultValue).toMatchObject({
+            system: backendSystemReentrance,
+            type: 'backendSystem'
         });
     });
 
@@ -785,8 +778,8 @@ describe('Test system selection prompts', () => {
         const systemSelectionPrompt = systemConnectionQuestions[0] as ListQuestion;
 
         // The default function should be called to set the connectPath
-        const defaultIndex = (systemSelectionPrompt as Question).default();
-        expect(defaultIndex).toBeGreaterThan(-1);
+        const defaultValue = (systemSelectionPrompt as Question).default();
+        expect(defaultValue).toBeDefined();
 
         // Validate should use the connectPath when connecting
         validateUrlResultMock = true;
@@ -863,13 +856,11 @@ describe('Test system selection prompts', () => {
         const systemSelectionPrompt = systemSelectionQuestions.find(
             (question) => question.name === promptNames.systemSelection
         );
-        const defaultIndex = (systemSelectionPrompt as Question).default();
+        const defaultValue = (systemSelectionPrompt as Question).default();
         expect((systemSelectionPrompt as ListQuestion).choices as []).toHaveLength(1);
-        expect(((systemSelectionPrompt as ListQuestion).choices as [])[defaultIndex]).toMatchObject({
-            value: {
-                system: backendSystemReentrance,
-                type: 'backendSystem'
-            }
+        expect(defaultValue).toMatchObject({
+            system: backendSystemReentrance,
+            type: 'backendSystem'
         });
     });
 

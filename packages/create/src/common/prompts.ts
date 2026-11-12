@@ -94,7 +94,11 @@ async function enhanceListQuestion(
  * @returns message of the question
  */
 async function extractMessage<T extends Answers>(question: YUIQuestion<T>, answers: T): Promise<string | undefined> {
-    const message = isFunction(question.message) ? await question.message(answers) : question.message;
+    // Cast strips inquirer 13's `this`-bound method signature so `message` can be called standalone.
+    const resolved = isFunction(question.message)
+        ? await (question.message as (a: T) => string | void | Promise<string | void>)(answers)
+        : question.message;
+    const message = typeof resolved === 'string' ? resolved : undefined;
     if (question.guiOptions && !question.guiOptions.mandatory) {
         return `${message} (optional)`;
     } else {
@@ -110,7 +114,7 @@ async function extractMessage<T extends Answers>(question: YUIQuestion<T>, answe
  * @returns question converted to prompts question
  */
 export async function convertQuestion<T extends Answers>(
-    question: YUIQuestion<T> & { choices?: unknown; source?: AutoCompleteCallbackFn },
+    question: YUIQuestion<T> & { choices?: unknown; source?: unknown },
     answers: T
 ): Promise<PromptObject> {
     const prompt: PromptObject = {
@@ -118,11 +122,22 @@ export async function convertQuestion<T extends Answers>(
         name: question.name,
         message: await extractMessage(question, answers),
         validate: async (value: unknown) =>
-            isFunction(question.validate) ? await question.validate(value, answers) : (question.validate ?? true),
+            // Cast strips inquirer 13's `this`-bound method signature so `validate` can be called standalone.
+            isFunction(question.validate)
+                ? await (question.validate as (v: unknown, a: T) => boolean | string | Promise<boolean | string>)(
+                      value,
+                      answers
+                  )
+                : (question.validate ?? true),
         initial: () => (isFunction(question.default) ? question.default(answers) : question.default)
     };
     if (question.choices || question.source) {
-        await enhanceListQuestion(question.choices ?? question.source, prompt, answers, question.source);
+        await enhanceListQuestion(
+            question.choices ?? question.source,
+            prompt,
+            answers,
+            question.source as AutoCompleteCallbackFn | undefined
+        );
     }
     return prompt;
 }
@@ -141,7 +156,11 @@ export async function promptYUIQuestions<T extends Answers>(
 ): Promise<T> {
     answers ??= {} as T;
     for (const question of questions) {
-        if (isFunction(question.when) ? await question.when(answers) : question.when !== false) {
+        // Cast strips inquirer 13's `this`-bound method signature so `when` can be called standalone.
+        const when = isFunction(question.when)
+            ? await (question.when as (a: T) => boolean | Promise<boolean>)(answers)
+            : question.when !== false;
+        if (when) {
             if (useDefaults) {
                 answers[question.name] = isFunction(question.default) ? question.default(answers) : question.default;
             } else {

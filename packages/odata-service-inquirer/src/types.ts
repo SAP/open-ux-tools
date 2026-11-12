@@ -3,10 +3,9 @@ import type { Annotations, ExternalService, ServiceProvider, ODataServiceInfo } 
 import type { Destination } from '@sap-ux/btp-utils';
 import type { CapService } from '@sap-ux/cap-config-writer';
 import type { TableSelectionMode, TableType } from '@sap-ux/fiori-elements-writer';
-import type { CommonPromptOptions, YUIQuestion } from '@sap-ux/inquirer-common';
+import type { CommonPromptOptions, YUIQuestion, ChoiceOptions } from '@sap-ux/inquirer-common';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { BackendSystem, BackendSystemFilter } from '@sap-ux/store';
-import type { ListChoiceOptions } from 'inquirer';
 import type { serviceUrlInternalPromptNames } from './prompts/datasources/service-url/types.js';
 import type { EntityAnswer, NavigationEntityAnswer } from './prompts/edmx/entity-helper.js';
 import type { PageTemplateType } from '@sap-ux/fe-fpm-writer';
@@ -240,7 +239,7 @@ export type EntityRelatedAnswers = EntitySelectionAnswers &
     AnnotationGenerationAnswers &
     AlpTableConfigAnswers;
 
-export interface CapServiceChoice extends ListChoiceOptions {
+export interface CapServiceChoice extends ChoiceOptions {
     value: CapService;
 }
 
@@ -255,7 +254,6 @@ export type CapProjectPromptOptions = {
     defaultChoice?: string;
     /**
      * Use autocomplete for project selection instead of list (CLI only).
-     * Note: inquirer-autocomplete-prompt module is used for this feature and has to be registered with the inquirer instance.
      */
     useAutoComplete?: boolean;
 };

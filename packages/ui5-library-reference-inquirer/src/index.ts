@@ -1,7 +1,11 @@
 import { type InquirerAdapter } from '@sap-ux/inquirer-common';
-import inquirer, { type Question } from 'inquirer';
+import inquirer from 'inquirer';
 import { getQuestions } from './prompts/index.js';
-import type { UI5LibraryReferenceAnswers, UI5LibraryReferencePromptOptions } from './types.js';
+import type {
+    UI5LibraryReferenceAnswers,
+    UI5LibraryReferencePromptOptions,
+    UI5LibraryReferenceQuestion
+} from './types.js';
 import {
     getReuseLibs,
     findFioriArtifacts,
@@ -20,7 +24,7 @@ import { getProjectChoices, getLibraryChoices } from './choices.js';
 async function getPrompts(
     wsFolders: readonly WorkspaceFolder[] | string[],
     promptOptions?: UI5LibraryReferencePromptOptions
-): Promise<Question<UI5LibraryReferenceAnswers>[]> {
+): Promise<UI5LibraryReferenceQuestion[]> {
     const options = {
         wsFolders: wsFolders,
         artifacts: ['applications', 'libraries'] as FioriArtifactTypes[]

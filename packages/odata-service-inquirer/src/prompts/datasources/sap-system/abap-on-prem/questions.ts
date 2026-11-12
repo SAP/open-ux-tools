@@ -1,7 +1,7 @@
-import { withCondition } from '@sap-ux/inquirer-common';
+import { type InputQuestion, withCondition } from '@sap-ux/inquirer-common';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
 import { validateClient } from '@sap-ux/project-input-validator';
-import type { InputQuestion, Question } from 'inquirer';
+import type { Question } from 'inquirer';
 import { t } from '../../../../i18n.js';
 import type {
     OdataServiceAnswers,
@@ -55,12 +55,12 @@ export function getAbapOnPremQuestions(
     );
 
     questions.push(
-        ...getSystemServiceQuestion(
+        ...(getSystemServiceQuestion(
             connectValidator,
             abapOnPremPromptNamespace,
             promptOptions?.serviceSelection,
             promptOptions?.valueHelpDownload?.hide
-        )
+        ) as Question<AbapOnPremAnswers & ServiceAnswer>[])
     );
 
     return questions;
@@ -99,7 +99,8 @@ export function getAbapOnPremSystemQuestions(
             guiOptions: {
                 breadcrumb: t('prompts.sapClient.breadcrumb')
             },
-            validate: (client, prevAnswers: AbapOnPremAnswers) => {
+            validate: (clientInput: unknown, prevAnswers: AbapOnPremAnswers) => {
+                const client = clientInput as string;
                 const valRes = validateClient(client);
                 if (valRes === true) {
                     sapClientRef.sapClient = client;

@@ -16,23 +16,6 @@ import {
     type AbapDeployConfigQuestion
 } from './types.js';
 import { AbapServiceProviderManager } from './service-provider-utils/abap-service-provider.js';
-import autocomplete from 'inquirer-autocomplete-prompt';
-import type { PromptModule } from 'inquirer';
-
-/**
- * Registers the autocomplete plugin with the prompt module if any question uses the autocomplete type.
- *
- * @param questions - the list of inquirer questions to inspect
- * @param promptModule - optional inquirer prompt module instance
- */
-function registerAutocompletePlugin(
-    questions: AbapDeployConfigQuestion[],
-    promptModule: PromptModule | undefined
-): void {
-    if (promptModule && questions.some((q) => q.type === 'autocomplete')) {
-        promptModule.registerPrompt('autocomplete', autocomplete);
-    }
-}
 
 /**
  * Get the inquirer prompts for abap deploy config.
@@ -40,14 +23,12 @@ function registerAutocompletePlugin(
  * @param promptOptions - options that can control some of the prompt behavior. See {@link AbapDeployConfigPromptOptions} for details
  * @param logger - a logger compatible with the {@link Logger} interface
  * @param isYUI - if true, the prompt is being called from the Yeoman UI extension host
- * @param promptModule - optional inquirer prompt module instance used to register plugins
  * @returns the prompts used to provide input for abap deploy config generation and a reference to the answers object which will be populated with the user's responses once `inquirer.prompt` returns
  */
 async function getPrompts(
     promptOptions?: AbapDeployConfigPromptOptions,
     logger?: Logger,
-    isYUI = false,
-    promptModule?: PromptModule
+    isYUI = false
 ): Promise<{
     prompts: AbapDeployConfigQuestion[];
     answers: Partial<AbapDeployConfigAnswersInternal>;
@@ -59,7 +40,6 @@ async function getPrompts(
     AbapServiceProviderManager.resetIsDefaultProviderAbapCloud();
 
     const prompts = await getAbapDeployConfigQuestions(promptOptions);
-    registerAutocompletePlugin(prompts, promptModule);
 
     return {
         prompts,
@@ -83,7 +63,7 @@ async function prompt(
     logger?: Logger,
     isYUI = false
 ): Promise<AbapDeployConfigAnswers> {
-    const abapDeployConfigPrompts = (await getPrompts(promptOptions, logger, isYUI, adapter?.promptModule)).prompts;
+    const abapDeployConfigPrompts = (await getPrompts(promptOptions, logger, isYUI)).prompts;
     const answers = await adapter.prompt<AbapDeployConfigAnswersInternal>(abapDeployConfigPrompts);
 
     return reconcileAnswers(answers, PromptState.abapDeployConfig);

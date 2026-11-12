@@ -3,8 +3,7 @@ import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 import type { VSCodeInstance, TelemetryData, LogWrapper, Floorplan } from '@sap-ux/fiori-generator-shared';
 import type { AppIndex, AbapServiceProvider } from '@sap-ux/axios-extension';
 import type { OdataServiceAnswers, OdataVersion } from '@sap-ux/odata-service-inquirer';
-import type { YUIQuestion } from '@sap-ux/inquirer-common';
-import type { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
+import type { SearchQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
 
 /**
  * App configuration derived from the downloaded manifest for the ABAP repository flow.
@@ -116,8 +115,7 @@ export interface RepoAppDownloadOptions extends Generator.GeneratorOptions {
  * Represents a question in the app download process.
  * Extends `YUIQuestion` with optional autocomplete functionality.
  */
-export type RepoAppDownloadQuestions = YUIQuestion<RepoAppDownloadAnswers> &
-    Partial<Pick<AutocompleteQuestionOptions, 'source'>>;
+export type RepoAppDownloadQuestions = YUIQuestion<RepoAppDownloadAnswers> & Partial<Pick<SearchQuestion, 'source'>>;
 
 // Extract the type of a single element in the AppIndex array
 export type AppItem = AppIndex extends (infer U)[] ? U : never;

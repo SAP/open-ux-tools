@@ -163,7 +163,9 @@ export function getQuestions<T extends Answers>(
             if ('questions' in action && Array.isArray(action.questions)) {
                 onMessageDetach(expectedActionType, handleMessage);
                 resolve({
-                    questions: action.questions,
+                    // The action carries questions typed against the default `Answers`; the caller's
+                    // generic `T` is resolved at runtime from the requested prompt type, so narrow here.
+                    questions: action.questions as PromptQuestion<T>[],
                     groups: 'groups' in action ? action.groups : undefined,
                     initialAnswers: 'initialAnswers' in action ? action.initialAnswers : undefined
                 });

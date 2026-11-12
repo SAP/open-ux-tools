@@ -20,7 +20,7 @@ Object {
       ],
       "message": "Select a building block",
       "name": "buildingBlockType",
-      "type": "list",
+      "type": "select",
     },
   ],
 }
@@ -80,7 +80,7 @@ Object {
       },
       "message": "View or Fragment File",
       "name": "viewOrFragmentPath",
-      "type": "list",
+      "type": "select",
       "validate": [Function],
     },
     Object {
@@ -117,7 +117,7 @@ Object {
       },
       "message": "Binding Context Path Type",
       "name": "buildingBlockData.metaPath.bindingContextType",
-      "type": "list",
+      "type": "select",
     },
     Object {
       "choices": Array [],
@@ -132,7 +132,7 @@ Object {
       },
       "message": "Entity",
       "name": "buildingBlockData.metaPath.entitySet",
-      "type": "list",
+      "type": "select",
     },
     Object {
       "choices": Array [],
@@ -145,7 +145,7 @@ Object {
       },
       "message": "Chart Annotation Path",
       "name": "buildingBlockData.metaPath.qualifier",
-      "type": "list",
+      "type": "select",
     },
     Object {
       "choices": Array [],
@@ -157,7 +157,7 @@ Object {
       },
       "message": "Aggregation Path",
       "name": "aggregationPath",
-      "type": "list",
+      "type": "select",
     },
     Object {
       "choices": Array [],
@@ -171,7 +171,7 @@ Object {
       },
       "message": "Associated Filter Bar ID",
       "name": "buildingBlockData.filterBar",
-      "type": "list",
+      "type": "select",
     },
     Object {
       "choices": Array [
@@ -214,7 +214,7 @@ Object {
       },
       "message": "Selection Mode",
       "name": "buildingBlockData.selectionMode",
-      "type": "list",
+      "type": "select",
     },
     Object {
       "guiOptions": Object {
@@ -318,7 +318,7 @@ Object {
       },
       "message": "View or Fragment File",
       "name": "viewOrFragmentPath",
-      "type": "list",
+      "type": "select",
       "validate": [Function],
     },
     Object {
@@ -355,7 +355,7 @@ Object {
       },
       "message": "Binding Context Path Type",
       "name": "buildingBlockData.metaPath.bindingContextType",
-      "type": "list",
+      "type": "select",
     },
     Object {
       "choices": Array [],
@@ -367,7 +367,7 @@ Object {
       },
       "message": "Aggregation Path",
       "name": "aggregationPath",
-      "type": "list",
+      "type": "select",
     },
     Object {
       "choices": Array [],
@@ -382,7 +382,7 @@ Object {
       },
       "message": "Entity",
       "name": "buildingBlockData.metaPath.entitySet",
-      "type": "list",
+      "type": "select",
     },
     Object {
       "choices": Array [],
@@ -395,7 +395,7 @@ Object {
       },
       "message": "Selection Field Annotation Path",
       "name": "buildingBlockData.metaPath.qualifier",
-      "type": "list",
+      "type": "select",
     },
     Object {
       "guiOptions": Object {
@@ -444,7 +444,7 @@ Object {
       },
       "message": "Page Layout",
       "name": "buildingBlockData.templateType",
-      "type": "list",
+      "type": "select",
     },
     Object {
       "choices": Array [],
@@ -458,7 +458,7 @@ Object {
       },
       "message": "View or Fragment File",
       "name": "viewOrFragmentPath",
-      "type": "list",
+      "type": "select",
       "validate": [Function],
     },
     Object {
@@ -470,7 +470,7 @@ Object {
       },
       "message": "Aggregation Path",
       "name": "aggregationPath",
-      "type": "list",
+      "type": "select",
     },
     Object {
       "default": "Page",
@@ -558,7 +558,7 @@ Object {
       },
       "message": "View or Fragment File",
       "name": "viewOrFragmentPath",
-      "type": "list",
+      "type": "select",
       "validate": [Function],
     },
     Object {
@@ -595,7 +595,7 @@ Object {
       },
       "message": "Binding Context Path Type",
       "name": "buildingBlockData.metaPath.bindingContextType",
-      "type": "list",
+      "type": "select",
     },
     Object {
       "choices": Array [],
@@ -610,7 +610,7 @@ Object {
       },
       "message": "Entity",
       "name": "buildingBlockData.metaPath.entitySet",
-      "type": "list",
+      "type": "select",
     },
     Object {
       "choices": Array [],
@@ -623,7 +623,7 @@ Object {
       },
       "message": "Line Item Annotation Path",
       "name": "buildingBlockData.metaPath.qualifier",
-      "type": "list",
+      "type": "select",
     },
     Object {
       "choices": Array [],
@@ -635,7 +635,7 @@ Object {
       },
       "message": "Aggregation Path",
       "name": "aggregationPath",
-      "type": "list",
+      "type": "select",
     },
     Object {
       "choices": Array [],
@@ -649,7 +649,7 @@ Object {
       },
       "message": "Associated Filter Bar ID",
       "name": "buildingBlockData.filterBar",
-      "type": "list",
+      "type": "select",
     },
     Object {
       "choices": Array [
@@ -668,7 +668,7 @@ Object {
       },
       "message": "Table Type",
       "name": "buildingBlockData.type",
-      "type": "list",
+      "type": "select",
     },
     Object {
       "choices": Array [
@@ -695,7 +695,7 @@ Object {
       },
       "message": "Select a Selection Mode",
       "name": "buildingBlockData.selectionMode",
-      "type": "list",
+      "type": "select",
     },
     Object {
       "choices": Array [
@@ -715,7 +715,7 @@ Object {
       },
       "message": "Display Header",
       "name": "buildingBlockData.headerVisible",
-      "type": "list",
+      "type": "select",
     },
     Object {
       "guiOptions": Object {
@@ -772,7 +772,7 @@ Object {
       },
       "message": "Select a Table Variant Management",
       "name": "buildingBlockData.variantManagement",
-      "type": "list",
+      "type": "select",
     },
     Object {
       "choices": Array [
@@ -792,7 +792,7 @@ Object {
       },
       "message": "Enable Read Only Mode",
       "name": "buildingBlockData.readOnly",
-      "type": "list",
+      "type": "select",
     },
     Object {
       "choices": Array [
@@ -812,7 +812,7 @@ Object {
       },
       "message": "Enable Auto Column Width",
       "name": "buildingBlockData.enableAutoColumnWidth",
-      "type": "list",
+      "type": "select",
     },
     Object {
       "choices": Array [
@@ -832,7 +832,7 @@ Object {
       },
       "message": "Enable Data Export",
       "name": "buildingBlockData.enableExport",
-      "type": "list",
+      "type": "select",
     },
     Object {
       "choices": Array [
@@ -852,7 +852,7 @@ Object {
       },
       "message": "Enable Full Screen Mode",
       "name": "buildingBlockData.enableFullScreen",
-      "type": "list",
+      "type": "select",
     },
     Object {
       "choices": Array [
@@ -872,7 +872,7 @@ Object {
       },
       "message": "Enable Paste From Clipboard",
       "name": "buildingBlockData.enablePaste",
-      "type": "list",
+      "type": "select",
     },
     Object {
       "choices": Array [
@@ -892,7 +892,7 @@ Object {
       },
       "message": "Table Searchable Toggle",
       "name": "buildingBlockData.isSearchable",
-      "type": "list",
+      "type": "select",
     },
   ],
 }
@@ -1062,7 +1062,7 @@ Object {
       ],
       "message": "Select a building block",
       "name": "buildingBlockType",
-      "type": "list",
+      "type": "select",
     },
   ],
 }
@@ -1122,7 +1122,7 @@ Object {
       },
       "message": "View or Fragment File",
       "name": "viewOrFragmentPath",
-      "type": "list",
+      "type": "select",
       "validate": [Function],
     },
     Object {
@@ -1159,7 +1159,7 @@ Object {
       },
       "message": "Binding Context Path Type",
       "name": "buildingBlockData.metaPath.bindingContextType",
-      "type": "list",
+      "type": "select",
     },
     Object {
       "choices": [Function],
@@ -1174,7 +1174,7 @@ Object {
       },
       "message": "Entity",
       "name": "buildingBlockData.metaPath.entitySet",
-      "type": "list",
+      "type": "select",
     },
     Object {
       "choices": [Function],
@@ -1187,7 +1187,7 @@ Object {
       },
       "message": "Chart Annotation Path",
       "name": "buildingBlockData.metaPath.qualifier",
-      "type": "list",
+      "type": "select",
     },
     Object {
       "choices": [Function],
@@ -1199,7 +1199,7 @@ Object {
       },
       "message": "Aggregation Path",
       "name": "aggregationPath",
-      "type": "list",
+      "type": "select",
     },
     Object {
       "choices": [Function],
@@ -1213,7 +1213,7 @@ Object {
       },
       "message": "Associated Filter Bar ID",
       "name": "buildingBlockData.filterBar",
-      "type": "list",
+      "type": "select",
     },
     Object {
       "choices": Array [
@@ -1256,7 +1256,7 @@ Object {
       },
       "message": "Selection Mode",
       "name": "buildingBlockData.selectionMode",
-      "type": "list",
+      "type": "select",
     },
     Object {
       "guiOptions": Object {
@@ -1582,7 +1582,7 @@ Object {
       },
       "message": "View or Fragment File",
       "name": "viewOrFragmentPath",
-      "type": "list",
+      "type": "select",
       "validate": [Function],
     },
     Object {
@@ -1619,7 +1619,7 @@ Object {
       },
       "message": "Binding Context Path Type",
       "name": "buildingBlockData.metaPath.bindingContextType",
-      "type": "list",
+      "type": "select",
     },
     Object {
       "choices": [Function],
@@ -1631,7 +1631,7 @@ Object {
       },
       "message": "Aggregation Path",
       "name": "aggregationPath",
-      "type": "list",
+      "type": "select",
     },
     Object {
       "choices": [Function],
@@ -1646,7 +1646,7 @@ Object {
       },
       "message": "Entity",
       "name": "buildingBlockData.metaPath.entitySet",
-      "type": "list",
+      "type": "select",
     },
     Object {
       "choices": [Function],
@@ -1659,7 +1659,7 @@ Object {
       },
       "message": "Selection Field Annotation Path",
       "name": "buildingBlockData.metaPath.qualifier",
-      "type": "list",
+      "type": "select",
     },
     Object {
       "guiOptions": Object {
@@ -1723,7 +1723,7 @@ Object {
       },
       "message": "View or Fragment File",
       "name": "viewOrFragmentPath",
-      "type": "list",
+      "type": "select",
       "validate": [Function],
     },
     Object {
@@ -1760,7 +1760,7 @@ Object {
       },
       "message": "Binding Context",
       "name": "buildingBlockData.metaPath.bindingContextType",
-      "type": "list",
+      "type": "select",
     },
     Object {
       "choices": [Function],
@@ -1775,7 +1775,7 @@ Object {
       },
       "message": "Entity",
       "name": "buildingBlockData.metaPath.entitySet",
-      "type": "list",
+      "type": "select",
     },
     Object {
       "choices": [Function],
@@ -1788,7 +1788,7 @@ Object {
       },
       "message": "FieldGroup Annotation Path",
       "name": "buildingBlockData.metaPath.qualifier",
-      "type": "list",
+      "type": "select",
     },
     Object {
       "choices": [Function],
@@ -1800,7 +1800,7 @@ Object {
       },
       "message": "Aggregation Path",
       "name": "aggregationPath",
-      "type": "list",
+      "type": "select",
     },
     Object {
       "guiOptions": Object {
@@ -1840,7 +1840,7 @@ Object {
       },
       "message": "View or Fragment File",
       "name": "viewOrFragmentPath",
-      "type": "list",
+      "type": "select",
       "validate": [Function],
     },
     Object {
@@ -1852,7 +1852,7 @@ Object {
       },
       "message": "Aggregation Path",
       "name": "aggregationPath",
-      "type": "list",
+      "type": "select",
     },
     Object {
       "default": "Page",
@@ -1922,7 +1922,7 @@ Object {
       },
       "message": "View or Fragment File",
       "name": "viewOrFragmentPath",
-      "type": "list",
+      "type": "select",
       "validate": [Function],
     },
     Object {
@@ -1937,7 +1937,7 @@ Object {
       },
       "message": "Binding Context",
       "name": "buildingBlockData.metaPath.bindingContextType",
-      "type": "list",
+      "type": "select",
     },
     Object {
       "choices": [Function],
@@ -1952,7 +1952,7 @@ Object {
       },
       "message": "Entity",
       "name": "buildingBlockData.metaPath.entitySet",
-      "type": "list",
+      "type": "select",
     },
     Object {
       "choices": [Function],
@@ -1963,7 +1963,7 @@ Object {
       },
       "message": "Target Property",
       "name": "buildingBlockData.targetProperty",
-      "type": "list",
+      "type": "select",
     },
     Object {
       "choices": [Function],
@@ -1974,7 +1974,7 @@ Object {
       },
       "message": "Aggregation Path",
       "name": "aggregationPath",
-      "type": "list",
+      "type": "select",
     },
   ],
 }
@@ -2001,7 +2001,7 @@ Object {
       },
       "message": "View or Fragment File",
       "name": "viewOrFragmentPath",
-      "type": "list",
+      "type": "select",
       "validate": [Function],
     },
     Object {
@@ -2016,7 +2016,7 @@ Object {
       },
       "message": "Aggregation Path",
       "name": "aggregationPath",
-      "type": "list",
+      "type": "select",
     },
     Object {
       "choices": [Function],
@@ -2080,7 +2080,7 @@ Object {
       },
       "message": "View or Fragment File",
       "name": "viewOrFragmentPath",
-      "type": "list",
+      "type": "select",
       "validate": [Function],
     },
     Object {
@@ -2117,7 +2117,7 @@ Object {
       },
       "message": "Binding Context Path Type",
       "name": "buildingBlockData.metaPath.bindingContextType",
-      "type": "list",
+      "type": "select",
     },
     Object {
       "choices": [Function],
@@ -2132,7 +2132,7 @@ Object {
       },
       "message": "Entity",
       "name": "buildingBlockData.metaPath.entitySet",
-      "type": "list",
+      "type": "select",
     },
     Object {
       "choices": [Function],
@@ -2145,7 +2145,7 @@ Object {
       },
       "message": "Line Item Annotation Path",
       "name": "buildingBlockData.metaPath.qualifier",
-      "type": "list",
+      "type": "select",
     },
     Object {
       "choices": [Function],
@@ -2157,7 +2157,7 @@ Object {
       },
       "message": "Aggregation Path",
       "name": "aggregationPath",
-      "type": "list",
+      "type": "select",
     },
     Object {
       "choices": [Function],
@@ -2171,7 +2171,7 @@ Object {
       },
       "message": "Associated Filter Bar ID",
       "name": "buildingBlockData.filterBar",
-      "type": "list",
+      "type": "select",
     },
     Object {
       "choices": Array [
@@ -2190,7 +2190,7 @@ Object {
       },
       "message": "Table Type",
       "name": "buildingBlockData.type",
-      "type": "list",
+      "type": "select",
     },
     Object {
       "choices": Array [
@@ -2217,7 +2217,7 @@ Object {
       },
       "message": "Select a Selection Mode",
       "name": "buildingBlockData.selectionMode",
-      "type": "list",
+      "type": "select",
     },
     Object {
       "choices": Array [
@@ -2237,7 +2237,7 @@ Object {
       },
       "message": "Display Header",
       "name": "buildingBlockData.headerVisible",
-      "type": "list",
+      "type": "select",
     },
     Object {
       "guiOptions": Object {
@@ -2294,7 +2294,7 @@ Object {
       },
       "message": "Select a Table Variant Management",
       "name": "buildingBlockData.variantManagement",
-      "type": "list",
+      "type": "select",
     },
     Object {
       "choices": Array [
@@ -2314,7 +2314,7 @@ Object {
       },
       "message": "Enable Read Only Mode",
       "name": "buildingBlockData.readOnly",
-      "type": "list",
+      "type": "select",
     },
     Object {
       "choices": Array [
@@ -2334,7 +2334,7 @@ Object {
       },
       "message": "Enable Auto Column Width",
       "name": "buildingBlockData.enableAutoColumnWidth",
-      "type": "list",
+      "type": "select",
     },
     Object {
       "choices": Array [
@@ -2354,7 +2354,7 @@ Object {
       },
       "message": "Enable Data Export",
       "name": "buildingBlockData.enableExport",
-      "type": "list",
+      "type": "select",
     },
     Object {
       "choices": Array [
@@ -2374,7 +2374,7 @@ Object {
       },
       "message": "Enable Full Screen Mode",
       "name": "buildingBlockData.enableFullScreen",
-      "type": "list",
+      "type": "select",
     },
     Object {
       "choices": Array [
@@ -2394,7 +2394,7 @@ Object {
       },
       "message": "Enable Paste From Clipboard",
       "name": "buildingBlockData.enablePaste",
-      "type": "list",
+      "type": "select",
     },
     Object {
       "choices": Array [
@@ -2414,7 +2414,7 @@ Object {
       },
       "message": "Table Searchable Toggle",
       "name": "buildingBlockData.isSearchable",
-      "type": "list",
+      "type": "select",
     },
   ],
 }

@@ -71,7 +71,7 @@ describe('Target Environment', () => {
         test('should create target environment prompt with correct structure', () => {
             const prompt = getTargetEnvPrompt(mockAppWizard, true, true, mockCfConfig);
 
-            expect(prompt.type).toBe('list');
+            expect(prompt.type).toBe('select');
             expect(prompt.name).toBe('targetEnv');
             expect(prompt.message).toBe(t('prompts.targetEnvLabel'));
             expect(prompt.guiOptions).toEqual({
@@ -203,7 +203,7 @@ describe('Target Environment', () => {
         test('should create the MTA mode prompt with new/existing choices', () => {
             const prompt = getMtaModePrompt() as ListQuestion<ProjectLocationAnswers>;
 
-            expect(prompt.type).toBe('list');
+            expect(prompt.type).toBe('select');
             expect(prompt.name).toBe('mtaMode');
             expect(prompt.message).toBe(t('prompts.mtaModeLabel'));
             expect(prompt.default).toBe(MtaMode.New);

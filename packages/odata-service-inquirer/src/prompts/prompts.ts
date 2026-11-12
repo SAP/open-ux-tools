@@ -44,7 +44,7 @@ export async function getQuestions(
 function getDatasourceTypeQuestion(options?: DatasourceTypePromptOptions): YUIQuestion<OdataServiceAnswers> {
     const choices = getDatasourceTypeChoices(options);
     return {
-        type: 'list',
+        type: 'select',
         name: promptNames.datasourceType,
         guiOptions: {
             breadcrumb: true
@@ -52,7 +52,7 @@ function getDatasourceTypeQuestion(options?: DatasourceTypePromptOptions): YUIQu
         default: options?.default ?? -1,
         message: t('prompts.datasourceType.message'),
         choices
-    } as YUIQuestion;
+    } as YUIQuestion<OdataServiceAnswers>;
 }
 
 /**

@@ -6,10 +6,16 @@ import {
     isAppStudio
 } from '@sap-ux/btp-utils';
 import { hostEnvironment } from '@sap-ux/fiori-generator-shared';
-import { type ListQuestion, ERROR_TYPE, getCFAbapInstanceChoices, withCondition } from '@sap-ux/inquirer-common';
+import {
+    type ChoiceOptions,
+    type ListQuestion,
+    ERROR_TYPE,
+    getCFAbapInstanceChoices,
+    withCondition
+} from '@sap-ux/inquirer-common';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
 import { type ServiceInstanceInfo, apiGetInstanceCredentials } from '@sap/cf-tools';
-import type { Answers, ListChoiceOptions, Question } from 'inquirer';
+import type { Answers, Question } from 'inquirer';
 import { t } from '../../../../i18n.js';
 import type { ConnectedSystem, OdataServiceAnswers, OdataServicePromptOptions } from '../../../../types.js';
 import {
@@ -60,7 +66,7 @@ export function getAbapOnBTPSystemQuestions(
     const connectValidator = new ConnectionValidator();
     const questions: Question<AbapOnBtpAnswers & ServiceAnswer>[] = [];
     questions.push({
-        type: 'list',
+        type: 'select',
         name: abapOnBtpPromptNames.abapOnBtpAuthType,
         choices: [
             { name: t('prompts.abapOnBTPType.choiceCloudFoundry'), value: 'cloudFoundry' as AbapOnBTPType },
@@ -116,12 +122,12 @@ export function getAbapOnBTPSystemQuestions(
 
     // Service selection prompt
     questions.push(
-        ...getSystemServiceQuestion(
+        ...(getSystemServiceQuestion(
             connectValidator,
             abapOnBtpPromptNamespace,
             promptOptions?.serviceSelection,
             promptOptions?.valueHelpDownload?.hide
-        )
+        ) as Question<AbapOnBtpAnswers & ServiceAnswer>[])
     );
     return questions;
 }
@@ -225,12 +231,12 @@ export function getCFDiscoverPrompts(
     requiredOdataVersion?: OdataVersion,
     cachedConnectedSystem?: ConnectedSystem
 ): Question[] {
-    let choices: ListChoiceOptions<ServiceInstanceInfo>[] = [];
+    let choices: ChoiceOptions<ServiceInstanceInfo>[] = [];
     const promptName = `${promptNamespace ? promptNamespace + ':' : ''}${abapOnBtpPromptNames.cloudFoundryAbapSystem}`;
 
     const questions: Question[] = [
         {
-            type: 'list',
+            type: 'select',
             name: promptName,
             guiOptions: {
                 breadcrumb: true,
@@ -246,7 +252,10 @@ export function getCFDiscoverPrompts(
                 }
                 return choices;
             },
-            default: () => getDefaultChoiceIndex(choices as Answers[]),
+            default: () => {
+                const defaultIndex = getDefaultChoiceIndex(choices as Answers[]);
+                return defaultIndex === undefined ? undefined : choices[defaultIndex]?.value;
+            },
             message: t('prompts.cloudFoundryAbapSystem.message'),
             validate: async (abapService: ServiceInstanceInfo): Promise<ValidationResult> => {
                 if (abapService) {

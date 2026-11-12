@@ -13,10 +13,9 @@ import {
 } from '@sap-ux/axios-extension';
 import type { Destination } from '@sap-ux/btp-utils';
 import { TelemetryHelper } from '@sap-ux/fiori-generator-shared';
-import { getTelemPropertyDestinationType, sendTelemetryEvent } from '@sap-ux/inquirer-common';
+import { getTelemPropertyDestinationType, sendTelemetryEvent, type ChoiceOptions } from '@sap-ux/inquirer-common';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
-import type { ListChoiceOptions } from 'inquirer';
 import { t } from '../../../../i18n.js';
 import { PromptState } from '../../../../utils/index.js';
 import type { ConnectionValidator } from '../../../connectionValidator.js';
@@ -36,8 +35,8 @@ export const telemEventBASServiceSuccess = 'SERVICE_INQUIRER_BAS_SUCCESS';
  * @param serviceInfos service information to build the choices from. Services with a service id containing '/IWBEP/COMMON' are ignored.
  * @returns service choices list
  */
-const createServiceChoices = (serviceInfos?: ODataServiceInfo[]): ListChoiceOptions<ServiceAnswer>[] => {
-    const choices: ListChoiceOptions<ServiceAnswer>[] = [];
+const createServiceChoices = (serviceInfos?: ODataServiceInfo[]): ChoiceOptions<ServiceAnswer>[] => {
+    const choices: ChoiceOptions<ServiceAnswer>[] = [];
     // Provide additional service information in trace mode (YUI only)
     let isLogTrace = false;
 
@@ -67,7 +66,7 @@ const createServiceChoices = (serviceInfos?: ODataServiceInfo[]): ListChoiceOpti
                     serviceType: service.serviceType,
                     serviceId: service.id
                 }
-            }) as ListChoiceOptions<ServiceAnswer>;
+            }) as ChoiceOptions<ServiceAnswer>;
         });
     LoggerHelper.logger.debug(`Number of unique service choices: ${choices.length}`);
     return choices.sort((a, b) => (a.name ? a.name.localeCompare(b.name ?? '') : 0));
@@ -105,7 +104,7 @@ function logServiceCatalogErrorsForHelp(
 export async function getServiceChoices(
     catalogs: CatalogService[],
     serviceFilter?: string[]
-): Promise<ListChoiceOptions<ServiceAnswer>[]> {
+): Promise<ChoiceOptions<ServiceAnswer>[]> {
     const requestErrors: Record<ODataVersion, unknown> | {} = {};
     // Performance tracking for the requests
     const requestTimes: Record<string, { serviceCount: number; duration: string }> = {}; // [v2, v4] request times in ms
@@ -382,7 +381,7 @@ type ShowCollabDraftWarnOptions = {
  * @returns the service selection prompt additional message
  */
 export async function getSelectedServiceMessage(
-    serviceChoices: ListChoiceOptions<ServiceAnswer>[],
+    serviceChoices: ChoiceOptions<ServiceAnswer>[],
     selectedService: ServiceAnswer | undefined,
     connectValidator: ConnectionValidator,
     {

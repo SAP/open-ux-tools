@@ -2,7 +2,7 @@ import { getUi5Themes, type UI5Theme, type UI5Version } from '@sap-ux/ui5-info';
 import fuzzy from 'fuzzy';
 import { coerce, eq, lte, type SemVer } from 'semver';
 import { t } from '../i18n.js';
-import type { ChoiceOptions, UI5VersionChoice } from '../types.js';
+import type { Answers, ChoiceOptions, ListQuestion, SearchQuestion, UI5VersionChoice } from '../types.js';
 import { Separator } from './separator.js';
 
 /**
@@ -35,6 +35,73 @@ export function searchChoices(searchVal: string, searchList: ChoiceOptions[]): C
               })
               .map((el) => el.original)
         : searchList;
+}
+
+/**
+ * A selectable choice or a visual {@link Separator}, as accepted by the `select`/`search` arms.
+ */
+type ChoiceOrSeparator = ChoiceOptions | Separator;
+
+/**
+ * Resolves the choices for the `search`/`select` arms, accepting either a static array or a thunk
+ * (some call sites compute choices lazily, e.g. after a `when` condition has run).
+ *
+ * @param choices - the choices array or a function returning it
+ * @returns the resolved choices array
+ */
+function resolveChoices(choices: ChoiceOrSeparator[] | (() => ChoiceOrSeparator[])): ChoiceOrSeparator[] {
+    return typeof choices === 'function' ? choices() : choices;
+}
+
+/**
+ * Narrows a choice-or-separator list to the selectable choices, dropping {@link Separator} entries.
+ *
+ * @param choices - the mixed choice/separator list
+ * @returns only the selectable choices
+ */
+function selectableChoices(choices: ChoiceOrSeparator[]): ChoiceOptions[] {
+    return choices.filter((choice): choice is ChoiceOptions => Separator.exclude(choice as { type: string }));
+}
+
+/**
+ * Builds either a `search` (filterable) or `select` (static list) prompt from a common base, replacing
+ * the former `inquirer-autocomplete-prompt` / `list` dual-shape object. inquirer 13 cannot express both
+ * on one object: the `select` arm rejects `source` and the `search` arm rejects `choices`.
+ *
+ * The `search` arm's `source` is adapted from {@link searchChoices}, which returns the full list when the
+ * search term is empty. inquirer 13's `select`/`search` `default` is a choice *value* (not the inquirer 8
+ * list index), so a caller that still has an index supplies `defaultIndex` and it is resolved to the value
+ * at that position (separators excluded); callers that already hold a value simply pass it on `base.default`.
+ *
+ * @param base - the shared question fields (name, message, guiOptions, validate, and an optional value `default`)
+ * @param choices - the selectable choices (and optional separators), or a thunk returning them
+ * @param useSearch - when true, emit a `search` arm; otherwise a `select` arm
+ * @param defaultIndex - optional index into the selectable choices to pre-select; mapped to the choice value and, when provided, takes precedence over `base.default`
+ * @returns a {@link SearchQuestion} when `useSearch`, otherwise a {@link ListQuestion}
+ */
+export function searchableListPrompt<A extends Answers = Answers>(
+    base: Omit<SearchQuestion<A>, 'type' | 'source'>,
+    choices: ChoiceOrSeparator[] | (() => ChoiceOrSeparator[]),
+    useSearch: boolean,
+    defaultIndex?: number
+): SearchQuestion<A> | ListQuestion<A> {
+    const defaultValue =
+        defaultIndex !== undefined ? selectableChoices(resolveChoices(choices))[defaultIndex]?.value : base.default;
+    if (useSearch) {
+        return {
+            ...base,
+            type: 'search',
+            source: (term: string | undefined): ChoiceOptions[] =>
+                searchChoices(term ?? '', selectableChoices(resolveChoices(choices))),
+            ...(defaultValue !== undefined ? { default: defaultValue } : {})
+        } satisfies SearchQuestion<A>;
+    }
+    return {
+        ...base,
+        type: 'select',
+        choices,
+        ...(defaultValue !== undefined ? { default: defaultValue } : {})
+    } satisfies ListQuestion<A>;
 }
 
 /**

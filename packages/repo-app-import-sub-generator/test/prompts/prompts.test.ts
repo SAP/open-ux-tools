@@ -120,7 +120,7 @@ describe('getPrompts', () => {
         // app selection prompt
         const appSelectionPrompt = prompts.find((p) => p.name === PromptNames.selectedApp);
         expect(appSelectionPrompt).toBeDefined();
-        expect(appSelectionPrompt).toHaveProperty('type', 'list');
+        expect(appSelectionPrompt).toHaveProperty('type', 'select');
         expect(await (appSelectionPrompt as any)?.when({ [PromptNames.systemSelection]: mockServiceProvider })).toBe(
             true
         );
@@ -178,7 +178,7 @@ describe('getPrompts', () => {
         // app selection prompt
         const appSelectionPrompt = prompts.find((p) => p.name === PromptNames.selectedApp);
         expect(appSelectionPrompt).toBeDefined();
-        expect(appSelectionPrompt).toHaveProperty('type', 'list');
+        expect(appSelectionPrompt).toHaveProperty('type', 'select');
         expect(await (appSelectionPrompt as any)?.when({ [PromptNames.systemSelection]: mockServiceProvider })).toBe(
             true
         );
@@ -191,7 +191,7 @@ describe('getPrompts', () => {
             applyDefaultWhenDirty: true
         });
         expect(await (appSelectionPrompt as any)?.validate(appValue)).toBe(true);
-        expect((appSelectionPrompt as any)?.default()).toBe(0);
+        expect((appSelectionPrompt as any)?.default()).toEqual(appValue);
         expect(appSelectionPrompt).toHaveProperty('name', PromptNames.selectedApp);
 
         // target folder prompt

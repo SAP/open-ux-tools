@@ -47,7 +47,9 @@ class AddAnnotationsToDataGenerator extends SubGeneratorWithAuthBase {
         try {
             const manifest = await this.getManifest();
             this.dataSources = manifest?.['sap.app']?.dataSources ?? {};
-            this.answers = await this.prompt(getPromptsForAddAnnotationsToOData(this.projectPath, this.dataSources));
+            this.answers = await this.prompt<AddAnnotationsAnswers>(
+                getPromptsForAddAnnotationsToOData(this.projectPath, this.dataSources)
+            );
             this.logger.log(`Current OData services\n${JSON.stringify(this.answers, null, 2)}`);
         } catch (e) {
             await this.handleRuntimeCrash(e.message);

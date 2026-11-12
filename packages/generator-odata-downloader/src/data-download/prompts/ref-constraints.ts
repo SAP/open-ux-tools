@@ -13,14 +13,14 @@ export function getMissingReferentialConstraintsPrompts(hierarchyEntities: Hiera
     const getRefConsPrompts = (entity: HierarchyEntity): ListQuestion[] => [
         {
             name: `${entity.entitySetName}/${entity.nodeProperty}/source`,
-            type: 'list',
+            type: 'select',
             message: `Source: ${entity.entitySetName} > ${entity.missingReferentialConstraints?.navPropName}`,
             default: false,
             choices: entity.entityProperties.map((key) => ({ name: key, value: key }))
         },
         {
             name: `${entity.entitySetName}/${entity.nodeProperty}/target`,
-            type: 'list',
+            type: 'select',
             message: `Target: ${entity.entitySetName} > ${entity.missingReferentialConstraints?.navPropName}`,
             default: false,
             choices: entity.entityProperties.map((key) => ({ name: key, value: key }))

@@ -428,8 +428,7 @@ describe('Test abap deploy configuration generator', () => {
                 }
             },
             {},
-            false, // isYUI
-            expect.any(Function)
+            false // isYUI
         );
 
         const ui5DeployConfig = await UI5Config.newInstance(
@@ -534,8 +533,7 @@ describe('Test abap deploy configuration generator', () => {
                 }
             },
             {},
-            false, // isYUI
-            expect.any(Function)
+            false // isYUI
         );
 
         const ui5DeployConfig = await UI5Config.newInstance(
@@ -634,8 +632,7 @@ describe('Test abap deploy configuration generator', () => {
                 }
             },
             {},
-            false, // isYUI
-            expect.any(Function)
+            false // isYUI
         );
 
         const ui5DeployConfig = await UI5Config.newInstance(

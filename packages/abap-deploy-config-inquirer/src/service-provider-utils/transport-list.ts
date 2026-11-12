@@ -4,7 +4,7 @@ import { AbapServiceProviderManager } from './abap-service-provider.js';
 import LoggerHelper from '../logger-helper.js';
 import { PromptState } from '../prompts/prompt-state.js';
 import type { BackendTarget, TransportListItem } from '../types.js';
-import type { ListChoiceOptions } from 'inquirer';
+import type { ChoiceOptions } from '@sap-ux/inquirer-common';
 import { ErrorHandler } from '@sap-ux/inquirer-common';
 
 /**
@@ -53,7 +53,7 @@ export async function getTransportListFromService(
     return transportListItems;
 }
 
-export const transportName = (transport: TransportListItem): ListChoiceOptions => {
+export const transportName = (transport: TransportListItem): ChoiceOptions => {
     const name = transport.transportReqDescription
         ? `${transport.transportReqNumber} (${transport.transportReqDescription})`
         : `${transport.transportReqNumber}`;

@@ -1,7 +1,12 @@
 import { t } from '../i18n.js';
-import type { ListChoiceOptions } from 'inquirer';
 import { checkDependencies } from '@sap-ux/project-access';
-import { extendWithOptions, type CheckBoxQuestion, type ListQuestion } from '@sap-ux/inquirer-common';
+import type { ReuseLib } from '@sap-ux/project-access';
+import {
+    extendWithOptions,
+    type ChoiceOptions,
+    type CheckBoxQuestion,
+    type ListQuestion
+} from '@sap-ux/inquirer-common';
 import {
     promptNames,
     type UI5LibraryReferenceQuestion,
@@ -23,7 +28,7 @@ import { Severity } from '@sap-devx/yeoman-ui-types';
  * @returns the prompts
  */
 export function getQuestions(
-    projectChoices?: ListChoiceOptions[],
+    projectChoices?: ChoiceOptions[],
     reuseLibs?: ReuseLibChoice[],
     promptOptions?: UI5LibraryReferencePromptOptions
 ): UI5LibraryReferenceQuestion[] {
@@ -50,9 +55,9 @@ export function getQuestions(
  * @param projectChoices workspace projects
  * @returns The `targetProjectFolder` prompt
  */
-function getTargetProjectFolderPrompt(projectChoices?: ListChoiceOptions[]): UI5LibraryReferenceQuestion {
+function getTargetProjectFolderPrompt(projectChoices?: ChoiceOptions[]): UI5LibraryReferenceQuestion {
     return {
-        type: 'list',
+        type: 'select',
         guiOptions: {
             breadcrumb: true
         },
@@ -75,7 +80,7 @@ function getTargetProjectFolderPrompt(projectChoices?: ListChoiceOptions[]): UI5
  */
 function getSourcePrompt(): UI5LibraryReferenceQuestion {
     return {
-        type: 'list',
+        type: 'select',
         guiOptions: {
             breadcrumb: true
         },
@@ -109,14 +114,15 @@ function getReferenceLibrariesPrompt(reuseLibs?: ReuseLibChoice[]): UI5LibraryRe
             };
             return missingDeps ? msg : undefined;
         },
-        validate: (answer) => {
+        validate: (answer: unknown) => {
+            const selected = Array.isArray(answer) ? (answer as ReuseLib[]) : undefined;
             if (!reuseLibs?.length) {
                 return t('error.noLibsFound');
-            } else if (answer?.length < 1) {
+            } else if (selected && selected.length < 1) {
                 return t('error.noLibSelected');
-            } else if (answer?.length) {
+            } else if (selected?.length) {
                 missingDeps = checkDependencies(
-                    answer,
+                    selected,
                     reuseLibs.map((libs) => libs.value)
                 );
             }

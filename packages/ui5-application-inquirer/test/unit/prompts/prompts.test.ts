@@ -373,7 +373,7 @@ describe('getQuestions', () => {
         let questions = await getQuestions([]);
         let ui5VersionPrompt = questions.find((question) => question.name === promptNames.ui5Version);
         expect((ui5VersionPrompt?.when as Function)()).toEqual(true);
-        expect(ui5VersionPrompt?.type).toEqual('list');
+        expect(ui5VersionPrompt?.type).toEqual('select');
         expect(((ui5VersionPrompt as ListQuestion).choices as Function)()).toMatchInlineSnapshot(`[]`);
 
         const ui5Vers: UI5Version[] = [
@@ -409,10 +409,10 @@ describe('getQuestions', () => {
         questions = await getQuestions(ui5Vers);
         ui5VersionPrompt = questions.find((question) => question.name === promptNames.ui5Version);
         expect((ui5VersionPrompt?.when as Function)()).toEqual(true);
-        expect(ui5VersionPrompt?.type).toEqual('list');
+        expect(ui5VersionPrompt?.type).toEqual('select');
         expect(((ui5VersionPrompt as ListQuestion)?.choices as Function)()).toEqual(expectedUI5VerChoices);
-        // No search input, all choices returned, source search is unit tested elsewhere
-        expect((ui5VersionPrompt?.source as Function)()).toEqual(expectedUI5VerChoices);
+        // The `select` arm has no `source`; filtering is only available via the `search` arm
+        expect(ui5VersionPrompt?.source).toBeUndefined();
 
         // Option `useAutocomplete` specified
         // UI5 versions specified
@@ -423,11 +423,13 @@ describe('getQuestions', () => {
         });
         ui5VersionPrompt = questions.find((question) => question.name === promptNames.ui5Version);
         expect((ui5VersionPrompt?.when as Function)()).toEqual(true);
-        expect(ui5VersionPrompt?.type).toEqual('autocomplete');
-        expect(((ui5VersionPrompt as ListQuestion)?.choices as Function)()).toEqual(expectedUI5VerChoices);
+        expect(ui5VersionPrompt?.type).toEqual('search');
+        // The `search` arm has no static `choices`; they are served via `source`
+        expect((ui5VersionPrompt as ListQuestion)?.choices).toBeUndefined();
+        // No search input, all choices returned, source search is unit tested elsewhere
         expect((ui5VersionPrompt?.source as Function)()).toEqual(expectedUI5VerChoices);
         // Default version should be used
-        expect((ui5VersionPrompt?.default as Function)()).toEqual(expectedUI5VerChoices[0].value);
+        expect(ui5VersionPrompt?.default).toEqual(expectedUI5VerChoices[0].value);
 
         // This choice is not a maintained version and so the closest maintained version should be added
         const defaultChoice = {
@@ -445,7 +447,7 @@ describe('getQuestions', () => {
             defaultChoice,
             ...expectedUI5VerChoices
         ]);
-        expect((ui5VersionPrompt?.default as Function)()).toEqual('1.120.99');
+        expect(ui5VersionPrompt?.default as unknown).toEqual('1.120.99');
 
         //'createPromptOptions - sap system UI5 version is set as default choice'
         expect(((ui5VersionPrompt as ListQuestion)?.choices as Function)()).toEqual([

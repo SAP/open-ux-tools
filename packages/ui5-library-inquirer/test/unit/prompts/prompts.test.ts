@@ -20,9 +20,12 @@ const mockUi5VersionsGrouped = jest.fn() as jest.Mock;
 const mockSearchChoices = jest.fn() as jest.Mock;
 const mockAddi18nResourceBundle = jest.fn() as jest.Mock;
 
+const { searchableListPrompt: actualSearchableListPrompt } = await import('@sap-ux/inquirer-common');
+
 jest.unstable_mockModule('@sap-ux/inquirer-common', () => ({
     ui5VersionsGrouped: mockUi5VersionsGrouped,
     searchChoices: mockSearchChoices,
+    searchableListPrompt: actualSearchableListPrompt,
     addi18nResourceBundle: mockAddi18nResourceBundle
 }));
 
@@ -111,7 +114,7 @@ describe('getPrompts', () => {
         expect(mockValidateProjectFolder).toHaveBeenCalledWith(somePath, 'test.com.test1');
 
         const ui5VersionQ = prompts['ui5Version'];
-        expect(ui5VersionQ.type).toEqual('list');
+        expect(ui5VersionQ.type).toEqual('select');
         expect(ui5VersionQ.when()).toEqual(true);
         expect(ui5VersionQ.message).toEqual(t('prompts.libraryUi5VersionLabel'));
         expect(ui5VersionQ.choices()).toEqual(ui5VersionsGrouped);
@@ -127,7 +130,7 @@ describe('getPrompts', () => {
         expect(enableTypeScriptQ.default).toEqual(false);
     });
 
-    it('getQuestions, test options', () => {
+    it('getQuestions, test options', async () => {
         mockUi5VersionsGrouped.mockReturnValueOnce(ui5VersionsGrouped);
 
         /**
@@ -159,29 +162,17 @@ describe('getPrompts', () => {
          * Option: useAutocomplete
          */
         const ui5VersionQ = prompts['ui5Version'];
-        expect(ui5VersionQ.type).toEqual('autocomplete');
-        expect(ui5VersionQ.choices()).toEqual(ui5VersionsGrouped);
+        expect(ui5VersionQ.type).toEqual('search');
+        expect('choices' in ui5VersionQ).toEqual(false);
 
-        const filteredUI5Versions = [
+        // The `search` arm's `source` drops separators and fuzzy-filters the selectable choices by name
+        const selectableChoices = ui5VersionsGrouped.filter((choice) => !('type' in choice));
+        expect(await ui5VersionQ.source(undefined)).toEqual(selectableChoices);
+        expect(await ui5VersionQ.source('snapshot')).toEqual([
             {
-                name: '1.1.0',
-                value: {
-                    version: '1.1.0',
-                    default: false,
-                    maintained: true
-                }
-            },
-            {
-                name: '2.1.0',
-                value: {
-                    version: '2.1.0',
-                    default: true,
-                    maintained: true
-                }
+                name: '1.1.0-snapshot',
+                value: '1.1.0-snapshot'
             }
-        ];
-        mockSearchChoices.mockReturnValue(filteredUI5Versions);
-        expect(ui5VersionQ.source({}, '1.0')).toEqual(filteredUI5Versions);
-        expect(mockSearchChoices).toHaveBeenCalledWith('1.0', ui5VersionsGrouped);
+        ]);
     });
 });

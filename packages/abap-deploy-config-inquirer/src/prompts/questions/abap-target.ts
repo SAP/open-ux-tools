@@ -22,10 +22,10 @@ import {
     type AbapDeployConfigAnswersInternal,
     type AbapDeployConfigPromptOptions,
     type AbapSystemChoice,
-    type BackendTarget
+    type BackendTarget,
+    type AbapDeployConfigQuestion
 } from '../../types.js';
-import type { InputQuestion, ListQuestion, ConfirmQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
-import type { Question } from 'inquirer';
+import type { InputQuestion, ListQuestion, ConfirmQuestion } from '@sap-ux/inquirer-common';
 import { TargetSystemType } from '../../types.js';
 import type { AdaptationProjectType } from '@sap-ux/axios-extension';
 
@@ -43,11 +43,11 @@ function getDestinationPrompt(
     destinations?: Destinations,
     backendTarget?: BackendTarget,
     adpProjectType?: AdaptationProjectType
-): (YUIQuestion<AbapDeployConfigAnswersInternal> | Question)[] {
-    const prompts: (ListQuestion<AbapDeployConfigAnswersInternal> | Question)[] = [
+): AbapDeployConfigQuestion[] {
+    const prompts: (ListQuestion<AbapDeployConfigAnswersInternal> | AbapDeployConfigQuestion)[] = [
         {
             when: (): boolean => isAppStudio(),
-            type: 'list',
+            type: 'select',
             name: promptNames.destination,
             message: t('prompts.target.destination.message'),
             guiOptions: {
@@ -89,7 +89,7 @@ function getDestinationPrompt(
                 return false;
             },
             name: promptNames.destinationCliSetter
-        } as Question);
+        } as unknown as AbapDeployConfigQuestion);
     }
     return prompts;
 }
@@ -106,11 +106,11 @@ function getTargetSystemPrompt(
     choices: AbapSystemChoice[],
     backendTarget?: BackendTarget,
     adpProjectType?: AdaptationProjectType
-): (YUIQuestion<AbapDeployConfigAnswersInternal> | Question)[] {
-    const prompts: (ListQuestion<AbapDeployConfigAnswersInternal> | Question)[] = [
+): AbapDeployConfigQuestion[] {
+    const prompts: (ListQuestion<AbapDeployConfigAnswersInternal> | AbapDeployConfigQuestion)[] = [
         {
             when: (): boolean => !isAppStudio(),
-            type: 'list',
+            type: 'select',
             name: promptNames.targetSystem,
             message: t('prompts.target.targetSystem.message'),
             guiOptions: {
@@ -133,7 +133,7 @@ function getTargetSystemPrompt(
                 return false;
             },
             name: promptNames.targetSystemCliSetter
-        } as Question);
+        } as unknown as AbapDeployConfigQuestion);
     }
     return prompts;
 }
@@ -145,10 +145,7 @@ function getTargetSystemPrompt(
  * @param backendTarget - backend target
  * @returns input question for url
  */
-function getUrlPrompt(
-    destinations?: Destinations,
-    backendTarget?: BackendTarget
-): Question<AbapDeployConfigAnswersInternal> {
+function getUrlPrompt(destinations?: Destinations, backendTarget?: BackendTarget): AbapDeployConfigQuestion {
     return {
         when: (previousAnswers: AbapDeployConfigAnswersInternal) => {
             const isValid = showUrlQuestion(previousAnswers.targetSystem);
@@ -174,8 +171,8 @@ function getUrlPrompt(
  * @param backendTarget - backend target
  * @returns confirm question for scp
  */
-function getScpPrompt(backendTarget?: BackendTarget): Question<AbapDeployConfigAnswersInternal>[] {
-    const prompts: (ConfirmQuestion<AbapDeployConfigAnswersInternal> | Question)[] = [
+function getScpPrompt(backendTarget?: BackendTarget): AbapDeployConfigQuestion[] {
+    const prompts: (ConfirmQuestion<AbapDeployConfigAnswersInternal> | AbapDeployConfigQuestion)[] = [
         {
             when: (previousAnswers: AbapDeployConfigAnswersInternal): boolean => showScpQuestion(previousAnswers),
             type: 'confirm',
@@ -185,7 +182,7 @@ function getScpPrompt(backendTarget?: BackendTarget): Question<AbapDeployConfigA
                 breadcrumb: t('prompts.target.scp.breadcrumb')
             },
             default: (): boolean | undefined => backendTarget?.abapTarget?.scp
-        }
+        } as ConfirmQuestion<AbapDeployConfigAnswersInternal>
     ];
     // Setter prompt to ensure the state for both CLI and YUI is updated when user is toggling the SCP question, Yes/No
     prompts.push({
@@ -201,7 +198,7 @@ function getScpPrompt(backendTarget?: BackendTarget): Question<AbapDeployConfigA
             return false;
         },
         name: promptNames.scpSetter
-    } as Question);
+    } as unknown as AbapDeployConfigQuestion);
     return prompts;
 }
 
@@ -211,14 +208,12 @@ function getScpPrompt(backendTarget?: BackendTarget): Question<AbapDeployConfigA
  * @param backendTarget - backend target
  * @returns list question for client choice
  */
-function getClientChoicePrompt(
-    backendTarget?: BackendTarget
-): (YUIQuestion<AbapDeployConfigAnswersInternal> | Question)[] {
-    const prompts: (ListQuestion<AbapDeployConfigAnswersInternal> | Question)[] = [
+function getClientChoicePrompt(backendTarget?: BackendTarget): AbapDeployConfigQuestion[] {
+    const prompts: (ListQuestion<AbapDeployConfigAnswersInternal> | AbapDeployConfigQuestion)[] = [
         {
             when: (previousAnswers: AbapDeployConfigAnswersInternal): boolean =>
                 showClientChoiceQuestion(previousAnswers, backendTarget?.abapTarget?.client),
-            type: 'list',
+            type: 'select',
             name: promptNames.clientChoice,
             message: t('prompts.target.clientChoice.message'),
             guiOptions: {
@@ -242,7 +237,7 @@ function getClientChoicePrompt(
                 return false;
             },
             name: promptNames.clientChoiceCliSetter
-        } as Question);
+        } as unknown as AbapDeployConfigQuestion);
     }
     return prompts;
 }
@@ -252,7 +247,7 @@ function getClientChoicePrompt(
  *
  * @returns input question for client
  */
-function getClientPrompt(): Question<AbapDeployConfigAnswersInternal> {
+function getClientPrompt(): AbapDeployConfigQuestion {
     return {
         when: (previousAnswers: AbapDeployConfigAnswersInternal): boolean => showClientQuestion(previousAnswers),
         type: 'input',
@@ -275,7 +270,7 @@ function getClientPrompt(): Question<AbapDeployConfigAnswersInternal> {
  */
 export async function getAbapTargetPrompts(
     options: AbapDeployConfigPromptOptions
-): Promise<Question<AbapDeployConfigAnswersInternal>[]> {
+): Promise<AbapDeployConfigQuestion[]> {
     const { destinations, backendSystems } = await getAbapSystems();
 
     const abapSystemChoices = await getAbapSystemChoices(destinations, options?.backendTarget, backendSystems);

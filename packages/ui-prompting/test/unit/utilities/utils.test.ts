@@ -165,10 +165,10 @@ describe('utils', () => {
             expect(result.test1 !== original.test1).toBeTruthy();
         });
 
-        const testCases: Array<{ name: string; type?: 'list'; expected: unknown }> = [
+        const testCases: Array<{ name: string; type?: 'select'; expected: unknown }> = [
             {
-                name: 'Type => list',
-                type: 'list',
+                name: 'Type => select',
+                type: 'select',
                 expected: {
                     test1: {
                         dummy1: undefined
@@ -207,7 +207,7 @@ describe('utils', () => {
                 {
                     name: 'test2.dummy2',
                     // Edge case to test with undefined
-                    type: type as 'list',
+                    type: type as 'select',
                     guiOptions: {
                         dependantPromptNames: ['test1.dummy1']
                     }
