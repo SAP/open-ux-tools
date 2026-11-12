@@ -1,6 +1,7 @@
 import {
     DatasourceType,
     CapType,
+    ApiHubType,
     SapSystemSourceType,
     neoAppJsonRouteTargetTypes,
     TemplateDataKey,
@@ -45,6 +46,16 @@ describe('Constants', () => {
 
         test('should have JAVA type', () => {
             expect(CapType.JAVA).toBe('Java');
+        });
+    });
+
+    describe('ApiHubType', () => {
+        test('should have apiHub type', () => {
+            expect(ApiHubType.apiHub).toBe('API_HUB');
+        });
+
+        test('should have apiHubEnterprise type', () => {
+            expect(ApiHubType.apiHubEnterprise).toBe('API_HUB_ENTERPRISE');
         });
     });
 

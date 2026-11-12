@@ -1,5 +1,49 @@
 # @sap-ux/fiori-tools-plugin
 
+## 1.16.15
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-11
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/eslint-plugin-fiori-tools [[6852d73](https://github.com/SAP/open-ux-tools/commit/6852d7345205fcfc1fa99976a21fed9bf89faedb)]
+
+## 1.16.14
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-10
+
+#### Dependency Updates
+
+- Sync version with @sap-ux/fiori-mcp-server [[c0973dc](https://github.com/SAP/open-ux-tools/commit/c0973dc03a4f7bcd6376cbd50d04bfb45661bf1a)]
+
+## 1.16.13
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-09
+
+#### Dependency Updates
+
+- Sync version with @sap-ux/fiori-mcp-server [[72ce32f](https://github.com/SAP/open-ux-tools/commit/72ce32fdd5cc4dc6731389940ed87c43015a6f2d)]
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/fiori-generator-shared [[5e9c948](https://github.com/SAP/open-ux-tools/commit/5e9c94868b38d60d0643ea14e60f44f481138a80)]
+
+#### Dependency Updates
+
+- Sync version with @sap-ux/fiori-mcp-server [[93a01bf](https://github.com/SAP/open-ux-tools/commit/93a01bf69097d71f49ac69bbd55abb1fbda47836)]
+
 ## 1.16.12
 
 ### Patch Changes
