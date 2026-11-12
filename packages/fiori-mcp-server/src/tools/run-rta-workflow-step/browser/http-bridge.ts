@@ -3,7 +3,7 @@ import type { NeedsUserActionPayload } from './login-page.js';
 import { requireEditorSession, stopEditorSession } from '../../../utils/editor-session.js';
 import { logger } from '../../../utils/logger.js';
 
-// Allow the preview relay's 60-second action deadline to return its own error.
+// Kept above the relay's 60s action deadline so its own 504 arrives before the fetch aborts.
 const REQUEST_TIMEOUT_MS = 70000;
 
 const START_RTA_ACTION = 'com.sap.ui.flex.startRTA.v1';
@@ -20,7 +20,7 @@ const RELAY_LOGIN_REQUIRED_MESSAGE =
  *
  * @returns SAP_FIORI_MCP_ADP_RELAY_LOGIN_WAIT_MS, default 120000.
  */
-function relayLoginWaitMs(): number {
+function getRelayLoginWaitMs(): number {
     const raw = Number(process.env.SAP_FIORI_MCP_ADP_RELAY_LOGIN_WAIT_MS);
     return Number.isFinite(raw) && raw >= 0 ? raw : DEFAULT_RELAY_LOGIN_WAIT_MS;
 }
@@ -70,14 +70,15 @@ async function requestRelay(
         signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
         redirect: 'error'
     });
+    // 504 means the browser client never answered (likely on the backend login screen). Handle it
+    // on status alone, before response.json() — an ingress/proxy may return a non-JSON 504 page —
+    // so isClientAbsent sees it and the login-wait path can engage.
+    if (response.status === 504) {
+        throw new Error('Editor relay HTTP 504');
+    }
     const body: unknown = await response.json();
     if (typeof body !== 'object' || body === null || Array.isArray(body)) {
         throw new Error('Invalid editor relay response');
-    }
-    // 504 means the browser client never answered (likely on the backend login screen). Throw
-    // before the error-body check so isClientAbsent sees it and the login-wait path can engage.
-    if (response.status === 504) {
-        throw new Error('Editor relay HTTP 504');
     }
     if ('error' in body && typeof body.error === 'string') {
         return { error: body.error };
@@ -205,7 +206,7 @@ async function callFrontendActionHttp<TReturn = unknown>(
     if (actionName !== START_RTA_ACTION) {
         return toFrontendResult<TReturn>(await requestRelay(site, actionName, payload, frameId));
     }
-    return startRtaWithRetry<TReturn>(site, payload, frameId, Date.now() + relayLoginWaitMs(), 0);
+    return startRtaWithRetry<TReturn>(site, payload, frameId, Date.now() + getRelayLoginWaitMs(), 0);
 }
 
 /**
