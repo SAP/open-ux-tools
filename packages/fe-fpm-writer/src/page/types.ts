@@ -91,7 +91,7 @@ export interface FpmPage {
 /**
  * Configuration options for adding a list report page.
  */
-export interface ListReport extends FpmPage, WriterConfig {
+export interface ListReport extends Omit<FpmPage, 'reuseExisting'>, WriterConfig {
     /**
      * Optional settings for the ListReport page
      */
@@ -179,9 +179,21 @@ export enum PageType {
 }
 
 interface OutboundNavigationSettings {
+    /**
+     * Specifies outbound unique key or alias to describe intents that can be triggered from the application to navigate
+     */
     outboundKey: string;
+    /**
+     * Intent details
+     */
     crossNavigation?: {
+        /**
+         * Represents a business entity (such as 'Employee')
+         */
         semanticObject: string;
+        /**
+         * Represents the action to perform on the business entity (such as 'display')
+         */
         action: string;
     };
 }
@@ -189,7 +201,13 @@ interface OutboundNavigationSettings {
  * Configuration options for adding/replacing an outbound navigation of a page.
  */
 export interface OutboundNavigation extends FpmPage, WriterConfig {
+    /**
+     * Provides app outbound configuration information
+     */
     settings: OutboundNavigationSettings;
+    /**
+     * Optional incoming navigation configuration. sourcePage and navEntity are used to create or delete outbound navigation links for pages.
+     */
     navigation?: Navigation;
 }
 

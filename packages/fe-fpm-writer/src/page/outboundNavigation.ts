@@ -45,7 +45,6 @@ export async function generate(basePath: string, data: OutboundNavigation, fs?: 
     });
 
     return fs;
-    // extendPageJSON(basePath, data, enhanceData.bind(undefined, fs), 'outboundNavigation/manifest.json', fs);
 }
 
 /**
