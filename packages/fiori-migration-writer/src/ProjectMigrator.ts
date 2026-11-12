@@ -1,5 +1,5 @@
 import { FioriElementsVersion, FileName } from './project-spec-types.js';
-import { determineMessage, readFile, updateFile, fileExists } from './utils/index.js';
+import { determineMessage, curateErrorDescription, readFile, updateFile, fileExists } from './utils/index.js';
 import { createMemFsEditor, loadProjectIntoEditor } from './utils/fs-adapter.js';
 import { ui5VersionRequestInfo } from '@sap-ux/ui5-info';
 import { getAppProgrammingLanguage } from '@sap-ux/project-access';
@@ -145,7 +145,7 @@ export class ProjectMigrator {
                 migrationResult.result = false;
                 migrationResult.messages.push({
                     type: 'ERROR',
-                    description: `Error committing migration: ${error instanceof Error ? error.message : String(error)}`
+                    description: curateErrorDescription(error, 'Error committing migration')
                 });
             }
         }
@@ -395,7 +395,7 @@ export class ProjectMigrator {
         } catch (err) {
             messages.push({
                 type: 'ERROR',
-                description: `Error enabling TypeScript: ${err instanceof Error ? err.message : String(err)}`
+                description: curateErrorDescription(err, 'Error enabling TypeScript')
             });
             return messages;
         }

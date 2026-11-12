@@ -11,7 +11,7 @@ export * from './UI5Theme.js';
 export { validateMetadata } from './service.js';
 
 // Migration utilities
-export { determineMessage } from './migration-utils.js';
+export { determineMessage, curateErrorDescription, stripPaths, pathToFilename } from './migration-utils.js';
 
 // Re-export native file access to replace @sap/ux-project-access file I/O
 export { readFile, readJSON, fileExists, writeFile, updateFile, updateJSON, deleteFile } from './file-access.js';
