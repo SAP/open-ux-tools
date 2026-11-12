@@ -5,10 +5,10 @@ import fsExtra from 'fs-extra';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-const realWhich = await import('which');
+const syncMock = jest.fn();
 jest.unstable_mockModule('which', () => ({
-    ...realWhich,
-    sync: jest.fn()
+    default: Object.assign(jest.fn(), { sync: syncMock }),
+    sync: syncMock
 }));
 
 const { MockMta } = await import('./mockMta.js');
@@ -22,7 +22,6 @@ jest.unstable_mockModule('@sap-ux/project-access', () => ({
     getCapProjectType: jest.fn()
 }));
 
-const whichMod = await import('which');
 const { NullTransport, ToolsLogger } = await import('@sap-ux/logger');
 const { generateCAPConfig } = await import('../../src/index.js');
 const { RouterModuleType } = await import('../../src/index.js');
@@ -42,7 +41,7 @@ describe('CF Writer CAP', () => {
     beforeEach(() => {
         jest.resetAllMocks();
         jest.restoreAllMocks();
-        hasSyncMock = (whichMod.sync as jest.Mock).mockImplementation(() => true);
+        hasSyncMock = syncMock.mockImplementation(() => true);
     });
 
     beforeAll(() => {

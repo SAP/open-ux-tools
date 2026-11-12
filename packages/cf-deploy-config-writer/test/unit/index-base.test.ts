@@ -30,7 +30,6 @@ jest.unstable_mockModule('@sap/mta-lib', () => ({
     Mta: MockMta
 }));
 
-const whichMod = await import('which');
 const cfTools = await import('@sap/cf-tools');
 const { NullTransport, ToolsLogger } = await import('@sap-ux/logger');
 const { generateBaseConfig } = await import('../../src/index.js');
