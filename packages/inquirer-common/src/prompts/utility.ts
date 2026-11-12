@@ -1,9 +1,8 @@
 import { getUi5Themes, type UI5Theme, type UI5Version } from '@sap-ux/ui5-info';
 import fuzzy from 'fuzzy';
-import type { ListChoiceOptions } from 'inquirer';
 import { coerce, eq, lte, type SemVer } from 'semver';
 import { t } from '../i18n.js';
-import type { UI5VersionChoice } from '../types.js';
+import type { ChoiceOptions, UI5VersionChoice } from '../types.js';
 import { Separator } from './separator.js';
 
 /**
@@ -12,7 +11,7 @@ import { Separator } from './separator.js';
  * @param ui5Version - UI5 semantic version
  * @returns UI5 themes as list choice options
  */
-export async function getUI5ThemesChoices(ui5Version?: string): Promise<ListChoiceOptions[]> {
+export async function getUI5ThemesChoices(ui5Version?: string): Promise<ChoiceOptions[]> {
     const themes = await getUi5Themes(ui5Version);
     return themes.map((theme: UI5Theme) => ({
         name: theme.label,
@@ -27,12 +26,12 @@ export async function getUI5ThemesChoices(ui5Version?: string): Promise<ListChoi
  * @param searchList - the list in which to search by fuzzy matching the choice name
  * @returns Inquirer choices filtered by the search value
  */
-export function searchChoices(searchVal: string, searchList: ListChoiceOptions[]): ListChoiceOptions[] {
+export function searchChoices(searchVal: string, searchList: ChoiceOptions[]): ChoiceOptions[] {
     return searchVal && searchList
         ? fuzzy
               .filter(searchVal, searchList, {
                   // Only `choice.name` searching is supported, as this is what is presented to the user by Inquirer
-                  extract: (choice: ListChoiceOptions) => choice.name ?? ''
+                  extract: (choice: ChoiceOptions) => choice.name ?? ''
               })
               .map((el) => el.original)
         : searchList;
