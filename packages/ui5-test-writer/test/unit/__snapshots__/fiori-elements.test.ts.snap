@@ -11947,9 +11947,9 @@ function journey() {
         
         When.onTheEmployeesListGenerated.onFilterBar().iExecuteSearch();
         
-        Then.onTheEmployeesListGenerated.onTable(\\"\\").iCheckRows();
+        Then.onTheEmployeesListGenerated.onTable().iCheckRows();
 
-        When.onTheEmployeesListGenerated.onTable(\\"\\").iPressRow(0);
+        When.onTheEmployeesListGenerated.onTable().iPressRow(0);
         Then.onTheEmployeesObjectPageGenerated.iSeeThisPage();
 
     });
@@ -12101,8 +12101,7 @@ const runner = new JourneyRunner({
             {
                 appId: \\"ui5-test-writer.test.employees\\",
                 componentId: \\"EmployeesList\\",
-                entitySet: \\"Employees\\",
-                contextPath: \\"\\"
+                entitySet: \\"Employees\\"
             },
             CustomEmployeesListGenerated
         ),
@@ -12110,8 +12109,7 @@ const runner = new JourneyRunner({
             {
                 appId: \\"ui5-test-writer.test.employees\\",
                 componentId: \\"EmployeesObjectPage\\",
-                entitySet: \\"Employees\\",
-                contextPath: \\"\\"
+                entitySet: \\"Employees\\"
             },
             CustomEmployeesObjectPageGenerated
         )
@@ -12154,12 +12152,17 @@ import type { actions as EmployeesObjectPageGeneratedCustomActions, assertions a
  * Then.onTheObjectPageGenerated.iCheckSection({ section: \\"A\\" }).and.iCheckSection({ section: \\"B\\" });
  * When.onTheListReportGenerated.onFilterBar().iExecuteSearch().and.iClearFilterBar();
  */
+type WrapReturn<R, T> = R extends Opa5 | object ? (keyof R extends never ? WithAnd<T> : [R] extends [Opa5] ? WithAnd<T> : WithAnd<R>) : WithAnd<T>;
+// \`infer A\` on an overloaded function keeps only the last overload; the 2-overload branch preserves both.
+// A 3rd overload would be dropped SILENTLY (no error) — add a 3-overload branch if @sapui5/types grows one.
 type WithAnd<T> = {
     [K in keyof T | 'and']: K extends 'and'
         ? WithAnd<T>
         : K extends keyof T
-        ? T[K] extends (...args: infer A) => infer R
-            ? (...args: A) => (R extends Opa5 | object ? (keyof R extends never ? WithAnd<T> : [R] extends [Opa5] ? WithAnd<T> : WithAnd<R>) : WithAnd<T>)
+        ? T[K] extends { (...args: infer A1): infer R1; (...args: infer A2): infer R2 }
+            ? { (...args: A1): WrapReturn<R1, T>; (...args: A2): WrapReturn<R2, T> }
+            : T[K] extends (...args: infer A) => infer R
+            ? (...args: A) => WrapReturn<R, T>
             : T[K]
         : never;
 };
@@ -12411,9 +12414,9 @@ function journey() {
         
         When.onTheEmployeesListGenerated.onFilterBar().iExecuteSearch();
         
-        Then.onTheEmployeesListGenerated.onTable(\\"\\").iCheckRows();
+        Then.onTheEmployeesListGenerated.onTable().iCheckRows();
 
-        When.onTheEmployeesListGenerated.onTable(\\"\\").iPressRow(0);
+        When.onTheEmployeesListGenerated.onTable().iPressRow(0);
         Then.onTheEmployeesObjectPageGenerated.iSeeThisPage();
 
     });
@@ -12565,8 +12568,7 @@ const runner = new JourneyRunner({
             {
                 appId: \\"ui5-test-writer.test.employees\\",
                 componentId: \\"EmployeesList\\",
-                entitySet: \\"Employees\\",
-                contextPath: \\"\\"
+                entitySet: \\"Employees\\"
             },
             CustomEmployeesListGenerated
         ),
@@ -12574,8 +12576,7 @@ const runner = new JourneyRunner({
             {
                 appId: \\"ui5-test-writer.test.employees\\",
                 componentId: \\"EmployeesObjectPage\\",
-                entitySet: \\"Employees\\",
-                contextPath: \\"\\"
+                entitySet: \\"Employees\\"
             },
             CustomEmployeesObjectPageGenerated
         )
@@ -12618,12 +12619,17 @@ import type { actions as EmployeesObjectPageGeneratedCustomActions, assertions a
  * Then.onTheObjectPageGenerated.iCheckSection({ section: \\"A\\" }).and.iCheckSection({ section: \\"B\\" });
  * When.onTheListReportGenerated.onFilterBar().iExecuteSearch().and.iClearFilterBar();
  */
+type WrapReturn<R, T> = R extends Opa5 | object ? (keyof R extends never ? WithAnd<T> : [R] extends [Opa5] ? WithAnd<T> : WithAnd<R>) : WithAnd<T>;
+// \`infer A\` on an overloaded function keeps only the last overload; the 2-overload branch preserves both.
+// A 3rd overload would be dropped SILENTLY (no error) — add a 3-overload branch if @sapui5/types grows one.
 type WithAnd<T> = {
     [K in keyof T | 'and']: K extends 'and'
         ? WithAnd<T>
         : K extends keyof T
-        ? T[K] extends (...args: infer A) => infer R
-            ? (...args: A) => (R extends Opa5 | object ? (keyof R extends never ? WithAnd<T> : [R] extends [Opa5] ? WithAnd<T> : WithAnd<R>) : WithAnd<T>)
+        ? T[K] extends { (...args: infer A1): infer R1; (...args: infer A2): infer R2 }
+            ? { (...args: A1): WrapReturn<R1, T>; (...args: A2): WrapReturn<R2, T> }
+            : T[K] extends (...args: infer A) => infer R
+            ? (...args: A) => WrapReturn<R, T>
             : T[K]
         : never;
 };
@@ -12875,9 +12881,9 @@ function journey() {
         
         When.onTheEmployeesListGenerated.onFilterBar().iExecuteSearch();
         
-        Then.onTheEmployeesListGenerated.onTable(\\"\\").iCheckRows();
+        Then.onTheEmployeesListGenerated.onTable().iCheckRows();
 
-        When.onTheEmployeesListGenerated.onTable(\\"\\").iPressRow(0);
+        When.onTheEmployeesListGenerated.onTable().iPressRow(0);
         Then.onTheEmployeesObjectPageGenerated.iSeeThisPage();
 
     });
@@ -13029,7 +13035,6 @@ const runner = new JourneyRunner({
             {
                 appId: \\"ui5-test-writer.test.employees\\",
                 componentId: \\"EmployeesList\\",
-                entitySet: \\"\\",
                 contextPath: \\"/Employees\\"
             },
             CustomEmployeesListGenerated
@@ -13038,7 +13043,6 @@ const runner = new JourneyRunner({
             {
                 appId: \\"ui5-test-writer.test.employees\\",
                 componentId: \\"EmployeesObjectPage\\",
-                entitySet: \\"\\",
                 contextPath: \\"/Employees\\"
             },
             CustomEmployeesObjectPageGenerated
@@ -13082,12 +13086,17 @@ import type { actions as EmployeesObjectPageGeneratedCustomActions, assertions a
  * Then.onTheObjectPageGenerated.iCheckSection({ section: \\"A\\" }).and.iCheckSection({ section: \\"B\\" });
  * When.onTheListReportGenerated.onFilterBar().iExecuteSearch().and.iClearFilterBar();
  */
+type WrapReturn<R, T> = R extends Opa5 | object ? (keyof R extends never ? WithAnd<T> : [R] extends [Opa5] ? WithAnd<T> : WithAnd<R>) : WithAnd<T>;
+// \`infer A\` on an overloaded function keeps only the last overload; the 2-overload branch preserves both.
+// A 3rd overload would be dropped SILENTLY (no error) — add a 3-overload branch if @sapui5/types grows one.
 type WithAnd<T> = {
     [K in keyof T | 'and']: K extends 'and'
         ? WithAnd<T>
         : K extends keyof T
-        ? T[K] extends (...args: infer A) => infer R
-            ? (...args: A) => (R extends Opa5 | object ? (keyof R extends never ? WithAnd<T> : [R] extends [Opa5] ? WithAnd<T> : WithAnd<R>) : WithAnd<T>)
+        ? T[K] extends { (...args: infer A1): infer R1; (...args: infer A2): infer R2 }
+            ? { (...args: A1): WrapReturn<R1, T>; (...args: A2): WrapReturn<R2, T> }
+            : T[K] extends (...args: infer A) => infer R
+            ? (...args: A) => WrapReturn<R, T>
             : T[K]
         : never;
 };
@@ -13316,7 +13325,7 @@ function journey() {
         
         When.onTheEmployeesListGenerated.onFilterBar().iExecuteSearch();
         
-        Then.onTheEmployeesListGenerated.onTable(\\"\\").iCheckRows();
+        Then.onTheEmployeesListGenerated.onTable().iCheckRows();
 
     });
 
@@ -13436,8 +13445,7 @@ const runner = new JourneyRunner({
             {
                 appId: \\"ui5-test-writer.test.employees\\",
                 componentId: \\"EmployeesList\\",
-                entitySet: \\"Employees\\",
-                contextPath: \\"\\"
+                entitySet: \\"Employees\\"
             },
             CustomEmployeesListGenerated
         )
@@ -13478,12 +13486,17 @@ import type { actions as EmployeesListGeneratedCustomActions, assertions as Empl
  * Then.onTheObjectPageGenerated.iCheckSection({ section: \\"A\\" }).and.iCheckSection({ section: \\"B\\" });
  * When.onTheListReportGenerated.onFilterBar().iExecuteSearch().and.iClearFilterBar();
  */
+type WrapReturn<R, T> = R extends Opa5 | object ? (keyof R extends never ? WithAnd<T> : [R] extends [Opa5] ? WithAnd<T> : WithAnd<R>) : WithAnd<T>;
+// \`infer A\` on an overloaded function keeps only the last overload; the 2-overload branch preserves both.
+// A 3rd overload would be dropped SILENTLY (no error) — add a 3-overload branch if @sapui5/types grows one.
 type WithAnd<T> = {
     [K in keyof T | 'and']: K extends 'and'
         ? WithAnd<T>
         : K extends keyof T
-        ? T[K] extends (...args: infer A) => infer R
-            ? (...args: A) => (R extends Opa5 | object ? (keyof R extends never ? WithAnd<T> : [R] extends [Opa5] ? WithAnd<T> : WithAnd<R>) : WithAnd<T>)
+        ? T[K] extends { (...args: infer A1): infer R1; (...args: infer A2): infer R2 }
+            ? { (...args: A1): WrapReturn<R1, T>; (...args: A2): WrapReturn<R2, T> }
+            : T[K] extends (...args: infer A) => infer R
+            ? (...args: A) => WrapReturn<R, T>
             : T[K]
         : never;
 };
@@ -13776,9 +13789,9 @@ function journey() {
         
         When.onTheEmployeesListGenerated.onFilterBar().iExecuteSearch();
         
-        Then.onTheEmployeesListGenerated.onTable(\\"\\").iCheckRows();
+        Then.onTheEmployeesListGenerated.onTable().iCheckRows();
 
-        When.onTheEmployeesListGenerated.onTable(\\"\\").iPressRow(0);
+        When.onTheEmployeesListGenerated.onTable().iPressRow(0);
         Then.onTheEmployeesObjectPageGenerated.iSeeThisPage();
 
     });
@@ -13932,8 +13945,7 @@ const runner = new JourneyRunner({
             {
                 appId: \\"vesc.demo.employee.project2\\",
                 componentId: \\"EmployeesList\\",
-                entitySet: \\"Employees\\",
-                contextPath: \\"\\"
+                entitySet: \\"Employees\\"
             },
             CustomEmployeesListGenerated
         ),
@@ -13941,8 +13953,7 @@ const runner = new JourneyRunner({
             {
                 appId: \\"vesc.demo.employee.project2\\",
                 componentId: \\"EmployeesObjectPage\\",
-                entitySet: \\"Employees\\",
-                contextPath: \\"\\"
+                entitySet: \\"Employees\\"
             },
             CustomEmployeesObjectPageGenerated
         ),
@@ -13950,8 +13961,7 @@ const runner = new JourneyRunner({
             {
                 appId: \\"vesc.demo.employee.project2\\",
                 componentId: \\"PositionsObjectPage\\",
-                entitySet: \\"Positions\\",
-                contextPath: \\"\\"
+                entitySet: \\"Positions\\"
             },
             CustomPositionsObjectPageGenerated
         ),
@@ -13959,8 +13969,7 @@ const runner = new JourneyRunner({
             {
                 appId: \\"vesc.demo.employee.project2\\",
                 componentId: \\"TrainingsObjectPage\\",
-                entitySet: \\"Trainings\\",
-                contextPath: \\"\\"
+                entitySet: \\"Trainings\\"
             },
             CustomTrainingsObjectPageGenerated
         )
@@ -14063,12 +14072,17 @@ import type { actions as TrainingsObjectPageGeneratedCustomActions, assertions a
  * Then.onTheObjectPageGenerated.iCheckSection({ section: \\"A\\" }).and.iCheckSection({ section: \\"B\\" });
  * When.onTheListReportGenerated.onFilterBar().iExecuteSearch().and.iClearFilterBar();
  */
+type WrapReturn<R, T> = R extends Opa5 | object ? (keyof R extends never ? WithAnd<T> : [R] extends [Opa5] ? WithAnd<T> : WithAnd<R>) : WithAnd<T>;
+// \`infer A\` on an overloaded function keeps only the last overload; the 2-overload branch preserves both.
+// A 3rd overload would be dropped SILENTLY (no error) — add a 3-overload branch if @sapui5/types grows one.
 type WithAnd<T> = {
     [K in keyof T | 'and']: K extends 'and'
         ? WithAnd<T>
         : K extends keyof T
-        ? T[K] extends (...args: infer A) => infer R
-            ? (...args: A) => (R extends Opa5 | object ? (keyof R extends never ? WithAnd<T> : [R] extends [Opa5] ? WithAnd<T> : WithAnd<R>) : WithAnd<T>)
+        ? T[K] extends { (...args: infer A1): infer R1; (...args: infer A2): infer R2 }
+            ? { (...args: A1): WrapReturn<R1, T>; (...args: A2): WrapReturn<R2, T> }
+            : T[K] extends (...args: infer A) => infer R
+            ? (...args: A) => WrapReturn<R, T>
             : T[K]
         : never;
 };
@@ -14599,12 +14613,17 @@ import type { actions as EmployeesCustomPageTargetGeneratedCustomActions, assert
  * Then.onTheObjectPageGenerated.iCheckSection({ section: \\"A\\" }).and.iCheckSection({ section: \\"B\\" });
  * When.onTheListReportGenerated.onFilterBar().iExecuteSearch().and.iClearFilterBar();
  */
+type WrapReturn<R, T> = R extends Opa5 | object ? (keyof R extends never ? WithAnd<T> : [R] extends [Opa5] ? WithAnd<T> : WithAnd<R>) : WithAnd<T>;
+// \`infer A\` on an overloaded function keeps only the last overload; the 2-overload branch preserves both.
+// A 3rd overload would be dropped SILENTLY (no error) — add a 3-overload branch if @sapui5/types grows one.
 type WithAnd<T> = {
     [K in keyof T | 'and']: K extends 'and'
         ? WithAnd<T>
         : K extends keyof T
-        ? T[K] extends (...args: infer A) => infer R
-            ? (...args: A) => (R extends Opa5 | object ? (keyof R extends never ? WithAnd<T> : [R] extends [Opa5] ? WithAnd<T> : WithAnd<R>) : WithAnd<T>)
+        ? T[K] extends { (...args: infer A1): infer R1; (...args: infer A2): infer R2 }
+            ? { (...args: A1): WrapReturn<R1, T>; (...args: A2): WrapReturn<R2, T> }
+            : T[K] extends (...args: infer A) => infer R
+            ? (...args: A) => WrapReturn<R, T>
             : T[K]
         : never;
 };
@@ -15133,12 +15152,17 @@ import type { actions as EmployeesCustomPageTargetGeneratedCustomActions, assert
  * Then.onTheObjectPageGenerated.iCheckSection({ section: \\"A\\" }).and.iCheckSection({ section: \\"B\\" });
  * When.onTheListReportGenerated.onFilterBar().iExecuteSearch().and.iClearFilterBar();
  */
+type WrapReturn<R, T> = R extends Opa5 | object ? (keyof R extends never ? WithAnd<T> : [R] extends [Opa5] ? WithAnd<T> : WithAnd<R>) : WithAnd<T>;
+// \`infer A\` on an overloaded function keeps only the last overload; the 2-overload branch preserves both.
+// A 3rd overload would be dropped SILENTLY (no error) — add a 3-overload branch if @sapui5/types grows one.
 type WithAnd<T> = {
     [K in keyof T | 'and']: K extends 'and'
         ? WithAnd<T>
         : K extends keyof T
-        ? T[K] extends (...args: infer A) => infer R
-            ? (...args: A) => (R extends Opa5 | object ? (keyof R extends never ? WithAnd<T> : [R] extends [Opa5] ? WithAnd<T> : WithAnd<R>) : WithAnd<T>)
+        ? T[K] extends { (...args: infer A1): infer R1; (...args: infer A2): infer R2 }
+            ? { (...args: A1): WrapReturn<R1, T>; (...args: A2): WrapReturn<R2, T> }
+            : T[K] extends (...args: infer A) => infer R
+            ? (...args: A) => WrapReturn<R, T>
             : T[K]
         : never;
 };
@@ -15414,9 +15438,9 @@ function journey() {
         
         When.onTheEmployeesListTargetGenerated.onFilterBar().iExecuteSearch();
         
-        Then.onTheEmployeesListTargetGenerated.onTable(\\"\\").iCheckRows();
+        Then.onTheEmployeesListTargetGenerated.onTable().iCheckRows();
 
-        When.onTheEmployeesListTargetGenerated.onTable(\\"\\").iPressRow(0);
+        When.onTheEmployeesListTargetGenerated.onTable().iPressRow(0);
         Then.onTheEmployeesCustomPageTargetGenerated.iSeeThisPage();
 
     });
@@ -15599,8 +15623,7 @@ const runner = new JourneyRunner({
             {
                 appId: \\"projectservice\\",
                 componentId: \\"EmployeesList\\",
-                entitySet: \\"Employees\\",
-                contextPath: \\"\\"
+                entitySet: \\"Employees\\"
             },
             CustomEmployeesListTargetGenerated
         ),
@@ -15608,8 +15631,7 @@ const runner = new JourneyRunner({
             {
                 appId: \\"projectservice\\",
                 componentId: \\"EmployeesObjectPage\\",
-                entitySet: \\"Employees\\",
-                contextPath: \\"\\"
+                entitySet: \\"Employees\\"
             },
             CustomEmployeesObjectPageTargetGenerated
         ),
@@ -15657,12 +15679,17 @@ import type { actions as EmployeesCustomPageTargetGeneratedCustomActions, assert
  * Then.onTheObjectPageGenerated.iCheckSection({ section: \\"A\\" }).and.iCheckSection({ section: \\"B\\" });
  * When.onTheListReportGenerated.onFilterBar().iExecuteSearch().and.iClearFilterBar();
  */
+type WrapReturn<R, T> = R extends Opa5 | object ? (keyof R extends never ? WithAnd<T> : [R] extends [Opa5] ? WithAnd<T> : WithAnd<R>) : WithAnd<T>;
+// \`infer A\` on an overloaded function keeps only the last overload; the 2-overload branch preserves both.
+// A 3rd overload would be dropped SILENTLY (no error) — add a 3-overload branch if @sapui5/types grows one.
 type WithAnd<T> = {
     [K in keyof T | 'and']: K extends 'and'
         ? WithAnd<T>
         : K extends keyof T
-        ? T[K] extends (...args: infer A) => infer R
-            ? (...args: A) => (R extends Opa5 | object ? (keyof R extends never ? WithAnd<T> : [R] extends [Opa5] ? WithAnd<T> : WithAnd<R>) : WithAnd<T>)
+        ? T[K] extends { (...args: infer A1): infer R1; (...args: infer A2): infer R2 }
+            ? { (...args: A1): WrapReturn<R1, T>; (...args: A2): WrapReturn<R2, T> }
+            : T[K] extends (...args: infer A) => infer R
+            ? (...args: A) => WrapReturn<R, T>
             : T[K]
         : never;
 };
@@ -15938,9 +15965,9 @@ function journey() {
         
         When.onTheEmployeesListTargetGenerated.onFilterBar().iExecuteSearch();
         
-        Then.onTheEmployeesListTargetGenerated.onTable(\\"\\").iCheckRows();
+        Then.onTheEmployeesListTargetGenerated.onTable().iCheckRows();
 
-        When.onTheEmployeesListTargetGenerated.onTable(\\"\\").iPressRow(0);
+        When.onTheEmployeesListTargetGenerated.onTable().iPressRow(0);
         Then.onTheEmployeesCustomPageTargetGenerated.iSeeThisPage();
 
     });
@@ -16123,8 +16150,7 @@ const runner = new JourneyRunner({
             {
                 appId: \\"projectservice\\",
                 componentId: \\"EmployeesList\\",
-                entitySet: \\"Employees\\",
-                contextPath: \\"\\"
+                entitySet: \\"Employees\\"
             },
             CustomEmployeesListTargetGenerated
         ),
@@ -16132,8 +16158,7 @@ const runner = new JourneyRunner({
             {
                 appId: \\"projectservice\\",
                 componentId: \\"EmployeesObjectPage\\",
-                entitySet: \\"Employees\\",
-                contextPath: \\"\\"
+                entitySet: \\"Employees\\"
             },
             CustomEmployeesObjectPageTargetGenerated
         ),
@@ -16181,12 +16206,17 @@ import type { actions as EmployeesCustomPageTargetGeneratedCustomActions, assert
  * Then.onTheObjectPageGenerated.iCheckSection({ section: \\"A\\" }).and.iCheckSection({ section: \\"B\\" });
  * When.onTheListReportGenerated.onFilterBar().iExecuteSearch().and.iClearFilterBar();
  */
+type WrapReturn<R, T> = R extends Opa5 | object ? (keyof R extends never ? WithAnd<T> : [R] extends [Opa5] ? WithAnd<T> : WithAnd<R>) : WithAnd<T>;
+// \`infer A\` on an overloaded function keeps only the last overload; the 2-overload branch preserves both.
+// A 3rd overload would be dropped SILENTLY (no error) — add a 3-overload branch if @sapui5/types grows one.
 type WithAnd<T> = {
     [K in keyof T | 'and']: K extends 'and'
         ? WithAnd<T>
         : K extends keyof T
-        ? T[K] extends (...args: infer A) => infer R
-            ? (...args: A) => (R extends Opa5 | object ? (keyof R extends never ? WithAnd<T> : [R] extends [Opa5] ? WithAnd<T> : WithAnd<R>) : WithAnd<T>)
+        ? T[K] extends { (...args: infer A1): infer R1; (...args: infer A2): infer R2 }
+            ? { (...args: A1): WrapReturn<R1, T>; (...args: A2): WrapReturn<R2, T> }
+            : T[K] extends (...args: infer A) => infer R
+            ? (...args: A) => WrapReturn<R, T>
             : T[K]
         : never;
 };
@@ -17892,12 +17922,17 @@ import type { actions as EmployeesObjectPageGeneratedCustomActions, assertions a
  * Then.onTheObjectPageGenerated.iCheckSection({ section: \\"A\\" }).and.iCheckSection({ section: \\"B\\" });
  * When.onTheListReportGenerated.onFilterBar().iExecuteSearch().and.iClearFilterBar();
  */
+type WrapReturn<R, T> = R extends Opa5 | object ? (keyof R extends never ? WithAnd<T> : [R] extends [Opa5] ? WithAnd<T> : WithAnd<R>) : WithAnd<T>;
+// \`infer A\` on an overloaded function keeps only the last overload; the 2-overload branch preserves both.
+// A 3rd overload would be dropped SILENTLY (no error) — add a 3-overload branch if @sapui5/types grows one.
 type WithAnd<T> = {
     [K in keyof T | 'and']: K extends 'and'
         ? WithAnd<T>
         : K extends keyof T
-        ? T[K] extends (...args: infer A) => infer R
-            ? (...args: A) => (R extends Opa5 | object ? (keyof R extends never ? WithAnd<T> : [R] extends [Opa5] ? WithAnd<T> : WithAnd<R>) : WithAnd<T>)
+        ? T[K] extends { (...args: infer A1): infer R1; (...args: infer A2): infer R2 }
+            ? { (...args: A1): WrapReturn<R1, T>; (...args: A2): WrapReturn<R2, T> }
+            : T[K] extends (...args: infer A) => infer R
+            ? (...args: A) => WrapReturn<R, T>
             : T[K]
         : never;
 };
@@ -18366,12 +18401,17 @@ import type { actions as EmployeesObjectPageGeneratedCustomActions, assertions a
  * Then.onTheObjectPageGenerated.iCheckSection({ section: \\"A\\" }).and.iCheckSection({ section: \\"B\\" });
  * When.onTheListReportGenerated.onFilterBar().iExecuteSearch().and.iClearFilterBar();
  */
+type WrapReturn<R, T> = R extends Opa5 | object ? (keyof R extends never ? WithAnd<T> : [R] extends [Opa5] ? WithAnd<T> : WithAnd<R>) : WithAnd<T>;
+// \`infer A\` on an overloaded function keeps only the last overload; the 2-overload branch preserves both.
+// A 3rd overload would be dropped SILENTLY (no error) — add a 3-overload branch if @sapui5/types grows one.
 type WithAnd<T> = {
     [K in keyof T | 'and']: K extends 'and'
         ? WithAnd<T>
         : K extends keyof T
-        ? T[K] extends (...args: infer A) => infer R
-            ? (...args: A) => (R extends Opa5 | object ? (keyof R extends never ? WithAnd<T> : [R] extends [Opa5] ? WithAnd<T> : WithAnd<R>) : WithAnd<T>)
+        ? T[K] extends { (...args: infer A1): infer R1; (...args: infer A2): infer R2 }
+            ? { (...args: A1): WrapReturn<R1, T>; (...args: A2): WrapReturn<R2, T> }
+            : T[K] extends (...args: infer A) => infer R
+            ? (...args: A) => WrapReturn<R, T>
             : T[K]
         : never;
 };
@@ -18623,9 +18663,9 @@ function journey() {
         
         When.onTheEmployeesListGenerated.onFilterBar().iExecuteSearch();
         
-        Then.onTheEmployeesListGenerated.onTable(\\"\\").iCheckRows();
+        Then.onTheEmployeesListGenerated.onTable().iCheckRows();
 
-        When.onTheEmployeesListGenerated.onTable(\\"\\").iPressRow(0);
+        When.onTheEmployeesListGenerated.onTable().iPressRow(0);
         Then.onTheEmployeesObjectPageGenerated.iSeeThisPage();
 
     });
@@ -18777,7 +18817,6 @@ const runner = new JourneyRunner({
             {
                 appId: \\"ui5-test-writer.test.employees\\",
                 componentId: \\"EmployeesList\\",
-                entitySet: \\"\\",
                 contextPath: \\"/Employees\\"
             },
             CustomEmployeesListGenerated
@@ -18786,7 +18825,6 @@ const runner = new JourneyRunner({
             {
                 appId: \\"ui5-test-writer.test.employees\\",
                 componentId: \\"EmployeesObjectPage\\",
-                entitySet: \\"\\",
                 contextPath: \\"/Employees\\"
             },
             CustomEmployeesObjectPageGenerated
@@ -18830,12 +18868,17 @@ import type { actions as EmployeesObjectPageGeneratedCustomActions, assertions a
  * Then.onTheObjectPageGenerated.iCheckSection({ section: \\"A\\" }).and.iCheckSection({ section: \\"B\\" });
  * When.onTheListReportGenerated.onFilterBar().iExecuteSearch().and.iClearFilterBar();
  */
+type WrapReturn<R, T> = R extends Opa5 | object ? (keyof R extends never ? WithAnd<T> : [R] extends [Opa5] ? WithAnd<T> : WithAnd<R>) : WithAnd<T>;
+// \`infer A\` on an overloaded function keeps only the last overload; the 2-overload branch preserves both.
+// A 3rd overload would be dropped SILENTLY (no error) — add a 3-overload branch if @sapui5/types grows one.
 type WithAnd<T> = {
     [K in keyof T | 'and']: K extends 'and'
         ? WithAnd<T>
         : K extends keyof T
-        ? T[K] extends (...args: infer A) => infer R
-            ? (...args: A) => (R extends Opa5 | object ? (keyof R extends never ? WithAnd<T> : [R] extends [Opa5] ? WithAnd<T> : WithAnd<R>) : WithAnd<T>)
+        ? T[K] extends { (...args: infer A1): infer R1; (...args: infer A2): infer R2 }
+            ? { (...args: A1): WrapReturn<R1, T>; (...args: A2): WrapReturn<R2, T> }
+            : T[K] extends (...args: infer A) => infer R
+            ? (...args: A) => WrapReturn<R, T>
             : T[K]
         : never;
 };

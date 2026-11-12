@@ -1,5 +1,11 @@
-export type { CustomPage, ObjectPage, ListReport } from './page/types.js';
-export { generateCustomPage, generateObjectPage, generateListReport } from './page/index.js';
+export type { CustomPage, ObjectPage, ListReport, OutboundNavigation } from './page/types.js';
+export {
+    generateCustomPage,
+    generateObjectPage,
+    generateListReport,
+    generateOutboundNavigation,
+    deleteOutboundNavigation
+} from './page/index.js';
 
 export type { CustomAction } from './action/types.js';
 export { TargetControl } from './action/types.js';

@@ -5,7 +5,7 @@
         },
         "routing": {
             "targets": {
-                "<% if (typeof id !== 'undefined') { %><%- id %><% } else { %><%- entity %><%- name %><% } %>": {
+                <%if (!locals.reuseExisting) {%>"<% if (typeof id !== 'undefined') { %><%- id %><% } else { %><%- entity %><%- name %><% } %>": {
                     "type": "Component",
                     "id": "<% if (typeof id !== 'undefined') { %><%- id %><% } else { %><%- entity %><%- name %><% } %>",
                     "name": "<%- template %>",<%if (locals.controlAggregation) {%>
@@ -14,7 +14,7 @@
                         "settings": <%- JSON.stringify({ ...settings, viewName: `${ns}.${name}`}) %>
                     }
                 }<%if (locals.navigation) {%>,
-                "<%- navigation.sourcePage %>": {
+                <% } %><% } %><%if (locals.navigation) {%>"<%- navigation.sourcePage %>": {
                     "options": {
                         "settings": {
                             "navigation": {
