@@ -19,16 +19,27 @@ describe('translateBuildingBlockInput', () => {
         expect(result['anchor']).toBeUndefined();
     });
 
-    test('Action: press → embeddedAction.eventHandler, key → actionKey (anchor/placement stay flat)', () => {
+    test('Action: a bare press string is rejected — handler must be embeddedAction.eventHandler object', () => {
+        expect(() =>
+            translateBuildingBlockInput({
+                buildingBlockType: 'action',
+                key: 'approve',
+                press: 'handler.onApprove'
+            })
+        ).toThrow(/embeddedAction\.eventHandler/);
+    });
+
+    test('Action: structured eventHandler object is kept, key → actionKey, redundant press dropped (anchor/placement stay flat)', () => {
         const result = translateBuildingBlockInput({
             buildingBlockType: 'action',
             key: 'approve',
             press: 'handler.onApprove',
+            embeddedAction: { eventHandler: { fileName: 'ApproveHandler', fnName: 'onApprove' } },
             anchor: 'reject',
             placement: 'After'
         });
         expect(result['actionKey']).toBe('approve');
-        expect(result['embeddedAction']).toEqual({ eventHandler: 'handler.onApprove' });
+        expect(result['embeddedAction']).toEqual({ eventHandler: { fileName: 'ApproveHandler', fnName: 'onApprove' } });
         expect(result['press']).toBeUndefined();
         // Action keeps anchor/placement flat — must NOT be wrapped into position.
         expect(result['position']).toBeUndefined();

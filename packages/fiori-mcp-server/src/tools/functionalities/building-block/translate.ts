@@ -45,6 +45,31 @@ function renameField(data: Record<string, unknown>, from: string, to: string): v
 }
 
 /**
+ * Enforces the Action handler contract: the handler must be supplied as `embeddedAction.eventHandler`
+ * as an OBJECT ({ fileName?, fnName? }). fe-fpm-writer's `processAction` only wires the handler when
+ * `eventHandler` is an object — a bare string is ignored, so the generated `<macros:Action>` would
+ * silently render no `press`/`core:require`. A `press="file.fn"` string cannot be mapped unambiguously
+ * to that object (controller-method vs required handler, module path), so reject it instead of emitting
+ * a broken config, and strip a redundant `press` hint when a structured handler is already present.
+ *
+ * @param data - The building block data mutated in place
+ * @throws {Error} When `press` is set but `embeddedAction.eventHandler` is not an object
+ */
+function normalizeActionPress(data: Record<string, unknown>): void {
+    if (data['press'] === undefined) {
+        return;
+    }
+    const eventHandler = (data['embeddedAction'] as Record<string, unknown> | undefined)?.['eventHandler'];
+    if (typeof eventHandler !== 'object' || eventHandler === null) {
+        throw new Error(
+            'Action handler must be provided via embeddedAction.eventHandler as an object ' +
+                '(e.g. { fileName: "MyHandler", fnName: "onApprove" }); a bare "press" value is not supported.'
+        );
+    }
+    delete data['press'];
+}
+
+/**
  * Translates LLM-provided building block data from XML attribute names (as documented in
  * bb_macro_api.md) to the TypeScript field names expected by fe-fpm-writer's generateBuildingBlock.
  *
@@ -83,12 +108,7 @@ export function translateBuildingBlockInput(bbData: Record<string, unknown>): Re
 
     if (type === BuildingBlockType.Action) {
         renameField(data, 'key', 'actionKey');
-        // XML uses press="handler.fn" but the TypeScript Action type has no press field —
-        // the value must be wrapped into embeddedAction.eventHandler for generateBuildingBlock.
-        if (data['press'] !== undefined && data['embeddedAction'] === undefined) {
-            data['embeddedAction'] = { eventHandler: data['press'] };
-            delete data['press'];
-        }
+        normalizeActionPress(data);
     }
 
     if (type === BuildingBlockType.RichTextEditor) {
