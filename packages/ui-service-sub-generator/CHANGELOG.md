@@ -1,5 +1,15 @@
 # @sap-ux/ui-service-sub-generator
 
+## 1.0.65
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.3.0 → 1.4.0
+- @sap-ux/inquirer-common 1.0.54 → 1.0.55
+- @sap-ux/ui-service-inquirer 1.0.64 → 1.0.65
+
 ## 1.0.64
 
 ### Patch Changes
