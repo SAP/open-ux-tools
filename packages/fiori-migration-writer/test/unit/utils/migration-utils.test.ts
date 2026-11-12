@@ -91,9 +91,7 @@ describe('stripPaths', () => {
 
     it('reduces the real telemetry sample to the dotfolder only', () => {
         expect(
-            stripPaths(
-                "Error: ENOENT: no such file or directory, mkdir 'd:\\WorkBuddySpace\\zcustomer\\.vscode'"
-            )
+            stripPaths("Error: ENOENT: no such file or directory, mkdir 'd:\\WorkBuddySpace\\zcustomer\\.vscode'")
         ).toBe("Error: ENOENT: no such file or directory, mkdir '.vscode'");
     });
 
