@@ -7,6 +7,10 @@ const mockFetchKeyUserChanges = jest.fn<any>();
 const mockGetConfiguredProvider = jest.fn<any>();
 const mockGetSupportedProject = jest.fn<any>();
 const mockLoadApps = jest.fn<any>();
+const mockLoadCfConfig = jest.fn<any>();
+const mockIsCfInstalled = jest.fn<any>();
+const mockIsLoggedInCf = jest.fn<any>();
+const mockFindServiceInstancesForApp = jest.fn<any>();
 const mockLoggerWarn = jest.fn<any>();
 const mockLoggerInfo = jest.fn<any>();
 const mockLoggerError = jest.fn<any>();
@@ -16,6 +20,11 @@ const SupportedProject = {
     ON_PREM: 'onPremise',
     CLOUD_READY: 'cloudReady',
     CLOUD_READY_AND_ON_PREM: 'cloudReadyAndOnPrem'
+} as const;
+
+const AppRouterType = {
+    MANAGED: 'Managed HTML5 Application Runtime',
+    STANDALONE: 'Standalone HTML5 Application Runtime'
 } as const;
 
 const actualUtils = await import('../../../src/utils/index.js');
@@ -36,6 +45,11 @@ jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
     getConfiguredProvider: mockGetConfiguredProvider,
     getSupportedProject: mockGetSupportedProject,
     loadApps: mockLoadApps,
+    loadCfConfig: mockLoadCfConfig,
+    isCfInstalled: mockIsCfInstalled,
+    isLoggedInCf: mockIsLoggedInCf,
+    findServiceInstancesForApp: mockFindServiceInstancesForApp,
+    AppRouterType,
     SupportedProject
 }));
 
@@ -86,19 +100,30 @@ describe('generateAdaptationProject', () => {
         mockLoadApps.mockResolvedValue([]);
         // Default to external usage (released-status logic).
         mockIsInternalFeaturesSettingEnabled.mockReturnValue(false);
+        // CF defaults: installed, logged in, one matching service instance.
+        mockLoadCfConfig.mockReturnValue({
+            org: { Name: 'my-org', GUID: 'org-guid' },
+            space: { Name: 'my-space', GUID: 'space-guid' },
+            token: 'token',
+            url: 'eu10.hana.ondemand.com'
+        });
+        mockIsCfInstalled.mockResolvedValue(true);
+        mockIsLoggedInCf.mockResolvedValue(true);
+        mockFindServiceInstancesForApp.mockResolvedValue([{ name: 'svc-1', guid: 'si-1' }]);
     });
 
     test('returns Error when required parameters are missing', async () => {
         const result = await generateAdaptationProject({ system: '', application: '', appPath: '/tmp/app' } as any);
 
         expect(result.status).toEqual('Error');
-        expect(result.message).toContain('system and application are required');
+        expect(result.message).toContain('application is required');
         expect(mockRunCmdArgs).not.toHaveBeenCalled();
     });
 
     test('spawns npx with JSON as a single argv element (no shell interpolation)', async () => {
         const result = await generateAdaptationProject({
             system: 'UYZ/200',
+            targetEnvironment: 'ABAP',
             application: 'manage.products.odata.lrop.local',
             applicationTitle: "O'Brien's App",
             appPath: '/tmp/app'
@@ -123,6 +148,7 @@ describe('generateAdaptationProject', () => {
     test('includes optional fields only when provided', async () => {
         await generateAdaptationProject({
             system: 'UYZ/200',
+            targetEnvironment: 'ABAP',
             application: 'app.id',
             appPath: '/tmp/app',
             namespace: 'my.ns',
@@ -144,6 +170,7 @@ describe('generateAdaptationProject', () => {
 
         await generateAdaptationProject({
             system: 'UYZ/200',
+            targetEnvironment: 'ABAP',
             application: 'app.id',
             appPath: '/tmp/app',
             importKeyUserChanges: true
@@ -170,6 +197,7 @@ describe('generateAdaptationProject', () => {
 
         const result = await generateAdaptationProject({
             system: 'UYZ/200',
+            targetEnvironment: 'ABAP',
             application: 'app.id',
             appPath: '/tmp/app',
             importKeyUserChanges: true
@@ -191,6 +219,7 @@ describe('generateAdaptationProject', () => {
 
         const result = await generateAdaptationProject({
             system: 'UYZ/200',
+            targetEnvironment: 'ABAP',
             application: 'app.id',
             appPath: '/tmp/app',
             importKeyUserChanges: true
@@ -209,6 +238,7 @@ describe('generateAdaptationProject', () => {
 
         const result = await generateAdaptationProject({
             system: 'UYZ/200',
+            targetEnvironment: 'ABAP',
             application: 'app.id',
             appPath: '/tmp/app',
             importKeyUserChanges: true
@@ -227,6 +257,7 @@ describe('generateAdaptationProject', () => {
         jest.useFakeTimers();
         const promise = generateAdaptationProject({
             system: 'UYZ/200',
+            targetEnvironment: 'ABAP',
             application: 'app.id',
             appPath: '/tmp/app',
             importKeyUserChanges: true
@@ -245,6 +276,7 @@ describe('generateAdaptationProject', () => {
 
         const result = await generateAdaptationProject({
             system: 'UYZ/200',
+            targetEnvironment: 'ABAP',
             application: 'app.id',
             appPath: '/tmp/app'
         } as any);
@@ -256,6 +288,7 @@ describe('generateAdaptationProject', () => {
     test('returns Error when targetFolder is not an absolute path', async () => {
         const result = await generateAdaptationProject({
             system: 'UYZ/200',
+            targetEnvironment: 'ABAP',
             application: 'app.id',
             appPath: '/tmp/app',
             targetFolder: 'relative/path'
@@ -274,6 +307,7 @@ describe('generateAdaptationProject', () => {
 
         const result = await generateAdaptationProject({
             system: 'UYZ/200',
+            targetEnvironment: 'ABAP',
             application: 'app.id',
             appPath: '/tmp/app'
         } as any);
@@ -290,6 +324,7 @@ describe('generateAdaptationProject', () => {
 
         const result = await generateAdaptationProject({
             system: 'UYZ/200',
+            targetEnvironment: 'ABAP',
             application: 'app.id',
             appPath: '/tmp/app'
         } as any);
@@ -314,6 +349,7 @@ describe('generateAdaptationProject', () => {
 
             const result = await generateAdaptationProject({
                 system: 'UYZ/200',
+                targetEnvironment: 'ABAP',
                 application: 'app.id',
                 appPath: '/tmp/app'
             } as any);
@@ -328,6 +364,7 @@ describe('generateAdaptationProject', () => {
 
             const result = await generateAdaptationProject({
                 system: 'UYZ/200',
+                targetEnvironment: 'ABAP',
                 application: 'app.id',
                 appPath: '/tmp/app',
                 projectType: 'onPremise'
@@ -344,6 +381,7 @@ describe('generateAdaptationProject', () => {
 
             const result = await generateAdaptationProject({
                 system: 'UYZ/200',
+                targetEnvironment: 'ABAP',
                 application: 'app.id',
                 appPath: '/tmp/app'
             } as any);
@@ -358,6 +396,7 @@ describe('generateAdaptationProject', () => {
 
             const result = await generateAdaptationProject({
                 system: 'UYZ/200',
+                targetEnvironment: 'ABAP',
                 application: 'app.id',
                 appPath: '/tmp/app'
             } as any);
@@ -371,6 +410,7 @@ describe('generateAdaptationProject', () => {
 
             const result = await generateAdaptationProject({
                 system: 'UYZ/200',
+                targetEnvironment: 'ABAP',
                 application: 'app.id',
                 appPath: '/tmp/app',
                 projectType: 'cloudReady'
@@ -387,6 +427,7 @@ describe('generateAdaptationProject', () => {
 
             const result = await generateAdaptationProject({
                 system: 'UYZ/200',
+                targetEnvironment: 'ABAP',
                 application: 'app.id',
                 appPath: '/tmp/app'
             } as any);
@@ -403,6 +444,7 @@ describe('generateAdaptationProject', () => {
 
             const result = await generateAdaptationProject({
                 system: 'UYZ/200',
+                targetEnvironment: 'ABAP',
                 application: 'app.id',
                 appPath: '/tmp/app',
                 projectType: 'cloudReady'
@@ -418,6 +460,7 @@ describe('generateAdaptationProject', () => {
 
             const result = await generateAdaptationProject({
                 system: 'UYZ/200',
+                targetEnvironment: 'ABAP',
                 application: 'app.id',
                 appPath: '/tmp/app'
             } as any);
@@ -432,6 +475,7 @@ describe('generateAdaptationProject', () => {
 
             const result = await generateAdaptationProject({
                 system: 'UYZ/200',
+                targetEnvironment: 'ABAP',
                 application: 'app.id',
                 appPath: '/tmp/app',
                 projectType: 'cloudReady'
@@ -448,6 +492,7 @@ describe('generateAdaptationProject', () => {
 
             const result = await generateAdaptationProject({
                 system: 'UYZ/200',
+                targetEnvironment: 'ABAP',
                 application: 'app.id',
                 appPath: '/tmp/app'
             } as any);
@@ -462,6 +507,7 @@ describe('generateAdaptationProject', () => {
 
             const result = await generateAdaptationProject({
                 system: 'UYZ/200',
+                targetEnvironment: 'ABAP',
                 application: 'app.id',
                 appPath: '/tmp/app',
                 projectType: 'cloudReady'
@@ -478,6 +524,7 @@ describe('generateAdaptationProject', () => {
 
             const result = await generateAdaptationProject({
                 system: 'UYZ/200',
+                targetEnvironment: 'ABAP',
                 application: 'app.id',
                 appPath: '/tmp/app'
             } as any);
@@ -495,6 +542,7 @@ describe('generateAdaptationProject', () => {
 
             const result = await generateAdaptationProject({
                 system: 'UYZ/200',
+                targetEnvironment: 'ABAP',
                 application: 'app.id',
                 appPath: '/tmp/app',
                 projectType: 'cloudReady'
@@ -503,6 +551,321 @@ describe('generateAdaptationProject', () => {
             expect(result.status).toEqual('Error');
             expect(result.message).toContain('internal features enabled');
             expect(mockRunCmdArgs).not.toHaveBeenCalled();
+        });
+    });
+
+    describe('target resolution', () => {
+        test('routes to the CF flow for targetEnvironment "CF"', async () => {
+            const result = await generateAdaptationProject({
+                application: 'app.id',
+                appPath: '/tmp/app',
+                targetEnvironment: 'CF'
+            } as any);
+
+            expect(result.status).toEqual('Success');
+            expect(mockLoadCfConfig).toHaveBeenCalled();
+            expect(mockRunCmdArgs).toHaveBeenCalledTimes(1);
+        });
+
+        test('routes to the ABAP flow for targetEnvironment "ABAP" with a system', async () => {
+            const result = await generateAdaptationProject({
+                application: 'app.id',
+                appPath: '/tmp/app',
+                system: 'UYZ/200',
+                targetEnvironment: 'ABAP'
+            } as any);
+
+            expect(result.status).toEqual('Success');
+            expect(mockLoadCfConfig).not.toHaveBeenCalled();
+        });
+
+        test('returns Error for targetEnvironment "ABAP" without a system', async () => {
+            const result = await generateAdaptationProject({
+                application: 'app.id',
+                appPath: '/tmp/app',
+                targetEnvironment: 'ABAP'
+            } as any);
+
+            expect(result.status).toEqual('Error');
+            expect(result.message).toContain('system is required');
+            expect(mockRunCmdArgs).not.toHaveBeenCalled();
+        });
+
+        test('returns InputRequired when targetEnvironment is missing and no system is given', async () => {
+            const result = await generateAdaptationProject({ application: 'app.id', appPath: '/tmp/app' } as any);
+
+            expect(result.status).toEqual('InputRequired');
+            expect(result.message).toContain("'ABAP' or 'CF'");
+            expect(mockRunCmdArgs).not.toHaveBeenCalled();
+            expect(mockLoadCfConfig).not.toHaveBeenCalled();
+        });
+
+        test('returns InputRequired when targetEnvironment is missing even if a system is given', async () => {
+            const result = await generateAdaptationProject({
+                application: 'app.id',
+                appPath: '/tmp/app',
+                system: 'UYZ/200'
+            } as any);
+
+            expect(result.status).toEqual('InputRequired');
+            expect(mockRunCmdArgs).not.toHaveBeenCalled();
+        });
+
+        test('returns InputRequired when targetEnvironment is missing even if a CF param is given', async () => {
+            const result = await generateAdaptationProject({
+                application: 'app.id',
+                appPath: '/tmp/app',
+                serviceInstanceName: 'svc-x'
+            } as any);
+
+            expect(result.status).toEqual('InputRequired');
+            expect(mockRunCmdArgs).not.toHaveBeenCalled();
+            expect(mockFindServiceInstancesForApp).not.toHaveBeenCalled();
+        });
+    });
+
+    describe('CF flow', () => {
+        /**
+         * Reads the JSON payload passed to the generator from the first runCmdArgs call.
+         *
+         * @returns The parsed generator payload.
+         */
+        function cfPayload(): Record<string, unknown> {
+            const args = (mockRunCmdArgs.mock.calls[0] as [string, string[], any])[1];
+            return JSON.parse(args[3]);
+        }
+
+        test('returns Error when application is missing', async () => {
+            const result = await generateAdaptationProject({ appPath: '/tmp/app' } as any);
+
+            expect(result.status).toEqual('Error');
+            expect(result.message).toContain('application is required');
+            expect(mockRunCmdArgs).not.toHaveBeenCalled();
+        });
+
+        test('returns Error when the CF CLI is not installed', async () => {
+            mockIsCfInstalled.mockResolvedValue(false);
+
+            const result = await generateAdaptationProject({
+                application: 'app.id',
+                appPath: '/tmp/app',
+                targetEnvironment: 'CF'
+            } as any);
+
+            expect(result.status).toEqual('Error');
+            expect(result.message).toContain('not installed');
+            expect(mockRunCmdArgs).not.toHaveBeenCalled();
+        });
+
+        test('returns Error with the interpolated login endpoint when not logged in', async () => {
+            mockIsLoggedInCf.mockResolvedValue(false);
+
+            const result = await generateAdaptationProject({
+                application: 'app.id',
+                appPath: '/tmp/app',
+                targetEnvironment: 'CF'
+            } as any);
+
+            expect(result.status).toEqual('Error');
+            expect(result.message).toContain('cf login -a https://api.cf.eu10.hana.ondemand.com --sso');
+            expect(mockRunCmdArgs).not.toHaveBeenCalled();
+        });
+
+        test('falls back to a generic endpoint placeholder when the CF url is unknown', async () => {
+            mockLoadCfConfig.mockReturnValue({});
+            mockIsLoggedInCf.mockResolvedValue(false);
+
+            const result = await generateAdaptationProject({
+                application: 'app.id',
+                appPath: '/tmp/app',
+                targetEnvironment: 'CF'
+            } as any);
+
+            expect(result.status).toEqual('Error');
+            expect(result.message).toContain('cf login -a <API endpoint> --sso');
+        });
+
+        test('returns Error when no service instance exposes the application', async () => {
+            mockFindServiceInstancesForApp.mockResolvedValue([]);
+
+            const result = await generateAdaptationProject({
+                application: 'app.id',
+                appPath: '/tmp/app',
+                targetEnvironment: 'CF'
+            } as any);
+
+            expect(result.status).toEqual('Error');
+            expect(result.message).toContain('app.id');
+            expect(result.message).toContain('my-space');
+            expect(mockRunCmdArgs).not.toHaveBeenCalled();
+        });
+
+        test('generates with the single matching service instance', async () => {
+            const result = await generateAdaptationProject({
+                application: 'app.id',
+                appPath: '/tmp/app',
+                targetEnvironment: 'CF'
+            } as any);
+
+            expect(result.status).toEqual('Success');
+            expect(mockFindServiceInstancesForApp).toHaveBeenCalledTimes(1);
+            const payload = cfPayload();
+            expect(payload.targetEnv).toEqual('CF');
+            expect(payload.serviceInstanceName).toEqual('svc-1');
+            expect(payload.application).toEqual('app.id');
+            expect(payload.mtaMode).toEqual('existing');
+        });
+
+        test('returns InputRequired listing instances when several match', async () => {
+            mockFindServiceInstancesForApp.mockResolvedValue([{ name: 'svc-a' }, { name: 'svc-b' }]);
+
+            const result = await generateAdaptationProject({
+                application: 'app.id',
+                appPath: '/tmp/app',
+                targetEnvironment: 'CF'
+            } as any);
+
+            expect(result.status).toEqual('InputRequired');
+            expect(result.message).toContain('svc-a');
+            expect(result.message).toContain('svc-b');
+            expect(result.message).toContain('serviceInstanceName');
+            expect(mockRunCmdArgs).not.toHaveBeenCalled();
+        });
+
+        test('skips discovery when serviceInstanceName is provided', async () => {
+            const result = await generateAdaptationProject({
+                application: 'app.id',
+                targetEnvironment: 'CF',
+                appPath: '/tmp/app',
+                serviceInstanceName: 'svc-x'
+            } as any);
+
+            expect(result.status).toEqual('Success');
+            expect(mockFindServiceInstancesForApp).not.toHaveBeenCalled();
+            expect(cfPayload().serviceInstanceName).toEqual('svc-x');
+        });
+
+        test('returns Error when mtaMode "new" is given without mtaId', async () => {
+            const result = await generateAdaptationProject({
+                application: 'app.id',
+                targetEnvironment: 'CF',
+                appPath: '/tmp/app',
+                mtaMode: 'new'
+            } as any);
+
+            expect(result.status).toEqual('Error');
+            expect(result.message).toContain('mtaId');
+            expect(mockRunCmdArgs).not.toHaveBeenCalled();
+        });
+
+        test('returns the MTA sub-folder as projectPath for a new MTA', async () => {
+            const cfTarget = join(tmpdir(), 'cf-target');
+            const result = await generateAdaptationProject({
+                application: 'app.id',
+                targetEnvironment: 'CF',
+                appPath: '/tmp/app',
+                targetFolder: cfTarget,
+                mtaMode: 'new',
+                mtaId: 'my.mta'
+            } as any);
+
+            expect(result.status).toEqual('Success');
+            expect(result.projectPath).toEqual(join(cfTarget, 'my.mta'));
+            expect(cfPayload().mtaId).toEqual('my.mta');
+        });
+
+        test('returns the target folder as projectPath for an existing MTA', async () => {
+            const cfTarget = join(tmpdir(), 'cf-target');
+            const result = await generateAdaptationProject({
+                application: 'app.id',
+                targetEnvironment: 'CF',
+                appPath: '/tmp/app',
+                targetFolder: cfTarget
+            } as any);
+
+            expect(result.status).toEqual('Success');
+            expect(result.projectPath).toEqual(cfTarget);
+        });
+
+        test('maps the friendly approuter value to the generator value', async () => {
+            await generateAdaptationProject({
+                application: 'app.id',
+                targetEnvironment: 'CF',
+                appPath: '/tmp/app',
+                approuter: 'managed'
+            } as any);
+
+            expect(cfPayload().approuter).toEqual('Managed HTML5 Application Runtime');
+        });
+
+        test('omits approuter from the payload when not provided', async () => {
+            await generateAdaptationProject({
+                application: 'app.id',
+                appPath: '/tmp/app',
+                targetEnvironment: 'CF'
+            } as any);
+
+            expect(cfPayload()).not.toHaveProperty('approuter');
+        });
+
+        test('includes optional fields only when provided', async () => {
+            await generateAdaptationProject({
+                application: 'app.id',
+                targetEnvironment: 'CF',
+                appPath: '/tmp/app',
+                namespace: 'cust.ns',
+                applicationTitle: 'My Title',
+                projectName: 'my.project',
+                businessSolutionName: 'solution-abc'
+            } as any);
+
+            const payload = cfPayload();
+            expect(payload.namespace).toEqual('cust.ns');
+            expect(payload.applicationTitle).toEqual('My Title');
+            expect(payload.projectName).toEqual('my.project');
+            expect(payload.businessSolutionName).toEqual('solution-abc');
+        });
+
+        test('returns Error when the generator fails', async () => {
+            mockRunCmdArgs.mockRejectedValue(new Error('generator exploded'));
+
+            const result = await generateAdaptationProject({
+                application: 'app.id',
+                appPath: '/tmp/app',
+                targetEnvironment: 'CF'
+            } as any);
+
+            expect(result.status).toEqual('Error');
+            expect(result.message).toContain('generator exploded');
+        });
+
+        test('ignores importKeyUserChanges for CF and proceeds', async () => {
+            const result = await generateAdaptationProject({
+                application: 'app.id',
+                targetEnvironment: 'CF',
+                appPath: '/tmp/app',
+                importKeyUserChanges: true
+            } as any);
+
+            expect(result.status).toEqual('Success');
+            expect(mockFetchKeyUserChanges).not.toHaveBeenCalled();
+            expect(mockLoggerInfo).toHaveBeenCalledWith(
+                'importKeyUserChanges is not supported for Cloud Foundry adaptation projects; ignoring it.'
+            );
+        });
+
+        test('does not touch CF logic when a system is provided (ABAP branch)', async () => {
+            const result = await generateAdaptationProject({
+                system: 'UYZ/200',
+                targetEnvironment: 'ABAP',
+                application: 'app.id',
+                appPath: '/tmp/app'
+            } as any);
+
+            expect(result.status).toEqual('Success');
+            expect(mockLoadCfConfig).not.toHaveBeenCalled();
+            expect(mockIsCfInstalled).not.toHaveBeenCalled();
+            expect(mockFindServiceInstancesForApp).not.toHaveBeenCalled();
         });
     });
 });
