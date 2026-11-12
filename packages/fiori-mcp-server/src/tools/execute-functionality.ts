@@ -10,7 +10,6 @@ import type { PropertyPath } from '../page-editor-api/index.js';
 import { PageEditorApi } from '../page-editor-api/index.js';
 import { FUNCTIONALITIES_HANDLERS } from './functionalities/index.js';
 import { resolveApplication } from '../utils/index.js';
-import { assertNotAdaptationProject } from '../utils/adaptation-project.js';
 
 /**
  * Executes a functionality based on the provided parameters.
@@ -30,7 +29,6 @@ export async function executeFunctionality(params: ExecuteFunctionalityInput): P
     if (!parameters) {
         throw new Error('parameters is required');
     }
-    assertNotAdaptationProject(appPath);
     // Custom/external functionalities
     const externalFunctionality =
         typeof functionalityId === 'string' ? FUNCTIONALITIES_HANDLERS.get(functionalityId) : undefined;

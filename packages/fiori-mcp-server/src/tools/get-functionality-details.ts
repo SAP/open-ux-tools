@@ -4,7 +4,6 @@ import type { TreeNode, PropertyPath } from '../page-editor-api/index.js';
 import { FUNCTIONALITIES_HANDLERS } from './functionalities/index.js';
 import { prepatePropertySchema, resolveApplication, resolveRefs } from '../utils/index.js';
 import type { JSONSchema4 } from 'json-schema';
-import { assertNotAdaptationProject } from '../utils/adaptation-project.js';
 
 /**
  * Retrieves functionality details based on the provided input parameters.
@@ -25,7 +24,6 @@ export async function getFunctionalityDetails(
     if (!functionalityId) {
         throw new Error('functionalityId parameter is required');
     }
-    assertNotAdaptationProject(appPath);
     const externalFunctionality =
         typeof functionalityId === 'string' ? FUNCTIONALITIES_HANDLERS.get(functionalityId) : undefined;
     if (externalFunctionality) {

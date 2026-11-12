@@ -4,7 +4,6 @@ import { FUNCTIONALITIES_DETAILS } from './functionalities/index.js';
 import { resolveApplication } from '../utils/index.js';
 import type { ApplicationAccess } from '@sap-ux/project-access';
 import type { Parser } from '@sap/ux-specification';
-import { assertNotAdaptationProject } from '../utils/adaptation-project.js';
 
 /**
  * Lists all functionalities for a given application.
@@ -18,7 +17,6 @@ export async function listFunctionalities(params: ListFunctionalitiesInput): Pro
     if (!appPath?.trim()) {
         throw new Error('appPath parameter is required');
     }
-    assertNotAdaptationProject(appPath);
 
     let functionalities: Functionality[] = [];
     // If we need dynamic handlers then we can add additional method in interface of FUNCTIONALITIES_HANDLERS
