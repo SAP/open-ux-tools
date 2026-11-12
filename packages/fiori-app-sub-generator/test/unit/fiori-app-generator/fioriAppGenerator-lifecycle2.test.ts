@@ -150,9 +150,10 @@ jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
 
 // Import after all mocks are set up
 const { FioriAppGenerator } = await import('../../../src/fiori-app-generator/index.js');
-const { DefaultLogger, TelemetryHelper, sendTelemetry, getFloorplanLabel, ApiHubType } =
+const { DefaultLogger, TelemetryHelper, sendTelemetry, getFloorplanLabel } =
     await import('@sap-ux/fiori-generator-shared');
-const { FIORI_STEPS, FloorplanFE, FloorplanFF, PLATFORMS, generatorName } = await import('../../../src/types/index.js');
+const { ApiHubType, FIORI_STEPS, FloorplanFE, FloorplanFF, PLATFORMS, generatorName } =
+    await import('../../../src/types/index.js');
 const { deleteCache, getYeomanUiStepConfig, t } = await import('../../../src/utils/index.js');
 
 // Increase timeout for heavy generator lifecycle execution in ESM mode

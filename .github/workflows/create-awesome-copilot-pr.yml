@@ -131,8 +131,8 @@ jobs:
               run: |
                   cd awesome-copilot
                   npm install --ignore-scripts
-                  node ./eng/update-readme.mjs
-                  node ./eng/generate-marketplace.mjs
+                  node ./.github/scripts/catalog/update-readme.mjs
+                  node ./.github/scripts/catalog/generate-marketplace.mjs
 
             - name: Commit, push, and open PR
               if: steps.version.outputs.changed == 'true' && inputs.dry_run != true
