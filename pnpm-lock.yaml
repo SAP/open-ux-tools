@@ -116,7 +116,7 @@ overrides:
   tmp: '>=0.2.7'
   form-data: '>=4.0.6'
   '@sap/approuter>ws': 8.21.0
-  '@sap/bas-sdk>ws': 8.21.0
+  '@sap/bas-sdk>ws': 8.22.2
   http-proxy-agent@4>@tootallnate/once: '>=3.0.1'
   '@tootallnate/once': '>=3.0.1'
   esbuild-loader: '>=4.0.0'
@@ -18313,6 +18313,18 @@ packages:
       utf-8-validate:
         optional: true
 
+  ws@8.22.2:
+    resolution: {integrity: sha512-/rEZ2ejown2N5gxVTHUu9bVVC7ttu0/Tgzf5hbTOixR3Fs7mbbXgn2DbdbcKgJOmpQMtrIUWivtYuVMnp/W/yA==}
+    engines: {node: '>=10.0.0'}
+    peerDependencies:
+      bufferutil: ^4.0.1
+      utf-8-validate: '>=5.0.2'
+    peerDependenciesMeta:
+      bufferutil:
+        optional: true
+      utf-8-validate:
+        optional: true
+
   wsl-utils@0.1.0:
     resolution: {integrity: sha512-h3Fbisa2nKGPxCpm89Hk33lBLsnaGBvctQopaBSOW/uIs6FTe1ATyAnKFJrzVs9vpGdsTe73WF3V4lIsk4Gacw==}
     engines: {node: '>=18'}
@@ -23137,7 +23149,7 @@ snapshots:
       fs-extra: 11.3.2
       jwt-decode: 4.0.0
       url-join: 4.0.1
-      ws: 8.21.0
+      ws: 8.22.2
     transitivePeerDependencies:
       - bufferutil
       - debug
@@ -34218,6 +34230,8 @@ snapshots:
       signal-exit: 4.1.0
 
   ws@8.21.0: {}
+
+  ws@8.22.2: {}
 
   wsl-utils@0.1.0:
     dependencies:
