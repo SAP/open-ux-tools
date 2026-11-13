@@ -1,7 +1,6 @@
 import prompts from 'prompts';
 import type { PromptType, PromptObject, InitialReturnValue } from 'prompts';
-import type { YUIQuestion } from '@sap-ux/inquirer-common';
-import type { Answers } from '@sap-ux/inquirer-common';
+import type { YUIQuestion, Answers } from '@sap-ux/inquirer-common';
 import { getLogger } from '../tracing/index.js';
 
 /**

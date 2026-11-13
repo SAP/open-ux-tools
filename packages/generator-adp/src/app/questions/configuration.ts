@@ -28,7 +28,8 @@ import type {
     InputQuestion,
     ListQuestion,
     PasswordQuestion,
-    YUIQuestion
+    YUIQuestion,
+    Answers
 } from '@sap-ux/inquirer-common';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
@@ -37,7 +38,6 @@ import { validateAch, validateEmptyString } from '@sap-ux/project-input-validato
 import type { IMessageSeverity } from '@sap-devx/yeoman-ui-types';
 import { Severity } from '@sap-devx/yeoman-ui-types';
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
-import type { Answers } from '@sap-ux/inquirer-common';
 import type { TelemetryCollector } from '../../telemetry/index.js';
 import { t } from '../../utils/i18n.js';
 import type {
