@@ -140,7 +140,7 @@ async function addDeployConfig(
                 // Cast widens the question `name` key set: AbapDeployConfigQuestion is keyed on the
                 // internal answers type, a superset of AbapDeployConfigAnswers.
                 await promptYUIQuestions<AbapDeployConfigAnswers>(
-                    abapPrompts as unknown as YUIQuestion<AbapDeployConfigAnswers>[],
+                    abapPrompts as YUIQuestion<AbapDeployConfigAnswers>[],
                     false
                 ),
                 abapAnswers

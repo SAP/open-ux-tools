@@ -80,7 +80,7 @@ export function getTileSettingsQuestions(promptOptions?: FLPConfigPromptOptions)
     const isCLI = getHostEnvironment() === hostEnvironment.cli;
     const questions = getTileSettingsPrompts();
     if (!promptOptions?.existingFlpConfigInfo?.hide) {
-        questions.unshift(getExistingFlpConfigInfoPrompt(isCLI) as unknown as YUIQuestion<TileSettingsAnswers>);
+        questions.unshift(getExistingFlpConfigInfoPrompt(isCLI) as YUIQuestion<TileSettingsAnswers>);
     }
     return questions;
 }

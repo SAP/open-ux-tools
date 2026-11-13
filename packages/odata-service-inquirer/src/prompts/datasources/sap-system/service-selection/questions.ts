@@ -200,7 +200,7 @@ export function getSystemServiceQuestion(
         return defaultIndex === undefined ? undefined : serviceChoices[defaultIndex]?.value;
     };
 
-    let systemServiceQuestion: YUIQuestion<ServiceAnswer> = (promptOptions?.useAutoComplete
+    let systemServiceQuestion: YUIQuestion<ServiceAnswer> = promptOptions?.useAutoComplete
         ? ({
               ...base,
               type: 'search',
@@ -213,7 +213,7 @@ export function getSystemServiceQuestion(
               type: 'select',
               choices: async (answers: SystemSelectionAnswers) => loadServiceChoices(answers),
               default: getDefaultServiceValue
-          } as ListQuestion<ServiceAnswer>)) as unknown as YUIQuestion<ServiceAnswer>;
+          } as ListQuestion<ServiceAnswer>);
 
     // Add additional messages to prompts if specified in the prompt options
     if (promptOptions?.additionalMessages) {
@@ -224,7 +224,7 @@ export function getSystemServiceQuestion(
             [systemServiceQuestion] as YUIQuestion[],
             promptOptsToApply,
             PromptState.odataService
-        )[0] as unknown as YUIQuestion<ServiceAnswer>;
+        )[0] as YUIQuestion<ServiceAnswer>;
     }
 
     const questions: YUIQuestion<ServiceAnswer>[] = [systemServiceQuestion];
@@ -268,7 +268,7 @@ export function getSystemServiceQuestion(
                     !!convertedMetadataRef.convertedMetadata &&
                     (answers as { [serviceSelectionPromptName]?: ServiceAnswer })?.[serviceSelectionPromptName]
                         ?.serviceODataVersion === ODataVersion.v4
-            ) as unknown as YUIQuestion<ServiceAnswer>[])
+            ) as YUIQuestion<ServiceAnswer>[])
         );
     }
 

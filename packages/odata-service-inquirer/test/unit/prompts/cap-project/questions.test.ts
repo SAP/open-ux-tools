@@ -204,7 +204,7 @@ describe('getLocalCapProjectPrompts', () => {
                 srv: 'srv'
             }
         });
-        expect((capProjectPrompt.default as Function)()).toEqual(undefined);
+        expect((capProjectPrompt.default as Function)()).toBeUndefined();
 
         capPrompts = await getLocalCapProjectPrompts({
             capProject: {

@@ -390,7 +390,7 @@ export function getServiceUrlQuestions(
             questions as YUIQuestion[],
             promptsOptToExtend,
             PromptState.odataService
-        ) as unknown as YUIQuestion<ServiceUrlAnswers>[];
+        ) as YUIQuestion<ServiceUrlAnswers>[];
     }
     return questions as unknown as Question<OdataServiceAnswers>[];
 }

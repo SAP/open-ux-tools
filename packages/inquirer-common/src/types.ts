@@ -1,7 +1,8 @@
 import type { IValidationLink, IMessageSeverity, ShowOutputTabLink } from '@sap-devx/yeoman-ui-types';
-import type { Answers, DistinctQuestion, Question } from 'inquirer';
+import type { Answers, DistinctQuestion } from 'inquirer';
 
-export type { Answers, Question };
+export type { Answers };
+export type { Question } from 'inquirer';
 
 /**
  * A single prompt choice. Mirrors the fields of the former `inquirer@8` `ListChoiceOptions`

@@ -557,7 +557,7 @@ describe('Test new system prompt', () => {
         choices = await ((serviceSelectionPrompt as ListQuestion)?.choices as Function)({});
         expect(choices.length).toBe(2);
         defaultValue = await ((serviceSelectionPrompt as ListQuestion)?.default as Function)();
-        expect(defaultValue).toEqual(undefined);
+        expect(defaultValue).toBeUndefined();
     });
 
     test('Should validate the selected service by retreiving the service information', async () => {
