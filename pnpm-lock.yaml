@@ -2728,6 +2728,10 @@ importers:
         version: 5.2.14
 
   packages/fiori-mcp-server:
+    dependencies:
+      '@sap-ux/vocabularies-types':
+        specifier: 0.16.0
+        version: 0.16.0
     devDependencies:
       '@huggingface/transformers':
         specifier: 4.3.2
@@ -2765,6 +2769,9 @@ importers:
       '@sap-ux/edmx-parser':
         specifier: 0.10.0
         version: 0.10.0
+      '@sap-ux/fe-fpm-writer':
+        specifier: workspace:*
+        version: link:../fe-fpm-writer
       '@sap-ux/feature-toggle':
         specifier: workspace:*
         version: link:../feature-toggle
@@ -2819,9 +2826,6 @@ importers:
       '@sap-ux/ui5-info':
         specifier: workspace:*
         version: link:../ui5-info
-      '@sap-ux/vocabularies-types':
-        specifier: 0.16.0
-        version: 0.16.0
       '@sap/ux-specification':
         specifier: 1.144.5
         version: 1.144.5(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)(typescript@6.0.3)
