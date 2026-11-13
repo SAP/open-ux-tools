@@ -8,6 +8,7 @@ import type { DebugOptions } from '../../src/types/index.js';
 import { LAUNCH_JSON_FILE } from '../../src/types/index.js';
 import type { Logger } from '@sap-ux/logger';
 import { t } from '../../src/i18n.js';
+import { parse } from 'jsonc-parser';
 
 const mockIsFolderInWorkspace = jest.fn<any>();
 
@@ -441,6 +442,149 @@ describe('create', () => {
                     }
                 }
             ]
+        });
+    });
+
+    describe('existing launch.json without usable configurations', () => {
+        const launchJSONPath = join(TestPaths.tmpDir, '.vscode', 'launch.json');
+        const newConfigName = 'LaunchConfig_New';
+        const nonDefaultOptions = { name: newConfigName, projectRoot: join(TestPaths.tmpDir, 'fe-projects') };
+        const debugOptions = {
+            name: 'test-projects',
+            projectRoot: join(TestPaths.tmpDir, 'test', 'test-projects'),
+            debugOptions: {
+                vscode: { workspace: { workspaceFile: { scheme: 'file' } } } as any,
+                isAppStudio: false,
+                addStartCmd: false
+            } as DebugOptions
+        };
+        const debugLaunchJSONPath = join(TestPaths.tmpDir, 'test', '.vscode', 'launch.json');
+
+        const writeRaw = (path: string, content: string) => {
+            clearMemFsPaths(path);
+            memFs.write(path, content);
+        };
+        const readConfigNames = (path: string, fs: typeof memFs): string[] =>
+            (parse(fs.read(path)) as { configurations: { name: string }[] }).configurations.map((c) => c.name);
+
+        beforeEach(() => {
+            (mockIsFolderInWorkspace as jest.Mock).mockReturnValue(true);
+        });
+
+        afterEach(() => {
+            clearMemFsPaths(launchJSONPath);
+            clearMemFsPaths(debugLaunchJSONPath);
+        });
+
+        test.each([
+            ['is empty', ''],
+            ['only contains whitespace', '  \n'],
+            ['only contains comments', '// my configurations\n'],
+            ['is an empty object', '{}'],
+            ['is an array', '[]'],
+            ['has no configurations but a version', '{ "version": "0.2.0" }'],
+            ['has null configurations', '{ "version": "0.2.0", "configurations": null }']
+        ])('launch.json %s, add new config', async (_description, content) => {
+            writeRaw(launchJSONPath, content);
+
+            const result = await createLaunchConfig(TestPaths.tmpDir, nonDefaultOptions, memFs);
+
+            const launchJson = parse(result.read(launchJSONPath));
+            expect(launchJson.version).toBe('0.2.0');
+            expect(readConfigNames(launchJSONPath, result as typeof memFs)).toEqual([newConfigName]);
+        });
+
+        test.each([
+            ['is empty', ''],
+            ['only contains comments', '/* nothing */'],
+            ['is an empty object', '{}']
+        ])('launch.json %s, add new configs when debug options are provided', async (_description, content) => {
+            writeRaw(debugLaunchJSONPath, content);
+
+            const result = await createLaunchConfig(debugOptions.projectRoot, debugOptions, memFs);
+
+            const names = readConfigNames(debugLaunchJSONPath, result as typeof memFs);
+            expect(names).toContain('Start test-projects Local');
+            expect(parse(result.read(debugLaunchJSONPath)).version).toBe('0.2.0');
+        });
+
+        test('keeps comments and other settings of the existing launch.json', async () => {
+            writeRaw(launchJSONPath, '{\n    // keep me\n    "version": "0.2.0",\n    "compounds": []\n}\n');
+
+            const result = await createLaunchConfig(TestPaths.tmpDir, nonDefaultOptions, memFs);
+
+            const content = result.read(launchJSONPath);
+            expect(content).toContain('// keep me');
+            expect(parse(content).compounds).toEqual([]);
+            expect(readConfigNames(launchJSONPath, result as typeof memFs)).toEqual([newConfigName]);
+        });
+
+        test('adds a version to an existing launch.json that has configurations but no version', async () => {
+            writeRaw(launchJSONPath, '{ "configurations": [ { "name": "LaunchConfig_One" } ] }');
+
+            const result = await createLaunchConfig(TestPaths.tmpDir, nonDefaultOptions, memFs);
+
+            expect(parse(result.read(launchJSONPath)).version).toBe('0.2.0');
+            expect(readConfigNames(launchJSONPath, result as typeof memFs)).toEqual([
+                'LaunchConfig_One',
+                newConfigName
+            ]);
+        });
+
+        test('does not change launch.json files that are complete', async () => {
+            writeRaw(launchJSONPath, '{ "version": "0.2.0", "configurations": [ { "name": "LaunchConfig_One" } ] }');
+
+            const result = await createLaunchConfig(TestPaths.tmpDir, nonDefaultOptions, memFs);
+
+            expect(readConfigNames(launchJSONPath, result as typeof memFs)).toEqual([
+                'LaunchConfig_One',
+                newConfigName
+            ]);
+        });
+
+        test('fails with a clear message if configurations is not an array', async () => {
+            writeRaw(launchJSONPath, '{ "version": "0.2.0", "configurations": "oops" }');
+
+            await expect(createLaunchConfig(TestPaths.tmpDir, nonDefaultOptions, memFs)).rejects.toThrow(
+                `The property 'configurations' in ${launchJSONPath} must be an array.`
+            );
+            expect(memFs.read(launchJSONPath)).toBe('{ "version": "0.2.0", "configurations": "oops" }');
+        });
+
+        test('fails with a clear message if launch.json is malformed', async () => {
+            writeRaw(launchJSONPath, '{ "version": "0.2.0", "configurations": [}');
+
+            await expect(createLaunchConfig(TestPaths.tmpDir, nonDefaultOptions, memFs)).rejects.toThrow(
+                `The file ${launchJSONPath} contains syntax errors and cannot be parsed. Please fix the JSON syntax before proceeding.`
+            );
+            // File should not be modified
+            expect(memFs.read(launchJSONPath)).toBe('{ "version": "0.2.0", "configurations": [}');
+        });
+
+        test('handles JSONC with trailing commas (valid JSONC)', async () => {
+            writeRaw(launchJSONPath, '{ "version": "0.2.0", "configurations": [ { "name": "A" }, ] }');
+
+            const result = await createLaunchConfig(TestPaths.tmpDir, nonDefaultOptions, memFs);
+
+            expect(readConfigNames(launchJSONPath, result as typeof memFs)).toEqual(['A', newConfigName]);
+        });
+
+        test('handles BOM-encoded launch.json files', async () => {
+            // UTF-8 BOM followed by valid JSON
+            writeRaw(launchJSONPath, '﻿{ "version": "0.2.0", "configurations": [] }');
+
+            const result = await createLaunchConfig(TestPaths.tmpDir, nonDefaultOptions, memFs);
+
+            expect(readConfigNames(launchJSONPath, result as typeof memFs)).toEqual([newConfigName]);
+        });
+
+        test('handles BOM-encoded launch.json with trailing comma', async () => {
+            // UTF-8 BOM + trailing comma - both should be handled
+            writeRaw(launchJSONPath, '﻿{ "version": "0.2.0", "configurations": [ { "name": "B" }, ] }');
+
+            const result = await createLaunchConfig(TestPaths.tmpDir, nonDefaultOptions, memFs);
+
+            expect(readConfigNames(launchJSONPath, result as typeof memFs)).toEqual(['B', newConfigName]);
         });
     });
 });
