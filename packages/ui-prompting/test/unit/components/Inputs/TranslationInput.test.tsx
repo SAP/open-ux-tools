@@ -76,7 +76,7 @@ describe('TranslationInput', () => {
 
         render(<TranslationInput {...props} />);
 
-        expect(mockTranslationInput).toHaveBeenLastCalledWith(
+        expect(mockTranslationInput).toHaveBeenCalledWith(
             expect.objectContaining({ preventFocusRestoreOnAccept }),
             expect.anything()
         );
