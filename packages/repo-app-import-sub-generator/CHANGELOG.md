@@ -1,5 +1,17 @@
 # @sap-ux/repo-app-download-sub-generator
 
+## 1.2.108
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-13
+
+#### Bug Fixes
+
+- Correct label "Download app from UI5 ABAP repository" to "Download app from SAPUI5 ABAP repository" [[62d3f9a](https://github.com/SAP/open-ux-tools/commit/62d3f9a8da9b8e8f643e3e889ac2b0b2677d933d)]
+
 ## 1.2.107
 
 ### Patch Changes
