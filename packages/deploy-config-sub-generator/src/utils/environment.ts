@@ -1,5 +1,5 @@
 // Legacy package, dependent on external dependencies for async operations and no 'type: module' defined in package.json
-import hasbin from 'hasbin';
+import which from 'which';
 import {
     API_BUSINESS_HUB_ENTERPRISE_PREFIX,
     ApiHubType,
@@ -26,8 +26,10 @@ import type { Editor } from 'mem-fs-editor';
  */
 export function isMTAInstalled(choice: string, projectPath: string): boolean | string {
     if (
-        (choice === 'cf' && !hasbin.sync(mtaExecutable)) ||
-        (choice === 'abap' && !hasbin.sync(mtaExecutable) && existsSync(join(projectPath, 'mta.yaml')))
+        (choice === 'cf' && !which.sync(mtaExecutable, { nothrow: true })) ||
+        (choice === 'abap' &&
+            !which.sync(mtaExecutable, { nothrow: true }) &&
+            existsSync(join(projectPath, 'mta.yaml')))
     ) {
         const errMsg = ErrorHandler.getErrorMsgFromType(ERROR_TYPE.NO_MTA_BIN);
         DeploymentGenerator.logger?.warn(errMsg);

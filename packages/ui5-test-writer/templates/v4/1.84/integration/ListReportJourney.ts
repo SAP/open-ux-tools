@@ -25,10 +25,6 @@ const usesFilterFieldIdentifier =
 import type { FilterFieldIdentifier } from "sap/fe/test/api/FilterBarAPI";
 <% } -%>
 import runner from "./pages/JourneyRunner";
-<%_ const needsSortOrder = startLR && ((defaultSortOrder && defaultSortOrder.length > 0)); -%>
-<%_ if (needsSortOrder) { -%>
-import { SortOrder } from "sap/ui/core/library";
-<%_ } -%>
 
 function journey() {
     QUnit.module("<%- name%>ListReport journey");
@@ -107,20 +103,6 @@ function journey() {
 
 <%_ } -%>
 <%_ }); -%>
-<%_ if (tableColumns && Object.keys(tableColumns).length > 0) { -%>
-    opaTest("Check table columns", function (_Given: Given, _When: When, Then: Then) {
-        Then.onThe<%- startLR %>Generated.onTable(defaultTableId).iCheckColumns(undefined, <%- JSON.stringify(tableColumns) %>);
-    });
-
-<%_ } -%>
-<%_ if (startLR && defaultSortOrder && defaultSortOrder.length > 0) { -%>
-    opaTest("Check default sort order from PresentationVariant", function (_Given: Given, _When: When, Then: Then) {
-        <%_ defaultSortOrder.forEach(function(sort) { _%>
-        Then.onThe<%- startLR %>Generated.onTable(defaultTableId).iCheckSortOrder({ name: "<%- sort.property %>" }, SortOrder.<%- sort.descending ? 'Descending' : 'Ascending' %>, true);
-        <%_ }); -%>
-    });
-
-<%_ } -%>
 <%_ if (startLR && defaultFilterValues && defaultFilterValues.length > 0) { -%>
     opaTest("Check default filter values from SelectionVariant", function (_Given: Given, _When: When, Then: Then) {
         <%_ defaultFilterValues.forEach(function(filter) { _%>

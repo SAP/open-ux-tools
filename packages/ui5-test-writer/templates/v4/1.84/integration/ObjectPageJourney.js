@@ -88,19 +88,24 @@ sap.ui.define([
         });
 <% } -%>
 
-<% if (bodySections?.length > 1) { -%>
-        opaTest("Check the number of sections of the Object Page", function (_Given, _When, Then) {
-            Then.onThe<%- name%>Generated.iCheckNumberOfSections(<%- bodySections.length %>);
-        });
-
-<% } -%>
 <% if (bodySections?.length > 0) { -%>
 <% bodySections.forEach(function(section) { -%>
+<%
+    // Below 1.120 the section/column level assertions are unavailable, so a table section with
+    // no actions, create/delete buttons, sub-sections or form fields would leave an opaTest body
+    // with only a When call. OPA5 rejects a test that runs zero assertions, so skip emitting the
+    // block entirely in that case.
+    const _hasVisibleAction = (section.actions || []).some(function(a) { return a.visible; });
+    const _hasTableButton = section.isTable && section.navigationProperty && (section.createButton?.visible || section.deleteButton?.visible);
+    const _hasSubSectionAssertion = (section.subSections?.length > 1) || (section.subSections || []).some(function(s) { return s.fields && s.fields.length > 0; });
+    const _hasFormFields = !(section.subSections?.length > 0) && section.fields && section.fields.length > 0;
+    const _hasSectionAssertion = _hasVisibleAction || _hasTableButton || _hasSubSectionAssertion || _hasFormFields;
+-%>
+<% if (_hasSectionAssertion) { -%>
         opaTest("Check the <%- section.id %> section of the Object Page", function (_Given, <% if (bodySections.length > 1) { %>When<% } else { %>_When<% } %>, Then) {
 <% if (bodySections.length > 1) { -%>
             When.onThe<%- name%>Generated.iPressSectionIconTabFilterButton("<%- section.id %>");
 <% } -%>
-            Then.onThe<%- name%>Generated.iCheckSection({ section: "<%- section.id %>" });
 <%  if (section.actions && section.actions.length > 0) { -%>
 <%      section.actions.forEach(function(action) { -%>
 <%      if (action.visible) { -%>
@@ -150,9 +155,6 @@ sap.ui.define([
 <% } -%>
 <% }) -%>
 <% } -%>
-<% if (subSection.tableColumns && Object.keys(subSection.tableColumns).length > 0 && subSection.navigationProperty) { -%>
-            Then.onThe<%- name%>Generated.onTable({ property: "<%- subSection.navigationProperty %>" }).iCheckColumns(undefined, <%- JSON.stringify(subSection.tableColumns) %>);
-<% } -%>
 <% }) -%>
 <% } else { -%>
 <% if (section.fields && section.fields.length > 0) { -%>
@@ -167,15 +169,13 @@ sap.ui.define([
 <% } -%>
 <% }) -%>
 <% } -%>
-<% if (section.tableColumns && Object.keys(section.tableColumns).length > 0 && section.navigationProperty) { -%>
-            Then.onThe<%- name%>Generated.onTable({ property: "<%- section.navigationProperty %>" }).iCheckColumns(undefined, <%- JSON.stringify(section.tableColumns) %>);
-<% } -%>
 <% } -%>
         });
 
+<% } -%>
 <% }) -%>
 <% } -%>
-        opaTest("Teardown", function (Given, When, Then) { 
+        opaTest("Teardown", function (Given, When, Then) {
             // Cleanup
             Given.iTearDownMyApp();
         });
