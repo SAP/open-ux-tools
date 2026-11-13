@@ -1,5 +1,17 @@
 # Change Log
 
+## 6.0.3
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-12
+
+#### Bug Fixes
+
+- Return a well-formed fetch response so UI5 2.0 VersionInfo.load() works. The mock fetch now provides `ok`/`status` and a `json()` method and synthesizes `sap-ui-version.json` (generated at serve time, not on disk), which previously made Core bootstrap throw "status code undefined" and crash every suite on UI5 2.0 projects. Also restores `hasher`/`signals` in the isV2 shim map so they load in the UI5 loader context. [[e6d16e3](https://github.com/SAP/open-ux-tools/commit/e6d16e35d3ce9c8a51e44d70ca5632fa22f4efbe)]
+
 ## 6.0.2
 
 ### Patch Changes

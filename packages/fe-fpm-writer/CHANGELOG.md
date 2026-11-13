@@ -1,5 +1,17 @@
 # @sap-ux/fe-fpm-writer
 
+## 1.4.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-12
+
+#### Features
+
+- Enabled Replacing Standard Navigation in LR with navigation to an external app [[d1377b8](https://github.com/SAP/open-ux-tools/commit/d1377b8d249e4fec9c3a4d48020376adb46383df)]
+
 ## 1.4.0
 
 ### Minor Changes

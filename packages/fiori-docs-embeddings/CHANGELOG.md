@@ -1,5 +1,17 @@
 # @sap-ux/fiori-docs-embeddings
 
+## 1.2.9
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-13
+
+#### Bug Fixes
+
+- Replace abandoned node-fetch with native fetch (Node >=20 built-in) [[73fdfbf](https://github.com/SAP/open-ux-tools/commit/73fdfbfe2a371d5b9666d2a69b55d1ed977bb69e)]
+
 ## 1.2.8
 
 ### Patch Changes

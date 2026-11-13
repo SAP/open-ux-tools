@@ -3,14 +3,8 @@ import { MessageType } from '@sap-devx/yeoman-ui-types';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import type { CapService } from '@sap-ux/cap-config-writer';
 import type { OdataVersion } from '@sap-ux/fiori-elements-writer';
-import type { ApiHubConfig, ILogWrapper, VSCodeInstance } from '@sap-ux/fiori-generator-shared';
-import {
-    ApiHubType,
-    getHostEnvironment,
-    hostEnvironment,
-    sendTelemetry,
-    TelemetryHelper
-} from '@sap-ux/fiori-generator-shared';
+import type { ILogWrapper, VSCodeInstance } from '@sap-ux/fiori-generator-shared';
+import { getHostEnvironment, hostEnvironment, sendTelemetry, TelemetryHelper } from '@sap-ux/fiori-generator-shared';
 import type { Logger } from '@sap-ux/logger';
 import type { DatasourceType } from '@sap-ux/odata-service-inquirer';
 import {
@@ -23,6 +17,8 @@ import {
 } from '@sap-ux/store';
 import type { Editor } from 'mem-fs-editor';
 import { join } from 'node:path';
+import type { ApiHubConfig } from '../types/index.js';
+import { ApiHubType } from '../types/index.js';
 import { buildSapClientParam, generateLaunchConfig, runHooks, t } from '../utils/index.js';
 
 /**
