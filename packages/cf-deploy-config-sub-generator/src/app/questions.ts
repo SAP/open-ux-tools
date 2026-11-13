@@ -15,8 +15,7 @@ import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-sha
 import { destinationQuestionDefaultOption, getCFChoices } from './utils.js';
 import { t } from '../utils/index.js';
 import type { ApiHubConfig } from '@sap-ux/cf-deploy-config-writer';
-import type { Answers, Question, PromptModule } from 'inquirer';
-import { withCondition } from '@sap-ux/inquirer-common';
+import { withCondition, type Answers, type Question } from '@sap-ux/inquirer-common';
 import type { Logger } from '@sap-ux/logger';
 
 /**
@@ -30,7 +29,6 @@ import type { Logger } from '@sap-ux/logger';
  * @param options.addOverwrite - whether to add the overwrite prompt.
  * @param options.apiHubConfig - the API Hub configuration.
  * @param options.promptOptions - additional prompt options.
- * @param options.promptModule - the inquirer prompt module instance used to register plugins.
  * @returns the cf deploy config questions.
  */
 export async function getCFQuestions({
@@ -40,8 +38,7 @@ export async function getCFQuestions({
     isCap,
     addOverwrite,
     apiHubConfig,
-    promptOptions,
-    promptModule
+    promptOptions
 }: {
     projectRoot: string;
     isAbapDirectServiceBinding: boolean;
@@ -50,7 +47,6 @@ export async function getCFQuestions({
     addOverwrite: boolean;
     apiHubConfig?: ApiHubConfig;
     promptOptions?: CfDeployConfigPromptOptions;
-    promptModule?: PromptModule;
 }): Promise<CfDeployConfigQuestions[]> {
     const isBAS = isAppStudio();
     const mtaYamlExists = !!(await getMtaPath(projectRoot));
@@ -82,7 +78,7 @@ export async function getCFQuestions({
         })
     );
     const logger = DeploymentGenerator.logger as unknown as Logger;
-    return getPrompts(options, logger, promptModule);
+    return getPrompts(options, logger);
 }
 
 /**
@@ -122,8 +118,10 @@ export async function getCAPMTAQuestions({ projectRoot }: { projectRoot: string 
     // If launched as root generator, add a prompt to allow user decide if they want to add an MTA config
     let questions = (await getCFApprouterQuestionsForCap({
         projectRoot
-    })) as Question[];
+    })) as unknown as Question[];
     questions = withCondition(questions, (answers: Answers) => answers.addCapMtaContinue === true);
-    questions.unshift(...getConfirmMtaContinuePrompt());
+    // `getConfirmMtaContinuePrompt` comes from `@sap-ux/deploy-config-generator-shared`, which still types its
+    // prompts with the legacy `inquirer` `Question` (optional `type`); bridge to the inquirer-common `Question`.
+    questions.unshift(...(getConfirmMtaContinuePrompt() as unknown as Question[]));
     return questions;
 }

@@ -10,15 +10,18 @@ initIcons();
 const questions: PromptQuestion[] = [
     {
         name: 'Dummy1',
-        type: 'input'
+        type: 'input',
+        message: 'Dummy1'
     },
     {
         name: 'Dummy2',
-        type: 'checkbox'
+        type: 'checkbox',
+        message: 'Dummy2'
     },
     {
         name: 'Dummy3',
-        type: 'list',
+        type: 'select',
+        message: 'Dummy3',
         choices: [
             {
                 name: 'test1',

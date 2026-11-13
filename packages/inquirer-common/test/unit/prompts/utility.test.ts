@@ -1,6 +1,6 @@
 import { jest } from '@jest/globals';
 import type { UI5Version } from '@sap-ux/ui5-info';
-import type { ListChoiceOptions } from 'inquirer';
+import type { ChoiceOptions } from '../../../src/index.js';
 
 const mockGetUi5Themes = jest.fn() as jest.Mock;
 
@@ -21,7 +21,7 @@ jest.unstable_mockModule('@sap-ux/ui5-info', () => ({
 }));
 
 const { initI18nInquirerCommon } = await import('../../../src/i18n.js');
-const { getDefaultUI5VersionChoice, getUI5ThemesChoices, searchChoices, ui5VersionsGrouped } =
+const { getDefaultUI5VersionChoice, getUI5ThemesChoices, searchableListPrompt, searchChoices, ui5VersionsGrouped } =
     await import('../../../src/prompts/utility.js');
 const { ui5ThemeIds } = await import('@sap-ux/ui5-info');
 
@@ -194,7 +194,7 @@ describe('utility.ts', () => {
     });
 
     it('searchChoices', async () => {
-        const searchList: ListChoiceOptions[] = [
+        const searchList: ChoiceOptions[] = [
             {
                 name: 'choice1',
                 value: {
@@ -291,6 +291,54 @@ describe('utility.ts', () => {
               },
             ]
         `);
+    });
+
+    describe('searchableListPrompt', () => {
+        const choices = [
+            { name: 'alpha', value: 'a' },
+            { name: 'beta', value: 'b' },
+            { name: 'gamma', value: 'c' }
+        ];
+        const base = { name: 'pick', message: 'Pick one' };
+
+        it('builds a select arm when useSearch is false', () => {
+            const question = searchableListPrompt(base, choices, false);
+            expect(question.type).toBe('select');
+            expect('source' in question).toBe(false);
+            expect((question as { choices: unknown }).choices).toEqual(choices);
+        });
+
+        it('builds a search arm when useSearch is true', async () => {
+            const question = searchableListPrompt(base, choices, true);
+            expect(question.type).toBe('search');
+            expect('choices' in question).toBe(false);
+            const source = (question as { source: (term?: string) => unknown[] }).source;
+            // Filters by the search term
+            expect(await source('bet')).toEqual([{ name: 'beta', value: 'b' }]);
+            // Returns the full list when the term is empty
+            expect(await source(undefined)).toEqual(choices);
+        });
+
+        it('resolves a thunk of choices for the search arm', async () => {
+            const question = searchableListPrompt(base, () => choices, true);
+            const source = (question as { source: (term?: string) => unknown[] }).source;
+            expect(await source('')).toEqual(choices);
+        });
+
+        it('maps a default index to the choice value on the select arm', () => {
+            const question = searchableListPrompt(base, choices, false, 1);
+            expect((question as { default: unknown }).default).toBe('b');
+        });
+
+        it('maps a default index to the choice value on the search arm', () => {
+            const question = searchableListPrompt(base, choices, true, 2);
+            expect((question as { default: unknown }).default).toBe('c');
+        });
+
+        it('omits default when no index is provided', () => {
+            expect('default' in searchableListPrompt(base, choices, false)).toBe(false);
+            expect('default' in searchableListPrompt(base, choices, true)).toBe(false);
+        });
     });
 
     it('getUI5ThemeChoices', async () => {

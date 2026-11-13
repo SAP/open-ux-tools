@@ -7,7 +7,7 @@ import {
     getTransportRequestPrompts
 } from '@sap-ux/abap-deploy-config-inquirer';
 import { type Logger } from '@sap-ux/logger';
-import type { Question } from 'inquirer';
+import type { Question } from '@sap-ux/inquirer-common';
 import { t } from '../../i18n.js';
 import { type ServiceConfigOptions, type ServiceConfigQuestion, type UiServiceAnswers } from '../../types.js';
 import {

@@ -23,7 +23,7 @@ export function getInboundIdsPrompt(inbounds: ManifestNamespace.Inbound): FLPCon
         value: data
     }));
     return {
-        type: 'list',
+        type: 'select',
         name: promptNames.inboundId,
         message: t('prompts.inboundIds'),
         choices: choices,
@@ -49,12 +49,12 @@ export function getParameterStringPrompt(): FLPConfigQuestion {
         type: 'editor',
         name: promptNames.additionalParameters,
         message: t('prompts.additionalParameters'),
-        default: (answers: FLPConfigAnswers): string => {
+        default: (answers: Partial<FLPConfigAnswers>): string => {
             const parameters = answers?.inboundId?.signature?.parameters;
             return parameters ? JSON.stringify(parameters, null, 2) : '';
         },
         validate: (value: string): string | boolean => {
-            if (!value) {
+            if (!value || typeof value !== 'string') {
                 return true; // No additional parameters provided, skip validation
             }
             try {
@@ -104,7 +104,7 @@ export function getIconPrompt(options?: IconPromptOptions): FLPConfigQuestion {
             breadcrumb: true
         },
         message: t('prompts.icon'),
-        default: (answers: FLPConfigAnswers): string => {
+        default: (answers: Partial<FLPConfigAnswers>): string => {
             if (options?.default) {
                 return options.default;
             }

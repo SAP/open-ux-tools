@@ -205,56 +205,56 @@ function getUrlAnswer(answers: AbapDeployConfigAnswersInternal, stateUrl?: strin
  * @returns - external abap deploy config answers
  */
 export function reconcileAnswers(
-    answers: AbapDeployConfigAnswersInternal,
+    answers: Partial<AbapDeployConfigAnswersInternal>,
     state: Partial<AbapDeployConfigAnswersInternal>
 ): AbapDeployConfigAnswers {
-    // Add dervied service answers to the answers object
-    answers = Object.assign(answers, state);
+    // Merging the two partials yields the resolved answer set consumed below
+    const merged = { ...answers, ...state } as AbapDeployConfigAnswersInternal;
 
     const reconciledAnswers: AbapDeployConfigAnswers = {
-        url: getUrlAnswer(answers, state.url),
-        package: getPackageAnswer(answers, state.package)
+        url: getUrlAnswer(merged, state.url),
+        package: getPackageAnswer(merged, state.package)
     };
 
-    if (answers.destination) {
-        reconciledAnswers.destination = answers.destination;
+    if (merged.destination) {
+        reconciledAnswers.destination = merged.destination;
     }
 
-    if (answers.targetSystem && answers.targetSystem !== TargetSystemType.Url) {
-        reconciledAnswers.url = answers.targetSystem;
+    if (merged.targetSystem && merged.targetSystem !== TargetSystemType.Url) {
+        reconciledAnswers.url = merged.targetSystem;
     }
 
-    if (answers.connectPath !== undefined) {
-        reconciledAnswers.connectPath = answers.connectPath;
+    if (merged.connectPath !== undefined) {
+        reconciledAnswers.connectPath = merged.connectPath;
     }
 
-    if (answers.client || state.client) {
-        reconciledAnswers.client = answers.client || state.client;
+    if (merged.client || state.client) {
+        reconciledAnswers.client = merged.client || state.client;
     }
 
-    if (answers.scp || state.scp) {
+    if (merged.scp || state.scp) {
         reconciledAnswers.scp = true;
     }
 
-    if (answers.ui5AbapRepo) {
-        reconciledAnswers.ui5AbapRepo = answers.ui5AbapRepo;
+    if (merged.ui5AbapRepo) {
+        reconciledAnswers.ui5AbapRepo = merged.ui5AbapRepo;
     }
 
-    if (answers.description) {
-        reconciledAnswers.description = answers.description;
+    if (merged.description) {
+        reconciledAnswers.description = merged.description;
     }
 
-    const transportAnswer = getTransportAnswer(answers);
+    const transportAnswer = getTransportAnswer(merged);
     if (transportAnswer) {
         reconciledAnswers.transport = transportAnswer;
     }
 
-    if (answers.index !== undefined) {
-        reconciledAnswers.index = answers.index;
+    if (merged.index !== undefined) {
+        reconciledAnswers.index = merged.index;
     }
 
-    if (answers.overwrite !== undefined) {
-        reconciledAnswers.overwrite = answers.overwrite;
+    if (merged.overwrite !== undefined) {
+        reconciledAnswers.overwrite = merged.overwrite;
     }
 
     return reconciledAnswers;

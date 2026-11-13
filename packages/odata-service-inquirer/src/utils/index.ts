@@ -1,10 +1,10 @@
 import type { ServiceProvider } from '@sap-ux/axios-extension';
 import { ODataVersion } from '@sap-ux/axios-extension';
 import { isAppStudio } from '@sap-ux/btp-utils';
+import type { ChoiceOptions } from '@sap-ux/inquirer-common';
 import { hostEnvironment, type HostEnvironmentId } from '@sap-ux/fiori-generator-shared';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import { XMLParser } from 'fast-xml-parser';
-import type { ListChoiceOptions } from 'inquirer';
 import { t } from '../i18n.js';
 import LoggerHelper from '../prompts/logger-helper.js';
 import { PromptState } from './prompt-state.js';
@@ -125,7 +125,7 @@ export function convertODataVersionType(odataVersion?: OdataVersion): ODataVersi
  * @param list the list of choices
  * @returns the default index if only one item is available, otherwise undefined
  */
-export function getDefaultChoiceIndex(list: ListChoiceOptions[]): number | undefined {
+export function getDefaultChoiceIndex(list: ChoiceOptions[]): number | undefined {
     if (list?.length === 1) {
         return 0;
     }

@@ -39,7 +39,7 @@ describe('getMissingReferentialConstraintsPrompts', () => {
         const [source, target] = getMissingReferentialConstraintsPrompts([entity]);
 
         expect(source.name).toBe('Items/NodeId/source');
-        expect(source.type).toBe('list');
+        expect(source.type).toBe('select');
         expect(source.default).toBe(false);
         expect(source.choices).toEqual([
             { name: 'Id', value: 'Id' },
@@ -48,7 +48,7 @@ describe('getMissingReferentialConstraintsPrompts', () => {
         ]);
 
         expect(target.name).toBe('Items/NodeId/target');
-        expect(target.type).toBe('list');
+        expect(target.type).toBe('select');
         expect(target.default).toBe(false);
         expect(target.choices).toEqual(source.choices);
     });

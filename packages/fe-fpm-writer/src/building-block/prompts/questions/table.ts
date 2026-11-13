@@ -1,5 +1,5 @@
 import { UIAnnotationTerms } from '@sap-ux/vocabularies-types/vocabularies/UI';
-import type { Answers } from 'inquirer';
+import type { Answers } from '@sap-ux/inquirer-common';
 import { i18nNamespaces, translate } from '../../../i18n.js';
 import {
     getAggregationPathPrompt,
@@ -141,7 +141,7 @@ export async function getTableBuildingBlockPrompts(context: PromptContext): Prom
             ),
             getFilterBarIdPrompt(context, {
                 message: t('filterBar.message') as string,
-                type: 'list',
+                type: 'select',
                 guiOptions: {
                     groupId: groupIds.commonTableBuildingBlockProperties,
                     placeholder: t('filterBar.placeholder') as string,
@@ -150,7 +150,7 @@ export async function getTableBuildingBlockPrompts(context: PromptContext): Prom
             }),
             //second prompt group
             {
-                type: 'list',
+                type: 'select',
                 name: 'buildingBlockData.type',
                 message: t('tableType.message') as string,
                 choices: [
@@ -164,7 +164,7 @@ export async function getTableBuildingBlockPrompts(context: PromptContext): Prom
                 }
             },
             {
-                type: 'list',
+                type: 'select',
                 name: 'buildingBlockData.selectionMode',
                 message: t('selectionMode.message') as string,
                 choices: [
@@ -213,7 +213,7 @@ export async function getTableBuildingBlockPrompts(context: PromptContext): Prom
                 }
             },
             {
-                type: 'list',
+                type: 'select',
                 name: 'buildingBlockData.variantManagement',
                 message: t('tableVariantManagement') as string,
                 choices: [

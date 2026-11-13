@@ -1,5 +1,6 @@
-import type { Answers, DistinctChoice } from 'inquirer';
 import type {
+    Answers,
+    ChoiceOptions,
     CheckBoxQuestion,
     InputQuestion,
     ListQuestion,
@@ -131,7 +132,7 @@ export interface ValidationResults {
     [questionName: string]: ValidationResult;
 }
 
-export type PromptListChoices = ReadonlyArray<DistinctChoice>;
+export type PromptListChoices = ReadonlyArray<string | ChoiceOptions<AnswerValue>>;
 
 export interface DynamicChoices {
     [key: string]: PromptListChoices;

@@ -1,7 +1,7 @@
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import type { Logger } from '@sap-ux/logger';
 import { getSystemSelectionQuestions, promptNames } from '@sap-ux/odata-service-inquirer';
-import type { ListChoiceOptions, ListQuestion } from 'inquirer';
+import type { ChoiceOptions, ListQuestion } from '@sap-ux/inquirer-common';
 import type { Question } from 'yeoman-generator';
 import { t } from '../../i18n.js';
 import { ObjectType, type UiServiceAnswers } from '../../types.js';
@@ -44,21 +44,21 @@ export async function getSystemQuestions(
                 }
                 return false;
             },
-            type: 'list',
+            type: 'select',
             name: 'objectType',
             guiOptions: {
                 breadcrumb: true
             },
             default: previousAnswers?.objectType ?? '',
             message: t('prompts.objectTypeLabel'),
-            choices: (): ListChoiceOptions[] => [
+            choices: (): ChoiceOptions[] => [
                 { name: t('prompts.businessObjectInterfaceLabel'), value: ObjectType.BUSINESS_OBJECT },
                 { name: t('prompts.abapCdsServiceLabel'), value: ObjectType.CDS_VIEW }
             ]
         },
         {
             when: (previousAnswers: any) => previousAnswers.objectType === ObjectType.BUSINESS_OBJECT,
-            type: 'list',
+            type: 'select',
             name: 'businessObjectInterface',
             guiOptions: {
                 breadcrumb: true,
@@ -66,7 +66,7 @@ export async function getSystemQuestions(
             },
             default: previousAnswers?.businessObjectInterface ?? '',
             message: t('prompts.businessObjectInterfaceLabel'),
-            choices: async (): Promise<ListChoiceOptions[]> => {
+            choices: async (): Promise<ChoiceOptions[]> => {
                 try {
                     return await getBusinessObjects(
                         PromptState.systemSelection.connectedSystem?.serviceProvider as AbapServiceProvider
@@ -92,7 +92,7 @@ export async function getSystemQuestions(
         } as ListQuestion,
         {
             when: (previousAnswers: any) => previousAnswers.objectType === ObjectType.CDS_VIEW,
-            type: 'list',
+            type: 'select',
             name: 'abapCDSView',
             guiOptions: {
                 breadcrumb: true,
@@ -100,7 +100,7 @@ export async function getSystemQuestions(
             },
             default: previousAnswers?.abapCDSView ?? '',
             message: t('prompts.abapCdsServiceLabel'),
-            choices: async (): Promise<ListChoiceOptions[]> => {
+            choices: async (): Promise<ChoiceOptions[]> => {
                 try {
                     return await getAbapCDSViews(
                         PromptState.systemSelection.connectedSystem?.serviceProvider as AbapServiceProvider

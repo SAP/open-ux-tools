@@ -22,7 +22,7 @@ export function getNewSystemQuestions(
 ): Question<NewSystemAnswers>[] {
     const questions: Question<NewSystemAnswers>[] = [
         {
-            type: 'list',
+            type: 'select',
             name: newSystemPromptNames.newSystemType,
             choices: [
                 { name: t('prompts.newSystemType.choiceAbapOnBtp'), value: 'abapOnBtp' as SapSystemType },

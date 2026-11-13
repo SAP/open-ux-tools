@@ -17,7 +17,7 @@ import {
     type SystemConfig
 } from '../types.js';
 import { AuthenticationType, type BackendSystem } from '@sap-ux/store';
-import type { ChoiceOptions, ListChoiceOptions } from 'inquirer';
+import type { ChoiceOptions } from '@sap-ux/inquirer-common';
 import { getBackendSystemDisplayName, getSystemDisplayName } from '@sap-ux/fiori-generator-shared';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 
@@ -185,7 +185,7 @@ export function getClientChoicePromptChoices(client?: string): ChoiceOptions[] {
  *
  * @returns list of package input choices
  */
-export function getPackageInputChoices(): ListChoiceOptions[] {
+export function getPackageInputChoices(): ChoiceOptions[] {
     const manualChoice = {
         name: t('choices.transport.enterManually'),
         value: PackageInputChoices.EnterManualChoice
@@ -203,7 +203,7 @@ export function getPackageInputChoices(): ListChoiceOptions[] {
  * @param showCreateDuringDeploy - show createDuringDeploy choice, defaults to true
  * @returns list of transport choices
  */
-export function getTransportChoices(showCreateDuringDeploy = true): ListChoiceOptions[] {
+export function getTransportChoices(showCreateDuringDeploy = true): ChoiceOptions[] {
     const manualChoice = {
         name: t('choices.transport.enterManually'),
         value: TransportChoices.EnterManualChoice

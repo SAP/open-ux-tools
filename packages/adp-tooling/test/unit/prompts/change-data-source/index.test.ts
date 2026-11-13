@@ -62,7 +62,7 @@ describe('getPrompts', () => {
 
         expect(prompts).toEqual([
             {
-                type: 'list',
+                type: 'select',
                 name: 'id',
                 message: i18n.t('prompts.oDataSourceLabel'),
                 choices: dataSourceIds,
@@ -164,7 +164,7 @@ describe('getPrompts', () => {
 
         expect(prompts).toEqual([
             {
-                type: 'list',
+                type: 'select',
                 name: 'id',
                 message: i18n.t('prompts.oDataSourceLabel'),
                 choices: [],

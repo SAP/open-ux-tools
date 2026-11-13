@@ -62,15 +62,14 @@ exports[`ui5-application-inquirer API getPrompts, no options 1`] = `
   },
   {
     "choices": [Function],
-    "default": [Function],
+    "default": "1.118.0",
     "guiOptions": {
       "breadcrumb": "SAPUI5 Version",
       "hint": "The minimum SAPUI5 version represents the minimum version of SAPUI5 that this application requires.",
     },
     "message": "Minimum SAPUI5 Version",
     "name": "ui5Version",
-    "source": [Function],
-    "type": "list",
+    "type": "select",
     "when": [Function],
   },
   {
@@ -131,7 +130,7 @@ exports[`ui5-application-inquirer API getPrompts, no options 1`] = `
     },
     "message": "SAPUI5 Theme",
     "name": "ui5Theme",
-    "type": "list",
+    "type": "select",
   },
   {
     "default": true,

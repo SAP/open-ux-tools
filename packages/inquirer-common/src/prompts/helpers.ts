@@ -1,5 +1,12 @@
-import type { Answers, Question, Validator } from 'inquirer';
-import type { CommonPromptOptions, PromptDefaultValue, PromptSeverityMessage, YUIQuestion } from '../types.js';
+import type {
+    Answers,
+    CommonPromptOptions,
+    PromptDefaultValue,
+    PromptSeverityMessage,
+    Question,
+    Validator,
+    YUIQuestion
+} from '../types.js';
 import cloneDeep from 'lodash/cloneDeep.js';
 
 /**
@@ -38,19 +45,19 @@ export function extendAdditionalMessages(
  * @returns the extended validate function
  */
 export function extendValidate<T extends Answers = Answers>(
-    question: Question,
+    question: YUIQuestion,
     validateFunc: NonNullable<Validator<T>>,
     promptState?: Answers
 ): NonNullable<Validator<T>> {
-    const validate: Validator<T> = question.validate;
-    return (value: unknown, previousAnswers?: T): ReturnType<NonNullable<Validator<T>>> => {
+    const validate: YUIQuestion['validate'] = question.validate;
+    return (value: unknown, previousAnswers?: Partial<T>): ReturnType<NonNullable<Validator<T>>> => {
         // Allow non-prompt answer (derived answers) values to be passed to the validate function
         const combinedAnswers = { ...cloneDeep(previousAnswers), ...cloneDeep(promptState) } as T;
         const extVal = validateFunc?.(value, combinedAnswers);
         if (extVal !== true) {
             return extVal;
         }
-        return typeof validate === 'function' ? validate(value, previousAnswers) : true;
+        return typeof validate === 'function' ? validate(value, combinedAnswers) : true;
     };
 }
 
@@ -127,7 +134,7 @@ export function extendWithOptions<T extends YUIQuestion = YUIQuestion>(
     questions: T[],
     promptOptions: Record<string, Omit<CommonPromptOptions, 'hide'> & PromptDefaultValue<string | boolean>>,
     promptState?: Answers
-): YUIQuestion[] {
+): T[] {
     questions.forEach((question: YUIQuestion) => {
         const promptOptKey = question.name;
         const promptOpt = promptOptions[question.name];

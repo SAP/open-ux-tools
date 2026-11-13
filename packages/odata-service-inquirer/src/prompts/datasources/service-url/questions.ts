@@ -11,7 +11,7 @@ import {
 } from '@sap-ux/inquirer-common';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
-import type { Question } from 'inquirer';
+import type { Answers, Question } from 'inquirer';
 import { t } from '../../../i18n.js';
 import type { OdataServiceAnswers, OdataServiceUrlPromptOptions } from '../../../types.js';
 import { promptNames } from '../../../types.js';
@@ -218,12 +218,13 @@ function getIgnoreCertErrorsPrompt(
 function getCliIgnoreCertValidatePrompt(
     connectValidator: ConnectionValidator,
     requiredVersion?: OdataVersion
-): Question<ServiceUrlAnswers> {
+): YUIQuestion<ServiceUrlAnswers> {
     return {
         // Add dummy prompt for CLI to revalidate since "confirm" prompt validators don't run on CLI
         // The `when` condition should never return true (so it does not get rendered in GUI prompts) but will throw an error to exit generation
         // if the user chooses to not ignore cert errors or if the odata service is not valid
-        when: async ({ serviceUrl, ignoreCertError }: ServiceUrlAnswers) => {
+        when: async (answers: Answers) => {
+            const { serviceUrl, ignoreCertError } = answers as ServiceUrlAnswers;
             if (serviceUrl && connectValidator.validity.canSkipCertError) {
                 // If the user choose to not ignore cert errors, we cannot continue
                 if (!ignoreCertError) {
@@ -258,7 +259,7 @@ function getCliIgnoreCertValidatePrompt(
             return false;
         },
         name: serviceUrlInternalPromptNames.cliIgnoreCertValidate
-    };
+    } as unknown as YUIQuestion<ServiceUrlAnswers>;
 }
 
 /**
@@ -350,7 +351,7 @@ export function getServiceUrlQuestions(
     const requiredVersion = serviceUrlPromptOptions?.requiredOdataVersion;
     PromptState.reset();
 
-    let questions: Question<ServiceUrlAnswers>[] = [
+    let questions: YUIQuestion<ServiceUrlAnswers>[] = [
         getServiceUrlPrompt(connectValidator, requiredVersion, serviceUrlPromptOptions?.showCollaborativeDraftWarning),
         getIgnoreCertErrorsPrompt(
             connectValidator,
@@ -385,7 +386,11 @@ export function getServiceUrlQuestions(
     }
 
     if (promptsOptToExtend) {
-        questions = extendWithOptions(questions as YUIQuestion[], promptsOptToExtend, PromptState.odataService);
+        questions = extendWithOptions(
+            questions as YUIQuestion[],
+            promptsOptToExtend,
+            PromptState.odataService
+        ) as YUIQuestion<ServiceUrlAnswers>[];
     }
-    return questions;
+    return questions as unknown as Question<OdataServiceAnswers>[];
 }

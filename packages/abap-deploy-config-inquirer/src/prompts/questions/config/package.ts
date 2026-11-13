@@ -13,10 +13,10 @@ import {
     promptNames,
     type PackageInputChoices,
     type AbapDeployConfigAnswersInternal,
-    type AbapDeployConfigPromptOptions
+    type AbapDeployConfigPromptOptions,
+    type AbapDeployConfigQuestion
 } from '../../../types.js';
-import type { InputQuestion, ListChoiceOptions, ListQuestion, Question } from 'inquirer';
-import type { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
+import type { ChoiceOptions, InputQuestion, ListQuestion, SearchQuestion } from '@sap-ux/inquirer-common';
 import type { IValidationLink, IMessageSeverity } from '@sap-devx/yeoman-ui-types';
 import { Severity } from '@sap-devx/yeoman-ui-types';
 import { DEFAULT_PACKAGE_ABAP } from '../../../constants.js';
@@ -33,7 +33,7 @@ export function getPackagePrompts(
     options: AbapDeployConfigPromptOptions,
     useStandalone = true,
     isYUI = false
-): Question<AbapDeployConfigAnswersInternal>[] {
+): AbapDeployConfigQuestion[] {
     let packageInputChoiceValid: boolean | string | IValidationLink;
     let morePackageResultsMsg = '';
     let prevAnswers = {};
@@ -41,10 +41,10 @@ export function getPackagePrompts(
 
     PromptState.isYUI = isYUI;
 
-    const questions: Question<AbapDeployConfigAnswersInternal>[] = [
+    const questions: AbapDeployConfigQuestion[] = [
         {
             when: (): boolean => showPackageInputChoiceQuestion(options?.packageAutocomplete?.useAutocomplete),
-            type: 'list',
+            type: 'select',
             name: promptNames.packageInputChoice,
             message: t('prompts.config.package.packageInputChoice.message'),
             guiOptions: {
@@ -77,7 +77,7 @@ export function getPackagePrompts(
             },
             type: 'input',
             name: promptNames.packageCliExecution
-        } as InputQuestion<AbapDeployConfigAnswersInternal>,
+        } as unknown as InputQuestion<AbapDeployConfigAnswersInternal>,
         {
             when: (previousAnswers: AbapDeployConfigAnswersInternal): boolean =>
                 defaultOrShowManualPackageQuestion(
@@ -126,7 +126,7 @@ export function getPackagePrompts(
                     previousAnswers.packageInputChoice,
                     options?.packageAutocomplete?.useAutocomplete
                 ),
-            type: 'autocomplete',
+            type: 'search',
             name: promptNames.packageAutocomplete,
             message: `${t('prompts.config.package.packageAutocomplete.message')}${
                 !PromptState.isYUI ? t('prompts.config.package.packageAutocomplete.messageTypeFilter') : ''
@@ -136,15 +136,14 @@ export function getPackagePrompts(
                 mandatory: true,
                 breadcrumb: true
             },
-            source: async (
-                previousAnswers: AbapDeployConfigAnswersInternal,
-                input: string
-            ): Promise<string[] | undefined> => {
+            source: async (input: string | undefined): Promise<string[]> => {
+                // inquirer 13's native `search` arm no longer passes the previous answers to `source`;
+                // the latest answers are captured from `validate` via the `prevAnswers` closure instead.
                 const results = await getPackageChoices(
                     !PromptState.isYUI,
-                    input,
+                    input ?? '',
                     getSystemConfig(useStandalone, PromptState.abapDeployConfig, options.backendTarget),
-                    previousAnswers,
+                    prevAnswers as AbapDeployConfigAnswersInternal,
                     options.backendTarget
                 );
                 morePackageResultsMsg = results.morePackageResultsMsg;
@@ -152,13 +151,12 @@ export function getPackagePrompts(
             },
             additionalInfo: () => morePackageResultsMsg,
             validate: async (
-                input: string | ListChoiceOptions,
+                input: string | ChoiceOptions,
                 answers: AbapDeployConfigAnswersInternal
             ): Promise<boolean | string> => {
                 // Autocomplete can the entire choice object as the answer, so we need to extract the value
-                const pkgValue: string = (input as ListChoiceOptions)?.value
-                    ? (input as ListChoiceOptions).value
-                    : input;
+                const pkgValue: string =
+                    typeof input === 'string' ? input : ((input as ChoiceOptions)?.value as string);
                 if (shouldRunValidation(prevAnswers as AbapDeployConfigAnswersInternal, answers)) {
                     prevValidationResult = await validatePackage(
                         pkgValue,
@@ -173,7 +171,7 @@ export function getPackagePrompts(
                 prevAnswers = answers;
                 return prevValidationResult;
             }
-        } as AutocompleteQuestionOptions<AbapDeployConfigAnswersInternal>
+        } as SearchQuestion<AbapDeployConfigAnswersInternal>
     ];
 
     return questions;

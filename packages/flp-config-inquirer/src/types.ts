@@ -1,5 +1,10 @@
-import type { YUIQuestion, GuiOptions, PromptSeverityMessage, CommonPromptOptions } from '@sap-ux/inquirer-common';
-import type { ListQuestionOptions } from 'inquirer';
+import type {
+    YUIQuestion,
+    GuiOptions,
+    PromptSeverityMessage,
+    CommonPromptOptions,
+    ListQuestion
+} from '@sap-ux/inquirer-common';
 import type { InboundContent } from '@sap-ux/axios-extension';
 
 /**
@@ -50,12 +55,12 @@ export interface ExistingInboundRef {
 /**
  * The question type specific to FLP configuration prompts.
  */
-export interface FLPConfigQuestion
-    extends YUIQuestion<FLPConfigAnswers>, Partial<Pick<ListQuestionOptions, 'choices'>> {
-    name: promptNames;
-    guiOptions?: GuiOptions;
-    additionalMessages?: PromptSeverityMessage;
-}
+export type FLPConfigQuestion = YUIQuestion<FLPConfigAnswers> &
+    Partial<Pick<ListQuestion<FLPConfigAnswers>, 'choices'>> & {
+        name: promptNames;
+        guiOptions?: GuiOptions;
+        additionalMessages?: PromptSeverityMessage;
+    };
 
 /**
  * Options for the 'inboundId' prompt.

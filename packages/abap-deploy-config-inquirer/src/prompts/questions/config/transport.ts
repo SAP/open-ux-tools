@@ -14,9 +14,10 @@ import {
     promptNames,
     type AbapDeployConfigAnswersInternal,
     type AbapDeployConfigPromptOptions,
-    type TransportChoices
+    type TransportChoices,
+    type AbapDeployConfigQuestion
 } from '../../../types.js';
-import type { InputQuestion, ListQuestion, Question } from 'inquirer';
+import type { InputQuestion, ListQuestion } from '@sap-ux/inquirer-common';
 import { useCreateTrDuringDeploy } from '../../../utils.js';
 import type { IValidationLink } from '@sap-devx/yeoman-ui-types';
 
@@ -32,17 +33,17 @@ export function getTransportRequestPrompts(
     options: AbapDeployConfigPromptOptions,
     useStandalone = true,
     isYUI = false
-): Question<AbapDeployConfigAnswersInternal>[] {
+): AbapDeployConfigQuestion[] {
     let transportInputChoice: TransportChoices;
     let prevAnswers = {};
     let validateTransportChoiceResult: string | boolean | IValidationLink = false;
 
     PromptState.isYUI = isYUI;
 
-    const questions: Question<AbapDeployConfigAnswersInternal>[] = [
+    const questions: AbapDeployConfigQuestion[] = [
         {
             when: (): boolean => showTransportInputChoice(options.transportInputChoice),
-            type: 'list',
+            type: 'select',
             name: promptNames.transportInputChoice,
             message: t('prompts.config.transport.transportInputChoice.message'),
             guiOptions: {
@@ -96,7 +97,7 @@ export function getTransportRequestPrompts(
             },
             type: 'input',
             name: promptNames.transportCliExecution
-        },
+        } as unknown as AbapDeployConfigQuestion,
         {
             when: (previousAnswers: AbapDeployConfigAnswersInternal): boolean =>
                 defaultOrShowTransportCreatedQuestion(previousAnswers.transportInputChoice),
@@ -108,7 +109,7 @@ export function getTransportRequestPrompts(
         {
             when: (previousAnswers: AbapDeployConfigAnswersInternal): boolean =>
                 defaultOrShowTransportListQuestion(previousAnswers.transportInputChoice, options.transportInputChoice),
-            type: 'list',
+            type: 'select',
             name: promptNames.transportFromList,
             message: t('prompts.config.transport.common.transportRequest'),
             guiOptions: {

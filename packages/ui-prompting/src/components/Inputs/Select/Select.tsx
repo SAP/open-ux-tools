@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo } from 'react';
-import type { ChoiceOptions, Answers } from 'inquirer';
+import type { ChoiceOptions, Answers } from '@sap-ux/inquirer-common';
 import { UIComboBox, UIComboBoxLoaderType, UITextInput } from '@sap-ux/ui-components';
 import type { ITextField, UIComboBoxRef, UISelectableOption } from '@sap-ux/ui-components';
 import { useValue, getLabelRenderer, useOptions, usePromptMessage } from '../../../utilities/index.js';
@@ -49,9 +49,9 @@ export const Select = (props: SelectProps) => {
 
     const onChangeSelect = (
         event?: React.FormEvent<HTMLSelectElement | UIComboBoxRef>,
-        option?: UISelectableOption<ChoiceOptions>
+        option?: UISelectableOption<ChoiceOptions<AnswerValue>>
     ) => {
-        let updatedValue: string | undefined;
+        let updatedValue: AnswerValue;
         if (creation && !option) {
             const enteredValue = (event?.target as HTMLSelectElement).value ?? '';
             setValue(enteredValue);

@@ -1,4 +1,4 @@
-import type { Answers } from 'inquirer';
+import type { Answers } from '@sap-ux/inquirer-common';
 
 /**
  * Method returns value of answer by given path.

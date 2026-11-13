@@ -1,9 +1,13 @@
-import { type InquirerAdapter, ERROR_TYPE, ErrorHandler, setTelemetryClient } from '@sap-ux/inquirer-common';
+import {
+    type InquirerAdapter,
+    type YUIQuestion,
+    ERROR_TYPE,
+    ErrorHandler,
+    setTelemetryClient
+} from '@sap-ux/inquirer-common';
 import { type Logger } from '@sap-ux/logger';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import { type ToolsSuiteTelemetryClient } from '@sap-ux/telemetry';
-import type { Question } from 'inquirer';
-import autocomplete from 'inquirer-autocomplete-prompt';
 import { initI18nOdataServiceInquirer } from './i18n.js';
 import { getQuestions } from './prompts/index.js';
 import type { ServiceAnswer } from './prompts/datasources/sap-system/service-selection/index.js';
@@ -82,7 +86,7 @@ async function getSystemSelectionQuestions(
     promptOptions?: OdataServicePromptOptions,
     isYUI?: boolean,
     logger?: Logger
-): Promise<{ prompts: Question<SystemSelectionAnswers & ServiceAnswer>[]; answers: Partial<OdataServiceAnswers> }> {
+): Promise<{ prompts: YUIQuestion<SystemSelectionAnswers & ServiceAnswer>[]; answers: Partial<OdataServiceAnswers> }> {
     if (isYUI !== undefined) {
         PromptState.isYUI = isYUI;
     }
@@ -90,7 +94,9 @@ async function getSystemSelectionQuestions(
         LoggerHelper.logger = logger;
     }
     return {
-        prompts: await getSystemSelectionQuestionsBase(promptOptions),
+        prompts: (await getSystemSelectionQuestionsBase(promptOptions)) as unknown as YUIQuestion<
+            SystemSelectionAnswers & ServiceAnswer
+        >[],
         answers: PromptState.odataService
     };
 }
@@ -116,7 +122,7 @@ function getEntityRelatedPrompts(
     annotations?: Annotations,
     logger?: Logger,
     isYUI = false
-): Question<EntityRelatedAnswers>[] {
+): YUIQuestion<EntityRelatedAnswers>[] {
     if (logger) {
         LoggerHelper.logger = logger;
     }
@@ -145,13 +151,6 @@ async function prompt(
     isYUI = false,
     connectedSystem?: ConnectedSystem
 ): Promise<OdataServiceAnswers> {
-    if (
-        adapter?.promptModule &&
-        (promptOptions?.serviceSelection?.useAutoComplete ?? promptOptions?.capProject?.useAutoComplete)
-    ) {
-        const pm = adapter.promptModule;
-        pm.registerPrompt('autocomplete', autocomplete);
-    }
     const odataServicePrompts = (
         await getPrompts(promptOptions, logger, enableGuidedAnswers, telemetryClient, isYUI, connectedSystem)
     ).prompts;

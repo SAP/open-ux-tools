@@ -2,16 +2,18 @@ import { Severity } from '@sap-devx/yeoman-ui-types';
 import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import {
     withCondition,
+    type Answers,
+    type CheckboxChoiceOptions,
     type CheckBoxQuestion,
     type ConfirmQuestion,
-    type InputQuestion
+    type InputQuestion,
+    type Question
 } from '@sap-ux/inquirer-common';
 import type { Logger } from '@sap-ux/logger';
 import type { OdataServiceAnswers } from '@sap-ux/odata-service-inquirer';
 import { getSystemSelectionQuestions, OdataVersion } from '@sap-ux/odata-service-inquirer';
 import type { ApplicationAccess } from '@sap-ux/project-access';
 import { createApplicationAccess } from '@sap-ux/project-access';
-import type { Answers, CheckboxChoiceOptions, Question } from 'inquirer';
 import { t } from '../../utils/i18n.js';
 import { ODataDownloadGenerator } from '../odata-download-generator.js';
 import type { EntitySetsFlat } from '../odata-query.js';

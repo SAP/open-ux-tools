@@ -1,4 +1,4 @@
-import type { Answers, Question } from 'inquirer';
+import type { Answers } from '@sap-ux/inquirer-common';
 import { create, type Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { getProject, type Project } from '@sap-ux/project-access';
@@ -107,9 +107,13 @@ export class PromptsAPI {
         try {
             const prompt = this.cache[type] ?? (await this.getPrompts(type));
             const question = prompt.questions.find((question) => question.name === fieldName);
-            if (question && (question.type === 'list' || question.type === 'checkbox')) {
+            if (question && (question.type === 'select' || question.type === 'checkbox')) {
                 const choices =
-                    typeof question.choices === 'function' ? await question.choices(answers) : question.choices;
+                    typeof question.choices === 'function'
+                        ? await (question.choices as (answers: T) => PromptListChoices | Promise<PromptListChoices>)(
+                              answers
+                          )
+                        : (question.choices as PromptListChoices);
                 return choices ?? [];
             }
         } catch (error) {
@@ -129,7 +133,7 @@ export class PromptsAPI {
     public async validateAnswers(
         type: PromptsType,
         answers: Answers,
-        questions?: Question[]
+        questions?: Pick<PromptQuestion, 'name'>[]
     ): Promise<ValidationResults> {
         const originalPrompts = this.cache[type] ?? (await this.getPrompts(type));
         const result: ValidationResults = {};

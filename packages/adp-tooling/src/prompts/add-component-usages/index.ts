@@ -160,7 +160,7 @@ export function getPrompts(basePath: string, layer: UI5FlexLayer): YUIQuestion<A
             }
         } as InputQuestion<AddComponentUsageAnswers>,
         {
-            type: 'list',
+            type: 'select',
             name: 'isLazy',
             message: t('prompts.component.isLazyLabel'),
             choices: isLazyDropDownOptions,
@@ -211,9 +211,10 @@ export function getPrompts(basePath: string, layer: UI5FlexLayer): YUIQuestion<A
             validate: (value: string) => validatePromptLibrary(value, libraryChangeFiles),
             store: false,
             when: (answers: AddComponentUsageAnswers) => answers.shouldAddLibrary
-        } as InputQuestion<AddComponentUsageAnswers>,
+            // name belongs to the WithLibrary branch of the discriminated union; keyof the union excludes it
+        } as unknown as InputQuestion<AddComponentUsageAnswers>,
         {
-            type: 'list',
+            type: 'select',
             name: 'libraryIsLazy',
             message: t('prompts.component.libraryIsLazyLabel'),
             choices: isLazyDropDownOptions,
@@ -224,6 +225,7 @@ export function getPrompts(basePath: string, layer: UI5FlexLayer): YUIQuestion<A
                 hint: t('prompts.component.libraryIsLazyTooltip')
             },
             when: (answers: AddComponentUsageAnswers) => answers.shouldAddLibrary
-        } as ListQuestion<AddComponentUsageAnswers>
+            // name belongs to the WithLibrary branch of the discriminated union; keyof the union excludes it
+        } as unknown as ListQuestion<AddComponentUsageAnswers>
     ];
 }

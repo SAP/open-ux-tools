@@ -2,11 +2,15 @@ import { convert } from '@sap-ux/annotation-converter';
 import { parse } from '@sap-ux/edmx-parser';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { ConvertedMetadata, EntitySet, NavigationProperty } from '@sap-ux/vocabularies-types';
-import type { ListChoiceOptions } from 'inquirer';
 import { t } from '../../i18n.js';
 import LoggerHelper from '../logger-helper.js';
 import type { TableType, TemplateType } from '@sap-ux/fiori-elements-writer';
-import { filterAggregateTransformations, findEntitySetByName, shouldUseAnalyticalTable } from '@sap-ux/inquirer-common';
+import {
+    filterAggregateTransformations,
+    findEntitySetByName,
+    shouldUseAnalyticalTable,
+    type ChoiceOptions
+} from '@sap-ux/inquirer-common';
 import { getTableCapabilitiesByEntitySet } from '@sap-ux/project-access';
 
 export type EntityAnswer = {
@@ -27,7 +31,7 @@ export type NavigationEntityAnswer = {
 };
 
 export interface EntityChoiceOptions {
-    choices: ListChoiceOptions<EntityAnswer>[];
+    choices: ChoiceOptions<EntityAnswer>[];
     draftRootIndex?: number;
     defaultMainEntityIndex?: number;
     convertedMetadata?: ConvertedMetadata;
@@ -107,7 +111,7 @@ export function getEntityChoices(
         defaultMainEntityName?: string;
     } = {}
 ): EntityChoiceOptions {
-    const choices: ListChoiceOptions<EntityAnswer>[] = [];
+    const choices: ChoiceOptions<EntityAnswer>[] = [];
     let draftRootIndex: number | undefined;
     let defaultMainEntityIndex: number | undefined;
     let convertedMetadata: ConvertedMetadata | undefined;
@@ -136,7 +140,7 @@ export function getEntityChoices(
                 entitySet,
                 convertedMetadata?.entityTypes
             );
-            const choice: ListChoiceOptions<EntityAnswer> = {
+            const choice: ChoiceOptions<EntityAnswer> = {
                 name: entitySet.name,
                 value: {
                     entitySetName: entitySet.name,
@@ -195,8 +199,8 @@ export function getNavigationEntityChoices(
     metadata: ConvertedMetadata,
     odataVersion: OdataVersion,
     mainEntityName: string
-): ListChoiceOptions<NavigationEntityAnswer>[] {
-    const choices: ListChoiceOptions[] = [];
+): ChoiceOptions<NavigationEntityAnswer>[] {
+    const choices: ChoiceOptions<NavigationEntityAnswer>[] = [];
     const mainEntitySet = findEntitySetByName(metadata, mainEntityName);
 
     let navProps: NavigationProperty[] = [];
@@ -217,7 +221,10 @@ export function getNavigationEntityChoices(
     });
 
     if (choices.length > 0) {
-        choices.unshift({ name: t('prompts.navigationEntitySelection.choiceNone'), value: {} });
+        choices.unshift({
+            name: t('prompts.navigationEntitySelection.choiceNone'),
+            value: {} as NavigationEntityAnswer
+        });
     }
     return choices;
 }

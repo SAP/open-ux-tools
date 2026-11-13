@@ -12,7 +12,7 @@ export const questions: { [key: string]: PromptQuestion } = {
         default: undefined
     },
     staticList: {
-        type: 'list',
+        type: 'select',
         name: 'testStaticList',
         choices: [],
         message: 'testStaticListLabel',
@@ -26,7 +26,7 @@ export const questions: { [key: string]: PromptQuestion } = {
         default: undefined
     },
     dynamicList: {
-        type: 'list',
+        type: 'select',
         name: 'testDynamicList',
         choices: [],
         message: 'testDynamicListLabel',

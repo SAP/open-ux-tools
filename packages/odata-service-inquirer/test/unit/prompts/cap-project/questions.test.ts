@@ -1,7 +1,7 @@
 import { jest } from '@jest/globals';
 import type { CapService } from '@sap-ux/cap-config-writer';
 import type { CapCustomPaths, CdsVersionInfo } from '@sap-ux/project-access';
-import type { ListQuestion } from 'inquirer';
+import type { ListQuestion } from '@sap-ux/inquirer-common';
 import type { PathLike } from 'node:fs';
 import os from 'node:os';
 import * as actualPath from 'node:path';
@@ -103,14 +103,6 @@ jest.unstable_mockModule('@sap-ux/fiori-generator-shared', () => ({
     getHostEnvironment: mockGetHostEnvironment
 }));
 
-// Mock @sap-ux/inquirer-common
-const actualInquirerCommon = await import('@sap-ux/inquirer-common');
-const mockSearchChoices = jest.fn<any>();
-jest.unstable_mockModule('@sap-ux/inquirer-common', () => ({
-    ...actualInquirerCommon,
-    searchChoices: mockSearchChoices
-}));
-
 // Mock cap-project validators
 const actualCapValidators = await import('../../../../src/prompts/datasources/cap-project/validators.js');
 const mockValidateCapPath = jest.fn<any>(actualCapValidators.validateCapPath);
@@ -200,8 +192,8 @@ describe('getLocalCapProjectPrompts', () => {
         expect(((capProjectPrompt as ListQuestion).choices as Function)().length).toEqual(2);
         expect(((capProjectPrompt as ListQuestion).choices as Function)()).toEqual(mockCapProjectChoices);
 
-        // find the default cap project choice, 2 choices (one project), always pre-select (0) to avoid selection message
-        expect((capProjectPrompt.default as Function)()).toEqual(0);
+        // find the default cap project choice, 2 choices (one project), always pre-select the first to avoid selection message
+        expect((capProjectPrompt.default as Function)()).toEqual(mockCapProjectChoices[0].value);
         mockCapProjectChoices.unshift({
             name: 'project2',
             value: {
@@ -212,7 +204,7 @@ describe('getLocalCapProjectPrompts', () => {
                 srv: 'srv'
             }
         });
-        expect((capProjectPrompt.default as Function)()).toEqual(-1);
+        expect((capProjectPrompt.default as Function)()).toBeUndefined();
 
         capPrompts = await getLocalCapProjectPrompts({
             capProject: {
@@ -225,10 +217,10 @@ describe('getLocalCapProjectPrompts', () => {
         expect(await (capProjectPrompt!.when as Function)()).toEqual(true);
         expect(((capProjectPrompt as ListQuestion).choices as Function)().length).toEqual(3);
         expect(((capProjectPrompt as ListQuestion).choices as Function)()).toEqual(mockCapProjectChoices);
-        expect((capProjectPrompt!.default as Function)()).toEqual(1);
+        expect((capProjectPrompt!.default as Function)()).toEqual(mockCapProjectChoices[1].value);
     });
 
-    test('prompt: capProject - type is autocomplete with source function for filtering', async () => {
+    test('prompt: capProject - type is search with source function for filtering', async () => {
         mockCapProjectChoices = [
             {
                 name: 'project1',
@@ -250,12 +242,11 @@ describe('getLocalCapProjectPrompts', () => {
 
         const capProjectPrompt = prompts.find((p) => p.name === promptNames.capProject) as any;
         expect(capProjectPrompt).toBeDefined();
-        expect(capProjectPrompt.type).toBe('autocomplete');
+        expect(capProjectPrompt.type).toBe('search');
         expect(typeof capProjectPrompt.source).toBe('function');
     });
 
-    test('prompt: capProject - source function calls searchChoices', async () => {
-        mockSearchChoices.mockReturnValue([]);
+    test('prompt: capProject - source function filters choices via searchChoices', async () => {
         mockCapProjectChoices = [{ name: 'test', value: 'test' }];
 
         const prompts = getLocalCapProjectPrompts({
@@ -264,11 +255,12 @@ describe('getLocalCapProjectPrompts', () => {
         const prompt = prompts.find((p) => p.name === promptNames.capProject) as any;
         await prompt.when();
 
-        prompt.source({}, 'input');
-        expect(mockSearchChoices).toHaveBeenCalledWith('input', mockCapProjectChoices);
+        // A matching term returns the fuzzy-matched choice; a non-matching term returns none
+        expect(await prompt.source('test')).toEqual(mockCapProjectChoices);
+        expect(await prompt.source('no match')).toEqual([]);
     });
 
-    test('prompt: capProject - type is list without useAutoComplete option', async () => {
+    test('prompt: capProject - type is select without useAutoComplete option', async () => {
         mockCapProjectChoices = [
             {
                 name: 'project1',
@@ -286,7 +278,7 @@ describe('getLocalCapProjectPrompts', () => {
 
         const capProjectPrompt = prompts.find((p) => p.name === promptNames.capProject);
         expect(capProjectPrompt).toBeDefined();
-        expect(capProjectPrompt!.type).toBe('list');
+        expect(capProjectPrompt!.type).toBe('select');
     });
 
     test('prompt: capProjectPath', async () => {
@@ -434,7 +426,7 @@ describe('getLocalCapProjectPrompts', () => {
         ).toEqual(true);
         expect(mockGetCapServiceChoices).toHaveBeenCalledWith(capProject);
         expect(((capServicePrompt as ListQuestion).choices as Function)()).toEqual(initialMockCapServicesChoices);
-        expect((capServicePrompt!.default as Function)()).toEqual(0);
+        expect((capServicePrompt!.default as Function)()).toEqual(initialMockCapServicesChoices[0].value);
 
         // Default selection when default service provided should be the default service choice entry
         capPrompts = await getLocalCapProjectPrompts({
@@ -448,7 +440,7 @@ describe('getLocalCapProjectPrompts', () => {
         capServicePrompt = capPrompts.find((prompt) => prompt.name === promptNames.capService);
         await (capServicePrompt!.when as Function)({ capProject });
         ((capServicePrompt as ListQuestion).choices as Function)();
-        expect((capServicePrompt!.default as Function)()).toEqual(1);
+        expect((capServicePrompt!.default as Function)()).toEqual(initialMockCapServicesChoices[1].value);
 
         // validate (only run in YUI)
         expect(await (capServicePrompt!.validate as Function)()).toBe(false);

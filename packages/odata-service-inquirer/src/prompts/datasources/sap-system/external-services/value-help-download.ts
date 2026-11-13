@@ -157,7 +157,7 @@ export function getValueHelpDownloadPrompt(
         validate: async (downloadMetadata: boolean) => {
             // Only run download in YUI mode - CLI mode will use the hidden prompt below
             if (getPromptHostEnvironment() !== hostEnvironment.cli) {
-                await performValueHelpDownload(downloadMetadata, connectionValidator, externalServiceRefs);
+                await performValueHelpDownload(downloadMetadata as boolean, connectionValidator, externalServiceRefs);
             }
             return true;
         }

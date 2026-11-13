@@ -336,7 +336,7 @@ export class CFServicesPrompter {
      */
     private getAppRouterPrompt(cfConfig: CfConfig): CFServicesQuestion {
         return {
-            type: 'list',
+            type: 'select',
             name: cfServicesPromptNames.approuter,
             message: t('prompts.approuterLabel'),
             choices: getAppRouterChoices(this.isInternalUsage),
@@ -369,7 +369,7 @@ export class CFServicesPrompter {
      */
     private getBaseAppPrompt(cfConfig: CfConfig): CFServicesQuestion {
         return {
-            type: 'list',
+            type: 'select',
             name: cfServicesPromptNames.baseApp,
             message: t('prompts.baseAppLabel'),
             choices: (_: CfServicesAnswers) => getCFAppChoices(this.apps),
@@ -533,7 +533,7 @@ export class CFServicesPrompter {
      */
     private getServiceInstancePrompt(cfConfig: CfConfig): CFServicesQuestion {
         return {
-            type: 'list',
+            type: 'select',
             name: cfServicesPromptNames.serviceInstance,
             message: t('prompts.businessServiceLabel'),
             choices: async (_: CfServicesAnswers) =>

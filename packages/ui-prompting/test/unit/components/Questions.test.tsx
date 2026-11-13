@@ -409,8 +409,8 @@ describe('Questions', () => {
 
     describe('Questions component', () => {
         const mockQuestions: PromptQuestion[] = [
-            { name: 'foo', type: 'list', message: 'Foo?' },
-            { name: 'bar', type: 'list', message: 'Bar?' }
+            { name: 'foo', type: 'select', message: 'Foo?' },
+            { name: 'bar', type: 'select', message: 'Bar?' }
         ];
 
         it('renders a select with no options when choices are not provided', () => {

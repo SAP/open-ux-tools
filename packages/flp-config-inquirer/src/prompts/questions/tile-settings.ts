@@ -10,7 +10,7 @@ import { t } from '../../i18n.js';
 export function getTileSettingsPrompts(): YUIQuestion<TileSettingsAnswers>[] {
     return [
         {
-            type: 'list',
+            type: 'select',
             name: tilePromptNames.tileHandlingAction,
             message: t('prompts.tileHandlingAction'),
             choices: [

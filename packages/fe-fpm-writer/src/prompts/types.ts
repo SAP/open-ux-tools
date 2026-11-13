@@ -1,4 +1,4 @@
-import type { Answers } from 'inquirer';
+import type { Answers } from '@sap-ux/inquirer-common';
 import type { Editor } from 'mem-fs-editor';
 import type { Project } from '@sap-ux/project-access';
 import type {

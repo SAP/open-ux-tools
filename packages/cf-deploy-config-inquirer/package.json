@@ -34,17 +34,14 @@
         "@sap-ux/inquirer-common": "workspace:*",
         "@sap-ux/btp-utils": "workspace:*",
         "@sap-ux/logger": "workspace:*",
-        "i18next": "26.5.11",
-        "inquirer-autocomplete-prompt": "2.0.1"
+        "i18next": "26.5.11"
     },
     "devDependencies": {
         "@jest/globals": "30.5.2",
         "@sap-devx/yeoman-ui-types": "1.25.1",
         "@sap-ux/project-input-validator": "workspace:*",
-        "@types/inquirer-autocomplete-prompt": "2.0.2",
-        "@types/inquirer": "8.2.6",
         "@sap/cf-tools": "3.3.1",
-        "inquirer": "8.2.7"
+        "inquirer": "13.4.3"
     },
     "engines": {
         "node": ">=22.x"

@@ -283,8 +283,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/fe-fpm-writer
       inquirer:
-        specifier: 8.2.7
-        version: 8.2.7(@types/node@22.20.1)
+        specifier: 13.4.3
+        version: 13.4.3(@types/node@22.20.1)
       mem-fs:
         specifier: 2.1.0
         version: 2.1.0
@@ -292,9 +292,6 @@ importers:
         specifier: 9.4.0
         version: 9.4.0(mem-fs@2.1.0)
     devDependencies:
-      '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
       '@types/mem-fs':
         specifier: 1.1.2
         version: 1.1.2
@@ -371,6 +368,9 @@ importers:
 
   examples/ui-prompting-examples:
     dependencies:
+      '@sap-ux/inquirer-common':
+        specifier: workspace:*
+        version: link:../../packages/inquirer-common
       '@sap-ux/ui-components':
         specifier: workspace:*
         version: link:../../packages/ui-components
@@ -414,9 +414,6 @@ importers:
       '@storybook/react-webpack5':
         specifier: 10.5.1
         version: 10.5.1(@swc/core@1.15.46(@swc/helpers@0.5.19))(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.31)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.3)(@types/react@16.14.69)(prettier@3.9.10)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(supports-color@8.1.1)(typescript@6.0.3)(uglify-js@3.19.3)
-      '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
       '@types/mem-fs':
         specifier: 1.1.2
         version: 1.1.2
@@ -540,22 +537,16 @@ importers:
       i18next:
         specifier: 26.5.11
         version: 26.5.11(typescript@6.0.3)
-      inquirer-autocomplete-prompt:
-        specifier: 2.0.1
-        version: 2.0.1(inquirer@8.2.7(@types/node@22.20.1))
     devDependencies:
       '@jest/globals':
         specifier: 30.5.2
         version: 30.5.2(supports-color@8.1.1)
-      '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
-      '@types/inquirer-autocomplete-prompt':
-        specifier: 2.0.2
-        version: 2.0.2
       axios:
         specifier: '>=1.20.0'
         version: 1.20.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+      inquirer:
+        specifier: 13.4.3
+        version: 13.4.3(@types/node@22.20.1)
 
   packages/abap-deploy-config-sub-generator:
     dependencies:
@@ -611,9 +602,6 @@ importers:
       '@sap-ux/telemetry':
         specifier: workspace:*
         version: link:../telemetry
-      '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
       '@types/mem-fs':
         specifier: 1.1.2
         version: 1.1.2
@@ -739,9 +727,6 @@ importers:
       '@types/fs-extra':
         specifier: 11.0.4
         version: 11.0.4
-      '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
       '@types/vscode':
         specifier: 1.110.0
         version: 1.110.0
@@ -833,8 +818,8 @@ importers:
         specifier: 26.5.11
         version: 26.5.11(typescript@6.0.3)
       inquirer:
-        specifier: 8.2.7
-        version: 8.2.7(@types/node@22.20.1)
+        specifier: 13.4.3
+        version: 13.4.3(@types/node@22.20.1)
       js-yaml:
         specifier: 4.3.2
         version: 4.3.2
@@ -863,9 +848,6 @@ importers:
       '@types/express':
         specifier: 4.17.21
         version: 4.17.21
-      '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
       '@types/js-yaml':
         specifier: 4.0.9
         version: 4.0.9
@@ -1337,9 +1319,6 @@ importers:
       i18next:
         specifier: 26.5.11
         version: 26.5.11(typescript@6.0.3)
-      inquirer-autocomplete-prompt:
-        specifier: 2.0.1
-        version: 2.0.1(inquirer@8.2.7(@types/node@22.20.1))
     devDependencies:
       '@jest/globals':
         specifier: 30.5.2
@@ -1353,15 +1332,9 @@ importers:
       '@sap/cf-tools':
         specifier: 3.3.1
         version: 3.3.1
-      '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
-      '@types/inquirer-autocomplete-prompt':
-        specifier: 2.0.2
-        version: 2.0.2
       inquirer:
-        specifier: 8.2.7
-        version: 8.2.7(@types/node@22.20.1)
+        specifier: 13.4.3
+        version: 13.4.3(@types/node@22.20.1)
 
   packages/cf-deploy-config-sub-generator:
     dependencies:
@@ -1411,9 +1384,6 @@ importers:
       '@sap/mta-lib':
         specifier: 1.7.4
         version: 1.7.4(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
-      '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
       '@types/js-yaml':
         specifier: 4.0.9
         version: 4.0.9
@@ -1770,9 +1740,6 @@ importers:
       '@jest/globals':
         specifier: 30.5.2
         version: 30.5.2(supports-color@8.1.1)
-      '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
       '@types/mem-fs':
         specifier: 1.1.2
         version: 1.1.2
@@ -1819,9 +1786,6 @@ importers:
       '@sap-ux/store':
         specifier: workspace:*
         version: link:../store
-      '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
       '@types/yeoman-generator':
         specifier: 5.2.14
         version: 5.2.14
@@ -1895,9 +1859,6 @@ importers:
       '@types/fs-extra':
         specifier: 11.0.4
         version: 11.0.4
-      '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
       '@types/js-yaml':
         specifier: 4.0.9
         version: 4.0.9
@@ -2171,6 +2132,9 @@ importers:
       '@sap-ux/i18n':
         specifier: workspace:*
         version: link:../i18n
+      '@sap-ux/inquirer-common':
+        specifier: workspace:*
+        version: link:../inquirer-common
       '@sap-ux/logger':
         specifier: workspace:*
         version: link:../logger
@@ -2214,9 +2178,6 @@ importers:
       '@types/ejs':
         specifier: 3.1.5
         version: 3.1.5
-      '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
       '@types/mem-fs':
         specifier: 1.1.2
         version: 1.1.2
@@ -2390,8 +2351,8 @@ importers:
         specifier: 26.5.11
         version: 26.5.11(typescript@6.0.3)
       inquirer:
-        specifier: 8.2.7
-        version: 8.2.7(@types/node@22.20.1)
+        specifier: 13.4.3
+        version: 13.4.3(@types/node@22.20.1)
       lodash:
         specifier: 4.18.1
         version: 4.18.1
@@ -2429,9 +2390,6 @@ importers:
       '@sap-ux/logger':
         specifier: workspace:*
         version: link:../logger
-      '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
       '@types/lodash':
         specifier: 4.17.26
         version: 4.17.26
@@ -3038,15 +2996,12 @@ importers:
       '@sap-devx/yeoman-ui-types':
         specifier: 1.25.1
         version: 1.25.1
-      '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
       '@types/lodash':
         specifier: 4.17.26
         version: 4.17.26
       inquirer:
-        specifier: 8.2.7
-        version: 8.2.7(@types/node@22.20.1)
+        specifier: 13.4.3
+        version: 13.4.3(@types/node@22.20.1)
 
   packages/flp-config-sub-generator:
     dependencies:
@@ -3081,8 +3036,8 @@ importers:
         specifier: 26.5.11
         version: 26.5.11(typescript@6.0.3)
       inquirer:
-        specifier: 8.2.7
-        version: 8.2.7(@types/node@22.20.1)
+        specifier: 13.4.3
+        version: 13.4.3(@types/node@22.20.1)
       yeoman-generator:
         specifier: 5.10.0
         version: 5.10.0(mem-fs@2.1.0)(supports-color@8.1.1)(yeoman-environment@3.19.3(@types/node@22.20.1)(bluebird@3.7.2)(supports-color@8.1.1))
@@ -3096,9 +3051,6 @@ importers:
       '@sap-ux/nodejs-utils':
         specifier: workspace:*
         version: link:../nodejs-utils
-      '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
       '@types/lodash':
         specifier: 4.17.26
         version: 4.17.26
@@ -3208,9 +3160,6 @@ importers:
       '@types/fs-extra':
         specifier: 11.0.4
         version: 11.0.4
-      '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
       '@types/vscode':
         specifier: 1.110.0
         version: 1.110.0
@@ -3289,9 +3238,6 @@ importers:
       '@sap/ux-specification':
         specifier: 1.144.5
         version: 1.144.5(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)(typescript@6.0.3)
-      '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
       '@types/yeoman-generator':
         specifier: 5.2.14
         version: 5.2.14
@@ -3305,8 +3251,8 @@ importers:
         specifier: 26.5.11
         version: 26.5.11(typescript@6.0.3)
       inquirer:
-        specifier: 8.2.7
-        version: 8.2.7(@types/node@22.20.1)
+        specifier: 13.4.3
+        version: 13.4.3(@types/node@22.20.1)
       odata-query:
         specifier: 8.1.0
         version: 8.1.0
@@ -3416,6 +3362,9 @@ importers:
       i18next:
         specifier: 26.5.11
         version: 26.5.11(typescript@6.0.3)
+      inquirer:
+        specifier: 13.4.3
+        version: 13.4.3(@types/node@22.20.1)
       lodash:
         specifier: 4.18.1
         version: 4.18.1
@@ -3435,9 +3384,6 @@ importers:
       '@sap-ux/vocabularies-types':
         specifier: 0.16.0
         version: 0.16.0
-      '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
       '@types/lodash':
         specifier: 4.17.26
         version: 4.17.26
@@ -3740,9 +3686,6 @@ importers:
       i18next:
         specifier: 26.5.11
         version: 26.5.11(typescript@6.0.3)
-      inquirer-autocomplete-prompt:
-        specifier: 2.0.1
-        version: 2.0.1(inquirer@8.2.7(@types/node@22.20.1))
       os-name:
         specifier: 4.0.1
         version: 4.0.1
@@ -3771,12 +3714,9 @@ importers:
       '@sap-ux/vocabularies-types':
         specifier: 0.16.0
         version: 0.16.0
-      '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
-      '@types/inquirer-autocomplete-prompt':
-        specifier: 2.0.2
-        version: 2.0.2
+      inquirer:
+        specifier: 13.4.3
+        version: 13.4.3(@types/node@22.20.1)
       jest-extended:
         specifier: 7.0.0
         version: 7.0.0(jest@30.5.2(@types/node@22.20.1)(babel-plugin-macros@3.1.0)(supports-color@8.1.1)(ts-node@10.9.2(@swc/core@1.15.46(@swc/helpers@0.5.19))(@types/node@22.20.1)(typescript@6.0.3)))(typescript@6.0.3)
@@ -4249,8 +4189,8 @@ importers:
         specifier: 26.5.11
         version: 26.5.11(typescript@6.0.3)
       inquirer:
-        specifier: 8.2.7
-        version: 8.2.7(@types/node@22.20.1)
+        specifier: 13.4.3
+        version: 13.4.3(@types/node@22.20.1)
       yeoman-generator:
         specifier: 5.10.0
         version: 5.10.0(mem-fs@2.1.0)(supports-color@8.1.1)(yeoman-environment@3.19.3(@types/node@22.20.1)(bluebird@3.7.2)(supports-color@8.1.1))
@@ -4270,12 +4210,6 @@ importers:
       '@types/fs-extra':
         specifier: 11.0.4
         version: 11.0.4
-      '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
-      '@types/inquirer-autocomplete-prompt':
-        specifier: 2.0.2
-        version: 2.0.2
       '@types/lodash':
         specifier: 4.17.26
         version: 4.17.26
@@ -4300,9 +4234,6 @@ importers:
       fs-extra:
         specifier: 11.4.1
         version: 11.4.1
-      inquirer-autocomplete-prompt:
-        specifier: 2.0.1
-        version: 2.0.1(inquirer@8.2.7(@types/node@22.20.1))
       lodash:
         specifier: 4.18.1
         version: 4.18.1
@@ -4793,9 +4724,6 @@ importers:
       '@testing-library/react':
         specifier: 12.1.5
         version: 12.1.5(@types/react@16.14.69)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
-      '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
       '@types/react':
         specifier: 16.14.69
         version: 16.14.69
@@ -4908,12 +4836,6 @@ importers:
       '@sap-ux/system-access':
         specifier: workspace:*
         version: link:../system-access
-      '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
-      '@types/inquirer-autocomplete-prompt':
-        specifier: 2.0.2
-        version: 2.0.2
       '@types/yeoman-environment':
         specifier: 2.10.11
         version: 2.10.11
@@ -4924,8 +4846,8 @@ importers:
         specifier: 4.0.6
         version: 4.0.6
       inquirer:
-        specifier: 8.2.7
-        version: 8.2.7(@types/node@22.20.1)
+        specifier: 13.4.3
+        version: 13.4.3(@types/node@22.20.1)
       jest-extended:
         specifier: 7.0.0
         version: 7.0.0(jest@30.5.2(@types/node@22.20.1)(babel-plugin-macros@3.1.0)(supports-color@8.1.1)(ts-node@10.9.2(@swc/core@1.15.46(@swc/helpers@0.5.19))(@types/node@22.20.1)(typescript@6.0.3)))(typescript@6.0.3)
@@ -5047,9 +4969,6 @@ importers:
       i18next:
         specifier: 26.5.11
         version: 26.5.11(typescript@6.0.3)
-      inquirer-autocomplete-prompt:
-        specifier: 2.0.1
-        version: 2.0.1(inquirer@8.2.7(@types/node@22.20.1))
       lodash:
         specifier: 4.18.1
         version: 4.18.1
@@ -5066,12 +4985,6 @@ importers:
       '@sap-ux/cap-config-writer':
         specifier: workspace:*
         version: link:../cap-config-writer
-      '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
-      '@types/inquirer-autocomplete-prompt':
-        specifier: 2.0.2
-        version: 2.0.2
       '@types/lodash':
         specifier: 4.17.26
         version: 4.17.26
@@ -5079,8 +4992,8 @@ importers:
         specifier: 7.8.0
         version: 7.8.0
       inquirer:
-        specifier: 8.2.7
-        version: 8.2.7(@types/node@22.20.1)
+        specifier: 13.4.3
+        version: 13.4.3(@types/node@22.20.1)
 
   packages/ui5-application-writer:
     dependencies:
@@ -5213,22 +5126,13 @@ importers:
       i18next:
         specifier: 26.5.11
         version: 26.5.11(typescript@6.0.3)
-      inquirer-autocomplete-prompt:
-        specifier: 2.0.1
-        version: 2.0.1(inquirer@8.2.7(@types/node@22.20.1))
     devDependencies:
       '@jest/globals':
         specifier: 30.5.2
         version: 30.5.2(supports-color@8.1.1)
-      '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
-      '@types/inquirer-autocomplete-prompt':
-        specifier: 2.0.2
-        version: 2.0.2
       inquirer:
-        specifier: 8.2.7
-        version: 8.2.7(@types/node@22.20.1)
+        specifier: 13.4.3
+        version: 13.4.3(@types/node@22.20.1)
 
   packages/ui5-library-reference-inquirer:
     dependencies:
@@ -5248,12 +5152,9 @@ importers:
       '@sap-devx/yeoman-ui-types':
         specifier: 1.25.1
         version: 1.25.1
-      '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
       inquirer:
-        specifier: 8.2.7
-        version: 8.2.7(@types/node@22.20.1)
+        specifier: 13.4.3
+        version: 13.4.3(@types/node@22.20.1)
 
   packages/ui5-library-reference-sub-generator:
     dependencies:
@@ -7432,9 +7333,152 @@ packages:
     cpu: [x64]
     os: [win32]
 
+  '@inquirer/ansi@2.1.0':
+    resolution: {integrity: sha512-63GU5AD9KhNbWM0jlhHoMJTEFck2upFOPxHlnCKf3xYTV3rjTUUQfodihmTnfYQzMLS29oy8lK/gA1eJgu4bhA==}
+    engines: {node: ^22.22.2 || ^24.15.0 || >=26.0.0}
+
+  '@inquirer/checkbox@5.3.0':
+    resolution: {integrity: sha512-3QQSO87A+JoRtOtjtsgX2enwTL+3+VBVrkUpdqrIxMOgn5+W5sE57PcCPAiNUIESHxV4Q6mNEGxq2xLmRa0/yw==}
+    engines: {node: ^22.22.2 || ^24.15.0 || >=26.0.0}
+    peerDependencies:
+      '@types/node': '>=18'
+    peerDependenciesMeta:
+      '@types/node':
+        optional: true
+
+  '@inquirer/confirm@6.4.0':
+    resolution: {integrity: sha512-+DCZxrOF01Q/1SzTQkgycAQPS/Jf+Yol0h1P/MVmopukTsxGOu1h/LKqf30y0eHKFZYYrgUMVhGDhEbPmSPi9A==}
+    engines: {node: ^22.22.2 || ^24.15.0 || >=26.0.0}
+    peerDependencies:
+      '@types/node': '>=18'
+    peerDependenciesMeta:
+      '@types/node':
+        optional: true
+
+  '@inquirer/core@11.2.1':
+    resolution: {integrity: sha512-Qd6GJT1yVyrZZCfN8W2qKF5ApmqryXRhRKCuip8h01x2w/esJQ2XIYc6f9abMIHgKQdBfFTSOdbHRLAhuM09UA==}
+    engines: {node: '>=23.5.0 || ^22.13.0 || ^20.17.0'}
+    peerDependencies:
+      '@types/node': '>=18'
+    peerDependenciesMeta:
+      '@types/node':
+        optional: true
+
+  '@inquirer/core@12.1.0':
+    resolution: {integrity: sha512-6H7usRWw4Gdjgpaem10CA5MfZ/xoYPGyInriR1Xubqjv+SVo8LIJ1erpFxW5JgCza6VZVZiKLTko7RtUU3AQMg==}
+    engines: {node: ^22.22.2 || ^24.15.0 || >=26.0.0}
+    peerDependencies:
+      '@types/node': '>=18'
+    peerDependenciesMeta:
+      '@types/node':
+        optional: true
+
+  '@inquirer/editor@5.4.0':
+    resolution: {integrity: sha512-L7vdCe4jnMpzhDisu1tAnr4WGvfPOVz+vNFXyIIL7O2Ycn/n90sn1ARvg+4cwzLf+us51BE/cX7uhnrLcal3+g==}
+    engines: {node: ^22.22.2 || ^24.15.0 || >=26.0.0}
+    peerDependencies:
+      '@types/node': '>=18'
+    peerDependenciesMeta:
+      '@types/node':
+        optional: true
+
+  '@inquirer/expand@5.2.0':
+    resolution: {integrity: sha512-AOp2KQk7QojUyWOP7VkqdBWmxLRaVH58wQMx3N4//P530EDtpVp1EWIjAJubx9ZohWS/UCEpIkA1TuiNki0iOA==}
+    engines: {node: ^22.22.2 || ^24.15.0 || >=26.0.0}
+    peerDependencies:
+      '@types/node': '>=18'
+    peerDependenciesMeta:
+      '@types/node':
+        optional: true
+
   '@inquirer/external-editor@1.0.3':
     resolution: {integrity: sha512-RWbSrDiYmO4LbejWY7ttpxczuwQyZLBUyygsA9Nsv95hpzUWwnNTVQmAq3xuh7vNwCp07UTmE5i11XAEExx4RA==}
     engines: {node: '>=18'}
+    peerDependencies:
+      '@types/node': '>=18'
+    peerDependenciesMeta:
+      '@types/node':
+        optional: true
+
+  '@inquirer/external-editor@3.1.0':
+    resolution: {integrity: sha512-27JAkF38nXqXaoveU28iA/+Z8nutnF8B3JsbdToPHn9WnkrsMtZ0/YoJ29YwbtFexYIo+tIy6ikMvTdHKjjmGA==}
+    engines: {node: ^22.22.2 || ^24.15.0 || >=26.0.0}
+    peerDependencies:
+      '@types/node': '>=18'
+    peerDependenciesMeta:
+      '@types/node':
+        optional: true
+
+  '@inquirer/figures@2.1.0':
+    resolution: {integrity: sha512-CR9u2PME23jxy2SOyTb117efwAAPm98Zr+LoWI+PiQ55D6U8Yeu/HyFTxwytKhPa6oxAGzdsm2Kg7oLS6B9z8w==}
+    engines: {node: ^22.22.2 || ^24.15.0 || >=26.0.0}
+
+  '@inquirer/input@5.2.0':
+    resolution: {integrity: sha512-sIUPnN2X7M+7dq3RUd+e9QRacYnM+6B+kSucwQgj5VC5Eo/f+CIr2NyPBumxsViI+wzfokkgop/3x3KfHxNyJw==}
+    engines: {node: ^22.22.2 || ^24.15.0 || >=26.0.0}
+    peerDependencies:
+      '@types/node': '>=18'
+    peerDependenciesMeta:
+      '@types/node':
+        optional: true
+
+  '@inquirer/number@4.3.0':
+    resolution: {integrity: sha512-xYkX4sPVgox0F7yQwpz/MByWjOGdLEf1pdjH+Lji2gAzSs2xezz5bN5YgS1n0tx9wo0mRhGvq1KJGtvDZ9XXcQ==}
+    engines: {node: ^22.22.2 || ^24.15.0 || >=26.0.0}
+    peerDependencies:
+      '@types/node': '>=18'
+    peerDependenciesMeta:
+      '@types/node':
+        optional: true
+
+  '@inquirer/password@5.3.0':
+    resolution: {integrity: sha512-KVqW4G/UbMK06uBN76xF89JKYC9YBWU7v+Kc2tUwMCO8pg3ASBr0HVabl1KaSqF94O2KiRu8aKx4EicN78PK+A==}
+    engines: {node: ^22.22.2 || ^24.15.0 || >=26.0.0}
+    peerDependencies:
+      '@types/node': '>=18'
+    peerDependenciesMeta:
+      '@types/node':
+        optional: true
+
+  '@inquirer/prompts@8.8.0':
+    resolution: {integrity: sha512-yYVT2Eo3mafb9tnU2Mr3+wh5wLCWyspExqVoPSMCIfBIn3ZUTE4IDfbCMbMgXaOH0tH+JZEhOtfczQhDzOjIGg==}
+    engines: {node: ^22.22.2 || ^24.15.0 || >=26.0.0}
+    peerDependencies:
+      '@types/node': '>=18'
+    peerDependenciesMeta:
+      '@types/node':
+        optional: true
+
+  '@inquirer/rawlist@5.4.0':
+    resolution: {integrity: sha512-x42wcy465GM5/mHNKBFdAJbLlLyzmYqr/DEa6F49nHpI+03EFwRCRKeLGQakx5XqZ4unc2yFuS78qAD4Rb0iFA==}
+    engines: {node: ^22.22.2 || ^24.15.0 || >=26.0.0}
+    peerDependencies:
+      '@types/node': '>=18'
+    peerDependenciesMeta:
+      '@types/node':
+        optional: true
+
+  '@inquirer/search@4.4.0':
+    resolution: {integrity: sha512-UJ+9tkzPT1AjnvjuPFYcOdO3BVeN28bfSXajYRFZTRgA9OiNl4k2Nn2cHHPwiIDyPHlvOnmE9ZOHyXhPHtvb+A==}
+    engines: {node: ^22.22.2 || ^24.15.0 || >=26.0.0}
+    peerDependencies:
+      '@types/node': '>=18'
+    peerDependenciesMeta:
+      '@types/node':
+        optional: true
+
+  '@inquirer/select@5.3.0':
+    resolution: {integrity: sha512-Fmgfl0qjqCQo+/tjQpgnRXKh5N7/VpYcJh+AlYU2eHmHZLMGUBDzo+Gwc2ODzWJfXNRZmgaMhz4qULcO/C/rXg==}
+    engines: {node: ^22.22.2 || ^24.15.0 || >=26.0.0}
+    peerDependencies:
+      '@types/node': '>=18'
+    peerDependenciesMeta:
+      '@types/node':
+        optional: true
+
+  '@inquirer/type@4.3.0':
+    resolution: {integrity: sha512-/IA8q2nyjgyl0NGSjqiRXB8gh3We7Pzx9C0c+6Zoolu905jFc79anerrUG7+n65+qs310DRK43yi2WDI8nY59A==}
+    engines: {node: ^22.22.2 || ^24.15.0 || >=26.0.0}
     peerDependencies:
       '@types/node': '>=18'
     peerDependenciesMeta:
@@ -9981,9 +10025,6 @@ packages:
   '@types/http-proxy@1.17.17':
     resolution: {integrity: sha512-ED6LB+Z1AVylNTu7hdzuBqOgMnvG/ld6wGCG8wFnAzKX5uyW2K3WD52v0gnLCTK/VLpXtKckgWuyScYK6cSPaw==}
 
-  '@types/inquirer-autocomplete-prompt@2.0.2':
-    resolution: {integrity: sha512-Y7RM1dY3KVg11JnFkaQkTT+2Cgmn9K8De/VtrTT2a5grGIoMfkQuYM5Sss+65oiuqg1h1cTsKHG8pkoPsASdbQ==}
-
   '@types/inquirer@8.2.6':
     resolution: {integrity: sha512-3uT88kxg8lNzY8ay2ZjP44DKcRaTGztqeIvN2zHvhzIBH/uAPaL75aBtdNRKbA7xXoMbBt5kX0M00VKAnfOYlA==}
 
@@ -11698,6 +11739,10 @@ packages:
     resolution: {integrity: sha512-FxqpkPPwu1HjuN93Omfm4h8uIanXofW0RxVEW3k5RKx+mJJYSthzNhp32Kzxxy3YAEZ/Dc/EWN1vZRY0+kOhbw==}
     engines: {node: '>= 10'}
 
+  cli-width@4.1.0:
+    resolution: {integrity: sha512-ouuZd4/dm2Sw5Gmqy6bGyNNNe1qt9RpmxveLSO7KcgsTnU7RXfsw+/bukWGo1abgBiMAic068rclZsO4IWmmxQ==}
+    engines: {node: '>= 12'}
+
   cliui@6.0.0:
     resolution: {integrity: sha512-t6wbgtoCXvAzst7QgXxJYqPt0usEfbgQdftEPbLL/cvv6HPE5VgvqCuAIDR0NgU52ds6rFwqrgakNLrHEjCbrQ==}
 
@@ -12942,8 +12987,17 @@ packages:
   fast-safe-stringify@2.1.1:
     resolution: {integrity: sha512-W+KJc2dmILlPplD/H4K9l9LcAHAfPtP6BY84uVLXQ6Evcz9Lcg33Y2z1IVblT6xdY54PXYVHEv+0Wpq8Io6zkA==}
 
+  fast-string-truncated-width@3.0.3:
+    resolution: {integrity: sha512-0jjjIEL6+0jag3l2XWWizO64/aZVtpiGE3t0Zgqxv0DPuxiMjvB3M24fCyhZUO4KomJQPj3LTSUnDP3GpdwC0g==}
+
+  fast-string-width@3.0.2:
+    resolution: {integrity: sha512-gX8LrtNEI5hq8DVUfRQMbr5lpaS4nMIWV+7XEbXk2b8kiQIizgnlr12B4dA3ZEx3308ze0O4Q1R+cHts8kyUJg==}
+
   fast-uri@4.2.2:
     resolution: {integrity: sha512-EwVpUMzLVNOmcWW0zi5G3JJwkopB6XXjnVvNBGfqrMMsVew2hkQWl5e/pe/CfYUeS6jt4cIO2MnamEW7v/7wPw==}
+
+  fast-wrap-ansi@0.2.2:
+    resolution: {integrity: sha512-7F2Fl+TjRSenLqlU3UjSH0iyqopqoZIu7eZVpEirP2g1GtWa2G/ecEmBdgz31+Mxr+ELclgg6sokpSFIQiZ02Q==}
 
   fast-xml-builder@1.2.0:
     resolution: {integrity: sha512-00aAWieqff+ZJhsXA4g1g7M8k+7AYoMUUHF+/zFb5U6Uv/P0Vl4QZo84/IcufzYalLuEj9928bXN9PbbFzMF0Q==}
@@ -13752,11 +13806,14 @@ packages:
     resolution: {integrity: sha512-ifK0CgjALofS5bkrcTy4RaQ9Vx2Knf/eLeIO+NaswQEpH1UblrtTSCIvN71qQDMq0PeQ/SSPojvEJp9vvvfr+w==}
     engines: {node: ^22.22.2 || ^24.15.0 || >=26.0.0}
 
-  inquirer-autocomplete-prompt@2.0.1:
-    resolution: {integrity: sha512-jUHrH0btO7j5r8DTQgANf2CBkTZChoVySD8zF/wp5fZCOLIuUbleXhf4ZY5jNBOc1owA3gdfWtfZuppfYBhcUg==}
-    engines: {node: '>=12'}
+  inquirer@13.4.3:
+    resolution: {integrity: sha512-EPd3IqieHSavSOXh+LZhrIkdQcOELWeRblLT6kslQr+cF9XTh/HxZdSt1YkHH1iq4dvqBnV42uwg2YlorgOy6g==}
+    engines: {node: '>=23.5.0 || ^22.13.0 || ^21.7.0 || ^20.12.0'}
     peerDependencies:
-      inquirer: ^8.0.0
+      '@types/node': '>=18'
+    peerDependenciesMeta:
+      '@types/node':
+        optional: true
 
   inquirer@8.2.7:
     resolution: {integrity: sha512-UjOaSel/iddGZJ5xP/Eixh6dY1XghiBw4XK13rCCIJcJfyhhoul/7KhLLUGtebEj6GDYM6Vnx/mVsjx2L/mFIA==}
@@ -15153,6 +15210,14 @@ packages:
 
   mute-stream@0.0.8:
     resolution: {integrity: sha512-nnbWWOkoWyUsTjKrhgD0dcz22mdkSnpYqbEjIm2nhwhuxlSkpywJmBo8h0ZqJdkp73mb90SssHkN4rsRaBAfAA==}
+
+  mute-stream@3.0.0:
+    resolution: {integrity: sha512-dkEJPVvun4FryqBmZ5KhDo0K9iDXAwn08tMLDinNdRBNPcYEDiWYysLcc6k3mjTMlbP9KyylvRpd4wFtwrT9rw==}
+    engines: {node: ^20.17.0 || >=22.9.0}
+
+  mute-stream@4.0.0:
+    resolution: {integrity: sha512-gSrprq0fJ3EiOErzjdIZrjysVVmJ4uu1QWfCDss5LypA5OXvrMje5Ym5z6V6RLyJ2eF87lasX7t6a0AnFvZblg==}
+    engines: {node: ^22.22.2 || ^24.15.0 || >=26.0.0}
 
   nano-spawn@2.1.0:
     resolution: {integrity: sha512-yTW+2okrElHiH4fsiz/+/zc0EDo9BDDoC3iKk8dpv1GeRc9nUWzUZHx6TofMWErchhUQR8hY9/Eu1Uja9x1nqA==}
@@ -16619,6 +16684,10 @@ packages:
 
   run-async@2.4.1:
     resolution: {integrity: sha512-tvVnVv01b8c1RrA6Ep7JkStj85Guv/YrMcwqYQnwjsAS2cTmmPGBBjAjpCW7RrSodNSoE2/qg9O4bceNvUuDgQ==}
+    engines: {node: '>=0.12.0'}
+
+  run-async@4.0.6:
+    resolution: {integrity: sha512-IoDlSLTs3Yq593mb3ZoKWKXMNu3UpObxhgA/Xuid5p4bbfi2jdY1Hj0m1K+0/tEuQTxIGMhQDqGjKb7RuxGpAQ==}
     engines: {node: '>=0.12.0'}
 
   run-parallel@1.2.0:
@@ -20796,10 +20865,141 @@ snapshots:
   '@img/sharp-win32-x64@0.35.5':
     optional: true
 
+  '@inquirer/ansi@2.1.0': {}
+
+  '@inquirer/checkbox@5.3.0(@types/node@22.20.1)':
+    dependencies:
+      '@inquirer/ansi': 2.1.0
+      '@inquirer/core': 12.1.0(@types/node@22.20.1)
+      '@inquirer/figures': 2.1.0
+      '@inquirer/type': 4.3.0(@types/node@22.20.1)
+    optionalDependencies:
+      '@types/node': 22.20.1
+
+  '@inquirer/confirm@6.4.0(@types/node@22.20.1)':
+    dependencies:
+      '@inquirer/core': 12.1.0(@types/node@22.20.1)
+      '@inquirer/type': 4.3.0(@types/node@22.20.1)
+    optionalDependencies:
+      '@types/node': 22.20.1
+
+  '@inquirer/core@11.2.1(@types/node@22.20.1)':
+    dependencies:
+      '@inquirer/ansi': 2.1.0
+      '@inquirer/figures': 2.1.0
+      '@inquirer/type': 4.3.0(@types/node@22.20.1)
+      cli-width: 4.1.0
+      fast-wrap-ansi: 0.2.2
+      mute-stream: 3.0.0
+      signal-exit: 4.1.0
+    optionalDependencies:
+      '@types/node': 22.20.1
+
+  '@inquirer/core@12.1.0(@types/node@22.20.1)':
+    dependencies:
+      '@inquirer/ansi': 2.1.0
+      '@inquirer/figures': 2.1.0
+      '@inquirer/type': 4.3.0(@types/node@22.20.1)
+      cli-width: 4.1.0
+      fast-wrap-ansi: 0.2.2
+      mute-stream: 4.0.0
+      signal-exit: 4.1.0
+    optionalDependencies:
+      '@types/node': 22.20.1
+
+  '@inquirer/editor@5.4.0(@types/node@22.20.1)':
+    dependencies:
+      '@inquirer/core': 12.1.0(@types/node@22.20.1)
+      '@inquirer/external-editor': 3.1.0(@types/node@22.20.1)
+      '@inquirer/type': 4.3.0(@types/node@22.20.1)
+    optionalDependencies:
+      '@types/node': 22.20.1
+
+  '@inquirer/expand@5.2.0(@types/node@22.20.1)':
+    dependencies:
+      '@inquirer/core': 12.1.0(@types/node@22.20.1)
+      '@inquirer/type': 4.3.0(@types/node@22.20.1)
+    optionalDependencies:
+      '@types/node': 22.20.1
+
   '@inquirer/external-editor@1.0.3(@types/node@22.20.1)':
     dependencies:
       chardet: 2.1.1
       iconv-lite: 0.7.2
+    optionalDependencies:
+      '@types/node': 22.20.1
+
+  '@inquirer/external-editor@3.1.0(@types/node@22.20.1)':
+    dependencies:
+      chardet: 2.1.1
+      iconv-lite: 0.7.2
+    optionalDependencies:
+      '@types/node': 22.20.1
+
+  '@inquirer/figures@2.1.0': {}
+
+  '@inquirer/input@5.2.0(@types/node@22.20.1)':
+    dependencies:
+      '@inquirer/core': 12.1.0(@types/node@22.20.1)
+      '@inquirer/type': 4.3.0(@types/node@22.20.1)
+    optionalDependencies:
+      '@types/node': 22.20.1
+
+  '@inquirer/number@4.3.0(@types/node@22.20.1)':
+    dependencies:
+      '@inquirer/core': 12.1.0(@types/node@22.20.1)
+      '@inquirer/type': 4.3.0(@types/node@22.20.1)
+    optionalDependencies:
+      '@types/node': 22.20.1
+
+  '@inquirer/password@5.3.0(@types/node@22.20.1)':
+    dependencies:
+      '@inquirer/ansi': 2.1.0
+      '@inquirer/core': 12.1.0(@types/node@22.20.1)
+      '@inquirer/type': 4.3.0(@types/node@22.20.1)
+    optionalDependencies:
+      '@types/node': 22.20.1
+
+  '@inquirer/prompts@8.8.0(@types/node@22.20.1)':
+    dependencies:
+      '@inquirer/checkbox': 5.3.0(@types/node@22.20.1)
+      '@inquirer/confirm': 6.4.0(@types/node@22.20.1)
+      '@inquirer/editor': 5.4.0(@types/node@22.20.1)
+      '@inquirer/expand': 5.2.0(@types/node@22.20.1)
+      '@inquirer/input': 5.2.0(@types/node@22.20.1)
+      '@inquirer/number': 4.3.0(@types/node@22.20.1)
+      '@inquirer/password': 5.3.0(@types/node@22.20.1)
+      '@inquirer/rawlist': 5.4.0(@types/node@22.20.1)
+      '@inquirer/search': 4.4.0(@types/node@22.20.1)
+      '@inquirer/select': 5.3.0(@types/node@22.20.1)
+    optionalDependencies:
+      '@types/node': 22.20.1
+
+  '@inquirer/rawlist@5.4.0(@types/node@22.20.1)':
+    dependencies:
+      '@inquirer/core': 12.1.0(@types/node@22.20.1)
+      '@inquirer/type': 4.3.0(@types/node@22.20.1)
+    optionalDependencies:
+      '@types/node': 22.20.1
+
+  '@inquirer/search@4.4.0(@types/node@22.20.1)':
+    dependencies:
+      '@inquirer/core': 12.1.0(@types/node@22.20.1)
+      '@inquirer/figures': 2.1.0
+      '@inquirer/type': 4.3.0(@types/node@22.20.1)
+    optionalDependencies:
+      '@types/node': 22.20.1
+
+  '@inquirer/select@5.3.0(@types/node@22.20.1)':
+    dependencies:
+      '@inquirer/ansi': 2.1.0
+      '@inquirer/core': 12.1.0(@types/node@22.20.1)
+      '@inquirer/figures': 2.1.0
+      '@inquirer/type': 4.3.0(@types/node@22.20.1)
+    optionalDependencies:
+      '@types/node': 22.20.1
+
+  '@inquirer/type@4.3.0(@types/node@22.20.1)':
     optionalDependencies:
       '@types/node': 22.20.1
 
@@ -23927,10 +24127,6 @@ snapshots:
     dependencies:
       '@types/node': 22.20.1
 
-  '@types/inquirer-autocomplete-prompt@2.0.2':
-    dependencies:
-      '@types/inquirer': 8.2.6
-
   '@types/inquirer@8.2.6':
     dependencies:
       '@types/through': 0.0.33
@@ -26128,6 +26324,8 @@ snapshots:
 
   cli-width@3.0.0: {}
 
+  cli-width@4.1.0: {}
+
   cliui@6.0.0:
     dependencies:
       string-width: 4.2.3
@@ -27631,7 +27829,17 @@ snapshots:
 
   fast-safe-stringify@2.1.1: {}
 
+  fast-string-truncated-width@3.0.3: {}
+
+  fast-string-width@3.0.2:
+    dependencies:
+      fast-string-truncated-width: 3.0.3
+
   fast-uri@4.2.2: {}
+
+  fast-wrap-ansi@0.2.2:
+    dependencies:
+      fast-string-width: 3.0.2
 
   fast-xml-builder@1.2.0:
     dependencies:
@@ -28532,14 +28740,17 @@ snapshots:
 
   ini@7.0.0: {}
 
-  inquirer-autocomplete-prompt@2.0.1(inquirer@8.2.7(@types/node@22.20.1)):
+  inquirer@13.4.3(@types/node@22.20.1):
     dependencies:
-      ansi-escapes: 4.3.2
-      figures: 3.2.0
-      inquirer: 8.2.7(@types/node@22.20.1)
-      picocolors: 1.1.1
-      run-async: 2.4.1
+      '@inquirer/ansi': 2.1.0
+      '@inquirer/core': 11.2.1(@types/node@22.20.1)
+      '@inquirer/prompts': 8.8.0(@types/node@22.20.1)
+      '@inquirer/type': 4.3.0(@types/node@22.20.1)
+      mute-stream: 3.0.0
+      run-async: 4.0.6
       rxjs: 7.8.2
+    optionalDependencies:
+      '@types/node': 22.20.1
 
   inquirer@8.2.7(@types/node@22.20.1):
     dependencies:
@@ -30361,6 +30572,10 @@ snapshots:
   mustache@4.2.0: {}
 
   mute-stream@0.0.8: {}
+
+  mute-stream@3.0.0: {}
+
+  mute-stream@4.0.0: {}
 
   nano-spawn@2.1.0: {}
 
@@ -32249,6 +32464,8 @@ snapshots:
 
   run-async@2.4.1: {}
 
+  run-async@4.0.6: {}
+
   run-parallel@1.2.0:
     dependencies:
       queue-microtask: 1.2.3
@@ -32415,7 +32632,7 @@ snapshots:
       immutable: 5.1.9
       source-map-js: 1.2.2
     optionalDependencies:
-      '@parcel/watcher': 2.6.0
+      '@parcel/watcher': 2.5.6
     optional: true
 
   sax@1.4.4: {}

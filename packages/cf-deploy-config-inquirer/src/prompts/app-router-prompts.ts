@@ -1,4 +1,4 @@
-import type { ListQuestion, ConfirmQuestion, InputQuestion } from '@sap-ux/inquirer-common';
+import type { ListQuestion, ConfirmQuestion, InputQuestion, ChoiceOptions } from '@sap-ux/inquirer-common';
 import { t } from '../i18n.js';
 import type {
     CfAppRouterDeployConfigQuestions,
@@ -9,7 +9,6 @@ import { appRouterPromptNames, RouterModuleType } from '../types.js';
 import { validateMtaPath, validateMtaId, validateAbapService } from './validators.js';
 import type { Logger } from '@sap-ux/logger';
 import { getCFAbapInstanceChoices, ErrorHandler } from '@sap-ux/inquirer-common';
-import type { ListChoiceOptions } from 'inquirer';
 
 /**
  * Generates a prompt for selecting the MTA path.
@@ -90,13 +89,13 @@ function getMtaVersionPrompt(): CfAppRouterDeployConfigQuestions {
  */
 function getRouterTypePrompt(): CfAppRouterDeployConfigQuestions {
     return {
-        type: 'list',
+        type: 'select',
         name: appRouterPromptNames.routerType,
         guiOptions: {
             mandatory: true,
             breadcrumb: true
         },
-        default: () => RouterModuleType.Managed, // Should always be the preferred choice
+        default: RouterModuleType.Managed, // Should always be the preferred choice
         message: t('prompts.routerTypeMessage'),
         choices: [
             { name: t('routerType.managedAppRouter'), value: RouterModuleType.Managed },
@@ -148,7 +147,7 @@ function getDestinationService(): CfAppRouterDeployConfigQuestions {
         default: (): boolean => {
             return false;
         }
-    };
+    } as ConfirmQuestion<CfAppRouterDeployConfigAnswers>;
 }
 
 /**
@@ -164,19 +163,19 @@ function getServiceProvider(): CfAppRouterDeployConfigQuestions {
         when: (previousAnswers: CfAppRouterDeployConfigAnswers): boolean => {
             return !!previousAnswers.addABAPServiceBinding && previousAnswers.routerType === RouterModuleType.Standard;
         },
-        type: 'list',
+        type: 'select',
         name: appRouterPromptNames.abapServiceProvider,
         guiOptions: {
             breadcrumb: t('prompts.abapEnvBindingBreadcrumbMessage')
         },
         choices: async () => {
             const abapChoices = await getCFAbapInstanceChoices(errorHandler);
-            const choices: ListChoiceOptions[] = [];
+            const choices: ChoiceOptions[] = [];
             if (abapChoices.length > 0) {
                 abapChoices.forEach((choice) => {
                     choices.push({
                         name: choice.name,
-                        value: { label: choice.value['label'], service: choice.value['serviceName'] }
+                        value: { label: choice.value?.['label'], service: choice.value?.['serviceName'] }
                     });
                 });
             } else {
@@ -185,7 +184,7 @@ function getServiceProvider(): CfAppRouterDeployConfigQuestions {
             return choices;
         },
         message: t('prompts.selectServiceMessage'),
-        default: () => t('errors.abapEnvsUnavailable'),
+        default: t('errors.abapEnvsUnavailable'),
         validate: (choice: string): string | boolean => validateAbapService(choice, errorHandler)
     } as ListQuestion<CfAppRouterDeployConfigAnswers>;
 }

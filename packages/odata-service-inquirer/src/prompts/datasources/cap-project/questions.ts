@@ -1,5 +1,5 @@
 import type { FileBrowserQuestion, ListQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
-import { searchChoices } from '@sap-ux/inquirer-common';
+import { searchableListPrompt } from '@sap-ux/inquirer-common';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import { getCapCustomPaths } from '@sap-ux/project-access';
 import { hostEnvironment } from '@sap-ux/fiori-generator-shared';
@@ -22,27 +22,30 @@ import { realpath } from 'node:fs/promises';
 import { isAbsolute, resolve } from 'node:path';
 
 /**
- * Find the specified choice in the list of CAP project choices and return its index.
+ * Find the specified choice in the list of CAP project choices and return its value.
+ *
+ * inquirer 13's `select`/`search` `default` is a choice value (not the inquirer 8 list index),
+ * so this resolves the matching choice and returns its value, or `undefined` when none matches.
  *
  * @param capChoices The list of CAP project choices
  * @param defaultChoicePath The path of the default choice
- * @returns The index of the default choice in the list of CAP project choices
+ * @returns The value of the default choice, or undefined if there is no default
  */
 function getDefaultCapChoice(
     capChoices: CapProjectChoice[],
     defaultChoicePath?: string
-): CapProjectChoice['value'] | number {
+): CapProjectChoice['value'] | undefined {
     if (defaultChoicePath) {
-        return capChoices.findIndex((choice) => {
+        return capChoices.find((choice) => {
             if (typeof choice.value === 'string') {
                 return choice.value === defaultChoicePath;
             }
             return choice.value.path === defaultChoicePath;
-        });
+        })?.value;
     } else if (capChoices.length === 2) {
-        return 0;
+        return capChoices[0]?.value;
     }
-    return -1;
+    return undefined;
 }
 
 /**
@@ -66,26 +69,26 @@ export function getLocalCapProjectPrompts(
     PromptState.reset();
 
     const prompts: (YUIQuestion<CapServiceAnswers> | FileBrowserQuestion<CapServiceAnswers> | Question)[] = [
-        {
-            when: async (): Promise<boolean> => {
-                capChoices = await getCapProjectChoices(promptOptions?.[promptNames.capProject]?.capSearchPaths ?? []);
-                return capChoices?.length > 1;
+        searchableListPrompt<CapServiceAnswers>(
+            {
+                when: async (): Promise<boolean> => {
+                    capChoices = await getCapProjectChoices(
+                        promptOptions?.[promptNames.capProject]?.capSearchPaths ?? []
+                    );
+                    return capChoices?.length > 1;
+                },
+                name: promptNames.capProject,
+                message: t('prompts.capProject.message'),
+                default: () => getDefaultCapChoice(capChoices, defaultCapPath),
+                guiOptions: {
+                    applyDefaultWhenDirty: true,
+                    mandatory: true,
+                    breadcrumb: t('prompts.capProject.breadcrumb')
+                }
             },
-            type: promptOptions?.[promptNames.capProject]?.useAutoComplete ? 'autocomplete' : 'list',
-            name: promptNames.capProject,
-            message: t('prompts.capProject.message'),
-            default: () => {
-                const defChoice = getDefaultCapChoice(capChoices, defaultCapPath);
-                return defChoice;
-            },
-            source: (prevAnswers: unknown, input: string) => searchChoices(input, capChoices),
-            choices: () => capChoices,
-            guiOptions: {
-                applyDefaultWhenDirty: true,
-                mandatory: true,
-                breadcrumb: t('prompts.capProject.breadcrumb')
-            }
-        } as YUIQuestion<CapServiceAnswers>,
+            () => capChoices,
+            promptOptions?.[promptNames.capProject]?.useAutoComplete ?? false
+        ) as YUIQuestion<CapServiceAnswers>,
         {
             when: (answers): boolean => capChoices.length === 1 || answers?.capProject === enterCapPathChoiceValue,
             type: 'input',
@@ -135,7 +138,7 @@ export function getLocalCapProjectPrompts(
                 }
                 return false;
             },
-            type: 'list',
+            type: 'select',
             name: promptNames.capService,
             message: t('prompts.capService.message'),
             choices: () => {
@@ -158,7 +161,9 @@ export function getLocalCapProjectPrompts(
             },
             showOutputTabLink: 'validationMessageOverflow',
             default: () => {
-                return capServiceChoices?.length > 1 ? defaultServiceIndex : 0;
+                // inquirer 13's `select` default is a choice value, not an index
+                const defaultIndex = capServiceChoices?.length > 1 ? defaultServiceIndex : 0;
+                return capServiceChoices?.[defaultIndex]?.value;
             },
             validate: async (capService: CapServiceChoice['value']): Promise<string | boolean> => {
                 const errMsg = errorHandler.getErrorMsg(undefined, true);

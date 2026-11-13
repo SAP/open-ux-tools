@@ -1,5 +1,5 @@
 import type { Logger } from '@sap-ux/logger';
-import type { Question } from 'inquirer';
+import type { Question } from 'yeoman-generator';
 import LoggerHelper from '../logger-helper.js';
 import type {
     ServiceConfig,

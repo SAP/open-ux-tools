@@ -50,7 +50,7 @@ describe('getPrompts', () => {
             }
         },
         {
-            type: 'list',
+            type: 'select',
             name: 'isLazy',
             message: i18n.t('prompts.component.isLazyLabel'),
             choices: isLazyDropDownOptions,
@@ -103,7 +103,7 @@ describe('getPrompts', () => {
             when: expect.any(Function)
         },
         {
-            type: 'list',
+            type: 'select',
             name: `libraryIsLazy`,
             message: i18n.t('prompts.component.libraryIsLazyLabel'),
             choices: isLazyDropDownOptions,

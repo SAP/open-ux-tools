@@ -1,5 +1,10 @@
-import type { CommonPromptOptions, PromptDefaultValue, UI5VersionChoice, YUIQuestion } from '@sap-ux/inquirer-common';
-import type { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
+import type {
+    CommonPromptOptions,
+    PromptDefaultValue,
+    SearchQuestion,
+    UI5VersionChoice,
+    YUIQuestion
+} from '@sap-ux/inquirer-common';
 
 export interface UI5ApplicationAnswers {
     name?: string;
@@ -67,7 +72,7 @@ type UI5VersionPromptOptions = {
      */
     includeSeparators?: boolean;
     /**
-     * Optionally register the `inquirer-autocomplete-prompt` plugin and use for UI5 version searching.
+     * Optionally use inquirer's filterable `search` prompt for UI5 version selection.
      * If the default `false` is used then standard prompting will be used that require scrolling to find entries.
      */
     useAutocomplete?: boolean;
@@ -176,7 +181,6 @@ type booleanValuePromptOtions = Record<
     Record<DefaultValueConfirmPrompts, PromptDefaultValue<boolean>> &
     Record<promptNames.addDeployConfig, AddDeployPromptOptions>;
 
-export type UI5ApplicationQuestion = YUIQuestion<UI5ApplicationAnswers> &
-    Partial<Pick<AutocompleteQuestionOptions, 'source'>>;
+export type UI5ApplicationQuestion = YUIQuestion<UI5ApplicationAnswers> & Partial<Pick<SearchQuestion, 'source'>>;
 
 export type UI5ApplicationPromptOptions = Partial<stringValuePromptOptions & booleanValuePromptOtions>;

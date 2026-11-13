@@ -90,7 +90,7 @@ function applyPromptOptionDefaults(
 function getDefaultValue(
     answers: Partial<FLPConfigAnswers>,
     promptDefault?: PromptDefaultValue<string | boolean>['default']
-): PromptDefaultValue<string | boolean>['default'] {
+): string | boolean | Promise<string | boolean> | undefined {
     if (typeof promptDefault === 'function') {
         return promptDefault(answers);
     }

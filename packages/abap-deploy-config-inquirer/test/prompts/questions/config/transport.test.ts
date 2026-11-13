@@ -53,7 +53,7 @@ describe('getTransportRequestPrompts', () => {
                 },
                 "message": "Select How You Want to Enter the Transport Request",
                 "name": "transportInputChoice",
-                "type": "list",
+                "type": "select",
                 "validate": [Function],
                 "when": [Function],
               },
@@ -78,7 +78,7 @@ describe('getTransportRequestPrompts', () => {
                 },
                 "message": "Transport Request",
                 "name": "transportFromList",
-                "type": "list",
+                "type": "select",
                 "when": [Function],
               },
               Object {

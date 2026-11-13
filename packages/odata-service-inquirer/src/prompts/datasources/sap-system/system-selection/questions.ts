@@ -2,10 +2,18 @@ import { Severity } from '@sap-devx/yeoman-ui-types';
 import type { Destination } from '@sap-ux/btp-utils';
 import { isAppStudio, isPartialUrlDestination } from '@sap-ux/btp-utils';
 import { hostEnvironment } from '@sap-ux/fiori-generator-shared';
-import { type InputQuestion, type ListQuestion, searchChoices, withCondition } from '@sap-ux/inquirer-common';
+import {
+    type ChoiceOptions,
+    type InputQuestion,
+    type ListQuestion,
+    type SearchQuestion,
+    searchChoices,
+    withCondition,
+    type YUIQuestion
+} from '@sap-ux/inquirer-common';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
 import { BackendSystemKey, type BackendSystem } from '@sap-ux/store';
-import type { Answers, ListChoiceOptions, Question } from 'inquirer';
+import type { Answers, Question } from 'inquirer';
 import { t } from '../../../../i18n.js';
 import { type ConnectedSystem, type OdataServicePromptOptions, promptNames } from '../../../../types.js';
 import { getPromptHostEnvironment, PromptState } from '../../../../utils/index.js';
@@ -188,73 +196,86 @@ export async function getSystemConnectionQuestions(
     const shouldOnlyShowDefaultChoice =
         promptOptions?.systemSelection?.onlyShowDefaultChoice && promptOptions?.systemSelection?.defaultChoice;
 
-    const questions: Question[] = [
-        {
-            type: promptOptions?.systemSelection?.useAutoComplete ? 'autocomplete' : 'list',
-            name: promptNames.systemSelection,
-            message: t('prompts.systemSelection.message'),
-            guiOptions: {
-                breadcrumb: true,
-                hint: t('prompts.systemSelection.hint')
-            },
-            source: (prevAnswers: unknown, input: string) => searchChoices(input, systemChoices as ListChoiceOptions[]),
-            choices: shouldOnlyShowDefaultChoice ? [systemChoices[defaultChoiceIndex]] : systemChoices,
-            default: () => {
-                if (shouldOnlyShowDefaultChoice) {
-                    return 0;
-                }
-                defaultChoiceIndex = findDefaultSystemSelectionIndex(
-                    systemChoices,
-                    promptOptions?.systemSelection?.defaultChoice
-                ); // Recalc to allow default choice to be bound to ref from another prompt
+    const effectiveSystemChoices = shouldOnlyShowDefaultChoice ? [systemChoices[defaultChoiceIndex]] : systemChoices;
 
-                // Regardless of finding a match the provided connect path is applied
-                if (typeof promptOptions?.systemSelection?.connectPath === 'object') {
-                    connectPath = promptOptions?.systemSelection.connectPath;
-                }
-                return defaultChoiceIndex;
-            },
-            validate: async (
-                selectedSystem: SystemSelectionAnswerType | ListChoiceOptions<SystemSelectionAnswerType>
-            ): Promise<ValidationResult> => {
-                if (!selectedSystem) {
-                    return false;
-                }
-                let selectedSystemAnswer = selectedSystem as SystemSelectionAnswerType;
-                // Autocomplete passes the entire choice object as the answer, so we need to extract the value
-                if (promptOptions?.systemSelection?.useAutoComplete && (selectedSystem as ListChoiceOptions).value) {
-                    selectedSystemAnswer = (selectedSystem as ListChoiceOptions).value;
-                }
-                return (
-                    validateSystemSelection(
-                        selectedSystemAnswer,
-                        connectionValidator,
-                        requiredOdataVersion,
-                        cachedConnectedSystem,
-                        connectPath?.value
-                    ) ?? false
-                );
-            },
-            additionalMessages: async (selectedSystem: SystemSelectionAnswerType) => {
-                if (
-                    selectedSystem.type === 'backendSystem' &&
-                    connectionValidator.systemAuthType === 'basic' &&
-                    (await connectionValidator.isAuthRequired())
-                ) {
-                    return {
-                        message: t('prompts.systemSelection.authenticationFailedUpdateCredentials'),
-                        severity: Severity.information
-                    };
-                }
-                if (connectionValidator.ignoreCertError) {
-                    return {
-                        message: t('warnings.certErrorIgnoredByNodeSetting'),
-                        severity: Severity.warning
-                    };
-                }
+    // inquirer 13's `select`/`search` default is a choice value (not the inquirer 8 list index); the
+    // former index-returning default logic is retained but mapped to the choice value at that index.
+    const getSystemSelectionDefault = (): SystemSelectionAnswerType | undefined => {
+        let defaultIndex: number;
+        if (shouldOnlyShowDefaultChoice) {
+            defaultIndex = 0;
+        } else {
+            defaultChoiceIndex = findDefaultSystemSelectionIndex(
+                systemChoices,
+                promptOptions?.systemSelection?.defaultChoice
+            ); // Recalc to allow default choice to be bound to ref from another prompt
+
+            // Regardless of finding a match the provided connect path is applied
+            if (typeof promptOptions?.systemSelection?.connectPath === 'object') {
+                connectPath = promptOptions?.systemSelection.connectPath;
             }
-        } as ListQuestion<SystemSelectionAnswers>
-    ];
+            defaultIndex = defaultChoiceIndex;
+        }
+        return effectiveSystemChoices[defaultIndex]?.value;
+    };
+
+    const systemSelectionBase = {
+        name: promptNames.systemSelection,
+        message: t('prompts.systemSelection.message'),
+        guiOptions: {
+            breadcrumb: true,
+            hint: t('prompts.systemSelection.hint')
+        },
+        default: getSystemSelectionDefault,
+        validate: async (selectedSystem?: SystemSelectionAnswerType): Promise<ValidationResult> => {
+            if (!selectedSystem) {
+                return false;
+            }
+            return (
+                validateSystemSelection(
+                    selectedSystem,
+                    connectionValidator,
+                    requiredOdataVersion,
+                    cachedConnectedSystem,
+                    connectPath?.value
+                ) ?? false
+            );
+        },
+        additionalMessages: async (selectedSystem?: unknown) => {
+            const system = selectedSystem as SystemSelectionAnswerType;
+            if (
+                system.type === 'backendSystem' &&
+                connectionValidator.systemAuthType === 'basic' &&
+                (await connectionValidator.isAuthRequired())
+            ) {
+                return {
+                    message: t('prompts.systemSelection.authenticationFailedUpdateCredentials'),
+                    severity: Severity.information
+                };
+            }
+            if (connectionValidator.ignoreCertError) {
+                return {
+                    message: t('warnings.certErrorIgnoredByNodeSetting'),
+                    severity: Severity.warning
+                };
+            }
+        }
+    };
+
+    const systemSelectionQuestion: YUIQuestion<SystemSelectionAnswers> = promptOptions?.systemSelection?.useAutoComplete
+        ? ({
+              ...systemSelectionBase,
+              type: 'search',
+              source: (term: string | undefined): ChoiceOptions[] =>
+                  searchChoices(term ?? '', effectiveSystemChoices as ChoiceOptions[])
+          } as SearchQuestion<SystemSelectionAnswers>)
+        : ({
+              ...systemSelectionBase,
+              type: 'select',
+              choices: effectiveSystemChoices
+          } as ListQuestion<SystemSelectionAnswers>);
+
+    const questions: Question[] = [systemSelectionQuestion as unknown as Question];
 
     if (isAppStudio()) {
         // Additional service path prompt for partial URL destinations
@@ -299,7 +320,7 @@ export async function getSystemConnectionQuestions(
                 );
                 return connectValResult;
             }
-        } as InputQuestion<SystemSelectionAnswers>;
+        } as unknown as InputQuestion<SystemSelectionAnswers>;
         questions.push(servicePathPrompt);
     }
 
@@ -327,7 +348,7 @@ export async function getSystemConnectionQuestions(
                 return false;
             },
             name: `${systemSelectionPromptNames.systemSelectionCli}`
-        });
+        } as Question);
     }
     questions.push(
         ...getCredentialsPrompts(connectionValidator, systemSelectionPromptNamespace, undefined, requiredOdataVersion)

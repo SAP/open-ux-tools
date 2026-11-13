@@ -1,7 +1,7 @@
 import { jest } from '@jest/globals';
 import type { AbapServiceProvider, ServiceInfo, ServiceProvider } from '@sap-ux/axios-extension';
-import type { InputQuestion, Question } from 'inquirer';
-import type { ListQuestion } from '@sap-ux/inquirer-common';
+import type { Question } from 'inquirer';
+import type { InputQuestion, ListQuestion } from '@sap-ux/inquirer-common';
 import { ERROR_TYPE, ErrorHandler } from '@sap-ux/inquirer-common';
 import type { ConnectionValidator } from '../../../../../src/prompts/connectionValidator.js';
 import type { ConnectedSystem } from '../../../../../src/types.js';
@@ -138,7 +138,7 @@ describe('questions', () => {
                 ],
                 "message": "ABAP environment definition source",
                 "name": "abapOnBtpAuthType",
-                "type": "list",
+                "type": "select",
                 "validate": [Function],
               },
               {
@@ -163,7 +163,7 @@ describe('questions', () => {
                 },
                 "message": "ABAP environment",
                 "name": "cloudFoundryAbapSystem",
-                "type": "list",
+                "type": "select",
                 "validate": [Function],
                 "when": [Function],
               },
@@ -197,8 +197,7 @@ describe('questions', () => {
                 "message": [Function],
                 "name": "abapOnBtp:serviceSelection",
                 "showOutputTabLink": "validationMessageOverflow",
-                "source": [Function],
-                "type": "list",
+                "type": "select",
                 "validate": [Function],
                 "when": [Function],
               },

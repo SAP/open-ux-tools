@@ -1,6 +1,6 @@
 import { jest } from '@jest/globals';
 import { UIAnnotationTerms } from '@sap-ux/vocabularies-types/vocabularies/UI';
-import type { Answers, DistinctChoice, ListChoiceMap } from 'inquirer';
+import type { Answers, ChoiceOptions } from '@sap-ux/inquirer-common';
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
@@ -54,7 +54,10 @@ const capProjectFolder = join(__dirname, '../../../sample/building-block/webapp-
 const capAppFolder = join('app/incidents');
 
 const ENTITY_SET = 'C_CustomerOP';
-type Choices = (answers?: Answers) => Promise<readonly DistinctChoice<Answers, ListChoiceMap<Answers>>[]>;
+// Minimal local shim for the former inquirer@8 `DistinctChoice<Answers, ListChoiceMap>`;
+// the test only needs the choice element shape (a plain string or a `{ name, value }` choice).
+type DistinctChoice = string | ChoiceOptions;
+type Choices = (answers?: Answers) => Promise<readonly DistinctChoice[]>;
 
 describe('utils - questions', () => {
     let project: Project;
@@ -512,7 +515,7 @@ describe('utils - questions', () => {
               },
               "message": "message",
               "name": "name",
-              "type": "list",
+              "type": "select",
             }
         `);
     });
@@ -567,7 +570,7 @@ describe('utils - questions', () => {
     test('getFilterBarIdPrompt - list type', async () => {
         const prompt = getFilterBarIdPrompt(context, {
             message: 'message',
-            type: 'list',
+            type: 'select',
             guiOptions: {
                 placeholder: 'Select or enter a filter bar ID',
                 creation: { placeholder: 'Enter a new filter bar ID' }
@@ -585,7 +588,7 @@ describe('utils - questions', () => {
               },
               "message": "message",
               "name": "buildingBlockData.filterBar",
-              "type": "list",
+              "type": "select",
             }
         `);
 
@@ -624,7 +627,7 @@ describe('utils - questions', () => {
               },
               "message": "message",
               "name": "service",
-              "type": "list",
+              "type": "select",
             }
         `);
 
@@ -639,7 +642,7 @@ describe('utils - questions', () => {
                 "selectType": "dynamic",
               },
               "name": "service",
-              "type": "list",
+              "type": "select",
             }
         `);
     });

@@ -1,4 +1,4 @@
-import type { Answers, ChoiceOptions } from 'inquirer';
+import type { Answers, ChoiceOptions } from '@sap-ux/inquirer-common';
 import type { PromptQuestion, AnswerValue, PromptListChoices } from '../types.js';
 import type { UISelectableOption } from '@sap-ux/ui-components';
 
@@ -17,7 +17,7 @@ export function getDependantQuestions(
     dependantPromptNames: string[] = []
 ): string[] {
     const question = questions.find((checkQuestion) => checkQuestion.name === name);
-    if (question?.type === 'list') {
+    if (question?.type === 'select') {
         const questionsDependantNames = question?.guiOptions?.dependantPromptNames ?? [];
         questionsDependantNames.forEach((dependantName) => {
             dependantPromptNames.push(dependantName);
@@ -34,7 +34,7 @@ export function getDependantQuestions(
  * @returns Found dynamic questions.
  */
 export function getDynamicQuestions(questions: PromptQuestion[]): string[] {
-    const dynamicQuestions = questions.filter((question): question is Required<Pick<PromptQuestion, 'name'>> => {
+    const dynamicQuestions = questions.filter((question) => {
         const { guiOptions = {} } = question;
         return 'selectType' in guiOptions && guiOptions.selectType === 'dynamic' && !!question.name;
     });
@@ -128,15 +128,15 @@ export function getAnswer(answers: Answers, path: string): unknown {
  * @param choices - Array of choices
  * @returns Returns dropdown/combobox options.
  */
-export function convertChoicesToOptions(choices: PromptListChoices): UISelectableOption<ChoiceOptions>[] {
+export function convertChoicesToOptions(choices: PromptListChoices): UISelectableOption<ChoiceOptions<AnswerValue>>[] {
     if (!choices.length) {
         return [];
     }
-    const options: UISelectableOption<ChoiceOptions>[] = [];
+    const options: UISelectableOption<ChoiceOptions<AnswerValue>>[] = [];
     for (const choice of choices) {
         if (typeof choice === 'object' && 'value' in choice) {
             options.push({
-                key: choice.value.toString(),
+                key: String(choice.value),
                 text: choice.name ?? '',
                 disabled: 'disabled' in choice ? Boolean(choice.disabled) : undefined,
                 title: 'title' in choice ? String(choice.title) : '',
@@ -148,7 +148,7 @@ export function convertChoicesToOptions(choices: PromptListChoices): UISelectabl
             options.push({
                 key: choiceText,
                 text: choiceText,
-                data: { value: choice }
+                data: { value: choiceText }
             });
         }
     }

@@ -123,8 +123,7 @@ describe('Test getAbapQuestions', () => {
                 transportInputChoice: { hideIfOnPremise: false }
             },
             expect.any(Object),
-            true,
-            undefined
+            true
         );
     });
 
@@ -205,8 +204,7 @@ describe('Test getAbapQuestions', () => {
                 transportInputChoice: { hideIfOnPremise: false }
             },
             expect.any(Object),
-            false,
-            undefined
+            false
         );
     });
 });

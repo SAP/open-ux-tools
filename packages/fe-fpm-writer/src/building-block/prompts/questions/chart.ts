@@ -1,5 +1,5 @@
 import { UIAnnotationTerms } from '@sap-ux/vocabularies-types/vocabularies/UI';
-import type { Answers } from 'inquirer';
+import type { Answers } from '@sap-ux/inquirer-common';
 import { i18nNamespaces, translate } from '../../../i18n.js';
 import {
     getAggregationPathPrompt,
@@ -127,7 +127,7 @@ export async function getChartBuildingBlockPrompts(context: PromptContext): Prom
             ),
             getFilterBarIdPrompt(context, {
                 message: t('filterBar.message') as string,
-                type: 'list',
+                type: 'select',
                 guiOptions: {
                     groupId: groupIds.commonChartBuildingBlockProperties,
                     placeholder: t('filterBar.placeholder') as string,
@@ -150,7 +150,7 @@ export async function getChartBuildingBlockPrompts(context: PromptContext): Prom
                 }
             },
             {
-                type: 'list',
+                type: 'select',
                 name: 'buildingBlockData.selectionMode',
                 message: t('selectionMode.message') as string,
                 choices: [

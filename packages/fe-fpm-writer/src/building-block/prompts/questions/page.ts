@@ -1,4 +1,4 @@
-import type { Answers } from 'inquirer';
+import type { Answers } from '@sap-ux/inquirer-common';
 import { i18nNamespaces, translate } from '../../../i18n.js';
 import { getBuildingBlockIdPrompt, getViewOrFragmentPathPrompt, getAggregationPathPrompt } from '../utils/index.js';
 import type { PromptContext, Prompts } from '../../../prompts/types.js';
@@ -30,7 +30,7 @@ export async function getPageBuildingBlockPrompts(context: PromptContext): Promi
                 ? []
                 : [
                       {
-                          type: 'list' as const,
+                          type: 'select' as const,
                           name: 'buildingBlockData.templateType',
                           message: t('templateType.message') as string,
                           default: PageTemplateType.Basic,

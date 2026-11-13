@@ -410,7 +410,7 @@ describe('CFServicesPrompter', () => {
 
             const prompt = prompter['getAppRouterPrompt'](mockCfConfig) as ListQuestion<CfServicesAnswers>;
 
-            expect(prompt.type).toBe('list');
+            expect(prompt.type).toBe('select');
             expect(prompt.name).toBe(cfServicesPromptNames.approuter);
             expect(prompt.message).toBe(t('prompts.approuterLabel'));
             expect(prompt.choices).toEqual([
@@ -484,7 +484,7 @@ describe('CFServicesPrompter', () => {
 
             const prompt = prompter['getBaseAppPrompt'](mockCfConfig);
 
-            expect(prompt.type).toBe('list');
+            expect(prompt.type).toBe('select');
             expect(prompt.name).toBe(cfServicesPromptNames.baseApp);
             expect(prompt.message).toBe(t('prompts.baseAppLabel'));
         });
@@ -655,7 +655,7 @@ describe('CFServicesPrompter', () => {
 
             const prompt = prompter['getServiceInstancePrompt'](mockCfConfig);
 
-            expect(prompt.type).toBe('list');
+            expect(prompt.type).toBe('select');
             expect(prompt.name).toBe(cfServicesPromptNames.serviceInstance);
             expect(prompt.message).toBe(t('prompts.businessServiceLabel'));
             expect(prompt.guiOptions).toEqual({

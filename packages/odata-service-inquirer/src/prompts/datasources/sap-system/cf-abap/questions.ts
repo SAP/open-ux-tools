@@ -18,16 +18,16 @@ export function getCfAbapBASQuestions(promptOptions?: OdataServicePromptOptions)
     const cfAbapBasPromptNamespace = 'cfAbapBas';
     const connectionValidator = new ConnectionValidator();
     return [
-        ...getCFDiscoverPrompts(
+        ...(getCFDiscoverPrompts(
             connectionValidator,
             cfAbapBasPromptNamespace,
             promptOptions?.serviceSelection?.requiredOdataVersion
-        ),
-        ...getSystemServiceQuestion(
+        ) as Question<ServiceAnswer>[]),
+        ...(getSystemServiceQuestion(
             connectionValidator,
             cfAbapBasPromptNamespace,
             promptOptions?.serviceSelection,
             promptOptions?.valueHelpDownload?.hide
-        )
+        ) as Question<ServiceAnswer>[])
     ];
 }
