@@ -55,7 +55,7 @@ export default function App(appProps: AppProps): ReactElement {
     const fitPreview = useSelector<RootState, boolean>((state) => state.fitPreview ?? false);
     const windowSize = useWindowSize();
     const containerRef = useCallback(
-        (node) => {
+        (node: HTMLElement | null) => {
             if (node === null) {
                 return;
             }

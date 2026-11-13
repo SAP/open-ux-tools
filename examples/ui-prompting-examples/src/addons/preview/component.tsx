@@ -13,9 +13,9 @@ export const CodePreview = (props: { active?: boolean }): React.ReactElement => 
     const { active = false } = props;
     const [preview, setPreview] = useState<{
         codeSnippets: { content: string; fileName: string; language: SupportedLanguages }[];
-        answers: unknown;
+        answers: string;
     }>({
-        answers: {},
+        answers: '',
         codeSnippets: []
     });
     const theme = useTheme();
@@ -44,7 +44,7 @@ export const CodePreview = (props: { active?: boolean }): React.ReactElement => 
         channel.on('storyChanged', () => {
             // Reset to default when story is changed
             setPreview({
-                answers: {},
+                answers: '',
                 codeSnippets: []
             });
         });
