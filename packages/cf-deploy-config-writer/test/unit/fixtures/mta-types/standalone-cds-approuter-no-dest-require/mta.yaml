@@ -1,0 +1,33 @@
+_schema-version: "3.3.0"
+ID: standaloneCdsApprouterNoDest
+description: A simple CAP project.
+version: 1.0.0
+modules:
+  - name: standaloneCdsApprouterNoDest-srv
+    type: nodejs
+    path: gen/srv
+    provides:
+      - name: srv-api
+        properties:
+          srv-url: ${default-url}
+  - name: standaloneCdsApprouterNoDest
+    type: approuter.nodejs
+    path: .deploy/app-router
+    requires:
+      - name: standaloneCdsApprouterNoDest-html5-runtime
+
+parameters:
+  enable-parallel-deployments: true
+  deploy_mode: html5-repo
+
+resources:
+  - name: standaloneCdsApprouterNoDest-destination
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: destination
+      service-plan: lite
+  - name: standaloneCdsApprouterNoDest-html5-runtime
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: html5-apps-repo
+      service-plan: app-runtime
