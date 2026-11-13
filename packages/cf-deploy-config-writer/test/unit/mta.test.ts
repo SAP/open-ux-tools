@@ -376,7 +376,7 @@ describe('Validate common flows', () => {
         expect((savedYaml.match(/type: approuter\.nodejs/g) ?? []).length).toBe(1);
     });
 
-    it('addRouterType Standard does not add or mutate a router when an approuter already exists', async () => {
+    it('addRouterType Standard reuses an existing approuter and still wires missing destination via cleanup', async () => {
         // Given: a project with a CDS approuter whose requires do not yet include the destination service
         const appDir = `${OUTPUT_DIR_PREFIX}/appcdsroutertype`;
         memfs.vol.fromNestedJSON({ [`.${appDir}/mta.yaml`]: standaloneCdsApprouterNoDestMTA }, '/');
@@ -384,13 +384,13 @@ describe('Validate common flows', () => {
         // When: the public addRouterType API is called for a standalone router
         await mtaConfig.addRouterType({ routerType: RouterModuleType.Standard });
         await mtaConfig.save();
-        // Then: no second approuter is added
+        // Then: no second approuter is added (the existing one is reused, not duplicated)
         const savedYaml = fs.readFileSync(`${appDir}/mta.yaml`, 'utf-8');
         expect((savedYaml.match(/type: approuter\.nodejs/g) ?? []).length).toBe(1);
-        // And: the pre-existing approuter is left untouched (no destination require injected by cleanup)
+        // And: cleanup still runs, wiring the missing destination service onto the reused approuter
         const doc = jsYaml.load(savedYaml) as { modules: { type: string; requires?: { name: string }[] }[] };
         const router = doc.modules.find((module) => module.type === 'approuter.nodejs');
-        expect(router?.requires?.some((require) => require.name.endsWith('-destination'))).toBe(false);
+        expect(router?.requires?.some((require) => require.name.endsWith('-destination'))).toBe(true);
     });
 
     it('addRoutingConfig does not scaffold a router project when a CDS approuter already exists', async () => {

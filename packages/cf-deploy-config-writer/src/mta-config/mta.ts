@@ -679,9 +679,8 @@ export class MtaConfig {
         routerType?: RouterModuleType;
         addMissingModules?: boolean;
     } = {}): Promise<void> {
-        let routerAdded = true;
         if (routerType === RouterModuleType.Standard) {
-            routerAdded = await this.addStandaloneRouter(true);
+            await this.addStandaloneRouter(true);
         }
         if (routerType === RouterModuleType.Managed) {
             await this.addManagedAppRouter();
@@ -689,9 +688,7 @@ export class MtaConfig {
         if (routerType === RouterModuleType.AppFront) {
             await this.addAppFrontAppRouter();
         }
-        // Skip resource/module cleanup when a standalone router was not added because an approuter already
-        // exists, otherwise cleanup would mutate the pre-existing router (e.g. a CDS `.deploy/app-router`).
-        if (routerType !== RouterModuleType.AppFront && routerAdded) {
+        if (routerType !== RouterModuleType.AppFront) {
             if (addMissingModules) {
                 await this.cleanupMissingResources();
             }
