@@ -20,9 +20,7 @@ jest.unstable_mockModule('@sap-ux/logger', () => ({
     ToolsLogger: jest.fn().mockImplementation(() => mockLogger)
 }));
 
-jest.unstable_mockModule('node-fetch', () => ({
-    default: mockFetch
-}));
+global.fetch = mockFetch as unknown as typeof fetch;
 
 // Import real gray-matter before mocking to avoid recursive resolution
 const realGrayMatter = await import('gray-matter');

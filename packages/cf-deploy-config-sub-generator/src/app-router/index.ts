@@ -1,5 +1,5 @@
 import { join } from 'node:path';
-import * as hasbin from 'hasbin';
+import which from 'which';
 import { platform } from 'node:os';
 import { AppWizard, Prompts } from '@sap-devx/yeoman-ui-types';
 import type { AppWizard as AppWizardType, Prompts as PromptsType } from '@sap-devx/yeoman-ui-types';
@@ -62,7 +62,7 @@ export default class extends DeploymentGenerator {
 
     private _initFromProjectConfig(): void {
         // mta executable is required as mta-lib is used
-        if (!hasbin.sync(mtaExecutable)) {
+        if (!which.sync(mtaExecutable, { nothrow: true })) {
             handleErrorMessage(this.appWizard, { errorType: ERROR_TYPE.NO_MTA_BIN });
             this.abort = true;
         }

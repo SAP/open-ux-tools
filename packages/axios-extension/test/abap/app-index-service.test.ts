@@ -42,16 +42,17 @@ describe('AppIndexService', () => {
         beforeAll(() => {
             nock(server)
                 .get((path) => path.startsWith(AppIndexService.PATH))
-                .reply(200, (path) => {
+                .reply(200, (req: Request) => {
+                    const url = req.url;
                     let results: any[];
-                    if (!path.includes('?')) {
+                    if (!url.includes('?')) {
                         results = appIndexMock.results;
-                    } else if (path.includes('type=application')) {
+                    } else if (url.includes('type=application')) {
                         results = appIndexMock.results.filter((item) => item['sap.app/type'] === 'application');
                     } else {
                         results = [];
                     }
-                    if (path.includes('fields=url')) {
+                    if (url.includes('fields=url')) {
                         return { results };
                     } else {
                         return {
@@ -95,7 +96,7 @@ describe('AppIndexService', () => {
             nock.cleanAll();
             nock(server)
                 .get((path) => path.startsWith(`${AppIndexService.PATH}/ui5_app_mani_first_supported`))
-                .reply(200, (_path) => {
+                .reply(200, (_req: Request) => {
                     return appIndexMock['ui5_app_mani_first_supported'];
                 })
                 .persist();
