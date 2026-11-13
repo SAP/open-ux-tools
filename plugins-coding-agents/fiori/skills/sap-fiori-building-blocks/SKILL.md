@@ -88,7 +88,7 @@ Modifying an existing Fiori app goes through the Fiori MCP server's **three-step
 Adding a building block is the functionality with id **`add-building-block`**.
 
 1. **Locate the app.** If the app path is unknown, call `list_fiori_apps`.
-2. **Confirm the operation** (optional). Call `list_functionality` with the app path to confirm that
+2. **Confirm the operation.** Call `list_functionality` with the app path to confirm that
    `add-building-block` is available.
 3. **Get the insertion points — let the tool do it, don't read files.** Call `get_functionality_details`
    with `{ appPath, functionalityId: "add-building-block" }`. Its `description` lists the **available
