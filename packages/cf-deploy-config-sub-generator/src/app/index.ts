@@ -1,6 +1,6 @@
 import { join, dirname } from 'node:path';
 import { platform } from 'node:os';
-import * as hasbin from 'hasbin';
+import which from 'which';
 import { AppWizard, MessageType } from '@sap-devx/yeoman-ui-types';
 import type { AppWizard as AppWizardType } from '@sap-devx/yeoman-ui-types';
 import {
@@ -127,7 +127,7 @@ export default class extends DeploymentGenerator {
 
     private async _init(): Promise<void> {
         // mta executable is required as mta-lib is used
-        if (!hasbin.sync(mtaExecutable)) {
+        if (!which.sync(mtaExecutable, { nothrow: true })) {
             this.abort = true;
             handleErrorMessage(this.appWizard, { errorType: ERROR_TYPE.NO_MTA_BIN });
         }
@@ -150,7 +150,7 @@ export default class extends DeploymentGenerator {
         this.mtaPath = mtaPathResult?.mtaPath;
         const capRoot = await findCapProjectRoot(this.appPath, true, this.fs);
         if (capRoot) {
-            if (!hasbin.sync(cdsExecutable)) {
+            if (!which.sync(cdsExecutable, { nothrow: true })) {
                 bail(ErrorHandler.getErrorMsgFromType(ERROR_TYPE.NO_CDS_BIN));
             }
             this.isCap = true;
