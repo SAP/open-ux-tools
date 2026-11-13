@@ -32,6 +32,7 @@ interface LaunchConfig {
     command: string;
     args: string[];
     timeoutMs: number;
+    projectType: 'abap' | 'cf';
 }
 
 /**
@@ -118,7 +119,7 @@ async function resolveLaunch(appPath: string): Promise<LaunchConfig | { reason: 
     const launchArgs = command === 'npm' ? args : [...args, '--port', String(await findFreePort())];
     const isCf = await isCFEnvironment(appPath);
     if (!isCf) {
-        return { command, args: launchArgs, timeoutMs: ABAP_TIMEOUT_MS };
+        return { command, args: launchArgs, timeoutMs: ABAP_TIMEOUT_MS, projectType: 'abap' };
     }
 
     if (!existsSync(join(appPath, 'dist'))) {
@@ -129,7 +130,7 @@ async function resolveLaunch(appPath: string): Promise<LaunchConfig | { reason: 
         };
     }
 
-    return { command, args: launchArgs, timeoutMs: CF_TIMEOUT_MS };
+    return { command, args: launchArgs, timeoutMs: CF_TIMEOUT_MS, projectType: 'cf' };
 }
 
 /**
@@ -331,7 +332,7 @@ export async function openAdaptationEditor(params: OpenAdaptationEditorInput): P
         childProcess.unref();
         registerEditorSession({ localUrl: localEditorUrl, browserUrl: editorUrl, relayToken, childProcess, autoOpen });
         if (autoOpen) {
-            signalEditor('open', editorUrl);
+            signalEditor('open', editorUrl, launch.projectType);
         }
 
         const killCommandsSection = buildKillInstructions(processId, isWindows, useHttpRelay);

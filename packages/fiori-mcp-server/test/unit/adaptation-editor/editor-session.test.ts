@@ -153,6 +153,18 @@ describe('editor session lifecycle', () => {
         expect(mockUnlink).not.toHaveBeenCalled();
     });
 
+    test.each(['abap', 'cf'] as const)('includes %s project type only in open commands', (projectType) => {
+        signalEditor('open', session.browserUrl, projectType);
+        signalEditor('close', session.browserUrl, projectType);
+        expect(JSON.parse(String(mockWrite.mock.calls[0][1]))).toEqual({
+            command: 'open',
+            url: session.browserUrl,
+            id: expect.any(String),
+            projectType
+        });
+        expect(JSON.parse(String(mockWrite.mock.calls[1][1]))).not.toHaveProperty('projectType');
+    });
+
     test('uses a unique command ID and temp file even for the same URL', () => {
         signalEditor('open', session.browserUrl);
         signalEditor('close', session.browserUrl);

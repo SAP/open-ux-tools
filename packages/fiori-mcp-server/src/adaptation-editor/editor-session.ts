@@ -40,13 +40,14 @@ export function trackEditorProcess(childProcess: ChildProcess, detached: boolean
  *
  * @param command - Whether to open or close the editor.
  * @param url - The exact browser URL registered for the editor.
+ * @param projectType - Project platform, used by the launcher to select the CF login flow.
  */
-export function signalEditor(command: 'open' | 'close', url: string): void {
+export function signalEditor(command: 'open' | 'close', url: string, projectType?: 'abap' | 'cf'): void {
     let temporaryFile: string | undefined;
     try {
         const id = randomUUID();
         temporaryFile = `${SIGNAL_FILE}.${id}.tmp`;
-        writeFileSync(temporaryFile, JSON.stringify({ command, url, id }), {
+        writeFileSync(temporaryFile, JSON.stringify({ command, url, id, ...(command === 'open' && { projectType }) }), {
             encoding: 'utf8',
             mode: 0o600,
             flag: 'wx'
