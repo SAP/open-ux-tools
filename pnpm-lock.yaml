@@ -2907,8 +2907,8 @@ importers:
         specifier: workspace:*
         version: link:../ui5-info
       '@ui5/manifest':
-        specifier: 1.91.4
-        version: 1.91.4
+        specifier: 1.89.0
+        version: 1.89.0
       ejs:
         specifier: 3.1.10
         version: 3.1.10
@@ -4029,14 +4029,14 @@ importers:
         specifier: workspace:*
         version: link:../i18n
       '@sapui5/types':
-        specifier: 1.153.0
-        version: 1.153.0
+        specifier: 1.120.5
+        version: 1.120.5
       '@ui5/cli':
         specifier: 4.0.71
         version: 4.0.71(supports-color@8.1.1)
       '@ui5/manifest':
-        specifier: 1.91.4
-        version: 1.91.4
+        specifier: 1.89.0
+        version: 1.89.0
       eslint-plugin-jsdoc:
         specifier: 65.4.2
         version: 65.4.2(eslint@10.13.0(supports-color@8.1.1))(supports-color@8.1.1)(typescript@6.0.3)
@@ -4062,8 +4062,8 @@ importers:
         specifier: workspace:*
         version: link:../ui5-config
       '@ui5/manifest':
-        specifier: 1.91.4
-        version: 1.91.4
+        specifier: 1.89.0
+        version: 1.89.0
       fast-xml-parser:
         specifier: 5.11.2
         version: 5.11.2
@@ -5088,8 +5088,8 @@ importers:
         specifier: workspace:*
         version: link:../ui5-config
       '@ui5/manifest':
-        specifier: 1.91.4
-        version: 1.91.4
+        specifier: 1.89.0
+        version: 1.89.0
       ejs:
         specifier: 3.1.10
         version: 3.1.10
@@ -9546,8 +9546,8 @@ packages:
     resolution: {integrity: sha512-x2f1AvS9KDs3djtDsRgH4Md3Ze5vc2NZHAlpCf+oRokWaQCmMNmS57DE6Zm80IVCCzo1mr8VtSrjWMPTshfUpw==}
     engines: {node: '>=18'}
 
-  '@sapui5/types@1.153.0':
-    resolution: {integrity: sha512-qyWPk7EzgOIaJV1pHkoArt0xKPkUwXJOqKcDddlxWntVKb8+7eru465umGAi04RAWZCh5lTC3DKZyNDecs9HjQ==}
+  '@sapui5/types@1.120.5':
+    resolution: {integrity: sha512-5n0pzbS4sP1eA0m1bFgnD1cKQT7BJQn9b1JADWanteElZTbyJjoaTFzSHIUjrCU+vxOwkHTajCjp+/6UNJ1KbQ==}
 
   '@secretlint/config-creator@10.2.2':
     resolution: {integrity: sha512-BynOBe7Hn3LJjb3CqCHZjeNB09s/vgf0baBaHVw67w7gHF0d25c3ZsZ5+vv8TgwSchRdUCRrbbcq5i2B1fJ2QQ==}
@@ -10529,8 +10529,8 @@ packages:
     resolution: {integrity: sha512-uscDCQyHFeenh4r2RbYuffTMn6IQdcNC1tXrQ4BF+apAFjmDGP11IHdAwVCKwxgyPrIC17HT2gub3ZugGM8kpQ==}
     engines: {node: ^20.11.0 || >=22.0.0, npm: '>= 8'}
 
-  '@ui5/manifest@1.91.4':
-    resolution: {integrity: sha512-tgNjIxsS9LKzErE4vKuJY/u2Nil4R9ZB87mOQ5OLsDW4jgMe0OCNBdvIdzPOLV9Fph6OyYjJZO7Bq8KILHdqwA==}
+  '@ui5/manifest@1.89.0':
+    resolution: {integrity: sha512-+Zr48MkYn9VBvp+Yq3Fsc2MtShB2XbHuT/TGf+3XeeAAX4vRQyyXWrO0r+GF+wl09r76C7SfRIJpZTNBMRFFxg==}
 
   '@ui5/project@4.0.15':
     resolution: {integrity: sha512-Fo1g1t15NCLb9xKxVVJ4jD7BTGimk2CoE+4nMTg0NEA9DGv0UUWkfVygnNnmur1NJg4HV4sqK/mKO1yszFpCAQ==}
@@ -23385,7 +23385,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@sapui5/types@1.153.0':
+  '@sapui5/types@1.120.5':
     dependencies:
       '@types/jquery': 3.5.13
       '@types/offscreencanvas': 2019.6.4
@@ -24787,7 +24787,7 @@ snapshots:
       cli-progress: 3.12.0
       figures: 6.1.0
 
-  '@ui5/manifest@1.91.4': {}
+  '@ui5/manifest@1.89.0': {}
 
   '@ui5/project@4.0.15(@ui5/builder@4.2.0)(supports-color@8.1.1)':
     dependencies:
