@@ -48,14 +48,19 @@ function writeLaunchJsonFile(fs: Editor, launchJSONPath: string, configurations:
 function ensureConfigurationsArray(fs: Editor, launchJSONPath: string): number {
     const content = fs.read(launchJSONPath);
     const errors: ParseError[] = [];
-    const launchJson: unknown = parse(content, errors);
+    // Allow trailing commas since .vscode/launch.json is a JSONC file
+    const launchJson: unknown = parse(content, errors, { allowTrailingComma: true });
 
     // Check if the file is truly empty (only whitespace and/or comments)
-    const strippedContent = stripComments(content).trim();
+    // Strip BOM (U+FEFF) before checking if content is empty
+    const strippedContent = stripComments(content).replace(/^﻿/, '').trim();
     const isEmptyOrCommentsOnly = strippedContent.length === 0;
 
-    // If there are parse errors and the file is not empty/comments-only, throw an error
-    if (errors.length > 0 && !isEmptyOrCommentsOnly) {
+    // Filter out BOM error (error code 1 at offset 0) - it's recoverable
+    const nonRecoverableErrors = errors.filter((e) => !(e.error === 1 && e.offset === 0));
+
+    // If there are non-recoverable parse errors and the file is not empty/comments-only, throw an error
+    if (nonRecoverableErrors.length > 0 && !isEmptyOrCommentsOnly) {
         throw new Error(
             t('error.malformedLaunchJson', { file: launchJSONPath, interpolation: { escapeValue: false } })
         );

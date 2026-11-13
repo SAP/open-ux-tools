@@ -560,5 +560,31 @@ describe('create', () => {
             // File should not be modified
             expect(memFs.read(launchJSONPath)).toBe('{ "version": "0.2.0", "configurations": [}');
         });
+
+        test('handles JSONC with trailing commas (valid JSONC)', async () => {
+            writeRaw(launchJSONPath, '{ "version": "0.2.0", "configurations": [ { "name": "A" }, ] }');
+
+            const result = await createLaunchConfig(TestPaths.tmpDir, nonDefaultOptions, memFs);
+
+            expect(readConfigNames(launchJSONPath, result as typeof memFs)).toEqual(['A', newConfigName]);
+        });
+
+        test('handles BOM-encoded launch.json files', async () => {
+            // UTF-8 BOM followed by valid JSON
+            writeRaw(launchJSONPath, '﻿{ "version": "0.2.0", "configurations": [] }');
+
+            const result = await createLaunchConfig(TestPaths.tmpDir, nonDefaultOptions, memFs);
+
+            expect(readConfigNames(launchJSONPath, result as typeof memFs)).toEqual([newConfigName]);
+        });
+
+        test('handles BOM-encoded launch.json with trailing comma', async () => {
+            // UTF-8 BOM + trailing comma - both should be handled
+            writeRaw(launchJSONPath, '﻿{ "version": "0.2.0", "configurations": [ { "name": "B" }, ] }');
+
+            const result = await createLaunchConfig(TestPaths.tmpDir, nonDefaultOptions, memFs);
+
+            expect(readConfigNames(launchJSONPath, result as typeof memFs)).toEqual(['B', newConfigName]);
+        });
     });
 });
