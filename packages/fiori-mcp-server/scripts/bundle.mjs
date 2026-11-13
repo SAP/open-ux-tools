@@ -4,6 +4,7 @@
  * Produces a self-contained dist/ directory:
  *
  *   dist/index.js                         bundled JS (TS source + all deps inlined)
+ *   dist/lz-string.cjs                    lz-string CJS module (required by @sap/ux-specification)
  *   dist/ort-wasm-simd-threaded.wasm      ONNX WASM runtime binary (~12 MB)
  *   dist/ort-wasm-simd-threaded.mjs       WASM factory loader (loaded by ort.node.min.mjs)
  *   dist/ort-wasm-simd-threaded.jsep.mjs  JSEP WASM factory (used by transformers internally)
@@ -240,7 +241,7 @@ const ZOWE_SHIM = `(()=>{const{join:_j}=require("path"),{existsSync:_e}=require(
 
 const bundleFile = path.join(DIST, 'index.js');
 let bundleSource = fs.readFileSync(bundleFile, 'utf8');
-const zowePattern = /\w+\(["']@zowe\/secrets-for-zowe-sdk["']\)/g;
+const zowePattern = /[$\w]+\(["']@zowe\/secrets-for-zowe-sdk["']\)/g;
 const matchCount = (bundleSource.match(zowePattern) || []).length;
 if (matchCount === 0) {
     throw new Error(
@@ -251,6 +252,32 @@ if (matchCount === 0) {
     bundleSource = bundleSource.replace(zowePattern, ZOWE_SHIM);
     fs.writeFileSync(bundleFile, bundleSource, 'utf8');
     console.log(`✓ Rewrote ${matchCount} @zowe/secrets-for-zowe-sdk require(s) to inline prebuilds shim`);
+}
+
+// ── Step 1c: copy lz-string into dist and rewrite require in bundle ──────────
+// @sap/ux-specification 1.144.12 added lz-string as a runtime dependency. Its
+// ESM bundle calls createRequire(import.meta.url)("lz-string") which esbuild
+// cannot intercept (createRequire-based requires are opaque to static analysis).
+// Fix: copy lz-string's CJS entry into dist/lz-string.cjs at build time, then
+// rewrite every dynamic "lz-string" require in the bundle to the package-relative
+// path "./lz-string.cjs". This avoids embedding the build machine's absolute
+// pnpm store path into the published bundle.
+const uxSpecEntry = req.resolve('@sap/ux-specification');
+const uxSpecReq = createRequire(uxSpecEntry);
+const lzStringEntry = uxSpecReq.resolve('lz-string');
+fs.copyFileSync(lzStringEntry, path.join(DIST, 'lz-string.cjs'));
+console.log('✓ Copied lz-string.cjs to dist/');
+const lzStringPattern = /[$\w]+\(["']lz-string["']\)/g;
+const lzMatchCount = (bundleSource.match(lzStringPattern) || []).length;
+if (lzMatchCount === 0) {
+    throw new Error(
+        'No createRequire-based require("lz-string") found in bundle — bundle may have changed; ' +
+        'update the lzStringPattern regex in bundle.mjs.'
+    );
+} else {
+    bundleSource = bundleSource.replace(lzStringPattern, `require('./lz-string.cjs')`);
+    fs.writeFileSync(bundleFile, bundleSource, 'utf8');
+    console.log(`✓ Rewrote ${lzMatchCount} lz-string require(s) to ./lz-string.cjs`);
 }
 
 // ── Step 2: copy @zowe/secrets-for-zowe-sdk prebuilds ────────────────────────

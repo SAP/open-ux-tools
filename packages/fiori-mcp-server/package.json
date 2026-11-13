@@ -33,7 +33,7 @@
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint",
         "lint:fix": "eslint --fix",
-        "test": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --detectOpenHandles --colors",
+        "test": "cross-env NODE_OPTIONS='--experimental-vm-modules --max-old-space-size=4096' jest --ci --forceExit --detectOpenHandles --colors",
         "inspector": "npx -y @modelcontextprotocol/inspector@latest node dist/index.js",
         "inspector-ts": "npx -y @modelcontextprotocol/inspector@latest ts-node -T src/index.ts --log-level=debug",
         "start": "npx -y supergateway --port 9881 --sessionTimeout 300000 --stdio \"node ./dist/index.js\""
@@ -81,7 +81,7 @@
         "@sap-ux/ui5-config": "workspace:*",
         "@sap-ux/ui5-info": "workspace:*",
         "@sap-ux/vocabularies-types": "0.16.0",
-        "@sap/ux-specification": "1.144.5",
+        "@sap/ux-specification": "1.144.12",
         "@types/json-schema": "7.0.15",
         "@types/mem-fs": "1.1.2",
         "@types/mem-fs-editor": "7.0.1",
