@@ -95,9 +95,12 @@ Adding a building block is the functionality with id **`add-building-block`**.
    insertion points**: every view/fragment file and the valid `aggregationPath` XPath options for it
    (e.g. `/mvc:View/content`). Its `parameters` is the JSON schema for the call in step 5. **Do not guess the
    `viewOrFragmentPath` or `aggregationPath`** — use the values it returns.
-4. **Determine the binding.** For standard building blocks, pick the `metaPath` (an annotation path for
+4. **Look up the API.** Call `search_docs` with the building block type name (e.g. `"Table building block"`,
+   `"FilterBar building block"`, `"RichTextEditor building block"`) **before** populating `buildingBlockData`.
+   This is mandatory — do not skip it even if you think you know the property names.
+   Then determine the binding: for standard building blocks, pick the `metaPath` (an annotation path for
    `table`/`chart`/`filter-bar`/`field`/`form`; the bound property path such as `/Products/description` for
-   `rich-text-editor`). If you are unsure which annotation path to use, call `search_docs`.
+   `rich-text-editor`).
 5. **Insert.** Call `execute_functionality` with the chosen parameters:
    ```json
    {
