@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/ui-components",
-    "version": "3.2.0",
+    "version": "3.2.1",
     "license": "Apache-2.0",
     "description": "SAP UI Components Library",
     "type": "module",
@@ -60,7 +60,6 @@
         "@types/react-dom": "16.9.25",
         "@types/react-virtualized": "9.22.4",
         "@types/sanitize-html": "2.16.2",
-        "@types/uuid": "11.0.0",
         "babel-jest": "30.5.2",
         "babel-loader": "10.1.1",
         "copyfiles": "2.4.1",

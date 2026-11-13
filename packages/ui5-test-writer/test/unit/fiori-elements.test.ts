@@ -1502,10 +1502,9 @@ export type Then = Opa5 & BaseArrangements & {
             expect(runnerPath).toBeDefined();
 
             const content = dumped[runnerPath!].contents as string;
-            // The page-definition object passed to `new ListReport(...)` should set contextPath;
-            // entitySet is emitted as an empty string because the runtime type marks both as required.
+            // The page-definition object passed to `new ListReport(...)` should set contextPath only.
             expect(content).toContain('contextPath: "/');
-            expect(content).toContain('entitySet: ""');
+            expect(content).not.toContain('entitySet: ""');
         });
 
         it('generates TypeScript filter tests for LROPv4 app', async () => {
@@ -1691,27 +1690,28 @@ export type Then = Opa5 & BaseArrangements & {
             expect(opJourneyPath).toBeDefined();
             const content = dumped[opJourneyPath!].contents as string;
 
-            // ─── Type-only imports for the @sapui5/types casts ───
+            // ─── Type-only imports ───
             expect(content).toContain('import type { Given, When, Then }');
-            expect(content).toContain('import type { FieldIdentifier } from "sap/fe/test/api/BaseAPI"');
-            expect(content).toContain('import type { FormIdentifier } from "sap/fe/test/api/FormAPI"');
+            expect(content).not.toContain('import type { FieldIdentifier }');
+            expect(content).not.toContain('import type { FormIdentifier }');
 
             // ─── Header facets (same shape as JS) ───
             expect(content).toContain('iCheckHeaderFacet({ facetId: "DataPoint::FlightDate" }');
             expect(content).toContain('iCheckHeaderFacet({ facetId: "DataPoint::BookingDate" }');
             expect(content).toContain('iCheckHeaderFacet({ facetId: "FieldGroup::Names" }');
 
-            // ─── iCheckFieldInFieldGroup with FieldIdentifier cast (TS adaptation) ───
+            // ─── iCheckFieldInFieldGroup (no cast needed without @sapui5/types workaround) ───
             expect(content).toContain('iCheckFieldInFieldGroup');
             expect(content).toContain('fieldGroup: "Names"');
             expect(content).toContain('field: "AirlineName"');
             expect(content).toContain('field: "CustomerName"');
             expect(content).toContain('field: "carrier"');
             expect(content).toContain('targetAnnotation: "Contact"');
-            expect(content).toContain('} as unknown as FieldIdentifier);');
+            expect(content).not.toContain('} as unknown as FieldIdentifier);');
 
-            // ─── iCheckMicroChart with empty 2nd arg (TS adaptation) ───
-            expect(content).toContain('iCheckMicroChart("Supplement Price", "")');
+            // ─── iCheckMicroChart with single arg ───
+            expect(content).toContain('iCheckMicroChart("Supplement Price")');
+            expect(content).not.toContain('iCheckMicroChart("Supplement Price", "")');
 
             // ─── Header actions (from PR #4632) ───
             expect(content).toContain(
@@ -1724,22 +1724,22 @@ export type Then = Opa5 & BaseArrangements & {
             expect(content).not.toContain('Check body sections of the Object Page');
             expect(content).toContain('opaTest("Check the BookingDetails section of the Object Page"');
             expect(content).toContain('iGoToSection({ section: "BookingDetails" })');
-            expect(content).toContain('iCheckSection({ section: "BookingDetails" }, {})');
+            expect(content).toContain('iCheckSection({ section: "BookingDetails" })');
             expect(content).toContain('iGoToSection({ section: "BookingDetails", subSection: "BookingData" })');
-            expect(content).toContain('iCheckSubSection({ section: "BookingData" }, {})');
-            expect(content).toContain('iCheckSubSection({ section: "AdministrativeData" }, {})');
+            expect(content).toContain('iCheckSubSection({ section: "BookingData" })');
+            expect(content).toContain('iCheckSubSection({ section: "AdministrativeData" })');
             expect(content).toContain('opaTest("Check the FlightData section of the Object Page"');
             expect(content).toContain('iGoToSection({ section: "FlightData" })');
-            expect(content).toContain('iCheckSection({ section: "FlightData" }, {})');
+            expect(content).toContain('iCheckSection({ section: "FlightData" })');
             expect(content).toContain('opaTest("Check the PriceData section of the Object Page"');
             expect(content).toContain('iGoToSection({ section: "PriceData" })');
-            expect(content).toContain('iCheckSection({ section: "PriceData" }, {})');
+            expect(content).toContain('iCheckSection({ section: "PriceData" })');
 
             // ─── Header Contact Card (OP-8) ───
+            expect(content).toContain('onHeader().iClickLink({ property: "carrier/Contact" })');
             expect(content).toContain(
-                'onHeader().iClickLink({ property: "carrier/Contact" } as unknown as FieldIdentifier)'
+                'onDialog({} as unknown as DialogIdentifier).iCheckContactDialog({ controlType: "sap.ui.mdc.link.Panel" })'
             );
-            expect(content).toContain('onDialog().iCheckContactDialog({ controlType: "sap.ui.mdc.link.Panel" })');
 
             // ─── Section actions (table action with dynamic enabled) ───
             expect(content).toContain(
@@ -1749,16 +1749,12 @@ export type Then = Opa5 & BaseArrangements & {
                 'onTable({ property: "_BookSupplement" }).iCheckAction({ service: "com.sap.gateway.srvd.dmo.sd_travel_mdsk.v0001", action: "createActiveTemplate", unbound: false }, { enabled: true })'
             );
 
-            // ─── onForm with FormIdentifier cast (TS adaptation) ───
-            expect(content).toContain(
-                'onForm({ section: "BookingData" } as unknown as FormIdentifier).iCheckField({ property: "BookingId" })'
-            );
-            expect(content).toContain(
-                'onForm({ section: "BookingData" } as unknown as FormIdentifier).iCheckField({ property: "FlightDate" })'
-            );
+            // ─── onForm without FormIdentifier cast ───
+            expect(content).toContain('onForm({ section: "BookingData" }).iCheckField({ property: "BookingId" })');
+            expect(content).toContain('onForm({ section: "BookingData" }).iCheckField({ property: "FlightDate" })');
             // OP-7: body-section form Contact Card
             expect(content).toContain(
-                'onForm({ section: "BookingData" } as unknown as FormIdentifier).iClickLink({ property: "_Customer/Contact" })'
+                'onForm({ section: "BookingData" }).iClickLink({ property: "_Customer/Contact" })'
             );
 
             // ─── Sub-section table columns ───
@@ -1830,7 +1826,7 @@ export type Then = Opa5 & BaseArrangements & {
             );
             expect(journeyPath).toBeDefined();
             const content = dumped[journeyPath!].contents as string;
-            expect(content).toContain('iCheckMicroChart("Supplement Price", "")');
+            expect(content).toContain('iCheckMicroChart("Supplement Price")');
             expect(content).toContain(
                 'opaTest("Check header facets of the Object Page", function (_Given: Given, _When: When, Then: Then)'
             );
@@ -1988,8 +1984,10 @@ export type Then = Opa5 & BaseArrangements & {
                 { ui5Version: undefined, expectedBucket: 'latest' },
                 { ui5Version: '', expectedBucket: 'latest' },
                 { ui5Version: '1.100.0', expectedBucket: '1.84' },
-                { ui5Version: '1.120.0', expectedBucket: '1.84' },
-                { ui5Version: '1.147.9', expectedBucket: '1.84' },
+                { ui5Version: '1.108.0', expectedBucket: '1.84' },
+                { ui5Version: '1.119.9', expectedBucket: '1.84' },
+                { ui5Version: '1.120.0', expectedBucket: '1.120' },
+                { ui5Version: '1.147.9', expectedBucket: '1.120' },
                 { ui5Version: '1.148.0', expectedBucket: '1.148' },
                 { ui5Version: '1.148.9', expectedBucket: '1.148' },
                 { ui5Version: '1.149.0', expectedBucket: '1.148' },
@@ -2011,23 +2009,53 @@ export type Then = Opa5 & BaseArrangements & {
         });
 
         describe('snapshot per bucket — JS', () => {
-            it('bucket 1.84 generates correct output (JS)', async () => {
+            it.each([
+                ['1.84', '1.108.0'],
+                ['1.120', '1.120.0'],
+                ['1.148', '1.148.0'],
+                ['latest', undefined]
+            ])('bucket %s generates correct output (JS)', async (_bucket, ui5Version) => {
                 const projectDir = prepareTestFiles('FullScreenLROP');
-                fs = await generateOPAFiles(projectDir, { ui5Version: '1.120.0' }, metadata, fs);
+                fs = await generateOPAFiles(projectDir, ui5Version ? { ui5Version } : {}, metadata, fs);
                 expect(fs.dump(projectDir)).toMatchSnapshot();
+            });
+        });
+
+        describe('assertions unsupported below 1.120 are stripped from the 1.84 bucket', () => {
+            const dumpContents = (): string =>
+                Object.values(fs!.dump())
+                    .map((file) => String((file as { contents: unknown }).contents))
+                    .join('\n');
+
+            // The LROPv4 model renders a ListReport with a table and an Object Page, exercising the
+            // assertions the sap/fe/test framework does not provide before 1.120.
+            it('omits iCheckSection / iCheckNumberOfSections / iCheckColumns for a <1.120 app', async () => {
+                readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
+                const projectDir = prepareTestFiles('LROPv4');
+                fs = await generateOPAFiles(projectDir, { ui5Version: '1.108.0' }, metadata, fs);
+                const contents = dumpContents();
+                expect(contents).not.toContain('iCheckSection');
+                expect(contents).not.toContain('iCheckNumberOfSections');
+                expect(contents).not.toContain('iCheckColumns');
             });
 
-            it('bucket 1.148 generates correct output (JS)', async () => {
-                const projectDir = prepareTestFiles('FullScreenLROP');
-                fs = await generateOPAFiles(projectDir, { ui5Version: '1.148.0' }, metadata, fs);
-                expect(fs.dump(projectDir)).toMatchSnapshot();
-            });
-
-            it('bucket latest generates correct output (JS)', async () => {
-                const projectDir = prepareTestFiles('FullScreenLROP');
-                fs = await generateOPAFiles(projectDir, {}, metadata, fs);
-                expect(fs.dump(projectDir)).toMatchSnapshot();
-            });
+            // The 1.120 bucket is the former 1.84 bucket and must still carry these assertions in its
+            // journey templates; only the new <1.120 (1.84) bucket drops them.
+            it.each(['ObjectPageJourney.ts', 'ObjectPageJourney.js', 'ListReportJourney.ts', 'ListReportJourney.js'])(
+                '1.120 template %s keeps the pre-1.120 assertions that 1.84 drops',
+                (file) => {
+                    const templateDir = join(__dirname, '../../templates/v4');
+                    const v1_120 = readFileSync(join(templateDir, '1.120/integration', file)).toString();
+                    const v1_84 = readFileSync(join(templateDir, '1.84/integration', file)).toString();
+                    const assertions = file.startsWith('ObjectPage')
+                        ? ['iCheckSection', 'iCheckNumberOfSections', 'iCheckColumns']
+                        : ['iCheckColumns'];
+                    for (const assertion of assertions) {
+                        expect(v1_120).toContain(assertion);
+                        expect(v1_84).not.toContain(assertion);
+                    }
+                }
+            );
         });
 
         describe('text annotation sort-order test — JS', () => {
@@ -2084,10 +2112,12 @@ export type Then = Opa5 & BaseArrangements & {
                 expect(content).toContain('iChangeSortOrder({ name: "CustomerID" }, coreLibrary.SortOrder.None)');
             });
 
-            // Older buckets (1.84, 1.148) and any UI5 < 1.152.0 must NOT emit the text-annotation sort
-            // test; they still emit coreLibrary/SortOrder when a PresentationVariant has a SortOrder.
+            // Older buckets (1.84, 1.120, 1.148) and any UI5 < 1.152.0 must NOT emit the text-annotation
+            // sort test (it ships only in the latest bucket); they still emit coreLibrary/SortOrder when a
+            // PresentationVariant has a SortOrder. The 1.151.x range resolves to the 1.148 bucket.
             it.each([
-                ['1.84 bucket', '1.120.0'],
+                ['1.84 bucket', '1.108.0'],
+                ['1.120 bucket', '1.120.0'],
                 ['1.148 bucket', '1.148.0'],
                 ['1.148 bucket at 1.151.1', '1.151.1'],
                 ['1.148 bucket below 1.151.1', '1.151.0']
@@ -2191,10 +2221,12 @@ export type Then = Opa5 & BaseArrangements & {
                 expect(content).toContain('iChangeSortOrder({ name: "CustomerID" }, SortOrder.None)');
             });
 
-            // Older buckets (1.84, 1.148) and any UI5 < 1.152.0 must NOT emit the text-annotation sort
-            // test; they still emit SortOrder when a PresentationVariant has a SortOrder.
+            // Older buckets (1.84, 1.120, 1.148) and any UI5 < 1.152.0 must NOT emit the text-annotation
+            // sort test (it ships only in the latest bucket); they still emit SortOrder when a
+            // PresentationVariant has a SortOrder. The 1.151.x range resolves to the 1.148 bucket.
             it.each([
-                ['1.84 bucket', '1.120.0'],
+                ['1.84 bucket', '1.108.0'],
+                ['1.120 bucket', '1.120.0'],
                 ['1.148 bucket', '1.148.0'],
                 ['1.148 bucket at 1.151.1', '1.151.1'],
                 ['1.148 bucket below 1.151.1', '1.151.0']
@@ -2338,7 +2370,8 @@ export type Then = Opa5 & BaseArrangements & {
             });
 
             it.each([
-                ['1.84', '1.120.0'],
+                ['1.84', '1.108.0'],
+                ['1.120', '1.120.0'],
                 ['1.148', '1.148.0'],
                 ['1.148 (1.151.0 resolves below the 1.152 bucket)', '1.151.0']
             ])('%s omits the adaptation-dialog test (JS)', async (_bucket, ui5Version) => {
@@ -2464,7 +2497,8 @@ export type Then = Opa5 & BaseArrangements & {
             });
 
             it.each([
-                ['1.84', '1.120.0'],
+                ['1.84', '1.108.0'],
+                ['1.120', '1.120.0'],
                 ['1.148', '1.148.0'],
                 ['1.148 (1.151.0 resolves below the 1.152 bucket)', '1.151.0']
             ])('%s omits the adaptation-dialog test (TS)', async (_bucket, ui5Version) => {
@@ -2500,38 +2534,27 @@ export type Then = Opa5 & BaseArrangements & {
         });
 
         describe('snapshot per bucket — TS', () => {
-            it('bucket 1.84 generates correct output (TS)', async () => {
+            it.each([
+                ['1.84', '1.108.0'],
+                ['1.120', '1.120.0'],
+                ['1.148', '1.148.0'],
+                ['latest', undefined]
+            ])('bucket %s generates correct output (TS)', async (_bucket, ui5Version) => {
                 const projectDir = prepareTestFiles('FullScreenLROPContextPath');
                 fs = await generateOPAFiles(
                     projectDir,
-                    { ui5Version: '1.120.0', enableTypeScript: true },
+                    ui5Version ? { ui5Version, enableTypeScript: true } : { enableTypeScript: true },
                     metadata,
                     fs
                 );
-                expect(fs.dump(projectDir)).toMatchSnapshot();
-            });
-
-            it('bucket 1.148 generates correct output (TS)', async () => {
-                const projectDir = prepareTestFiles('FullScreenLROPContextPath');
-                fs = await generateOPAFiles(
-                    projectDir,
-                    { ui5Version: '1.148.0', enableTypeScript: true },
-                    metadata,
-                    fs
-                );
-                expect(fs.dump(projectDir)).toMatchSnapshot();
-            });
-
-            it('bucket latest generates correct output (TS)', async () => {
-                const projectDir = prepareTestFiles('FullScreenLROPContextPath');
-                fs = await generateOPAFiles(projectDir, { enableTypeScript: true }, metadata, fs);
                 expect(fs.dump(projectDir)).toMatchSnapshot();
             });
         });
 
         describe('snapshot per bucket — FPM TS', () => {
             it.each([
-                ['1.84', '1.120.0'],
+                ['1.84', '1.108.0'],
+                ['1.120', '1.120.0'],
                 ['1.148', '1.148.0'],
                 ['1.152', '1.152.0'],
                 ['latest', '1.153.0']
@@ -2608,18 +2631,18 @@ describe('checkbox-group fields (FXUBRQ34-12809)', () => {
 
     it('omits the unused FormIdentifier import when a section has only checkbox-group fields (TS)', () => {
         const journey = renderObjectPageJourney('latest', 'ts', [...checkBoxFields]);
-        // All field assertions are commented out, so the FormIdentifier type is never used.
+        // All field assertions are commented out, so FormIdentifier is never used.
         expect(journey).not.toContain('import type { FormIdentifier }');
         expect(journey).toContain(
-            '// Then.onTheCustomerObjectPageGenerated.onForm({ section: "GeneralInformation2" } as unknown as FormIdentifier).iCheckField({ property: "PostingIsBlocked", fieldGroup: "CheckBoxGroup" });'
+            '// Then.onTheCustomerObjectPageGenerated.onForm({ section: "GeneralInformation2" }).iCheckField({ property: "PostingIsBlocked", fieldGroup: "CheckBoxGroup" });'
         );
     });
 
-    it('keeps the FormIdentifier import when a checkbox-group section also has a live field (TS)', () => {
+    it('keeps no FormIdentifier import (no cast needed) when a checkbox-group section also has a live field (TS)', () => {
         const journey = renderObjectPageJourney('latest', 'ts', [liveField, ...checkBoxFields]);
-        expect(journey).toContain('import type { FormIdentifier } from "sap/fe/test/api/FormAPI"');
+        expect(journey).not.toContain('import type { FormIdentifier }');
         expect(journey).toContain(
-            'onForm({ section: "GeneralInformation2" } as unknown as FormIdentifier).iCheckField({ property: "AddressTimeZone" })'
+            'onForm({ section: "GeneralInformation2" }).iCheckField({ property: "AddressTimeZone" })'
         );
     });
 });

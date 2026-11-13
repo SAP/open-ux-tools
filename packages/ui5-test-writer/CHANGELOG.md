@@ -1,5 +1,55 @@
 # @sap-ux/ui5-test-writer
 
+## 1.19.18
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-13
+
+#### Bug Fixes
+
+- Split the V4 template buckets at 1.120 so apps below 1.120 no longer emit OPA5 assertions their runtime cannot support. The former 1.84 bucket now serves >=1.120 <1.148, and a new <1.120 (1.84) bucket omits iCheckSection, iCheckNumberOfSections and iCheckColumns (unavailable / empty column headers before 1.120). Object page sections that would be left with only a section-tab navigation and no assertion are now skipped entirely, so the generated journey no longer produces an OPA5 test that fails with "Expected at least one assertion, but none were run". [[4702f41](https://github.com/SAP/open-ux-tools/commit/4702f417a3eacc8d2db3d3bccc7bd7db30e511ce)]
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.2.42 → 1.2.43
+
+## 1.19.17
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-12
+
+#### Bug Fixes
+
+- Improve generated TypeScript OPA5 tests
+
+    - Remove obsolete `@sapui5/types` workaround casts now that upstream types are correct
+    - Restore checkbox-group comments and the `iClickLink` row index in the TS journey templates
+    - Preserve overloaded sub-object method signatures in generated `OpaJourneyTypes` (e.g. `iClickLink`), fixing a `TS2554: Expected 1 arguments, but got 2` type-check error [[404b757](https://github.com/SAP/open-ux-tools/commit/404b757cea93525b907ad28d3a78c01ca035ac51)]
+
+## 1.19.16
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.2.41 → 1.2.42
+
+## 1.19.15
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.3.0 → 1.4.0
+- @sap-ux/ui5-application-writer 2.1.7 → 2.1.7
+- @sap-ux/preview-middleware 1.2.40 → 1.2.41
+
 ## 1.19.14
 
 ### Patch Changes

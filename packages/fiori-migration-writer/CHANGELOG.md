@@ -1,5 +1,18 @@
 # @sap-ux/fiori-migration-writer
 
+## 1.2.0
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-11
+
+#### Workspace Updates
+
+- @sap-ux/ui5-application-writer 2.1.7 → 2.1.7
+- @sap-ux/adp-tooling 1.2.1 → 1.2.2
+
 ## 1.1.0
 
 ### Minor Changes
