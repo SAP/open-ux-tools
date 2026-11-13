@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Synthetic service with meaningless names. Each Wo row declares its reference to a Wl row through Wp and
+     Wq, and navigates without a constraint to a Wn row keyed by the same two properties; Wl does not
+     reference Wn. Each Wu row declares its reference to a Wv row through Wp and Wq, and navigates without a
+     constraint to Wn as well, but Wv declares its own reference to Wn through Wp and Wq. -->
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:DataServices>
+        <Schema Namespace="Ws" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <EntityContainer Name="EntityContainer">
+                <EntitySet Name="Wos" EntityType="Ws.Wo">
+                    <NavigationPropertyBinding Path="Wl" Target="Wls"/>
+                    <NavigationPropertyBinding Path="Wn" Target="Wns"/>
+                </EntitySet>
+                <EntitySet Name="Wus" EntityType="Ws.Wu">
+                    <NavigationPropertyBinding Path="Wv" Target="Wvs"/>
+                    <NavigationPropertyBinding Path="Wn" Target="Wns"/>
+                </EntitySet>
+                <EntitySet Name="Wls" EntityType="Ws.Wl"/>
+                <EntitySet Name="Wvs" EntityType="Ws.Wv">
+                    <NavigationPropertyBinding Path="Wn" Target="Wns"/>
+                </EntitySet>
+                <EntitySet Name="Wns" EntityType="Ws.Wn"/>
+            </EntityContainer>
+            <EntityType Name="Wo">
+                <Key>
+                    <PropertyRef Name="Wi"/>
+                </Key>
+                <Property Name="Wi" Type="Edm.Guid" Nullable="false"/>
+                <Property Name="Wp" Type="Edm.String" Nullable="false" MaxLength="4"/>
+                <Property Name="Wq" Type="Edm.String" Nullable="false" MaxLength="6"/>
+                <NavigationProperty Name="Wl" Type="Ws.Wl" Nullable="false">
+                    <ReferentialConstraint Property="Wp" ReferencedProperty="Wp"/>
+                    <ReferentialConstraint Property="Wq" ReferencedProperty="Wq"/>
+                </NavigationProperty>
+                <NavigationProperty Name="Wn" Type="Ws.Wn"/>
+            </EntityType>
+            <EntityType Name="Wu">
+                <Key>
+                    <PropertyRef Name="Wi"/>
+                </Key>
+                <Property Name="Wi" Type="Edm.Guid" Nullable="false"/>
+                <Property Name="Wp" Type="Edm.String" Nullable="false" MaxLength="4"/>
+                <Property Name="Wq" Type="Edm.String" Nullable="false" MaxLength="6"/>
+                <NavigationProperty Name="Wv" Type="Ws.Wv" Nullable="false">
+                    <ReferentialConstraint Property="Wp" ReferencedProperty="Wp"/>
+                    <ReferentialConstraint Property="Wq" ReferencedProperty="Wq"/>
+                </NavigationProperty>
+                <NavigationProperty Name="Wn" Type="Ws.Wn"/>
+            </EntityType>
+            <EntityType Name="Wl">
+                <Key>
+                    <PropertyRef Name="Wp"/>
+                    <PropertyRef Name="Wq"/>
+                </Key>
+                <Property Name="Wp" Type="Edm.String" Nullable="false" MaxLength="4"/>
+                <Property Name="Wq" Type="Edm.String" Nullable="false" MaxLength="6"/>
+                <Property Name="Wt" Type="Edm.String" MaxLength="30"/>
+            </EntityType>
+            <EntityType Name="Wv">
+                <Key>
+                    <PropertyRef Name="Wp"/>
+                    <PropertyRef Name="Wq"/>
+                </Key>
+                <Property Name="Wp" Type="Edm.String" Nullable="false" MaxLength="4"/>
+                <Property Name="Wq" Type="Edm.String" Nullable="false" MaxLength="6"/>
+                <NavigationProperty Name="Wn" Type="Ws.Wn" Nullable="false">
+                    <ReferentialConstraint Property="Wp" ReferencedProperty="Wp"/>
+                    <ReferentialConstraint Property="Wq" ReferencedProperty="Wq"/>
+                </NavigationProperty>
+            </EntityType>
+            <EntityType Name="Wn">
+                <Key>
+                    <PropertyRef Name="Wp"/>
+                    <PropertyRef Name="Wq"/>
+                </Key>
+                <Property Name="Wp" Type="Edm.String" Nullable="false" MaxLength="4"/>
+                <Property Name="Wq" Type="Edm.String" Nullable="false" MaxLength="6"/>
+                <Property Name="Wd" Type="Edm.Date"/>
+            </EntityType>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>

@@ -12,3 +12,5 @@ pnpm-lock.yaml
 **/test-results
 /.nx/workspace-data
 /.nx/cache
+# Byte-pinned by the model manifest
+packages/mock-data-generator/resources/models/

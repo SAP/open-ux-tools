@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Synthetic service with meaningless names. One code field reaches two code lists: a navigation to one entity
+     and a value list on another, each with its own text. Only structure says what belongs together. -->
+<edmx:Edmx xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx" Version="4.0">
+    <edmx:DataServices>
+        <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="Zr" Alias="SAP__self">
+            <EntityType Name="Owa">
+                <Key><PropertyRef Name="Oka"/></Key>
+                <Property Name="Oka" Type="Edm.Guid" Nullable="false"/>
+                <Property Name="Pkb" Type="Edm.String" MaxLength="4"/>
+                <Property Name="Otc" Type="Edm.String" MaxLength="30"/>
+                <NavigationProperty Name="toRod" Type="Zr.Rod">
+                    <ReferentialConstraint Property="Pkb" ReferencedProperty="Pkb"/>
+                </NavigationProperty>
+            </EntityType>
+            <EntityType Name="Rod">
+                <Key><PropertyRef Name="Pkb"/></Key>
+                <Property Name="Pkb" Type="Edm.String" MaxLength="4" Nullable="false"/>
+                <Property Name="Rne" Type="Edm.String" MaxLength="30"/>
+            </EntityType>
+            <EntityType Name="Vaf">
+                <Key><PropertyRef Name="Pkb"/></Key>
+                <Property Name="Pkb" Type="Edm.String" MaxLength="4" Nullable="false"/>
+                <Property Name="Vng" Type="Edm.String" MaxLength="30"/>
+            </EntityType>
+            <EntityContainer Name="Container">
+                <EntitySet Name="Owas" EntityType="Zr.Owa">
+                    <NavigationPropertyBinding Path="toRod" Target="Rods"/>
+                </EntitySet>
+                <EntitySet Name="Rods" EntityType="Zr.Rod"/>
+                <EntitySet Name="Vafs" EntityType="Zr.Vaf"/>
+            </EntityContainer>
+            <Annotations Target="SAP__self.Owa/Pkb">
+                <Annotation Term="Common.Text" Path="Otc"/>
+                <Annotation Term="Common.ValueList">
+                    <Record>
+                        <PropertyValue Property="CollectionPath" String="Vafs"/>
+                        <PropertyValue Property="Parameters">
+                            <Collection>
+                                <Record Type="Common.ValueListParameterInOut">
+                                    <PropertyValue Property="LocalDataProperty" PropertyPath="Pkb"/>
+                                    <PropertyValue Property="ValueListProperty" String="Pkb"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="Vng"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="SAP__self.Rod/Pkb">
+                <Annotation Term="Common.Text" Path="Rne"/>
+            </Annotations>
+            <Annotations Target="SAP__self.Vaf/Pkb">
+                <Annotation Term="Common.Text" Path="Vng"/>
+            </Annotations>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>
