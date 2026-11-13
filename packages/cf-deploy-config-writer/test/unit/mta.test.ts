@@ -354,7 +354,7 @@ describe('Validate common flows', () => {
         expect(mtaConfig.standaloneRouterPath).toEqual('.deploy/app-router');
         // And: no second approuter.nodejs module was appended
         const savedYaml = fs.readFileSync(`${OUTPUT_DIR_PREFIX}/appcds/mta.yaml`, 'utf-8');
-        expect((savedYaml.match(/type: approuter\.nodejs/g) ?? []).length).toBe(1);
+        expect(savedYaml.match(/type: approuter\.nodejs/g) ?? []).toHaveLength(1);
     });
 
     it('Reports the standalone approuter as added when no approuter exists yet (backward compatible)', async () => {
@@ -373,7 +373,29 @@ describe('Validate common flows', () => {
         expect(wasAdded).toBe(true);
         expect(mtaConfig.standaloneRouterPath).toEqual('router');
         const savedYaml = fs.readFileSync(`${OUTPUT_DIR_PREFIX}/appnorouter/mta.yaml`, 'utf-8');
-        expect((savedYaml.match(/type: approuter\.nodejs/g) ?? []).length).toBe(1);
+        expect(savedYaml.match(/type: approuter\.nodejs/g) ?? []).toHaveLength(1);
+    });
+
+    it('Reports the standalone approuter as not added when a required resource cannot be resolved', async () => {
+        // Given: an mta.yaml without any approuter or resources
+        memfs.vol.fromNestedJSON(
+            {
+                [`.${OUTPUT_DIR_PREFIX}/appmissingres/mta.yaml`]: standaloneBasicMTA
+            },
+            '/'
+        );
+        const mtaConfig = await MtaConfig.newInstance(`${OUTPUT_DIR_PREFIX}/appmissingres`, nullLogger);
+        // And: the destination resource fails to be provisioned, so a required module name stays unresolved
+        jest.spyOn(
+            mtaConfig as unknown as { addDestinationResource: () => Promise<void> },
+            'addDestinationResource'
+        ).mockResolvedValue();
+        // When: a standalone router is requested
+        const wasAdded = await mtaConfig.addStandaloneRouter(true);
+        // Then: no router module is added because the required resources are incomplete
+        expect(wasAdded).toBe(false);
+        const savedYaml = fs.readFileSync(`${OUTPUT_DIR_PREFIX}/appmissingres/mta.yaml`, 'utf-8');
+        expect(savedYaml.match(/type: approuter\.nodejs/g) ?? []).toHaveLength(0);
     });
 
     it('addRouterType Standard reuses an existing approuter and still wires missing destination via cleanup', async () => {
@@ -386,7 +408,7 @@ describe('Validate common flows', () => {
         await mtaConfig.save();
         // Then: no second approuter is added (the existing one is reused, not duplicated)
         const savedYaml = fs.readFileSync(`${appDir}/mta.yaml`, 'utf-8');
-        expect((savedYaml.match(/type: approuter\.nodejs/g) ?? []).length).toBe(1);
+        expect(savedYaml.match(/type: approuter\.nodejs/g) ?? []).toHaveLength(1);
         // And: cleanup still runs, wiring the missing destination service onto the reused approuter
         const doc = jsYaml.load(savedYaml) as { modules: { type: string; requires?: { name: string }[] }[] };
         const router = doc.modules.find((module) => module.type === 'approuter.nodejs');
@@ -406,7 +428,7 @@ describe('Validate common flows', () => {
         expect(editor.exists(`${appDir}/router/xs-app.json`)).toBe(false);
         // And: the existing approuter is still the only one
         const savedYaml = fs.readFileSync(`${appDir}/mta.yaml`, 'utf-8');
-        expect((savedYaml.match(/type: approuter\.nodejs/g) ?? []).length).toBe(1);
+        expect(savedYaml.match(/type: approuter\.nodejs/g) ?? []).toHaveLength(1);
     });
 
     it('addRoutingConfig still wires a requested connectivity service when reusing an existing approuter', async () => {
@@ -425,7 +447,7 @@ describe('Validate common flows', () => {
         // Then: no duplicate router project is scaffolded
         expect(editor.exists(`${appDir}/router/package.json`)).toBe(false);
         const savedYaml = fs.readFileSync(`${appDir}/mta.yaml`, 'utf-8');
-        expect((savedYaml.match(/type: approuter\.nodejs/g) ?? []).length).toBe(1);
+        expect(savedYaml.match(/type: approuter\.nodejs/g) ?? []).toHaveLength(1);
         // But: the requested connectivity service is still added rather than silently dropped
         expect(savedYaml).toMatch(/service: connectivity/);
     });
