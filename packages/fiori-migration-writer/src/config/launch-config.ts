@@ -2,7 +2,7 @@
  * Helper functions for generating VS Code launch configuration during migration
  */
 
-import { basename, join, sep as pathSep } from 'node:path';
+import { basename } from 'node:path';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import type { Editor } from 'mem-fs-editor';
 import { FioriElementsVersion } from '../project-spec-types.js';
@@ -29,9 +29,9 @@ export async function generateLaunchConfiguration(
     appMockIntent: string | undefined,
     flpSandboxAvailable: boolean
 ): Promise<void> {
-    const projectName = projectInfo.rootPath.split(pathSep).pop() as string;
-    const targetFolder = join(projectInfo.rootPath, '..');
-    const projectPath = join(targetFolder, projectName);
+    // projectInfo.rootPath is already the full path to the project
+    const projectPath = projectInfo.rootPath;
+    const projectName = basename(projectPath);
 
     // Build debug options for launch config
     const debugOptions: DebugOptions = {
@@ -55,7 +55,7 @@ export async function generateLaunchConfiguration(
 
     // Build Fiori options
     const fioriOptions: FioriOptions = {
-        name: basename(projectPath),
+        name: projectName,
         projectRoot: projectPath,
         debugOptions
     };

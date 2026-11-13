@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 
-import fetch from 'node-fetch';
 import { marked } from 'marked';
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';

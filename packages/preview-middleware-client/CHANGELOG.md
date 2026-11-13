@@ -1,5 +1,23 @@
 # @sap-ux-private/preview-middleware-client
 
+## 1.2.43
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-13
+
+#### Dependency Updates
+
+- Upgrade eslint-plugin-jsdoc 62.8.1 → 65.4.2 [[facd5f5](https://github.com/SAP/open-ux-tools/commit/facd5f58212dc23d6426179f9495217d35c6bc9d)]
+
+## 1.2.42
+
+## 1.2.41
+
+## 1.2.40
+
 ## 1.2.39
 
 ## 1.2.38
