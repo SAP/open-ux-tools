@@ -82,6 +82,7 @@ import { getIntegrationCard } from './utils/cards.js';
 import { createPropertiesI18nEntries } from '@sap-ux/i18n';
 import { AdaptationProjectType, type AbapServiceProvider } from '@sap-ux/axios-extension';
 import { addRtaRelayApis } from './rta-relay.js';
+import { handleAdpLogin } from './adp-login.js';
 
 const DEFAULT_LIVERELOAD_PORT = 35729;
 
@@ -399,6 +400,9 @@ export class FlpSandbox {
         rta: RtaConfig,
         previewUrl: string
     ): Promise<void> {
+        if (handleAdpLogin(req, res, !!this.rtaRelay)) {
+            return;
+        }
         const scenario = rta.options?.scenario;
         let templatePreviewUrl = `${previewUrl}?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=forAdaptation&sap-ui-rta-skip-flex-validation=true&sap-ui-xx-condense-changes=true#${this.flpConfig.intent.object}-${this.flpConfig.intent.action}`;
         if (scenario === 'ADAPTATION_PROJECT') {
@@ -440,6 +444,9 @@ export class FlpSandbox {
         previewUrl: string,
         editor: RtaEditor
     ): Promise<void> {
+        if (handleAdpLogin(req, res, !!this.rtaRelay)) {
+            return;
+        }
         if (!req.query['fiori-tools-rta-mode']) {
             this.logger.debug(`Adjusting URL parameters for runtime adaptation mode. Redirecting to correct URL.`);
             const url =

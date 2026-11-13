@@ -578,6 +578,15 @@ describe('FlpSandbox', () => {
             expect(response.text).toMatchSnapshot();
         });
 
+        test.each(['/my/editor.html', '/my/editor.html.inner.html'])(
+            'login-only requests never fall through to editor bootstrap at %s',
+            async (path) => {
+                const response = await server.get(`${path}?sap-ux-adp-login=invalid`).expect(400);
+                expect(response.text).toBe('Invalid adaptation editor login request.');
+                expect(response.text).not.toContain('<script');
+            }
+        );
+
         test('rta with developerMode=true UI5 version 2.x', async () => {
             const jsonSpy = () =>
                 Promise.resolve({
