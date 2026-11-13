@@ -13,6 +13,7 @@ import { processFlpSandboxFiles } from '../config/flp/sandbox.js';
 import { processNeoAppAndODataVersion } from '../config/neoapp.js';
 import { determineDefaultFlpIntents } from '../config/flp/intent-defaults.js';
 import { generateSapLibsStr, checkManifestUI5Version } from '../utils/common.js';
+import { curateErrorDescription } from '../utils/migration-utils.js';
 
 /**
  * Process a regular Fiori project (not reuse lib, extension, or adaptation)
@@ -222,7 +223,7 @@ export async function processRegularProject(
     } catch (error) {
         messages.push({
             type: 'ERROR',
-            description: error instanceof Error ? error.message : String(error)
+            description: curateErrorDescription(error, 'Error reading project')
         });
         projectInfo = {
             ...defaultProjectInfo,

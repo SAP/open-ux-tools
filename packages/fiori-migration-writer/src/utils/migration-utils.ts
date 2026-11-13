@@ -54,6 +54,56 @@ export class MigrationError extends Error {
     }
 }
 
+// Absolute path shapes (Windows drive, UNC, posix with at least two segments). Kept in sync with the
+// downstream telemetry sanitizer so both layers reduce paths the same way.
+const ABSOLUTE_PATH =
+    /\b[a-z]:[\\/][^\s'"`,;)\]}]{0,2000}|\\\\[^\s'"`,;)\]}]{1,2000}|(?<![\w.:<>~-])(?:\/[^\s/'"`,;)\]}]+){2,}/gi;
+
+/**
+ * Reduce a filesystem path to the name of the file it points to, so no directory is reported. Directories can
+ * contain user, customer or workspace names (personal data), so only the last segment is kept, and only when it
+ * is a file (has an extension) or a dotfile/dotfolder (`.vscode`, `.gitignore`). A path that ends in a plain
+ * folder is removed entirely.
+ *
+ * @param pathLike - a filesystem path
+ * @returns the file name, or an empty string if the path ends in a folder
+ */
+export function pathToFilename(pathLike: string): string {
+    const lastSegment = pathLike.split(/[\\/]/).filter(Boolean).pop();
+    if (!lastSegment) {
+        return '';
+    }
+    const isFile = lastSegment.startsWith('.') || /\.\w+$/.test(lastSegment);
+    return isFile ? lastSegment : '';
+}
+
+/**
+ * Remove absolute paths from any text, reducing each to its file name (folders dropped). Use on a raw error
+ * message before it is reported, so no absolute path reaches telemetry.
+ *
+ * @param text - text that may contain absolute paths
+ * @returns the text with every absolute path reduced to a file name
+ */
+export function stripPaths(text: string): string {
+    return text.replaceAll(ABSOLUTE_PATH, (match) => pathToFilename(match));
+}
+
+/**
+ * Turn a caught error into a path-free description for telemetry. A Node file system error exposes a path-free
+ * `code` (`ENOENT`, `EACCES`, `EBUSY`, `EEXIST`, `EPERM`); it is reported with the code and the offending file
+ * name only. Any other error has its absolute paths stripped as a safety net.
+ *
+ * @param error - caught error of unknown type
+ * @param context - short prefix describing what failed, for example `Error committing migration`
+ * @returns `${context}: <curated, path-free detail>`
+ */
+export function curateErrorDescription(error: unknown, context: string): string {
+    const err = error instanceof Error ? error : new Error(String(error));
+    const code = (err as NodeJS.ErrnoException).code;
+    const detail = stripPaths(err.message);
+    return code && !detail.includes(code) ? `${context}: ${code}: ${detail}` : `${context}: ${detail}`;
+}
+
 /**
  * Determine error message based on error type.
  * Always returns a non-empty string with fallback to error.message.
@@ -77,8 +127,8 @@ export function determineMessage(error: Error, filename?: string, useMessage?: b
         errorMessage = i18nText(filename ? 'ERROR_PERMISSION_FILE' : 'ERROR_PERMISSION', { filename });
     }
 
-    // Fallback to original error message if no specific message was determined
-    return errorMessage || error.message || error.toString();
+    // Fallback to a path-free form of the original message so no absolute path is reported
+    return errorMessage || stripPaths(error.message) || error.toString();
 }
 
 /**

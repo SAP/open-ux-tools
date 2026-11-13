@@ -2,6 +2,7 @@ import type { Message, MigrationUIProjectInfo } from './types.js';
 import { ProjectMigrator } from './ProjectMigrator.js';
 import { URI } from 'vscode-uri';
 import { i18nText } from './i18n.js';
+import { curateErrorDescription, stripPaths } from './utils/index.js';
 import { createMemFsEditor } from './utils/fs-adapter.js';
 import { commitFileSystemChanges } from './files/file-system.js';
 
@@ -40,7 +41,7 @@ export class BulkProjectMigrator {
                 results.push({
                     ...project,
                     status: 'ERROR',
-                    messages: [{ type: 'ERROR', description: error instanceof Error ? error.message : String(error) }]
+                    messages: [{ type: 'ERROR', description: curateErrorDescription(error, 'Migration failed') }]
                 });
             }
         }
@@ -85,7 +86,7 @@ export class BulkProjectMigrator {
             } catch (error) {
                 // Handle both callback errors and synchronous throws from fs.commit
                 throw new Error(
-                    `Failed to commit migration changes: ${error instanceof Error ? error.message : String(error)}`
+                    `Failed to commit migration changes: ${stripPaths(error instanceof Error ? error.message : String(error))}`
                 );
             }
         }
