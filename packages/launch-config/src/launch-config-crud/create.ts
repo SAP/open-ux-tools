@@ -53,7 +53,9 @@ function ensureConfigurationsArray(fs: Editor, launchJSONPath: string): number {
 
     // Check if the file is truly empty (only whitespace and/or comments)
     // Strip BOM (U+FEFF) before checking if content is empty
-    const strippedContent = stripComments(content).replace(/^﻿/, '').trim();
+    const strippedContent = stripComments(content)
+        .replace(/^\uFEFF/, '')
+        .trim();
     const isEmptyOrCommentsOnly = strippedContent.length === 0;
 
     // Filter out BOM error (error code 1 at offset 0) - it's recoverable
