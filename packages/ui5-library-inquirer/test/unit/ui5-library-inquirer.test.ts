@@ -1,8 +1,8 @@
 import { jest } from '@jest/globals';
 import type { UI5Version } from '@sap-ux/ui5-info';
-import type { InquirerAdapter } from '@sap-ux/inquirer-common';
+import type { InquirerAdapter, ListQuestion } from '@sap-ux/inquirer-common';
 import type { UI5LibraryAnswers } from '../../src/types.js';
-import type { Answers, ListQuestion } from 'inquirer';
+import type { Answers } from 'inquirer';
 
 const mockGetUI5Versions = jest.fn<() => Promise<UI5Version[]>>();
 const mockExecuteNpmUI5VersionsCmd = jest.fn<() => Promise<string[]>>();

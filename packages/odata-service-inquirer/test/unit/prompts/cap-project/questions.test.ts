@@ -1,7 +1,7 @@
 import { jest } from '@jest/globals';
 import type { CapService } from '@sap-ux/cap-config-writer';
 import type { CapCustomPaths, CdsVersionInfo } from '@sap-ux/project-access';
-import type { ListQuestion } from 'inquirer';
+import type { ListQuestion } from '@sap-ux/inquirer-common';
 import type { PathLike } from 'node:fs';
 import os from 'node:os';
 import * as actualPath from 'node:path';

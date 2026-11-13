@@ -41,13 +41,12 @@
         "@sap-ux/inquirer-common": "workspace:*",
         "@sap-ux/project-access": "workspace:*",
         "i18next": "26.5.11",
-        "inquirer": "8.2.7",
+        "inquirer": "13.4.3",
         "yeoman-generator": "5.10.0"
     },
     "devDependencies": {
         "@jest/globals": "30.5.2",
         "@jest/types": "30.5.1",
-        "@types/inquirer": "8.2.6",
         "@types/mem-fs": "1.1.2",
         "@types/mem-fs-editor": "7.0.1",
         "@types/yeoman-generator": "5.2.14",

@@ -1,5 +1,5 @@
 import { t } from '../utils/index.js';
-import type { Question } from 'inquirer';
+import type { Question } from '@sap-ux/inquirer-common';
 
 /**
  * Enumeration of prompt names

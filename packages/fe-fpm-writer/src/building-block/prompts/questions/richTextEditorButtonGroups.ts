@@ -1,4 +1,4 @@
-import type { Answers } from 'inquirer';
+import type { Answers } from '@sap-ux/inquirer-common';
 import { i18nNamespaces, translate } from '../../../i18n.js';
 import type { Prompts, PromptContext } from '../../../prompts/types.js';
 import { BuildingBlockType } from '../../types.js';

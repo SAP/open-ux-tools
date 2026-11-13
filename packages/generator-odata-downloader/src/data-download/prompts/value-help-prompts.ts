@@ -7,9 +7,8 @@ import type {
     ExternalServiceReference
 } from '@sap-ux/axios-extension';
 import { parse } from '@sap-ux/edmx-parser';
-import type { CheckBoxQuestion } from '@sap-ux/inquirer-common';
+import type { CheckboxChoiceOptions, CheckBoxQuestion } from '@sap-ux/inquirer-common';
 import { getExternalServiceReferences } from '@sap-ux/odata-service-writer';
-import type { CheckboxChoiceOptions } from 'inquirer';
 import deepmerge from 'deepmerge';
 import { join } from 'node:path';
 import { t } from '../../utils/i18n.js';

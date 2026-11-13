@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState, useMemo } from 'react';
 import type { UIComboBoxOption, UISelectableOption } from '@sap-ux/ui-components';
 import { convertChoicesToOptions, getAnswer, getDynamicQuestions, isDeepEqual, setAnswer } from './utils.js';
-import type { PromptQuestion, DynamicChoices, PromptListChoices } from '../types.js';
-import type { Answers, ChoiceOptions } from 'inquirer';
+import type { PromptQuestion, DynamicChoices, PromptListChoices, AnswerValue } from '../types.js';
+import type { Answers, ChoiceOptions } from '@sap-ux/inquirer-common';
 
 /**
  * Resolved shape of an inquirer `message` property: either a static string or a
@@ -48,7 +48,7 @@ export function useValue<S>(initialValue?: S, propValue?: S): [S | undefined, (v
 function getQuestionOptions(
     question: PromptQuestion,
     choices?: PromptListChoices
-): UISelectableOption<ChoiceOptions>[] {
+): UISelectableOption<ChoiceOptions<AnswerValue>>[] {
     // Use external/dynamicly populated choices
     let resolvedChoices = choices;
     // Use static choices if dynamic choices are not available
@@ -65,7 +65,10 @@ function getQuestionOptions(
  * @param choices - External choices(if param is passed then choices would be used on top of "question.choices")
  * @returns Returns dropdown/combobox options.
  */
-export function useOptions(question: PromptQuestion, choices?: PromptListChoices): UISelectableOption<ChoiceOptions>[] {
+export function useOptions(
+    question: PromptQuestion,
+    choices?: PromptListChoices
+): UISelectableOption<ChoiceOptions<AnswerValue>>[] {
     const [options, setOptions] = useState<UIComboBoxOption[]>(() => getQuestionOptions(question, choices));
     useEffect(() => {
         const options = getQuestionOptions(question, choices);
@@ -82,14 +85,14 @@ export function useOptions(question: PromptQuestion, choices?: PromptListChoices
  * @param value - Comma-separated string of selected option keys
  */
 export function useMultiSelectKeys(
-    options: UISelectableOption<ChoiceOptions & { checked?: boolean }>[],
+    options: UISelectableOption<ChoiceOptions<AnswerValue> & { checked?: boolean }>[],
     value: string
 ): { checkedOptions: string[]; selectedKeys: string[] } {
     return useMemo(() => {
         // Extract pre-checked options from data
         const checkedOptions = options
             .filter((opt) => opt.data?.checked === true)
-            .map((opt) => opt.data?.value ?? opt.key.toString());
+            .map((opt) => String(opt.data?.value ?? opt.key));
 
         // If no value, return empty selectedKeys
         if (!value) {

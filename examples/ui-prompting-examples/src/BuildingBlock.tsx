@@ -5,7 +5,7 @@ import { applyAnswers, getChoices, getCodeSnippet, getWebSocket, validateAnswers
 import { Questions, PromptsLayoutType, setAnswer } from '@sap-ux/ui-prompting';
 import type { ValidationResults, ValidationResult } from '@sap-ux/ui-prompting';
 import { useChoices, useI18nBundle, useQuestions } from './utils/hooks.js';
-import type { Answers } from 'inquirer';
+import type { Answers } from '@sap-ux/inquirer-common';
 
 initIcons();
 getWebSocket();

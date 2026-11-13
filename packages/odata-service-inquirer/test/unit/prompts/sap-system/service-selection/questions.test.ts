@@ -8,10 +8,10 @@ import type {
     V4CatalogService
 } from '@sap-ux/axios-extension';
 import { ODataVersion, ServiceType } from '@sap-ux/axios-extension';
-import type { ListQuestion, PromptSeverityMessage, SearchQuestion } from '@sap-ux/inquirer-common';
+import type { ChoiceOptions, ListQuestion, PromptSeverityMessage, SearchQuestion } from '@sap-ux/inquirer-common';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
-import type { Answers, ChoiceOptions } from 'inquirer';
+import type { Answers } from 'inquirer';
 import type { ConnectionValidator } from '../../../../../src/prompts/connectionValidator.js';
 import type { ServiceAnswer } from '../../../../../src/prompts/datasources/sap-system/service-selection/index.js';
 import { promptNames } from '../../../../../src/types.js';

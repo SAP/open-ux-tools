@@ -1,6 +1,5 @@
 import { jest } from '@jest/globals';
-import type { ListQuestion } from 'inquirer';
-import type { CheckBoxQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
+import type { CheckBoxQuestion, ListQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
 import { Severity } from '@sap-devx/yeoman-ui-types';
 import type { ReuseLibType } from '@sap-ux/project-access';
 

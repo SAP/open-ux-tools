@@ -2,12 +2,11 @@ import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import { AbapCDSViewService, BusinessObjectsService } from '@sap-ux/axios-extension';
 import { isAppStudio, type Destination } from '@sap-ux/btp-utils';
 import { HELP_NODES } from '@sap-ux/guided-answers-helper';
-import type { ValidationLink } from '@sap-ux/inquirer-common';
+import type { ChoiceOptions, ValidationLink } from '@sap-ux/inquirer-common';
 import { ERROR_TYPE, ErrorHandler, setTelemetryClient } from '@sap-ux/inquirer-common';
 import type { BackendSystem } from '@sap-ux/store';
 import type { AbapTarget, DestinationAbapTarget, UrlAbapTarget } from '@sap-ux/system-access';
 import { ClientFactory } from '@sap-ux/telemetry';
-import type { ListChoiceOptions } from 'inquirer';
 import { t } from '../i18n.js';
 
 /**
@@ -16,7 +15,7 @@ import { t } from '../i18n.js';
  * @param provider - the provider to get the business objects
  * @returns the business objects
  */
-export async function getBusinessObjects(provider: AbapServiceProvider): Promise<ListChoiceOptions[]> {
+export async function getBusinessObjects(provider: AbapServiceProvider): Promise<ChoiceOptions[]> {
     const businessObjectsService = await provider.getAdtService<BusinessObjectsService>(BusinessObjectsService);
     const businessObjects = await businessObjectsService?.getBusinessObjects();
     return (
@@ -32,7 +31,7 @@ export async function getBusinessObjects(provider: AbapServiceProvider): Promise
  * @param provider - the provider to get the ABAP CDS views
  * @returns the ABAP CDS views
  */
-export async function getAbapCDSViews(provider: AbapServiceProvider): Promise<ListChoiceOptions[]> {
+export async function getAbapCDSViews(provider: AbapServiceProvider): Promise<ChoiceOptions[]> {
     const abapCDSViewsService = await provider.getAdtService<AbapCDSViewService>(AbapCDSViewService);
     const abapCDSViews = await abapCDSViewsService?.getAbapCDSViews();
     return (
@@ -63,7 +62,7 @@ export function createAbapTarget(destination?: Destination, backendSystem?: Back
  * @param serviceName - the service name
  * @returns the service name choices
  */
-export function getServiceNameChoices(serviceName: string): ListChoiceOptions[] {
+export function getServiceNameChoices(serviceName: string): ChoiceOptions[] {
     return [
         {
             name: serviceName,

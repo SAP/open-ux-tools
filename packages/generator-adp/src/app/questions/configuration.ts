@@ -37,7 +37,7 @@ import { validateAch, validateEmptyString } from '@sap-ux/project-input-validato
 import type { IMessageSeverity } from '@sap-devx/yeoman-ui-types';
 import { Severity } from '@sap-devx/yeoman-ui-types';
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
-import type { Answers } from 'inquirer';
+import type { Answers } from '@sap-ux/inquirer-common';
 import type { TelemetryCollector } from '../../telemetry/index.js';
 import { t } from '../../utils/i18n.js';
 import type {

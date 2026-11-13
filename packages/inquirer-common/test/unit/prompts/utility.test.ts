@@ -1,6 +1,6 @@
 import { jest } from '@jest/globals';
 import type { UI5Version } from '@sap-ux/ui5-info';
-import type { ListChoiceOptions } from 'inquirer';
+import type { ChoiceOptions } from '../../../src/index.js';
 
 const mockGetUi5Themes = jest.fn() as jest.Mock;
 
@@ -194,7 +194,7 @@ describe('utility.ts', () => {
     });
 
     it('searchChoices', async () => {
-        const searchList: ListChoiceOptions[] = [
+        const searchList: ChoiceOptions[] = [
             {
                 name: 'choice1',
                 value: {

@@ -1,4 +1,4 @@
-import type { Answers } from 'inquirer';
+import type { Answers } from '@sap-ux/inquirer-common';
 import type { PromptsType } from '../../utils/index.js';
 import type { PromptQuestion } from '@sap-ux/ui-prompting';
 

@@ -27,6 +27,16 @@ export interface ChoiceOptions<T = unknown> {
     disabled?: boolean | string;
 }
 
+/**
+ * A checkbox prompt choice. Extends {@link ChoiceOptions} with the checkbox-only
+ * `checked` flag. Mirrors the field of the former inquirer@8 checkbox choice shape,
+ * which inquirer 13 moved into the per-prompt `@inquirer/checkbox` package.
+ */
+export interface CheckboxChoiceOptions<T = unknown> extends ChoiceOptions<T> {
+    /** Whether the choice is pre-selected */
+    checked?: boolean;
+}
+
 export interface UI5VersionChoice extends ChoiceOptions<string> {
     /**
      * UI5 semantic version

@@ -21,6 +21,7 @@
         "storybook:run": "storybook dev"
     },
     "dependencies": {
+        "@sap-ux/inquirer-common": "workspace:*",
         "@sap-ux/ui-components": "workspace:*",
         "@sap-ux/ui-prompting": "workspace:*",
         "react-markdown": "5.0.3",
@@ -41,7 +42,6 @@
         "@sap-ux/project-access": "workspace:*",
         "@storybook/react": "10.5.1",
         "@storybook/react-webpack5": "10.5.1",
-        "@types/inquirer": "8.2.6",
         "@types/mem-fs": "1.1.2",
         "@types/mem-fs-editor": "7.0.1",
         "@types/react": "16.14.69",

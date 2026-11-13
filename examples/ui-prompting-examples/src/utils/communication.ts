@@ -1,4 +1,4 @@
-import type { Answers } from 'inquirer';
+import type { Answers } from '@sap-ux/inquirer-common';
 import {
     GET_PROJECT_PATH,
     SET_PROJECT_PATH,

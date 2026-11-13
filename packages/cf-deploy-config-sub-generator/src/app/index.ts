@@ -46,7 +46,7 @@ import {
     type CfDeployConfigAnswers,
     RouterModuleType
 } from '@sap-ux/cf-deploy-config-inquirer';
-import type { Answers } from 'inquirer';
+import type { Answers } from '@sap-ux/inquirer-common';
 
 /**
  * Cloud Foundry deployment configuration generator.

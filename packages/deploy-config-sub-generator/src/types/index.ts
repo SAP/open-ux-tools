@@ -1,5 +1,5 @@
 import type Generator from 'yeoman-generator';
-import type { Answers } from 'inquirer';
+import type { Answers } from '@sap-ux/inquirer-common';
 import type { AppWizard, Prompts } from '@sap-devx/yeoman-ui-types';
 import type { ApiHubConfig } from '@sap-ux/cf-deploy-config-writer';
 import type { LogWrapper, VSCodeInstance } from '@sap-ux/fiori-generator-shared';

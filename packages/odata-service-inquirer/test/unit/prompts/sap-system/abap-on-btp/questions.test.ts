@@ -1,7 +1,7 @@
 import { jest } from '@jest/globals';
 import type { AbapServiceProvider, ServiceInfo, ServiceProvider } from '@sap-ux/axios-extension';
-import type { InputQuestion, Question } from 'inquirer';
-import type { ListQuestion } from '@sap-ux/inquirer-common';
+import type { Question } from 'inquirer';
+import type { InputQuestion, ListQuestion } from '@sap-ux/inquirer-common';
 import { ERROR_TYPE, ErrorHandler } from '@sap-ux/inquirer-common';
 import type { ConnectionValidator } from '../../../../../src/prompts/connectionValidator.js';
 import type { ConnectedSystem } from '../../../../../src/types.js';

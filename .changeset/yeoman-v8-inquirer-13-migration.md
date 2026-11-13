@@ -11,6 +11,8 @@
 "@sap-ux/fe-fpm-writer": minor
 "@sap-ux/ui-prompting": minor
 "@sap-ux/deploy-config-sub-generator": minor
+"@sap-ux/deploy-config-generator-shared": patch
+"@sap-ux/ui-service-inquirer": patch
 "@sap-ux/repo-app-import-sub-generator": minor
 "@sap-ux/generator-adp": minor
 "@sap-ux/generator-odata-downloader": patch
