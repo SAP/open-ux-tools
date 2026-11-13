@@ -15,7 +15,7 @@ import {
     terminateEditorProcess,
     trackEditorProcess
 } from '../adaptation-editor/editor-session.js';
-import { isSimpleBrowserRelayEnabled } from '../adaptation-editor/simple-browser-relay.js';
+import { isHttpRelayEnabled } from '../adaptation-editor/http-relay.js';
 
 /** Startup timeout for ABAP projects — `fiori run` is quick to announce its URL. */
 const ABAP_TIMEOUT_MS = 30000;
@@ -247,7 +247,7 @@ function parsePort(serverUrl: string): number | undefined {
  */
 function buildKillInstructions(pid: number, isWindows: boolean, useHttpRelay: boolean): string {
     if (useHttpRelay) {
-        return 'To stop the editor, use run_rta_workflow_step with step "stop" and the exact Editor URL above.';
+        return 'To stop the editor, use run_rta_workflow_step with step "stop" and the exact Editor URL above. You can then close the browser tab.';
     }
     return isWindows
         ? `To stop the owned editor process tree:\nWindows: taskkill /PID ${pid} /T /F`
@@ -277,7 +277,7 @@ export async function openAdaptationEditor(params: OpenAdaptationEditorInput): P
 
     try {
         const isWindows = process.platform === 'win32';
-        const useHttpRelay = isSimpleBrowserRelayEnabled();
+        const useHttpRelay = isHttpRelayEnabled();
         relayToken = useHttpRelay ? randomBytes(32).toString('hex') : undefined;
         const launch = await resolveLaunch(appPath);
         if ('reason' in launch) {
@@ -335,6 +335,10 @@ export async function openAdaptationEditor(params: OpenAdaptationEditorInput): P
             signalEditor('open', editorUrl, launch.projectType);
         }
 
+        const browserInstructions = useHttpRelay
+            ? 'The full editor runs in your browser tab. If no tab opened, open the Editor URL above manually. ' +
+              'Complete any login in that tab and keep one editor tab open while running RTA steps.'
+            : '';
         const killCommandsSection = buildKillInstructions(processId, isWindows, useHttpRelay);
         const portLine = port ? `Actual listening port: ${port}` : '';
 
@@ -343,6 +347,7 @@ Editor URL: ${editorUrl}
 Process ID: ${processId}
 ${portLine}
 
+${browserInstructions}
 ${killCommandsSection}`;
 
         return {

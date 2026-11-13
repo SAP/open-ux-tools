@@ -379,6 +379,8 @@ describe('openAdaptationEditor', () => {
             token
         );
         expect(first.message).toContain('run_rta_workflow_step');
+        expect(first.message).toContain('open the Editor URL above manually');
+        expect(first.message).toContain('close the browser tab');
         expect(first.message).not.toMatch(/lsof|netstat|by port/);
     });
 

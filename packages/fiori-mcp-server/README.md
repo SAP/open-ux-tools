@@ -16,6 +16,16 @@ The server helps AI models create or modify SAP Fiori applications based on prom
 
 For the best experience we recommend using this server alongside [@cap-js/mcp-server](https://www.npmjs.com/package/@cap-js/mcp-server) and [@ui5/mcp-server](https://www.npmjs.com/package/@ui5/mcp-server).
 
+## Experimental adaptation editor in an external browser
+
+On this branch, BAS uses the HTTP relay to work with the full adaptation editor in a normal browser tab. For desktop testing, set `SAP_FIORI_MCP_ADP_FORCE_AUTOOPEN=true` in the MCP process and the VS Code extension host environment. Other desktop workflows retain their existing Playwright transport.
+
+The application-modeler launcher from the matching tools-suite branch automatically opens the editor URL via VS Code's `env.openExternal`. Both CF and ABAP projects use the external tab; CF login redirects return to the editor in that same tab. No Simple Browser or login-completion mailbox is used by this launcher.
+
+The extension is optional for manual opening: call `open_adaptation_editor`, open its exact `editorUrl` in your browser, then run `run_rta_workflow_step` with `start` and that URL. The project must use preview-middleware with the relay implementation. Keep one tab per editor session. If login takes longer than the start wait budget, finish login and retry `start` on the same session.
+
+The relay script runs in the editor page and polls the preview server; MCP commands go to the owned local server using its per-session token. The extension only launches the tab and does not carry agent commands or browser cookies. `stop` terminates the owned editor server; the user closes the external tab.
+
 ## [Setup](#setup)
 
 The server uses `stdio` transport and is launched via `npx` — no global installation required. Pick the section for your MCP client below.

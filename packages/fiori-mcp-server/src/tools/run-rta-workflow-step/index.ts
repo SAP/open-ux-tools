@@ -23,10 +23,10 @@ import {
     requireStringArray
 } from './assertions.js';
 import { requireEditorSession } from '../../adaptation-editor/editor-session.js';
-import { isSimpleBrowserRelayEnabled } from '../../adaptation-editor/simple-browser-relay.js';
+import { isHttpRelayEnabled } from '../../adaptation-editor/http-relay.js';
 
-// Simple Browser HTTP relay when enabled (BAS / FORCE_AUTOOPEN), else Playwright.
-const activeTransport = isSimpleBrowserRelayEnabled() ? httpTransport : defaultTransport;
+// External-browser HTTP relay when enabled (BAS / FORCE_AUTOOPEN), else Playwright.
+const activeTransport = isHttpRelayEnabled() ? httpTransport : defaultTransport;
 
 /**
  * Validates the site URL. Over the HTTP relay the exact owned editor URL must be a

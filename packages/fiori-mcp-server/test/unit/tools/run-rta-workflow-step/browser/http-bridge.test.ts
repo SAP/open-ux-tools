@@ -235,7 +235,12 @@ describe('browser/http-bridge', () => {
     describe('login wait (startRTA)', () => {
         const loginSentinel = {
             isSuccess: true,
-            payload: { __needsUserAction: 'backend_login_required', message: expect.stringContaining('login') },
+            payload: {
+                __needsUserAction: 'backend_login_required',
+                message: expect.stringContaining(
+                    'Open the Editor URL returned by open_adaptation_editor in your browser'
+                )
+            },
             error: null
         };
 
