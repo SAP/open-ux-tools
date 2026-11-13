@@ -72,7 +72,6 @@
         "@jest/globals": "30.5.2",
         "@sap-ux/inquirer-common": "workspace:*",
         "@sap-ux/store": "workspace:*",
-        "@types/diff": "8.0.0",
         "@types/inquirer": "8.2.6",
         "@types/mem-fs": "1.1.2",
         "@types/mem-fs-editor": "7.0.1",

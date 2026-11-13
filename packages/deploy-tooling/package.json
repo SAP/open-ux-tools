@@ -56,8 +56,7 @@
     "devDependencies": {
         "@jest/globals": "30.5.2",
         "@sap-ux/store": "workspace:*",
-        "@types/prompts": "2.4.9",
-        "@types/adm-zip": "0.5.8"
+        "@types/prompts": "2.4.9"
     },
     "engines": {
         "node": ">=22.x"
