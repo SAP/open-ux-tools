@@ -111,7 +111,7 @@ export async function executeFunctionality(input: ExecuteFunctionalityInput): Pr
 
     await generateBuildingBlock(basePath, config, fs);
 
-    // Write the UI annotation shell into the same mem-fs (Table, FilterBar, Form) when the project has
+    // Write the UI annotation shell into the same mem-fs (Table, FilterBar, Form, Chart) when the project has
     // application access. The write is isolated inside writeAnnotationShell — a failure there is reported
     // via `failed` and never aborts the building-block commit.
     let annotationWarning = '';

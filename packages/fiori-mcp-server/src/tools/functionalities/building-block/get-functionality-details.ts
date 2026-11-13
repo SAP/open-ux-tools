@@ -200,7 +200,7 @@ function formatInsertionPointsNote(fileXPathMap: FileXPathEntry[], viewFiles: st
                     return `  ${file}:\n${xpathLines}${truncationNote}`;
                 })
                 .join('\n') +
-            '\nUse these relative paths as viewOrFragmentPath and one of the listed XPaths as aggregationPath. Do NOT read any files or list directories.'
+            '\nUse these relative paths as viewOrFragmentPath and one of the listed XPaths as aggregationPath. Do NOT read any files or list directories to discover insertion points.'
         );
     }
     if (viewFiles.length > 0) {
