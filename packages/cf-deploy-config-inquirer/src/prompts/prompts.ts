@@ -73,8 +73,8 @@ async function getDestinationNamePrompt(
         default: defaultValue,
         name: promptNames.destinationName,
         message: () => (hint ? t('prompts.directBindingDestinationHint') : t('prompts.destinationNameMessage')),
-        validate: (destination: unknown): string | boolean => {
-            return validators.validateDestinationQuestion(destination as string, !destination && isBAS);
+        validate: (destination: string): string | boolean => {
+            return validators.validateDestinationQuestion(destination, !destination && isBAS);
         },
         additionalMessages: (selectedDestination: unknown) => {
             const choice = destinationList.find((c) => c.value === selectedDestination);

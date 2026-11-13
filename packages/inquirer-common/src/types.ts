@@ -45,15 +45,17 @@ export interface UI5VersionChoice extends ChoiceOptions<string> {
 }
 
 /**
- * Validate function signature for a prompt. Mirrors the inline `validate` signature used by
- * inquirer 13 questions (inquirer 8's standalone `Validator` type was removed). The return type is
+ * Validate function signature for a prompt. Mirrors inquirer 13's own inline `validate` signature,
+ * whose `value` parameter is `any` (inquirer 8's standalone `Validator` type was removed). Using
+ * `any` — rather than a stricter `unknown` — lets consumers keep concretely-typed validators (e.g.
+ * `(value: string) => ...`) without widening-and-casting at every call site. The return type is
  * kept to the inquirer/yeoman primitive `boolean | string` so that {@link YUIQuestion} stays
  * assignable to `yeoman-generator`'s `this.prompt(...)` without casting. Validators that produce a
  * rich {@link ValidationLink} rely on its `toString()` for CLI serialization (YeomanUI renders the
  * link itself); see {@link ValidationLink}.
  */
 export type Validator<T extends Answers = Answers> = (
-    input: unknown,
+    input: any,
     answers?: Partial<T>
 ) => boolean | string | Promise<boolean | string>;
 

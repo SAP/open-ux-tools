@@ -44,9 +44,9 @@ const getTargetFolderPrompt = (appRootPath?: string, appId?: string): FileBrowse
             mandatory: true,
             breadcrumb: t('prompts.targetPath.breadcrumb')
         },
-        validate: async (target: unknown, answers: RepoAppDownloadAnswers): Promise<boolean | string> => {
+        validate: async (target, answers: RepoAppDownloadAnswers): Promise<boolean | string> => {
             const selectedAppId = answers.selectedApp?.appId ?? appId;
-            return await validateFioriAppTargetFolder(String(target ?? ''), selectedAppId, true);
+            return await validateFioriAppTargetFolder(target, selectedAppId, true);
         },
         default: () => appRootPath
     } as FileBrowserQuestion<RepoAppDownloadAnswers>;

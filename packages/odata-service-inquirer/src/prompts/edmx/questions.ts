@@ -138,7 +138,7 @@ export function getEntitySelectionQuestions(
                     mandatory: true
                 },
                 // Workaround for YUI bug: Despite mandatory=true, YUI allows users to clear/delete list selections.
-                validate: (value?: unknown) => {
+                validate: (value: EntityAnswer | null | undefined) => {
                     // First check if there are valid entity choices (handles edge case of no entities in service)
                     const entityChoicesValidation = validateEntityChoices(
                         entityChoices.choices,

@@ -99,8 +99,7 @@ export function getAbapOnPremSystemQuestions(
             guiOptions: {
                 breadcrumb: t('prompts.sapClient.breadcrumb')
             },
-            validate: (clientInput: unknown, prevAnswers: AbapOnPremAnswers) => {
-                const client = clientInput as string;
+            validate: (client, prevAnswers: AbapOnPremAnswers) => {
                 const valRes = validateClient(client);
                 if (valRes === true) {
                     sapClientRef.sapClient = client;

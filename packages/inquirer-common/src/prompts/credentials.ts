@@ -21,7 +21,7 @@ export async function getCredentialsPrompts(
             mandatory: true
         },
         store: false,
-        validate: (value: unknown): string | boolean => {
+        validate: (value: string): string | boolean => {
             return value ? true : t('errors.cannotBeEmpty', { field: t('prompts.username.message') });
         }
     };
@@ -41,10 +41,10 @@ export async function getCredentialsPrompts(
         // `Validator` is typed to the `boolean | string` primitive that `this.prompt` accepts; the cast
         // preserves the richer runtime value, which serialises via `ValidationLink.toString()` on the CLI.
         validate: (async (
-            value: unknown,
+            value: string,
             answers?: Partial<CredentialsAnswers>
         ): Promise<ValidationLink | string | boolean> => {
-            if (!value || typeof value !== 'string') {
+            if (!value) {
                 return t('errors.cannotBeEmpty', { field: t('prompts.password.message') });
             }
 

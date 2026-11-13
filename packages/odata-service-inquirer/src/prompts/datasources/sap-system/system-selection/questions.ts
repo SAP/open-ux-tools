@@ -227,13 +227,13 @@ export async function getSystemConnectionQuestions(
             hint: t('prompts.systemSelection.hint')
         },
         default: getSystemSelectionDefault,
-        validate: async (selectedSystem?: unknown): Promise<ValidationResult> => {
+        validate: async (selectedSystem?: SystemSelectionAnswerType): Promise<ValidationResult> => {
             if (!selectedSystem) {
                 return false;
             }
             return (
                 validateSystemSelection(
-                    selectedSystem as SystemSelectionAnswerType,
+                    selectedSystem,
                     connectionValidator,
                     requiredOdataVersion,
                     cachedConnectedSystem,

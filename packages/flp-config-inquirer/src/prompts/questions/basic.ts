@@ -45,7 +45,7 @@ export function getSemanticObjectPrompt(isCLI: boolean, options?: SemanticObject
             return answers?.inboundId?.semanticObject ? `${answers?.inboundId?.semanticObject}_New` : '';
         },
         filter: (val: string): string => val?.trim(),
-        validate: (val: unknown) => validateText(String(val ?? ''), isCLI, 30, ['_'])
+        validate: (val) => validateText(val, isCLI, 30, ['_'])
     };
 }
 
@@ -83,8 +83,8 @@ export function getActionPrompt(
             return answers?.inboundId?.action ? `${answers?.inboundId?.action}_New` : '';
         },
         filter: (val: string): string => val?.trim(),
-        validate: (val: unknown, answers?: Partial<FLPConfigAnswers>): string | boolean => {
-            const textValidation = validateText(String(val ?? ''), isCLI, 60, ['_']);
+        validate: (val, answers?: Partial<FLPConfigAnswers>): string | boolean => {
+            const textValidation = validateText(val, isCLI, 60, ['_']);
             if (textValidation !== true) {
                 return textValidation;
             }
@@ -184,7 +184,7 @@ export function getTitlePrompt(
             return answers?.inboundId?.title ?? '';
         },
         filter: (val: string): string => val?.trim(),
-        validate: (val: unknown) => validateText(String(val ?? ''), isCLI, 0)
+        validate: (val) => validateText(val, isCLI, 0)
     };
 }
 

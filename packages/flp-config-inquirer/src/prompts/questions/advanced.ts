@@ -28,10 +28,8 @@ export function getInboundIdsPrompt(inbounds: ManifestNamespace.Inbound): FLPCon
         message: t('prompts.inboundIds'),
         choices: choices,
         default: () => choices[0]?.value,
-        validate: (value: unknown): boolean | string => {
-            const inbound = value as InboundContent;
-            return validateEmptyString(inbound.semanticObject) && validateEmptyString(inbound.action);
-        },
+        validate: (value: InboundContent): boolean | string =>
+            validateEmptyString(value.semanticObject) && validateEmptyString(value.action),
         when: choices?.length > 0,
         guiOptions: {
             hint: t('tooltips.inboundId'),
@@ -55,7 +53,7 @@ export function getParameterStringPrompt(): FLPConfigQuestion {
             const parameters = answers?.inboundId?.signature?.parameters;
             return parameters ? JSON.stringify(parameters, null, 2) : '';
         },
-        validate: (value: unknown): string | boolean => {
+        validate: (value: string): string | boolean => {
             if (!value || typeof value !== 'string') {
                 return true; // No additional parameters provided, skip validation
             }

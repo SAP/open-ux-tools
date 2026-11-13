@@ -62,7 +62,7 @@ export function getCredentialsPrompts<T extends Answers>(
                 mandatory: true
             },
             default: '',
-            validate: (user: unknown) => (user as string)?.length > 0
+            validate: (user: string) => user?.length > 0
         } as unknown as InputQuestion<T>,
         {
             when: () =>
@@ -78,8 +78,7 @@ export function getCredentialsPrompts<T extends Answers>(
             message: t('prompts.systemPassword.message'),
             mask: '*',
             default: '',
-            validate: async (passwordInput: unknown, answers: T): Promise<ValidationResult> => {
-                const password = passwordInput as string;
+            validate: async (password: string, answers: T): Promise<ValidationResult> => {
                 if (!(
                     connectionValidator.validatedUrl &&
                     answers?.[usernamePromptName] &&
@@ -154,7 +153,7 @@ export function getCredentialsPrompts<T extends Answers>(
         guiOptions: {
             breadcrumb: t('prompts.storeSystemCredentials.breadcrumb')
         },
-        validate: async (storeCredentials: unknown): Promise<boolean> => {
+        validate: async (storeCredentials: boolean): Promise<boolean> => {
             if (PromptState.odataService.connectedSystem?.backendSystem) {
                 const backendSystem = PromptState.odataService.connectedSystem.backendSystem;
                 PromptState.odataService.connectedSystem.backendSystem = Object.assign(backendSystem, {

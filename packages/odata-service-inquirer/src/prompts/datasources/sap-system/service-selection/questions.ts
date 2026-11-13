@@ -164,9 +164,9 @@ export function getSystemServiceQuestion(
                     : undefined,
                 serviceFilter: promptOptions?.serviceFilter
             }),
-        validate: async (service: unknown, answers?: Answers): Promise<string | boolean | ValidationLink> => {
+        validate: async (service: ServiceAnswer, answers?: Answers): Promise<string | boolean | ValidationLink> => {
             searchAnswers = answers as SystemSelectionAnswers | undefined;
-            const serviceAnswer = service as ServiceAnswer;
+            const serviceAnswer = service;
 
             if (!connectValidator.validatedUrl) {
                 return false;

@@ -174,8 +174,8 @@ function getNamespacePrompt(isCustomerBase: boolean, options?: NamespacePromptOp
     } else {
         prompt.guiOptions!.mandatory = true;
         prompt.guiOptions!.breadcrumb = true;
-        prompt.validate = (value: unknown, answers?: Partial<AttributesAnswers>) =>
-            validateNamespaceAdp(value as string, answers?.projectName ?? '', isCustomerBase);
+        prompt.validate = (value, answers?: Partial<AttributesAnswers>) =>
+            validateNamespaceAdp(value, answers?.projectName ?? '', isCustomerBase);
     }
 
     return prompt;

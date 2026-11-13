@@ -114,7 +114,7 @@ function getReferenceLibrariesPrompt(reuseLibs?: ReuseLibChoice[]): UI5LibraryRe
             };
             return missingDeps ? msg : undefined;
         },
-        validate: (answer: unknown) => {
+        validate: (answer) => {
             const selected = Array.isArray(answer) ? (answer as ReuseLib[]) : undefined;
             if (!reuseLibs?.length) {
                 return t('error.noLibsFound');
