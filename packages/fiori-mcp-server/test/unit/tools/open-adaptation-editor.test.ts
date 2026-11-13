@@ -32,7 +32,7 @@ jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
 }));
 
 const mockRegisterSession = jest.fn<(session: EditorSession) => void>();
-const mockSignalEditor = jest.fn<(command: 'open' | 'close', url: string) => void>();
+const mockSignalEditor = jest.fn<(command: 'open' | 'close', url: string, projectType?: 'abap' | 'cf') => void>();
 const mockTerminate = jest.fn<(child: ChildProcess) => Promise<boolean>>();
 const mockTrackProcess = jest.fn<(child: ChildProcess, detached: boolean) => void>();
 jest.unstable_mockModule('../../../src/adaptation-editor/editor-session.js', () => ({
@@ -379,6 +379,8 @@ describe('openAdaptationEditor', () => {
             token
         );
         expect(first.message).toContain('run_rta_workflow_step');
+        expect(first.message).toContain('open the Editor URL above manually');
+        expect(first.message).toContain('close the browser tab');
         expect(first.message).not.toMatch(/lsof|netstat|by port/);
     });
 
@@ -410,10 +412,19 @@ describe('openAdaptationEditor', () => {
                 autoOpen: true
             })
         );
-        expect(mockSignalEditor).toHaveBeenCalledWith('open', result.editorUrl);
+        expect(mockSignalEditor).toHaveBeenCalledWith('open', result.editorUrl, 'abap');
         expect(mockRegisterSession.mock.invocationCallOrder[0]).toBeLessThan(
             mockSignalEditor.mock.invocationCallOrder[0]
         );
+    });
+
+    test('BAS includes the CF project type in the editor launch command', async () => {
+        mockIsAppStudio.mockReturnValue(true);
+        mockIsCFEnvironment.mockResolvedValueOnce(true);
+        mockExistsSync.mockImplementation((path: string) => path.endsWith('dist'));
+        const result = await startEditor();
+        expect(result.status).toBe('Success');
+        expect(mockSignalEditor).toHaveBeenCalledWith('open', result.editorUrl, 'cf');
     });
 
     test.each(['empty', 'error'])('preserves BAS local URL fallback on %s exposure response', async (response) => {
@@ -424,7 +435,7 @@ describe('openAdaptationEditor', () => {
         const result = await startEditor();
         expect(result.status).toBe('Success');
         expect(result.editorUrl).toBe('http://localhost:8080/test/adaptation-editor.html');
-        expect(mockSignalEditor).toHaveBeenCalledWith('open', result.editorUrl);
+        expect(mockSignalEditor).toHaveBeenCalledWith('open', result.editorUrl, 'abap');
         expect(mockTerminate).not.toHaveBeenCalled();
     });
 
@@ -433,7 +444,7 @@ describe('openAdaptationEditor', () => {
         const result = await startEditor(new FakeChildProcess(), ['URL: http://[::1]:notaport']);
         expect(result.status).toBe('Success');
         expect(mockExposePort).not.toHaveBeenCalled();
-        expect(mockSignalEditor).toHaveBeenCalledWith('open', result.editorUrl);
+        expect(mockSignalEditor).toHaveBeenCalledWith('open', result.editorUrl, 'abap');
     });
 
     test('Windows does not create or claim a POSIX group and only recommends the owned PID tree', async () => {

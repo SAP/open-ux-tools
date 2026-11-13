@@ -13,7 +13,7 @@ const DEFAULT_RELAY_LOGIN_WAIT_MS = 120000;
 
 const RELAY_LOGIN_REQUIRED_MESSAGE =
     'The adaptation editor could not be reached — it is likely still on the backend login screen. ' +
-    'Complete the login in the Simple Browser, then run the start step again.';
+    'Open the Editor URL returned by open_adaptation_editor in your browser, complete any login there, then run the start step again.';
 
 /**
  * Login wait budget in ms.
@@ -262,13 +262,13 @@ async function fetchViaContextHttp(site: string, url: string): Promise<FetchViaC
     return result.payload as FetchViaContextResult;
 }
 
-/** HTTP relay for an automatically opened Simple Browser editor. */
+/** HTTP relay for the editor in a user browser tab, opened automatically or manually. */
 export const httpTransport: FrontendActionTransport = {
     callFrontendAction: callFrontendActionHttp,
     fetchViaContext: fetchViaContextHttp,
     disconnectSite: async () => {},
     stopBrowser: async () => {},
     reloadPage: reloadPageHttp,
-    // Closing the owned tab and process also stops polling; no browser acknowledgement is needed.
+    // Stop the owned server without requiring a responsive browser; the user closes the external tab.
     stopEditor: stopEditorSession
 };
