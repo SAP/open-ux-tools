@@ -157,14 +157,12 @@ export function getOverwritePrompt(
  *
  * @param {ExistingInboundRef} existingKeyRef - A reference object to track whether an inbound id exists.
  * @param {boolean} silentOverwrite - A flag indicating if overwrites should be silent.
- * @param {boolean} isCLI - Indicates if the platform is CLI.
  * @param {TitlePromptOptions} [options] - Optional configuration for the title prompt, including default values.
  * @returns {FLPConfigQuestion} The prompt configuration for the title.
  */
 export function getTitlePrompt(
     existingKeyRef: ExistingInboundRef,
     silentOverwrite: boolean,
-    isCLI: boolean,
     options?: TitlePromptOptions
 ): FLPConfigQuestion {
     return {
@@ -172,8 +170,7 @@ export function getTitlePrompt(
         name: promptNames.title,
         type: 'input',
         guiOptions: {
-            mandatory: true,
-            breadcrumb: true
+            breadcrumb: t('prompts.title')
         },
         message: t('prompts.title'),
         default: (answers: FLPConfigAnswers): string => {
@@ -182,8 +179,7 @@ export function getTitlePrompt(
             }
             return answers?.inboundId?.title ?? '';
         },
-        filter: (val: string): string => val?.trim(),
-        validate: (val) => validateText(val, isCLI, 0)
+        filter: (val: string): string => val?.trim()
     };
 }
 
