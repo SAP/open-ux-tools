@@ -20,7 +20,9 @@ export async function initI18n(language = 'en'): Promise<void> {
         lng: language,
         fallbackLng: 'en',
         defaultNS: NS,
-        joinArrays: '\n\n'
+        joinArrays: '\n\n',
+        // The texts are plain text, escaping would turn the `/` of a file path into `&#x2F;`
+        interpolation: { escapeValue: false }
     });
 }
 

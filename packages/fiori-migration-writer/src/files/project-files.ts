@@ -8,13 +8,13 @@ import { render, escapeXML } from 'ejs';
 import { parse, stringify } from 'yaml';
 import type { Editor } from 'mem-fs-editor';
 import { readFile, updateFile } from '../utils/index.js';
+import { describeError } from '../utils/migration-utils.js';
 import { migrate, type AdpWriterConfig } from '@sap-ux/adp-tooling';
 import { TemplateFileName, templatesDirPath } from '../index.js';
 import {
     devDependencies,
     ui5Dependencies,
     getUI5Version,
-    determineMessage,
     generateToolsId,
     getLibraryTemplatesMap
 } from '../utils/common.js';
@@ -94,7 +94,7 @@ export async function copyAdaptationFiles(
         messages.length = 0; // Reset
         messages.push({
             type: 'ERROR',
-            description: `Error copying adaptation files: ${determineMessage(e)}`
+            description: `Error copying adaptation files: ${describeError(e, rootPath)}`
         });
         result = false;
     }
@@ -155,8 +155,7 @@ export async function copyLibraryFiles(
         result = messages.length === 0;
     } catch (e) {
         messages.length = 0; // Reset
-        const errorDetail =
-            e.name === 'MigrationError' ? e.message.toString() : determineMessage(e) || e.message || String(e);
+        const errorDetail = describeError(e, rootPath);
         // Error details are captured in the message below - no need to log to console in production
         messages.push({
             type: 'ERROR',
