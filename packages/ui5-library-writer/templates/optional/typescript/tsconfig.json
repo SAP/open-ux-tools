@@ -10,9 +10,8 @@
       "rootDir": "./",
       "outDir": "./dist",
       "baseUrl": "./",
-      "typeRoots": [
-        "./node_modules/@types",
-        "./node_modules/<%- tsTypes %>"
+      "types": [
+        "<%- tsTypes %>"
       ],
       "paths": {
           "<%= libraryNamespaceURI %>/*": [
