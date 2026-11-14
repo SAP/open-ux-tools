@@ -14,6 +14,10 @@ Object {
           "value": "filter-bar",
         },
         Object {
+          "name": "KPI Tag",
+          "value": "kpi-tag",
+        },
+        Object {
           "name": "Table",
           "value": "table",
         },
@@ -1056,6 +1060,10 @@ Object {
           "value": "filter-bar",
         },
         Object {
+          "name": "KPI Tag",
+          "value": "kpi-tag",
+        },
+        Object {
           "name": "Table",
           "value": "table",
         },
@@ -1814,6 +1822,139 @@ Object {
       "message": "Form Title",
       "name": "buildingBlockData.title",
       "type": "input",
+    },
+  ],
+}
+`;
+
+exports[`Prompts getKPITagBuildingBlockPrompts 1`] = `
+Object {
+  "initialAnswers": Object {
+    "buildingBlockData": Object {
+      "buildingBlockType": "kpi-tag",
+    },
+  },
+  "questions": Array [
+    Object {
+      "guiOptions": Object {
+        "mandatory": true,
+        "placeholder": "Enter a building block ID",
+      },
+      "message": "Building Block ID",
+      "name": "buildingBlockData.id",
+      "type": "input",
+      "validate": [Function],
+    },
+    Object {
+      "choices": [Function],
+      "guiOptions": Object {
+        "dependantPromptNames": Array [
+          "aggregationPath",
+        ],
+        "mandatory": true,
+        "placeholder": "Select a view or fragment file",
+        "selectType": "dynamic",
+      },
+      "message": "View or Fragment File",
+      "name": "viewOrFragmentPath",
+      "type": "list",
+      "validate": [Function],
+    },
+    Object {
+      "choices": [Function],
+      "default": "absolute",
+      "guiOptions": Object {
+        "dependantPromptNames": Array [
+          "buildingBlockData.metaPath.entitySet",
+        ],
+        "mandatory": true,
+        "selectType": "dynamic",
+      },
+      "message": "Binding Context",
+      "name": "buildingBlockData.metaPath.bindingContextType",
+      "type": "list",
+    },
+    Object {
+      "choices": [Function],
+      "default": undefined,
+      "guiOptions": Object {
+        "dependantPromptNames": Array [
+          "buildingBlockData.number",
+          "buildingBlockData.unit",
+        ],
+        "mandatory": true,
+        "placeholder": "Select an entity",
+        "selectType": "dynamic",
+      },
+      "message": "Entity",
+      "name": "buildingBlockData.metaPath.entitySet",
+      "type": "list",
+    },
+    Object {
+      "choices": [Function],
+      "filter": [Function],
+      "guiOptions": Object {
+        "mandatory": true,
+        "placeholder": "Select a target property",
+        "selectType": "dynamic",
+      },
+      "message": "Number",
+      "name": "buildingBlockData.number",
+      "type": "list",
+    },
+    Object {
+      "choices": [Function],
+      "filter": [Function],
+      "guiOptions": Object {
+        "mandatory": false,
+        "placeholder": "Select a target property",
+        "selectType": "dynamic",
+      },
+      "message": "Unit",
+      "name": "buildingBlockData.unit",
+      "type": "list",
+    },
+    Object {
+      "choices": Array [
+        Object {
+          "name": "None",
+          "value": "None",
+        },
+        Object {
+          "name": "Success",
+          "value": "Success",
+        },
+        Object {
+          "name": "Error",
+          "value": "Error",
+        },
+        Object {
+          "name": "Warning",
+          "value": "Warning",
+        },
+        Object {
+          "name": "Information",
+          "value": "Information",
+        },
+      ],
+      "default": "None",
+      "guiOptions": Object {
+        "selectType": "static",
+      },
+      "message": "Status",
+      "name": "buildingBlockData.status",
+      "type": "list",
+    },
+    Object {
+      "choices": [Function],
+      "guiOptions": Object {
+        "mandatory": true,
+        "placeholder": "Select an aggregation path",
+        "selectType": "dynamic",
+      },
+      "message": "Aggregation Path",
+      "name": "aggregationPath",
+      "type": "list",
     },
   ],
 }

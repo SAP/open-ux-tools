@@ -107,6 +107,11 @@ describe('Prompts', () => {
         expect(questionnair).toMatchSnapshot();
     });
 
+    test('getKPITagBuildingBlockPrompts', async () => {
+        const questionnair = await promptsAPI.getPrompts(PromptsType.KPITag);
+        expect(questionnair).toMatchSnapshot();
+    });
+
     test('get prompts for invalid propmts type', async () => {
         const questionnair = await promptsAPI.getPrompts('notValid' as PromptsType);
         expect(questionnair).toStrictEqual({ questions: [] });
