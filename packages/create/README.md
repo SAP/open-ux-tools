@@ -26,6 +26,34 @@ sap-ux [command] [sub-command] /path/to/project
 
 ---
 
+# [Telemetry](#telemetry)
+
+The `migrate` command collects anonymous usage data to help improve SAP Fiori tools. A short notice is shown the first time `migrate` runs. No other command sends usage data.
+
+**What is collected** (all events carry `source: CLI` and a random `SessionId` that is generated for each run, is not stored and only correlates the events of that run):
+
+| Event | When | Properties |
+|---|---|---|
+| `MIGRATION_BACKEND_LOAD` | After the backend system of the project was looked up | `ms` |
+| `MIGRATION_SUCCESS` / `MIGRATION_FAILED` | After the project was migrated | `success`, `floorPlan`, `ui5Theme`, `ui5Version`, `ODataVersion`, `numReuseLibs`, `type`, `messages`, `ms` |
+| `MIGRATION_COMPLETED` | At the end of every run, also if it was cancelled or could not continue because a question could not be answered without a terminal | `successfulMigrations`, `failedMigrations`, `cancelled`, `skipInstall`, `systemResolvedVia`, `forceOverride`, `npmInstallSuccess`, `ms` |
+
+Besides these properties, the common SAP Fiori tools properties are added (for example the Node.js version, whether the internal features are enabled, and the template and deployment type read from the project).
+
+`messages` only contains fixed error categories such as `syntaxError` or `networkError`, never the error text. Project paths, host names, system and destination names, and client numbers are not collected.
+
+**How to opt out**
+
+```sh
+npx -y @sap-ux/create@latest telemetry disable   # opt out, the setting is shared with other SAP Fiori tools
+npx -y @sap-ux/create@latest telemetry enable    # opt in again
+npx -y @sap-ux/create@latest telemetry status    # show the current setting
+```
+
+Alternatively, set the environment variable `DO_NOT_TRACK=1` or `SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY=true`. The setting is stored in `~/.fioritools/telemetrysettings.json`.
+
+---
+
 # [Commands](#commands)
 
 ## [`generate`](#generate)
@@ -595,4 +623,28 @@ Options:
 - `-u, --ui5-version <version>` - UI5 version (defaults to source project version)
 - `-f, --force` - Force migration even if project is already a Fiori tools project
 - `-n, --skip-install` - Skip the `npm install` step after migration
+
+--------------------------------
+
+## [`telemetry`](#telemetry)
+
+Manage the collection of anonymous usage data. The setting is shared with other SAP Fiori tools extensions.
+
+--------------------------------
+
+## [`telemetry enable`](#telemetry-enable)
+
+Enable the collection of anonymous usage data
+
+--------------------------------
+
+## [`telemetry disable`](#telemetry-disable)
+
+Disable the collection of anonymous usage data
+
+--------------------------------
+
+## [`telemetry status`](#telemetry-status)
+
+Show whether the collection of anonymous usage data is enabled
 

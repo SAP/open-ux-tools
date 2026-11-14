@@ -49,7 +49,8 @@ jest.unstable_mockModule('@sap-ux/feature-toggle', () => ({
 
 const mockGetService = jest.fn() as jest.Mock;
 jest.unstable_mockModule('@sap-ux/store', () => ({
-    getService: (...args: unknown[]) => mockGetService(...args)
+    getService: (...args: unknown[]) => mockGetService(...args),
+    getFioriToolsDirectory: () => '/tmp/fioritools-migrate-test'
 }));
 
 const mockFindSystemByUrl = jest.fn() as jest.Mock;
@@ -103,7 +104,17 @@ jest.unstable_mockModule('@sap-ux/project-input-validator', () => ({
     }
 }));
 
+const mockReportEventBlocking = jest.fn() as jest.Mock;
+const mockGetTelemetrySetting = jest.fn() as jest.Mock;
+jest.unstable_mockModule('@sap-ux/telemetry', () => ({
+    ClientFactory: { getTelemetryClient: () => ({ reportEventBlocking: mockReportEventBlocking }) },
+    SampleRate: { NoSampling: 2 },
+    initTelemetrySettings: jest.fn().mockResolvedValue(undefined),
+    getTelemetrySetting: () => mockGetTelemetrySetting()
+}));
+
 const { getMigrateCommand } = await import('../../../src/cli/migrate/index.js');
+const { initCliTelemetry } = await import('../../../src/cli/migrate/telemetry.js');
 
 describe('migrate command', () => {
     const testProjectRoot = join(__dirname, '../../fixtures/bare-minimum');
@@ -141,6 +152,8 @@ describe('migrate command', () => {
         mockExit = jest.spyOn(process, 'exit').mockImplementation((() => {
             throw new Error('process.exit called');
         }) as any);
+        mockReportEventBlocking.mockResolvedValue(undefined);
+        mockGetTelemetrySetting.mockResolvedValue({ enableTelemetry: true });
     });
 
     afterEach(() => {
@@ -987,5 +1000,331 @@ describe('migrate command', () => {
         await command.parseAsync(getArgv(['migrate', testProjectRoot]));
 
         expect(mockMigrate).toHaveBeenCalled();
+    });
+
+    describe('telemetry', () => {
+        const getEvents = (): Array<{ eventName: string; properties: Record<string, string>; measurements: object }> =>
+            mockReportEventBlocking.mock.calls.map((call) => call[0]);
+        const getEvent = (name: string) => getEvents().find((event) => event.eventName === name);
+
+        const migrateWithOptions = async (extraArgs: string[] = []): Promise<void> => {
+            const command = new Command('sap-ux');
+            command.addCommand(getMigrateCommand());
+            await command.parseAsync(
+                getArgv(['migrate', testProjectRoot, '--hostname', 'myhost.com', '--client', '100', ...extraArgs])
+            );
+        };
+
+        const originalEnv = { ...process.env };
+
+        afterEach(() => {
+            process.env = { ...originalEnv };
+        });
+
+        beforeEach(async () => {
+            delete process.env.DO_NOT_TRACK;
+            delete process.env.SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY;
+            await initCliTelemetry('1.0.0');
+            mockPrompt.mockResolvedValue({ version: '' });
+            mockGetProjectInfo.mockResolvedValue({
+                projectInfo: {
+                    hostname: '',
+                    sapClient: '',
+                    floorPlan: 'V2_LIST_REPORT',
+                    ui5Theme: 'sap_horizon',
+                    ui5Version: '1.120.0',
+                    odataVersion: '2.0',
+                    reuseLibs: 'lib.one,lib.two',
+                    type: 'application'
+                },
+                messages: []
+            });
+        });
+
+        test('should report backend load, success and completed events', async () => {
+            await migrateWithOptions(['--skip-install']);
+
+            expect(getEvents().map((event) => event.eventName)).toEqual([
+                'MIGRATION_BACKEND_LOAD',
+                'MIGRATION_SUCCESS',
+                'MIGRATION_COMPLETED'
+            ]);
+            expect(getEvent('MIGRATION_BACKEND_LOAD')).toEqual({
+                eventName: 'MIGRATION_BACKEND_LOAD',
+                properties: { source: 'CLI', SessionId: expect.any(String) },
+                measurements: { ms: expect.any(Number) }
+            });
+            expect(getEvent('MIGRATION_SUCCESS')).toEqual({
+                eventName: 'MIGRATION_SUCCESS',
+                properties: {
+                    success: 'true',
+                    floorPlan: 'V2_LIST_REPORT',
+                    ui5Theme: 'sap_horizon',
+                    ui5Version: '1.120.0',
+                    ODataVersion: '2.0',
+                    numReuseLibs: '2',
+                    type: 'application',
+                    messages: '',
+                    source: 'CLI',
+                    SessionId: expect.any(String)
+                },
+                measurements: { ms: expect.any(Number) }
+            });
+            expect(getEvent('MIGRATION_COMPLETED')).toEqual({
+                eventName: 'MIGRATION_COMPLETED',
+                properties: {
+                    successfulMigrations: '1',
+                    failedMigrations: '0',
+                    cancelled: 'false',
+                    skipInstall: 'true',
+                    systemResolvedVia: 'cliOption',
+                    forceOverride: 'false',
+                    npmInstallSuccess: 'skipped',
+                    source: 'CLI',
+                    SessionId: expect.any(String)
+                },
+                measurements: { ms: expect.any(Number) }
+            });
+        });
+
+        test('should pass the project path only as helper property and use the requested UI5 version', async () => {
+            await migrateWithOptions(['--ui5-version', '1.130.0']);
+
+            const successCall = mockReportEventBlocking.mock.calls.find(
+                (call) => (call[0] as { eventName: string }).eventName === 'MIGRATION_SUCCESS'
+            ) as unknown[];
+            expect((successCall[0] as { properties: Record<string, string> }).properties.ui5Version).toBe('1.130.0');
+            expect(successCall[2]).toEqual({ appPath: expect.stringContaining('bare-minimum') });
+        });
+
+        test('should report the npm install result', async () => {
+            await migrateWithOptions();
+            expect(getEvent('MIGRATION_COMPLETED')?.properties).toEqual(
+                expect.objectContaining({ skipInstall: 'false', npmInstallSuccess: 'true' })
+            );
+
+            mockReportEventBlocking.mockClear();
+            mockExecNpmCommand.mockRejectedValueOnce(new Error('install failed'));
+            await migrateWithOptions();
+            expect(getEvent('MIGRATION_COMPLETED')?.properties.npmInstallSuccess).toBe('false');
+        });
+
+        test('should report a failed migration without personal data', async () => {
+            mockMigrate.mockResolvedValue({
+                result: false,
+                messages: [
+                    { type: 'WARNING', description: 'A warning' },
+                    {
+                        type: 'ERROR',
+                        description: `ENOENT: no such file or directory, open '${testProjectRoot}/webapp/manifest.json' on myhost.com`
+                    }
+                ],
+                fs: { commit: jest.fn() }
+            });
+
+            await expect(migrateWithOptions()).rejects.toThrow('process.exit called');
+
+            expect(getEvents().map((event) => event.eventName)).toEqual([
+                'MIGRATION_BACKEND_LOAD',
+                'MIGRATION_FAILED',
+                'MIGRATION_COMPLETED'
+            ]);
+            const failed = getEvent('MIGRATION_FAILED')!;
+            expect(failed.properties.success).toBe('false');
+            expect(failed.properties.messages).toBe('fileNotFound');
+            expect(JSON.stringify(mockReportEventBlocking.mock.calls.map((call) => call[0]))).not.toContain(
+                'myhost.com'
+            );
+            expect(getEvent('MIGRATION_COMPLETED')?.properties).toEqual(
+                expect.objectContaining({
+                    successfulMigrations: '0',
+                    failedMigrations: '1',
+                    npmInstallSuccess: 'skipped'
+                })
+            );
+        });
+
+        test('should report a migration with error messages as failed', async () => {
+            mockMigrate.mockResolvedValue({
+                result: true,
+                messages: [{ type: 'ERROR', description: 'Non fatal error' }],
+                fs: { commit: jest.fn() }
+            });
+
+            await migrateWithOptions(['--skip-install']);
+
+            expect(getEvent('MIGRATION_FAILED')?.properties).toEqual(
+                expect.objectContaining({ success: 'false', messages: 'other' })
+            );
+            expect(getEvent('MIGRATION_SUCCESS')).toBeUndefined();
+        });
+
+        test('should report a failed migration when the migrator throws', async () => {
+            mockMigrate.mockRejectedValue(new Error('Unexpected error in /home/someone/project'));
+
+            await expect(migrateWithOptions()).rejects.toThrow('process.exit called');
+
+            expect(getEvent('MIGRATION_FAILED')?.properties).toEqual(
+                expect.objectContaining({ success: 'false', messages: 'other' })
+            );
+            expect(getEvent('MIGRATION_COMPLETED')?.properties).toEqual(
+                expect.objectContaining({ successfulMigrations: '0', failedMigrations: '1' })
+            );
+        });
+
+        test('should report a cancelled run when the user declines to force the migration', async () => {
+            const migratedProjectRoot = join(__dirname, '../../fixtures/migrated-project');
+            mockPrompt.mockReset();
+            mockPrompt.mockResolvedValueOnce({ confirmForce: false });
+
+            const command = new Command('sap-ux');
+            command.addCommand(getMigrateCommand());
+            await command.parseAsync(getArgv(['migrate', migratedProjectRoot, '--destination', 'myDest']));
+
+            expect(getEvents().map((event) => event.eventName)).toEqual(['MIGRATION_COMPLETED']);
+            expect(getEvent('MIGRATION_COMPLETED')?.properties).toEqual(
+                expect.objectContaining({
+                    successfulMigrations: '0',
+                    failedMigrations: '0',
+                    cancelled: 'true',
+                    forceOverride: 'false'
+                })
+            );
+        });
+
+        test('should end the run with a clear error and report it as cancelled when no input is available', async () => {
+            const { NoInputError } = await import('../../../src/cli/migrate/ask.js');
+            mockPrompt.mockReset();
+            mockPrompt.mockRejectedValueOnce(new NoInputError());
+
+            const command = new Command('sap-ux');
+            command.addCommand(getMigrateCommand());
+            await expect(command.parseAsync(getArgv(['migrate']))).rejects.toThrow('process.exit called');
+
+            expect(loggerMock.error).toHaveBeenCalledWith(expect.stringContaining('noInput'));
+            expect(mockMigrate).not.toHaveBeenCalled();
+            expect(getEvents().map((event) => event.eventName)).toEqual(['MIGRATION_COMPLETED']);
+            expect(getEvent('MIGRATION_COMPLETED')?.properties.cancelled).toBe('true');
+        });
+
+        test('should not swallow a missing input while matching a BAS destination', async () => {
+            const { NoInputError } = await import('../../../src/cli/migrate/ask.js');
+            mockIsAppStudio.mockReturnValue(true);
+            mockGetProjectInfo.mockResolvedValue({
+                projectInfo: { destination: 'UNKNOWN', hostname: 'shared.example.test', sapClient: '' },
+                messages: []
+            });
+            mockListDestinations.mockResolvedValue({
+                A: { Name: 'A', Host: 'https://shared.example.test', ProxyType: 'OnPremise' },
+                B: { Name: 'B', Host: 'https://shared.example.test', ProxyType: 'OnPremise' }
+            });
+            mockPrompt.mockReset();
+            mockPrompt.mockRejectedValueOnce(new NoInputError());
+
+            const command = new Command('sap-ux');
+            command.addCommand(getMigrateCommand());
+            await expect(command.parseAsync(getArgv(['migrate', testProjectRoot]))).rejects.toThrow(
+                'process.exit called'
+            );
+
+            expect(mockMigrate).not.toHaveBeenCalled();
+            expect(loggerMock.error).toHaveBeenCalledWith(expect.stringContaining('noInput'));
+        });
+
+        test('should report a cancelled run when a prompt is cancelled', async () => {
+            mockPrompt.mockReset();
+            mockPrompt.mockResolvedValueOnce({});
+
+            const command = new Command('sap-ux');
+            command.addCommand(getMigrateCommand());
+            await expect(command.parseAsync(getArgv(['migrate']))).rejects.toThrow('process.exit called');
+
+            expect(getEvents().map((event) => event.eventName)).toEqual(['MIGRATION_COMPLETED']);
+            expect(getEvent('MIGRATION_COMPLETED')?.properties.cancelled).toBe('true');
+        });
+
+        test('should report force override of an already migrated project', async () => {
+            const migratedProjectRoot = join(__dirname, '../../fixtures/migrated-project');
+            const command = new Command('sap-ux');
+            command.addCommand(getMigrateCommand());
+            await command.parseAsync(
+                getArgv(['migrate', migratedProjectRoot, '--hostname', 'myhost.com', '--client', '100', '--force'])
+            );
+
+            expect(getEvent('MIGRATION_COMPLETED')?.properties).toEqual(
+                expect.objectContaining({ forceOverride: 'true', cancelled: 'false' })
+            );
+        });
+
+        test('should report how the system was resolved', async () => {
+            mockGetProjectInfo.mockResolvedValue({
+                projectInfo: { hostname: 'saved.example.test', sapClient: '100' },
+                messages: []
+            });
+            mockFindSystemByUrl.mockResolvedValue({ name: 'SAVED', url: 'https://saved.example.test', client: '100' });
+            const command = new Command('sap-ux');
+            command.addCommand(getMigrateCommand());
+            await command.parseAsync(getArgv(['migrate', testProjectRoot, '--skip-install']));
+            expect(getEvent('MIGRATION_COMPLETED')?.properties.systemResolvedVia).toBe('savedSystem');
+
+            mockReportEventBlocking.mockClear();
+            mockIsAppStudio.mockReturnValue(true);
+            mockListDestinations.mockResolvedValue({
+                SAVED: { Name: 'SAVED', Host: 'https://saved.example.test', ProxyType: 'OnPremise' }
+            });
+            mockGetProjectInfo.mockResolvedValue({
+                projectInfo: { destination: 'SAVED', hostname: '', sapClient: '' },
+                messages: []
+            });
+            mockPrompt.mockResolvedValue({ clientValue: '', version: '' });
+            await command.parseAsync(getArgv(['migrate', testProjectRoot, '--skip-install']));
+            expect(getEvent('MIGRATION_COMPLETED')?.properties.systemResolvedVia).toBe('basDestination');
+        });
+
+        test('should report prompted system when nothing could be resolved up front', async () => {
+            mockPrompt.mockReset();
+            mockPrompt
+                .mockResolvedValueOnce({ useDestination: false })
+                .mockResolvedValueOnce({ host: 'myhost.com' })
+                .mockResolvedValueOnce({ clientValue: '100' })
+                .mockResolvedValueOnce({ version: '' });
+            const command = new Command('sap-ux');
+            command.addCommand(getMigrateCommand());
+            await command.parseAsync(getArgv(['migrate', testProjectRoot, '--skip-install']));
+
+            expect(getEvent('MIGRATION_COMPLETED')?.properties.systemResolvedVia).toBe('prompt');
+        });
+
+        test('should not report events when telemetry is disabled', async () => {
+            mockGetTelemetrySetting.mockResolvedValue({ enableTelemetry: false });
+            await initCliTelemetry('1.0.0');
+
+            await migrateWithOptions(['--skip-install']);
+
+            expect(mockMigrate).toHaveBeenCalled();
+            expect(mockReportEventBlocking).not.toHaveBeenCalled();
+        });
+
+        test.each(['DO_NOT_TRACK', 'SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY'])(
+            'should not report events when %s is set',
+            async (variable) => {
+                process.env[variable] = variable === 'DO_NOT_TRACK' ? '1' : 'true';
+                await initCliTelemetry('1.0.0');
+
+                await migrateWithOptions(['--skip-install']);
+
+                expect(mockMigrate).toHaveBeenCalled();
+                expect(mockReportEventBlocking).not.toHaveBeenCalled();
+            }
+        );
+
+        test('should not fail the migration when sending an event fails', async () => {
+            mockReportEventBlocking.mockRejectedValue(new Error('network down'));
+
+            await migrateWithOptions(['--skip-install']);
+
+            expect(mockMigrate).toHaveBeenCalled();
+            expect(loggerMock.debug).toHaveBeenCalledWith(expect.stringContaining('network down'));
+        });
     });
 });

@@ -52,9 +52,11 @@ describe('Error reporting', () => {
     beforeEach(() => {
         spyTrackEvent.mockClear();
         delete process.env.SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY;
+        delete process.env.DO_NOT_TRACK;
     });
     afterEach(() => {
         delete process.env.SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY;
+        delete process.env.DO_NOT_TRACK;
     });
 
     it('Test errorReporting', () => {
@@ -93,6 +95,12 @@ describe('Error reporting', () => {
 
     it('Test reporting turn off telemetry - Disabled by env var', () => {
         process.env.SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY = 'true';
+        reportEnableTelemetryOnOff(false, {});
+        expect(spyTrackEvent).toHaveBeenCalledTimes(0);
+    });
+
+    it('Test reporting turn off telemetry - Disabled by DO_NOT_TRACK', () => {
+        process.env.DO_NOT_TRACK = '1';
         reportEnableTelemetryOnOff(false, {});
         expect(spyTrackEvent).toHaveBeenCalledTimes(0);
     });

@@ -253,6 +253,13 @@ jobs:
                   find: 'ApplicationInsightsInstrumentationKeyPLACEH0LDER'
                   replace: ${{ secrets.INSTRUMENTATION_KEY }}
                   regex: false
+            - name: Set instrumentation key in create
+              uses: jacobtomlinson/gha-find-replace@2ff30f644d2e0078fc028beb9193f5ff0dcad39e # v3
+              with:
+                  include: packages/create/src/cli/migrate/telemetry.ts
+                  find: 'ApplicationInsightsInstrumentationKeyPLACEH0LDER'
+                  replace: ${{ secrets.INSTRUMENTATION_KEY }}
+                  regex: false
             - name: Run build
               run: pnpm run build
             - name: 'Publish to npmjs'
