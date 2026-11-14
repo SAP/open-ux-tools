@@ -8,11 +8,11 @@ import type { DOMEventListenerMock } from '../../utils/utils';
 import { mockDomEventListener } from '../../utils/utils';
 
 /**
- * Walks up the React 16 fiber tree from the given DOM node's fiber,
+ * Walks up the React fiber tree from the given DOM node's fiber,
  * returning the first class component instance matching componentClass.
  */
 function getReactInstance<T>(domNode: Element, componentClass: new (...args: any[]) => T): T | null {
-    const fiberKey = Object.keys(domNode).find((k) => k.startsWith('__reactInternalInstance'));
+    const fiberKey = Object.keys(domNode).find((k) => k.startsWith('__reactFiber'));
     if (!fiberKey) {
         return null;
     }
@@ -64,7 +64,7 @@ describe('<UITreeDropdown />', () => {
     // fireEvent.change/input do not reliably trigger Fluent UI's internal onChange handler,
     // so we invoke the React event handler stored on the element directly.
     const simulateInputChange = (input: HTMLInputElement, value: string): void => {
-        const reactHandlersKey = Object.keys(input).find((k) => k.startsWith('__reactEventHandlers'));
+        const reactHandlersKey = Object.keys(input).find((k) => k.startsWith('__reactProps'));
         const handlers = reactHandlersKey ? (input as any)[reactHandlersKey] : null;
         Object.defineProperty(input, 'value', { writable: true, configurable: true, value });
         if (handlers?.onChange) {
