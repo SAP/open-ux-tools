@@ -29,7 +29,7 @@
         "serviceKeyFailed": "Failed to fetch the service key.",
         "missingMtaParameters": "Missing required parameters, MTA Path, MTA ID, or the Router type is missing.",
         "invalidMtaIdWithChars": "The MTA ID can only contain letters, numbers, dashes, periods, and underscores.",
-        "invalidMtaId": "The MTA ID must start with a letter or underscore and be less than 128 characters.",
+        "invalidMtaId": "The MTA ID must start with a letter or underscore.",
         "missingABAPServiceBindingDetails": "Missing ABAP service details for direct service binding.",
         "mtaFolderAlreadyExists": "A folder with same name already exists in the target directory.",
         "mtaAlreadyExists": "An `mta.yaml` file already exists in the target directory.",

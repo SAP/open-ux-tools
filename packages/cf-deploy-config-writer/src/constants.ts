@@ -123,8 +123,13 @@ const cannotFindBinary = (bin: string, pkg: string): string => t('error.cannotFi
 export const CDSBinNotFound = cannotFindBinary(CDSExecutable, CDSDKPackage);
 export const MTABinNotFound = cannotFindBinary(MTAExecutable, MTAPackage);
 
-// MTA ID length limits
-export const MAX_MTA_ID_LENGTH = 128;
+// MTA ID length limit.
+// The html5-apps-repo CLI resolves deployed apps via `cf html5-list -di <mta-id>-destination-service`,
+// deriving the destination service instance name directly from the MTA ID. Cloud Foundry caps service
+// instance names at 50 characters (see MAX_SERVICE_INSTANCE_NAME_LENGTH below), so the MTA ID must stay
+// within 50 - '-destination-service'.length (= 30); otherwise the CLI looks up an instance name that was
+// never deployed (the deployed service-name having been capped at 50) and the lookup fails.
+export const MAX_MTA_ID_LENGTH = 30;
 export const MAX_MTA_PREFIX_LENGTH = 100;
 export const MAX_MTA_PREFIX_SHORT_LENGTH = 94;
 export const MAX_MTA_PREFIX_SHORTER_LENGTH = 96;
