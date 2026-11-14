@@ -196,7 +196,7 @@ The `library` field in the tool response is the **exact string to use as the XML
 
 Run this step only if the user's intention involves binding the element to a data source **and** `availableModels` from Step 6 didn't already answer the question. For the simple "which entity is this control bound to" case, `availableModels[<name>].contextEntityType` is usually enough; reach for the EDMX only when you need richer information (property details, navigation paths, annotations, or entities outside the current binding context).
 
-**IMPORTANT** Call `read_odata_metadata_adp` with the adaptation project path to retrieve the metadata (EDMX) of the OData services available to the application. Always use this tool — do not curl, fetch, or grep EDMX from disk. Use the returned entities, properties, navigation paths, key fields, and annotations as context to decide:
+**IMPORTANT** Call `read_odata_metadata_adp` with the adaptation project path to retrieve the metadata (EDMX) of the OData services available to the application. Always retrieve metadata through the tools described here. For both ABAP and CF, always store returned EDMX locally before inspecting it: save non-empty inline `metadata` to `<appPath>/.context/<service>-metadata.xml`, creating the directory if needed, or use the returned `metadataFile` when already saved. Use targeted `rg` (or `grep`) searches on these local files to extract the relevant entities, properties, navigation paths, key fields, and annotations as context to decide:
 
 - Which entity set / entity type to bind against
 - The exact property name and path (including any navigation traversal)
@@ -207,8 +207,8 @@ Run this step only if the user's intention involves binding the element to a dat
 
 1. Call `read_odata_metadata_adp` to list the data sources and collect the `entries[].url` values (the service URIs).
 2. With a live editor session already started (the `start` step of `run_rta_workflow_step` has succeeded), call `run_rta_workflow_step` with `step: "get_odata_metadata"`, `site` (top-level), `appPath` (top-level, **required** — the adaptation project root), and `payload: { uris: [...] }` passing those URIs. It fetches the real EDMX through the editor's authenticated approuter session and returns `{ entries: Array<{ url, metadata } | { url, metadataFile, sizeBytes } | { url, error }> }`:
-   - `{ url, metadata }` — EDMX inline (small services); use it directly.
-   - `{ url, metadataFile, sizeBytes }` — EDMX too large to inline; it was written to `<appPath>/.context/<name>-metadata.xml`. **Read that file** (e.g. with a targeted `jq`/grep for the entity you need) rather than loading the whole multi-megabyte document.
+   - `{ url, metadata }` — EDMX inline (small services); save it locally, then inspect it with targeted `rg`/`grep` searches.
+   - `{ url, metadataFile, sizeBytes }` — EDMX too large to inline; it was written to `<appPath>/.context/<name>-metadata.xml`. Use targeted `rg`/`grep` searches on that file rather than loading the whole multi-megabyte document.
    - `{ url, error }` — the fetch failed (lost-auth login page, non-XML, or a foreign-origin URI was refused); re-run `start` if the session lapsed.
 
 For the common "what is this control bound to" question you usually need **neither** call — `get_context`'s `availableModels[<name>].contextEntityType` (Step 6) already resolves the bound entity type through the authenticated browser's meta model, for both ABAP and CF. Reach for `get_odata_metadata` only when you need the richer EDMX (full entity sets, navigation paths, annotations, or services outside the current binding context) for a CF project. For an ABAP project, `read_odata_metadata_adp` returns the EDMX directly and no workflow step is needed — small services inline as `metadata`, large ones spilled to `<appPath>/.context/<service>-metadata.xml` and returned as `{ metadataFile, sizeBytes }`, and a service whose metadata fetch fails returned as `{ error }` (the other services are unaffected) — exactly as the CF `get_odata_metadata` step does. Read a spilled file rather than loading the whole document.
@@ -224,6 +224,12 @@ Typical triggers:
 If the change is purely structural or behavioral (static labels, visibility toggles, controller-only logic, etc.) and does not reference any backing data, skip this step.
 
 Feed these decisions into Step 8 (payload preparation) and into the fragment XML / controller extension content generated in Step 12. If the metadata does not contain a property matching the user's request, stop and ask — do not invent a binding path.
+
+### Step 7a — Download and inspect base app content
+
+When implementing controller logic, call `download_base_app_adp({ appPath })` with the adaptation project root. Skip this step when no controller logic is needed.
+
+On `status: "success"`, inspect the relevant base app controllers and helper modules under `<appPath>/.context/` for existing behavior and supported extension points. Prefer `*-dbg.js` files when available for readable, unminified code. Use these findings when preparing the payload in Step 8 and generating code in Step 12. Reuse suitable public APIs where possible and implement changes in the adaptation project, leaving downloaded resources unchanged. If downloading fails, report the returned message.
 
 ### Step 8 — Prepare action payload (AI decision)
 
@@ -246,6 +252,7 @@ General rules:
   - OData V2: `oModel.read(oContext.getPath(), { urlParameters: { "$select": "PropA,PropB" }, success: function(oData) { … } })`
   - OData V4: `oContext.requestProperty(["PropA", "PropB"]).then(function([vA, vB]) { … })`
 - **Existing change awareness:** before finalising any payload or generated code, review the existing changes in the project (imported key user changes and any developer changes already in `webapp/changes/`) for related intent. When an existing change addresses something similar to the current requirement, align the new output with it — reuse the same property names, URL patterns, entity paths, and logic rather than re-deriving them independently. Silently diverging from an established pattern in the same project is a defect.
+- **Base app controller awareness:** use the findings from Step 7a when implementing controller logic.
 - Validate types match the schema (string vs int vs boolean — `index` is int, not string).
 
 **Confidence gating** (thresholds from [references/hitl-gating.md](references/hitl-gating.md#per-decision-thresholds) — strictest of the three because a successful `call_action` with a wrong payload is the worst silent failure):
