@@ -11,121 +11,165 @@ import {
     startRta
 } from './rta/index.js';
 import { logger } from '../../utils/logger.js';
-import { defaultTransport, isRegistryEmpty, registerSite } from './browser/index.js';
+import { defaultTransport, httpTransport, isRegistryEmpty, registerSite } from './browser/index.js';
 import { STEPS, type RunRtaWorkflowStepInput, type RunRtaWorkflowStepResult } from './types.js';
 import {
     optionalObject,
     optionalString,
     requireAppPath,
     requireObject,
-    requireSite,
+    requireSite as requireLoopbackSite,
     requireString,
     requireStringArray
 } from './assertions.js';
+import { requireEditorSession } from '../../adaptation-editor/editor-session.js';
+import { isSimpleBrowserRelayEnabled } from '../../adaptation-editor/simple-browser-relay.js';
+
+// Simple Browser HTTP relay when enabled (BAS / FORCE_AUTOOPEN), else Playwright.
+const activeTransport = isSimpleBrowserRelayEnabled() ? httpTransport : defaultTransport;
+
+/**
+ * Validates the site URL. Over the HTTP relay the exact owned editor URL must be a
+ * registered editor session; browser transports use the shared loopback validation.
+ *
+ * @param site Value of `input.site`.
+ * @returns The validated site URL.
+ */
+function requireSite(site: string | undefined): string {
+    if (activeTransport === httpTransport) {
+        if (typeof site !== 'string' || site.length === 0) {
+            throw new Error(
+                'site is required for this step. Pass the exact editor URL returned by open_adaptation_editor.'
+            );
+        }
+        requireEditorSession(site);
+        return site;
+    }
+    return requireLoopbackSite(site);
+}
+
+/**
+ * Dispatches one RTA step to the active transport. No error handling — the caller owns that.
+ *
+ * @param input Step + site + frameId + step-specific payload.
+ * @returns Step-specific result.
+ */
+async function dispatchStep(input: RunRtaWorkflowStepInput): Promise<RunRtaWorkflowStepResult> {
+    const site = requireSite(input.site);
+    const frameId = input.frameId ?? 'preview';
+    switch (input.step) {
+        case 'start': {
+            const agentName = optionalString(input.payload, 'agentName');
+            if (activeTransport === httpTransport) {
+                // Relay carries its own editor-session and gets no appPath; skip Playwright seeding.
+                await activeTransport.disconnectSite(site);
+            } else {
+                // Validate appPath before disconnecting, so a bad path can't tear down a working page.
+                const appPath = requireAppPath(input.appPath);
+                await activeTransport.disconnectSite(site);
+                // Key session seeding by project (and CF-ness); ABAP projects skip it.
+                await registerSite(site, appPath);
+            }
+            const result = await startRta(activeTransport, { site, frameId }, agentName);
+            return { site, frameId, ...result };
+        }
+        case 'get_overlays': {
+            const { overlays, actionsCatalog } = await getOverlays(activeTransport, { site, frameId });
+            return { overlays, actionsCatalog };
+        }
+        case 'get_context': {
+            const controlId = requireString(input.payload, 'controlId');
+            const actionId = requireString(input.payload, 'actionId');
+            const context = await getElementContext(activeTransport, { site, frameId }, controlId, actionId);
+            return { context };
+        }
+        case 'call_action': {
+            const controlId = requireString(input.payload, 'controlId');
+            const actionId = requireString(input.payload, 'actionId');
+            const actionPayload = requireObject(input.payload, 'actionPayload');
+            const ok = await executeAction(activeTransport, { site, frameId }, controlId, actionId, actionPayload);
+            return { success: ok };
+        }
+        case 'save': {
+            const ok = await saveChanges(activeTransport, { site, frameId });
+            return { saved: ok };
+        }
+        case 'cleanup': {
+            const reason = optionalString(input.payload, 'reason');
+            const { cleaned } = await cleanup(activeTransport, { site, frameId }, reason);
+            return { cleaned };
+        }
+        case 'stop': {
+            await activeTransport.disconnectSite(site);
+            // The relay session owns both the automatic tab signal and server handle.
+            if (activeTransport.stopEditor) {
+                const editorServerStopped = await activeTransport.stopEditor(site);
+                return { stopped: true, editorServerStopped };
+            }
+            // Transports that own the browser close it directly.
+            if (isRegistryEmpty()) {
+                await activeTransport.stopBrowser();
+            }
+            return { stopped: true };
+        }
+        case 'restart': {
+            const page = { site, frameId };
+            if (activeTransport === httpTransport) {
+                await activeTransport.disconnectSite(site);
+                // Relay: reload the editor page so it re-reads on-disk webapp/changes.
+                if (activeTransport.reloadPage) {
+                    await activeTransport.reloadPage(site);
+                }
+            } else {
+                // Validate appPath before disconnecting, so a bad path can't tear down the running page.
+                const appPath = requireAppPath(input.appPath);
+                await activeTransport.disconnectSite(site);
+                // disconnectSite dropped the site meta; re-register to keep project identity / CF keying.
+                await registerSite(site, appPath);
+            }
+            const result = await startRta(activeTransport, page);
+            return { site, frameId, ...result };
+        }
+        case 'describe_ui': {
+            const rootElementId = optionalString(input.payload, 'rootElementId');
+            const uiTree = await describeUi(activeTransport, { site, frameId }, rootElementId);
+            return { uiTree };
+        }
+        case 'execute_page_action': {
+            const actionName = requireString(input.payload, 'actionName');
+            const elementId = optionalString(input.payload, 'elementId');
+            const actionParameters = optionalObject(input.payload, 'actionParameters');
+            const ufaResult = await executeUfaAction(
+                activeTransport,
+                { site, frameId },
+                actionName,
+                elementId,
+                actionParameters
+            );
+            return { isSuccess: ufaResult.isSuccess, result: ufaResult.result };
+        }
+        case 'get_odata_metadata': {
+            const uris = requireStringArray(input.payload, 'uris');
+            const appPath = requireAppPath(input.appPath);
+            return getODataMetadata(activeTransport, site, uris, appPath);
+        }
+        default:
+            throw new Error(`Unknown step: ${String(input.step)}. Valid steps: ${STEPS.join(', ')}`);
+    }
+}
 
 /**
  * Runs one step of the RTA workflow. Dispatches by `input.step` and forwards
  * to the corresponding `rta` command wrapper. `site` and `frameId` are passed
- * directly on every call — the tool holds no server-side session state.
- * `connectionRegistry` inside `playwright-bridge` caches the live Playwright
- * page by URL and is the only long-lived state, scoped to the browser process.
+ * directly on every call. HTTP relay lifecycle and credentials belong to the
+ * editor-session registry; browser transports retain their own connections.
  *
  * @param input Step + site + frameId + step-specific payload.
  * @returns Step-specific result. The `start` step echoes `site` and `frameId` back.
  */
 export async function runRtaWorkflowStep(input: RunRtaWorkflowStepInput): Promise<RunRtaWorkflowStepResult> {
     try {
-        const site = requireSite(input.site);
-        const frameId = input.frameId ?? 'preview';
-        switch (input.step) {
-            case 'start': {
-                // Validate all input BEFORE disconnecting: a bad value must not
-                // tear down an existing working page for a call that then throws.
-                const appPath = requireAppPath(input.appPath);
-                const agentName = optionalString(input.payload, 'agentName');
-                // Always disconnect any existing page for this URL before starting fresh.
-                // This prevents a new project opened on the same port from reusing the previous project's stale Playwright page.
-                await defaultTransport.disconnectSite(site);
-                // Record which project (and whether CF) is starting on this site, so
-                // session seeding is keyed by project and ABAP projects skip it entirely.
-                await registerSite(site, appPath);
-                const result = await startRta(defaultTransport, { site, frameId }, agentName);
-                return { site, frameId, ...result };
-            }
-            case 'get_overlays': {
-                const { overlays, actionsCatalog } = await getOverlays(defaultTransport, {
-                    site,
-                    frameId
-                });
-                return { overlays, actionsCatalog };
-            }
-            case 'get_context': {
-                const controlId = requireString(input.payload, 'controlId');
-                const actionId = requireString(input.payload, 'actionId');
-                const context = await getElementContext(defaultTransport, { site, frameId }, controlId, actionId);
-                return { context };
-            }
-            case 'call_action': {
-                const controlId = requireString(input.payload, 'controlId');
-                const actionId = requireString(input.payload, 'actionId');
-                const actionPayload = requireObject(input.payload, 'actionPayload');
-                const ok = await executeAction(defaultTransport, { site, frameId }, controlId, actionId, actionPayload);
-                return { success: ok };
-            }
-            case 'save': {
-                const ok = await saveChanges(defaultTransport, { site, frameId });
-                return { saved: ok };
-            }
-            case 'cleanup': {
-                const reason = optionalString(input.payload, 'reason');
-                const { cleaned } = await cleanup(defaultTransport, { site, frameId }, reason);
-                return { cleaned };
-            }
-            case 'stop': {
-                await defaultTransport.disconnectSite(site);
-                if (isRegistryEmpty()) {
-                    await defaultTransport.stopBrowser();
-                }
-                return { stopped: true };
-            }
-            case 'restart': {
-                const page = { site, frameId };
-                // Validate required input BEFORE disconnecting: a bad appPath must not
-                // tear down the running editor page for a call that then throws.
-                const appPath = requireAppPath(input.appPath);
-                await defaultTransport.disconnectSite(site);
-                // disconnectSite forgot the site meta; re-register so the reloaded
-                // editor keeps its project identity / CF session keying.
-                await registerSite(site, appPath);
-                const result = await startRta(defaultTransport, page);
-                return { site, frameId, ...result };
-            }
-            case 'describe_ui': {
-                const rootElementId = optionalString(input.payload, 'rootElementId');
-                const uiTree = await describeUi(defaultTransport, { site, frameId }, rootElementId);
-                return { uiTree };
-            }
-            case 'execute_page_action': {
-                const actionName = requireString(input.payload, 'actionName');
-                const elementId = optionalString(input.payload, 'elementId');
-                const actionParameters = optionalObject(input.payload, 'actionParameters');
-                const ufaResult = await executeUfaAction(
-                    defaultTransport,
-                    { site, frameId },
-                    actionName,
-                    elementId,
-                    actionParameters
-                );
-                return { isSuccess: ufaResult.isSuccess, result: ufaResult.result };
-            }
-            case 'get_odata_metadata': {
-                const uris = requireStringArray(input.payload, 'uris');
-                const appPath = requireAppPath(input.appPath);
-                return getODataMetadata(defaultTransport, site, uris, appPath);
-            }
-            default:
-                throw new Error(`Unknown step: ${String(input.step)}. Valid steps: ${STEPS.join(', ')}`);
-        }
+        return await dispatchStep(input);
     } catch (error) {
         const message = error instanceof Error ? error.message : String(error);
         if (error instanceof FrontendActionError) {

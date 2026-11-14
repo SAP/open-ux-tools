@@ -81,6 +81,8 @@ import { readFileSync } from 'node:fs';
 import { getIntegrationCard } from './utils/cards.js';
 import { createPropertiesI18nEntries } from '@sap-ux/i18n';
 import { AdaptationProjectType, type AbapServiceProvider } from '@sap-ux/axios-extension';
+import { addRtaRelayApis } from './rta-relay.js';
+import { handleAdpLogin } from './adp-login.js';
 
 const DEFAULT_LIVERELOAD_PORT = 35729;
 
@@ -130,6 +132,7 @@ type RtaDeveloperModeTemplateConfig = {
  */
 export class FlpSandbox {
     private adp?: AdpPreview;
+    private rtaRelay?: ReturnType<typeof addRtaRelayApis>;
     private manifest: Manifest;
     protected onChangeRequest: OnChangeRequestHandler | undefined;
     protected templateConfig: TemplateConfig;
@@ -203,6 +206,9 @@ export class FlpSandbox {
             this.logger
         );
         this.adp = adp;
+        if (adp) {
+            this.rtaRelay ??= addRtaRelayApis(this.router, process.env.SAP_FIORI_MCP_ADP_RELAY_TOKEN ?? '');
+        }
         this.manifest = manifest;
 
         await addApp(
@@ -394,6 +400,9 @@ export class FlpSandbox {
         rta: RtaConfig,
         previewUrl: string
     ): Promise<void> {
+        if (handleAdpLogin(req, res, !!this.rtaRelay)) {
+            return;
+        }
         const scenario = rta.options?.scenario;
         let templatePreviewUrl = `${previewUrl}?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=forAdaptation&sap-ui-rta-skip-flex-validation=true&sap-ui-xx-condense-changes=true#${this.flpConfig.intent.object}-${this.flpConfig.intent.action}`;
         if (scenario === 'ADAPTATION_PROJECT') {
@@ -435,6 +444,9 @@ export class FlpSandbox {
         previewUrl: string,
         editor: RtaEditor
     ): Promise<void> {
+        if (handleAdpLogin(req, res, !!this.rtaRelay)) {
+            return;
+        }
         if (!req.query['fiori-tools-rta-mode']) {
             this.logger.debug(`Adjusting URL parameters for runtime adaptation mode. Redirecting to correct URL.`);
             const url =
@@ -453,10 +465,14 @@ export class FlpSandbox {
             res.redirect(302, `${redirectUrl.pathname}${redirectUrl.search}`);
             return;
         }
+        const rtaRelayTag = this.rtaRelay?.clientTag(req['ui5-patched-router']?.baseUrl ?? req.baseUrl) ?? '';
         const html = (await this.generateSandboxForEditor(req, rta, editor)).replace(
             '</body>',
-            `</body>\n<!-- livereload disabled for editor </body>-->`
+            `${rtaRelayTag}</body>\n<!-- livereload disabled for editor </body>-->`
         );
+        if (this.rtaRelay) {
+            res.set('Cache-Control', 'no-store');
+        }
         this.sendResponse(res, 'text/html', 200, html);
     }
 
