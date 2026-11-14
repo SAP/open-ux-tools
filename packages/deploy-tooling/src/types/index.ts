@@ -90,4 +90,5 @@ export interface CliOptions
     username?: string;
     password?: string;
     service?: string;
+    exclude?: string[];
 }
