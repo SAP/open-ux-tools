@@ -1,14 +1,20 @@
-import { join } from 'node:path';
 import { create as createStorage } from 'mem-fs';
 import { create, type Editor } from 'mem-fs-editor';
+import { join } from 'node:path';
 
-import { getManifestContent } from './manifest/index.js';
-import { getI18nDescription, getI18nModels, writeI18nModels } from './i18n/index.js';
-import { writeTemplateToFolder, writeUI5Yaml, writeUI5DeployYaml } from './project-utils.js';
-import { FlexLayer, type AdpWriterConfig, type InternalInboundNavigation } from '../types.js';
-import { getApplicationType } from '../source/index.js';
 import { writeKeyUserChanges } from '../base/change-utils.js';
+import { getApplicationType } from '../source/index.js';
 import { getTemplatePath } from '../templates.js';
+import { FlexLayer, type AdpWriterConfig, type InternalInboundNavigation } from '../types.js';
+import { getI18nDescription, getI18nModels, writeI18nModels } from './i18n/index.js';
+import { getManifestContent } from './manifest/index.js';
+import {
+    writeMockServerFiles,
+    writeOpaTestFiles,
+    writeTemplateToFolder,
+    writeUI5DeployYaml,
+    writeUI5Yaml
+} from './project-utils.js';
 
 /**
  * Set default values for optional properties.
@@ -69,6 +75,14 @@ export async function generate(basePath: string, config: AdpWriterConfig, fs?: E
     await writeUI5DeployYaml(basePath, fullConfig, fs);
     await writeUI5Yaml(basePath, fullConfig, fs);
     await writeKeyUserChanges(basePath, fullConfig, fs);
+
+    if (fullConfig.options?.addOpaTests) {
+        writeOpaTestFiles(templatePath, basePath, fullConfig, fs);
+    }
+
+    if (fullConfig.options?.addMockServer) {
+        writeMockServerFiles(templatePath, basePath, fullConfig, fs);
+    }
 
     return fs;
 }

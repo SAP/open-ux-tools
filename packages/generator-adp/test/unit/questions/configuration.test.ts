@@ -169,7 +169,7 @@ describe('ConfigPrompter Integration Tests', () => {
         it('should return prompts with correct names', () => {
             const prompts = configPrompter.getPrompts();
 
-            expect(prompts).toHaveLength(13);
+            expect(prompts).toHaveLength(14);
             const names = prompts.map((p) => p.name);
 
             names.map((name) => {
@@ -1317,6 +1317,57 @@ describe('ConfigPrompter Integration Tests', () => {
             expect(confirmPrompt).toBeDefined();
             const result = confirmPrompt?.validate?.(true);
             expect(result).toEqual(true);
+        });
+    });
+
+    describe('Add Mock Server Prompt', () => {
+        it('is present in the prompts list', () => {
+            const prompt = getPrompt(configPromptNames.addMockServer);
+            expect(prompt).toBeDefined();
+            expect(prompt?.type).toBe('confirm');
+            expect(prompt?.default).toBe(false);
+        });
+
+        it('when() returns false for CUSTOMER_BASE layer', () => {
+            const prompt = getPrompt(configPromptNames.addMockServer);
+            const whenFn = prompt?.when as (answers: ConfigAnswers) => boolean;
+            expect(whenFn({ shouldCreateExtProject: false } as ConfigAnswers)).toBe(false);
+        });
+
+        it('when() returns true for VENDOR layer when application is supported', async () => {
+            const vendorPrompter = new ConfigPrompter(sourceSystems, FlexLayer.VENDOR, logger, telemetryCollector);
+            Object.assign(vendorPrompter, { isApplicationSupported: true });
+            const prompts = vendorPrompter.getPrompts();
+            const prompt = prompts.find((p) => p.name === configPromptNames.addMockServer);
+            const whenFn = prompt?.when as (answers: ConfigAnswers) => boolean;
+            expect(whenFn({ shouldCreateExtProject: false } as ConfigAnswers)).toBe(true);
+        });
+
+        it('when() returns false for VENDOR layer when application is not supported', async () => {
+            const vendorPrompter = new ConfigPrompter(sourceSystems, FlexLayer.VENDOR, logger, telemetryCollector);
+            Object.assign(vendorPrompter, { isApplicationSupported: false });
+            const prompts = vendorPrompter.getPrompts();
+            const prompt = prompts.find((p) => p.name === configPromptNames.addMockServer);
+            const whenFn = prompt?.when as (answers: ConfigAnswers) => boolean;
+            expect(whenFn({ shouldCreateExtProject: false } as ConfigAnswers)).toBe(false);
+        });
+
+        it('when() returns false for VENDOR layer when shouldCreateExtProject is true', () => {
+            const vendorPrompter = new ConfigPrompter(sourceSystems, FlexLayer.VENDOR, logger, telemetryCollector);
+            Object.assign(vendorPrompter, { isApplicationSupported: true });
+            const prompts = vendorPrompter.getPrompts();
+            const prompt = prompts.find((p) => p.name === configPromptNames.addMockServer);
+            const whenFn = prompt?.when as (answers: ConfigAnswers) => boolean;
+            expect(whenFn({ shouldCreateExtProject: true } as ConfigAnswers)).toBe(false);
+        });
+
+        it('when() returns true for VENDOR layer when application is supported and shouldCreateExtProject is false', () => {
+            const vendorPrompter = new ConfigPrompter(sourceSystems, FlexLayer.VENDOR, logger, telemetryCollector);
+            Object.assign(vendorPrompter, { isApplicationSupported: true });
+            const prompts = vendorPrompter.getPrompts();
+            const prompt = prompts.find((p) => p.name === configPromptNames.addMockServer);
+            const whenFn = prompt?.when as (answers: ConfigAnswers) => boolean;
+            expect(whenFn({ shouldCreateExtProject: false } as ConfigAnswers)).toBe(true);
         });
     });
 

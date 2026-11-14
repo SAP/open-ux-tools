@@ -27,8 +27,16 @@ jest.unstable_mockModule('@sap-ux/ui5-config', () => ({
     getTypesVersion: mockGetTypesVersion
 }));
 
-const { writeTemplateToFolder, writeUI5Yaml, writeUI5DeployYaml, writeCfUI5Yaml, getPackageJSONInfo, getTypes } =
-    await import('../../../src/writer/project-utils.js');
+const {
+    writeTemplateToFolder,
+    writeUI5Yaml,
+    writeUI5DeployYaml,
+    writeCfUI5Yaml,
+    getPackageJSONInfo,
+    getTypes,
+    writeOpaTestFiles,
+    writeMockServerFiles
+} = await import('../../../src/writer/project-utils.js');
 const { AppRouterType, FlexLayer } = await import('../../../src/types.js');
 import type { AdpWriterConfig } from '../../../src/index.js';
 
@@ -389,6 +397,74 @@ metadata:
             expect(writtenContent).toContain('excludes:');
             expect(writtenContent).toContain('/test/**');
             expect(writtenContent).toContain('/localService/**');
+        });
+    });
+
+    describe('writeOpaTestFiles', () => {
+        const templatePath = '../../../templates';
+        const projectPath = 'project';
+        const copyTplSpy = jest.fn();
+        const mockFs = { copyTpl: copyTplSpy };
+
+        beforeEach(() => {
+            jest.clearAllMocks();
+        });
+
+        it('should copy OPA templates to the project path', () => {
+            writeOpaTestFiles(templatePath, projectPath, data, mockFs as unknown as Editor);
+
+            expect(copyTplSpy).toHaveBeenCalledWith(
+                join(templatePath, 'opa', '**', '*.*'),
+                projectPath,
+                data,
+                undefined,
+                { globOptions: { dot: true } }
+            );
+        });
+
+        it('should throw a descriptive error when copyTpl fails', () => {
+            const errMsg = 'Disk full';
+            copyTplSpy.mockImplementation(() => {
+                throw new Error(errMsg);
+            });
+
+            expect(() => writeOpaTestFiles(templatePath, projectPath, data, mockFs as unknown as Editor)).toThrow(
+                `Could not write OPA test files. Reason: ${errMsg}`
+            );
+        });
+    });
+
+    describe('writeMockServerFiles', () => {
+        const templatePath = '../../../templates';
+        const projectPath = 'project';
+        const copyTplSpy = jest.fn();
+        const mockFs = { copyTpl: copyTplSpy };
+
+        beforeEach(() => {
+            jest.clearAllMocks();
+        });
+
+        it('should copy mock server templates to the project path', () => {
+            writeMockServerFiles(templatePath, projectPath, data, mockFs as unknown as Editor);
+
+            expect(copyTplSpy).toHaveBeenCalledWith(
+                join(templatePath, 'mockServer', '**', '*.*'),
+                projectPath,
+                data,
+                undefined,
+                { globOptions: { dot: true } }
+            );
+        });
+
+        it('should throw a descriptive error when copyTpl fails', () => {
+            const errMsg = 'Permission denied';
+            copyTplSpy.mockImplementation(() => {
+                throw new Error(errMsg);
+            });
+
+            expect(() => writeMockServerFiles(templatePath, projectPath, data, mockFs as unknown as Editor)).toThrow(
+                `Could not write Mock server files. Reason: ${errMsg}`
+            );
         });
     });
 });
