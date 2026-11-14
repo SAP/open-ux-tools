@@ -14,6 +14,7 @@ import {
     generate,
     generateCf,
     getCfBaseAppInbounds,
+    getApprouterType,
     getCfConfig,
     getConfig,
     getConfiguredProvider,
@@ -28,7 +29,15 @@ import {
     loadCfConfig,
     storeCredentials,
     getDefaultProjectName,
-    getOrCreateServiceInstanceKeys
+    getOrCreateServiceInstanceKeys,
+    getBusinessServiceInfo,
+    getCfApps,
+    downloadAppContent,
+    getBackendUrlsFromServiceKeys,
+    getOAuthPathsFromXsApp,
+    validateSmartTemplateApplication,
+    validateODataEndpoints,
+    AppRouterType
 } from '@sap-ux/adp-tooling';
 import {
     getDefaultTargetFolder,
@@ -42,7 +51,15 @@ import { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
 import { AdaptationProjectType, type AbapServiceProvider } from '@sap-ux/axios-extension';
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
-import type { CfConfig, CfServicesAnswers, AttributesAnswers, ConfigAnswers, UI5Version } from '@sap-ux/adp-tooling';
+import { validateNamespaceAdp, validateProjectName } from '@sap-ux/project-input-validator';
+import type {
+    CfConfig,
+    CfServicesAnswers,
+    CFApp,
+    AttributesAnswers,
+    ConfigAnswers,
+    UI5Version
+} from '@sap-ux/adp-tooling';
 
 import { cacheClear, cacheGet, cachePut, initCache } from '../utils/appWizardCache.js';
 import { getPackageInfo, installDependencies } from '../utils/deps.js';
@@ -50,7 +67,9 @@ import { initI18n, t } from '../utils/i18n.js';
 import { readJsonInputFile } from '../utils/json-input-file.js';
 import AdpGeneratorLogger from '../utils/logger.js';
 import { setHeaderTitle } from '../utils/opts.js';
-import { getFirstArg, parseJsonInput } from '../utils/parse-json-input.js';
+import { getFirstArg, parseJsonInput, getInvalidJsonInputMessage } from '../utils/parse-json-input.js';
+import type { ParseFailure } from '../utils/parse-json-input.js';
+import { isCfJsonInput } from '../utils/type-guards.js';
 import { TelemetryCollector, EventName } from '../telemetry/index.js';
 import {
     getDeployPage,
@@ -68,8 +87,16 @@ import { getFlexLayer } from './layer.js';
 import { getPrompts } from './questions/attributes.js';
 import { CFServicesPrompter } from './questions/cf-services.js';
 import { ConfigPrompter } from './questions/configuration.js';
-import { getDefaultNamespace } from './questions/helper/default-values.js';
-import { validateJsonInput } from './questions/helper/validators.js';
+import {
+    generateBusinessSolutionName,
+    getDefaultNamespace,
+    resolveProjectName
+} from './questions/helper/default-values.js';
+import {
+    validateJsonInput,
+    validateBusinessSolutionName,
+    assertValidationPassed
+} from './questions/helper/validators.js';
 import {
     TargetEnv,
     MtaMode,
@@ -77,6 +104,8 @@ import {
     type AdpGeneratorOptions,
     type AttributePromptOptions,
     type JsonInput,
+    type CfJsonInput,
+    type CfArtifactInputs,
     type JsonInputFile,
     type OptionalPromptsConfig,
     type ProjectLocationAnswers
@@ -84,6 +113,7 @@ import {
 import { getMtaIdPrompt, getMtaModePrompt, getProjectPathPrompt, getTargetEnvPrompt } from './questions/target-env.js';
 import type { AdpTelemetryData } from '../types.js';
 import { KeyUserImportPrompter } from './questions/key-user.js';
+import { hasExistingApprouter, resolveCfProjectPath, resolveCfServiceInstance } from './headless/cf.js';
 import { initTelemetrySettings } from '@sap-ux/telemetry';
 
 const generatorTitle = 'Adaptation Project';
@@ -142,9 +172,14 @@ export default class extends Generator {
     private cfPrompter: CFServicesPrompter;
     /**
      * JSON object representing the complete adaptation project configuration,
-     * passed as a CLI argument.
+     * passed as a CLI argument. Either the ABAP ({@link JsonInput}) or Cloud Foundry
+     * ({@link CfJsonInput}) shape, selected by the `targetEnv` discriminator.
      */
-    private readonly jsonInput?: JsonInput;
+    private readonly jsonInput?: JsonInput | CfJsonInput;
+    /**
+     * The reason a supplied CLI JSON argument was rejected, or `undefined` when none was supplied or it was valid.
+     */
+    private readonly jsonInputError?: ParseFailure;
     /**
      * Parsed `{tmpdir}/{id}.txt` when JSON input includes `id`.
      */
@@ -190,6 +225,10 @@ export default class extends Generator {
      */
     private cfConfig: CfConfig;
     /**
+     * Base-app values discovered from CF JSON input; undefined when the interactive prompter supplies them instead.
+     */
+    private cfArtifacts?: CfArtifactInputs;
+    /**
      * Indicates if the current project is an MTA project.
      */
     private readonly isMtaYamlFound: boolean;
@@ -232,9 +271,11 @@ export default class extends Generator {
         this.isMtaYamlFound = isMtaProject(process.cwd()) as boolean;
 
         const jsonInputString = getFirstArg(args);
-        this.jsonInput = parseJsonInput(jsonInputString, this.logger);
+        const parseResult = parseJsonInput(jsonInputString, this.logger);
+        this.jsonInput = parseResult.ok ? parseResult.input : undefined;
+        this.jsonInputError = !!jsonInputString && !parseResult.ok ? parseResult.reason : undefined;
 
-        if (!this.jsonInput) {
+        if (!this.jsonInput && !this.jsonInputError) {
             this.env.lookup({
                 packagePatterns: ['@sap/generator-fiori', '@bas-dev/generator-extensibility-sub']
             });
@@ -254,6 +295,11 @@ export default class extends Generator {
         // Force the generator to overwrite existing files without additional prompting
         setYeomanEnvConflicterForce(this.env, this.options.force);
         await initI18n();
+
+        if (this.jsonInputError) {
+            throw new Error(getInvalidJsonInputMessage(this.jsonInputError));
+        }
+
         this.isCli = isCli();
         this.layer = getFlexLayer();
         this.isCustomerBase = this.layer === FlexLayer.CUSTOMER_BASE;
@@ -390,7 +436,7 @@ export default class extends Generator {
         try {
             this.toolsId = uuidv4();
             if (this.jsonInput) {
-                await this._initFromJson();
+                await this._initFromJsonInput(this.jsonInput);
             }
 
             this._collectTelemetryData();
@@ -561,7 +607,8 @@ export default class extends Generator {
                 : (this.attributeAnswers?.importKeyUserChanges ?? false)
         };
         if (this.isCfEnv) {
-            telemetryData.baseAppTechnicalName = this.cfPrompter?.manifest?.['sap.app']?.id ?? '';
+            telemetryData.baseAppTechnicalName =
+                (this.cfArtifacts?.manifest ?? this.cfPrompter?.manifest)?.['sap.app']?.id ?? '';
             telemetryData.projectType = 'cf';
             telemetryData.cfServiceOffering = this.cfServicesAnswers?.serviceInstance?.service ?? '';
         } else {
@@ -701,30 +748,50 @@ export default class extends Generator {
     }
 
     /**
+     * Collects the base-app values the CF writer config needs, sourced from the interactive
+     * `cfPrompter`. In the headless (JSON) flow the prompter is absent and `_initFromJsonCf`
+     * supplies these values directly; see `_generateAdpProjectArtifactsCF`.
+     *
+     * @returns {CfArtifactInputs} The base-app values required to build the CF writer config.
+     */
+    private _getCfArtifactInputs(): CfArtifactInputs {
+        if (this.cfArtifacts) {
+            return this.cfArtifacts;
+        }
+        return {
+            manifest: this.cfPrompter?.manifest,
+            html5RepoRuntimeGuid: this.cfPrompter?.html5RepoRuntimeGuid,
+            serviceInstanceGuid: this.cfPrompter?.serviceInstanceGuid,
+            backendUrls: this.cfPrompter?.backendUrls,
+            oauthPaths: this.cfPrompter?.oauthPaths
+        };
+    }
+
+    /**
      * Generates the ADP project artifacts for the CF environment.
+     *
+     * Base-app values (manifest + derived GUIDs/URLs) are sourced via {@link _getCfArtifactInputs},
+     * from either the interactive prompter or the headless JSON discovery.
      */
     private async _generateAdpProjectArtifactsCF(): Promise<void> {
         const projectPath = this.destinationPath();
         const publicVersions = await fetchPublicVersions(this.logger);
         this.telemetryCollector.setBatch({ ui5VersionSelected: getLatestVersion(publicVersions) });
 
-        const manifest = this.cfPrompter.manifest;
+        const { manifest, html5RepoRuntimeGuid, serviceInstanceGuid, backendUrls, oauthPaths } =
+            this._getCfArtifactInputs();
         if (!manifest) {
             throw new Error('Manifest not found for base app.');
         }
 
-        const html5RepoRuntimeGuid = this.cfPrompter.html5RepoRuntimeGuid;
-        const serviceInstanceGuid = this.cfPrompter.serviceInstanceGuid;
-        const backendUrls = this.cfPrompter.backendUrls;
-        const oauthPaths = this.cfPrompter.oauthPaths;
-
         // In new-MTA / no-existing-service modes the businessService prompt is hidden; use the
         // selected live service instance name to resolve/create the service keys instead.
-        const businessServiceName =
-            this.cfServicesAnswers.businessService || this.cfServicesAnswers.serviceInstance?.name || '';
+        const { businessService, serviceInstance } = this.cfServicesAnswers;
+        const businessServiceName = businessService?.trim() ? businessService : (serviceInstance?.name ?? '');
         const serviceInfo = await getOrCreateServiceInstanceKeys(
             {
-                names: [businessServiceName]
+                names: [businessServiceName],
+                spaceGuids: [this.cfConfig.space.GUID]
             },
             this.logger
         );
@@ -735,7 +802,7 @@ export default class extends Generator {
             cfConfig: this.cfConfig,
             layer: this.layer,
             manifest,
-            html5RepoRuntimeGuid,
+            html5RepoRuntimeGuid: html5RepoRuntimeGuid ?? '',
             serviceInstanceGuid,
             backendUrls,
             oauthPaths,
@@ -795,15 +862,28 @@ export default class extends Generator {
     }
 
     /**
-     * Initialize the project generator from a json.
+     * Dispatches JSON-driven (headless) initialization to the ABAP or Cloud Foundry path based on the
+     * JSON shape.
+     *
+     * @param {JsonInput | CfJsonInput} jsonInput - The parsed JSON input.
      */
-    private async _initFromJson(): Promise<void> {
-        if (!this.jsonInput) {
+    private async _initFromJsonInput(jsonInput: JsonInput | CfJsonInput): Promise<void> {
+        if (isCfJsonInput(jsonInput)) {
+            await this._initFromJsonCf(jsonInput);
             return;
         }
 
-        if (this.jsonInput.id) {
-            this.jsonInputFile = await readJsonInputFile(this.jsonInput.id);
+        await this._initFromJson(jsonInput);
+    }
+
+    /**
+     * Initialize the project generator from a json.
+     *
+     * @param {JsonInput} jsonInput - The parsed ABAP JSON input.
+     */
+    private async _initFromJson(jsonInput: JsonInput): Promise<void> {
+        if (jsonInput.id) {
+            this.jsonInputFile = await readJsonInputFile(jsonInput.id);
         }
 
         const {
@@ -817,7 +897,7 @@ export default class extends Generator {
             targetFolder = '/home/user/projects',
             projectName = getDefaultProjectName(targetFolder, `${baseApplicationName}.variant`),
             namespace = getDefaultNamespace(projectName, this.isCustomerBase)
-        } = this.jsonInput;
+        } = jsonInput;
 
         await validateJsonInput(this.systemLookup, this.isCustomerBase, {
             projectName,
@@ -870,6 +950,107 @@ export default class extends Generator {
             namespace,
             targetFolder,
             // If not provided, latest ui5 version will be used. See getConfig() for a reference.
+            ui5Version: '',
+            enableTypeScript: false
+        };
+    }
+
+    /**
+     * Initializes a Cloud Foundry adaptation project from JSON input (headless, no prompts).
+     *
+     * Validates the CF session, resolves the MTA project path, discovers the business service /
+     * service instance and base app, downloads the base app manifest and derives the writer inputs.
+     *
+     * @param {CfJsonInput} jsonInput - The parsed CF JSON input.
+     */
+    private async _initFromJsonCf(jsonInput: CfJsonInput): Promise<void> {
+        this.isCfEnv = true;
+        this.targetEnv = TargetEnv.CF;
+
+        if (!this.cfInstalled) {
+            throw new Error(t('error.cfNotInstalled'));
+        }
+        this.isCfLoggedIn = await isLoggedInCf(this.cfConfig, this.logger);
+        if (!this.isCfLoggedIn) {
+            throw new Error(t('error.cfNotLoggedIn'));
+        }
+
+        const {
+            application: baseApplicationName,
+            applicationTitle,
+            serviceInstanceName,
+            approuter,
+            businessSolutionName,
+            mtaMode = MtaMode.Existing,
+            mtaId,
+            targetFolder = process.cwd(),
+            projectName: requestedProjectName,
+            namespace: requestedNamespace
+        } = jsonInput;
+
+        const projectPath = resolveCfProjectPath(mtaMode, targetFolder, this.logger, this.cfConfig, mtaId);
+        this.destinationRoot(projectPath);
+        const resolvedApprouter =
+            approuter ?? (mtaMode === MtaMode.Existing ? getApprouterType(projectPath) : AppRouterType.MANAGED);
+
+        // A managed approuter with no existing router writes destinations keyed on the business solution name.
+        let businessSolution = businessSolutionName?.trim() ?? '';
+        if (resolvedApprouter === AppRouterType.MANAGED && !hasExistingApprouter(mtaMode, projectPath)) {
+            if (businessSolution) {
+                assertValidationPassed(validateBusinessSolutionName(businessSolution));
+            } else {
+                businessSolution = generateBusinessSolutionName();
+            }
+        }
+
+        const serviceInfo = await getBusinessServiceInfo(serviceInstanceName, this.cfConfig, this.logger);
+        if (!serviceInfo) {
+            throw new Error(t('error.businessServiceDoesNotExist'));
+        }
+
+        const serviceInstance = await resolveCfServiceInstance(serviceInstanceName, this.cfConfig, this.logger);
+
+        const apps: CFApp[] = await getCfApps(serviceInfo.serviceKeys, this.cfConfig, this.logger);
+        const baseApp = apps.find((app) => app.appId === baseApplicationName);
+        if (!baseApp) {
+            throw new Error(t('error.applicationNotFound', { appName: baseApplicationName }));
+        }
+
+        const { entries, serviceInstanceGuid, manifest } = await downloadAppContent(
+            this.cfConfig.space.GUID,
+            baseApp,
+            this.logger
+        );
+        await validateSmartTemplateApplication(manifest);
+        await validateODataEndpoints(entries, serviceInfo.serviceKeys, this.logger);
+
+        this.cfArtifacts = {
+            manifest,
+            html5RepoRuntimeGuid: serviceInstanceGuid,
+            serviceInstanceGuid: serviceInfo.serviceInstance?.guid,
+            backendUrls: getBackendUrlsFromServiceKeys(serviceInfo.serviceKeys),
+            oauthPaths: getOAuthPathsFromXsApp(entries)
+        };
+
+        this.cfServicesAnswers = {
+            approuter: resolvedApprouter,
+            baseApp,
+            ...(serviceInstance ? { serviceInstance } : {}),
+            ...(businessSolution ? { businessSolutionName: businessSolution } : {})
+        };
+
+        const projectName = resolveProjectName(this.destinationPath(), requestedProjectName);
+        const title = applicationTitle ?? manifest['sap.app']?.title ?? t('prompts.appTitleDefault');
+        const namespace = requestedNamespace ?? getDefaultNamespace(projectName, this.isCustomerBase);
+
+        assertValidationPassed(validateProjectName(projectName, projectPath, this.isCustomerBase, true));
+        assertValidationPassed(validateNamespaceAdp(namespace, projectName, this.isCustomerBase));
+
+        this.attributeAnswers = {
+            projectName,
+            title,
+            namespace,
+            targetFolder: projectPath,
             ui5Version: '',
             enableTypeScript: false
         };

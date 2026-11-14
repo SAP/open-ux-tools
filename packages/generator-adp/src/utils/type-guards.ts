@@ -1,4 +1,6 @@
-import type { JsonInput, JsonInputFile } from '../app/types.js';
+import type { CfJsonInput, JsonInput, JsonInputFile } from '../app/types.js';
+import { MtaMode, TargetEnv } from '../app/types.js';
+import { AppRouterType } from '@sap-ux/adp-tooling';
 
 /**
  * Type guard for a string values.
@@ -11,12 +13,22 @@ export function isString(value: unknown): value is string {
 }
 
 /**
+ * Type guard for a non-empty string (ignoring surrounding whitespace).
+ *
+ * @param {unknown} value - The value being checked.
+ * @returns {boolean} True if the value is a string with non-whitespace content.
+ */
+export function isNonEmptyString(value: unknown): value is string {
+    return isString(value) && value.trim().length > 0;
+}
+
+/**
  * Type guard for an adaptation project configuration json.
  *
  * @param {unknown} value - The value being checked.
  * @returns {boolean} True if the value conforms to the AdpJsonInput interface.
  */
-export function isJsonInput(value: unknown): value is JsonInput {
+export function isAbapJsonInput(value: unknown): value is JsonInput {
     if (!isPlainObject(value)) {
         return false;
     }
@@ -32,6 +44,50 @@ export function isJsonInput(value: unknown): value is JsonInput {
         isOptionalString(value.targetFolder) &&
         isOptionalString(value.projectName) &&
         isOptionalString(value.namespace)
+    );
+}
+
+/**
+ * Type guard for a Cloud Foundry adaptation project configuration json.
+ *
+ * Requires `targetEnv === 'CF'`, a non-empty `application` (the CF base-app id) and a non-empty
+ * `serviceInstanceName` (the live CF service instance to connect to and extend). All other fields are
+ * optional and, when present, must be of the expected type.
+ *
+ * @param {unknown} value - The value being checked.
+ * @returns {boolean} True if the value conforms to the CfJsonInput interface.
+ */
+export function isCfJsonInput(value: unknown): value is CfJsonInput {
+    if (!isPlainObject(value)) {
+        return false;
+    }
+
+    if (value.targetEnv !== TargetEnv.CF || !isNonEmptyString(value.application)) {
+        return false;
+    }
+
+    if (!isNonEmptyString(value.serviceInstanceName)) {
+        return false;
+    }
+
+    const isValidMtaMode =
+        value.mtaMode === undefined || value.mtaMode === MtaMode.New || value.mtaMode === MtaMode.Existing;
+
+    const isValidApprouter =
+        value.approuter === undefined ||
+        value.approuter === AppRouterType.MANAGED ||
+        value.approuter === AppRouterType.STANDALONE;
+
+    return (
+        isOptionalString(value.id) &&
+        isOptionalString(value.applicationTitle) &&
+        isOptionalString(value.businessSolutionName) &&
+        isOptionalString(value.mtaId) &&
+        isOptionalString(value.targetFolder) &&
+        isOptionalString(value.projectName) &&
+        isOptionalString(value.namespace) &&
+        isValidApprouter &&
+        isValidMtaMode
     );
 }
 
