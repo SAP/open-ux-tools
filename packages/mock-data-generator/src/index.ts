@@ -383,7 +383,7 @@ function assertGeneratedTarget(
  * @throws {TypeError} when it has rows or no `SCHEMA_ENTITY_SET_SKIPPED` diagnostic
  */
 function assertSkippedTarget(result: MockDataGeneratorResult, targetName: string): void {
-    if (result.resources[targetName] !== undefined) {
+    if (Object.hasOwn(result.resources, targetName)) {
         throw new TypeError(`Generated resource ${targetName} belongs to an entity set that cannot be generated`);
     }
     if (
@@ -557,11 +557,7 @@ export function validateGeneratedResult(
 
     const graph = withRequestedValueListGrowth(
         applySyntheticScenario(
-            applyApplicationDomains(
-                context.parsedGraph ?? parseServiceMetadata(request.metadata, request.service),
-                request.existingData,
-                []
-            ),
+            applyApplicationDomains(context.parsedGraph ?? parseRequestSchema(request), request.existingData, []),
             options.syntheticScenario,
             []
         ),
@@ -918,6 +914,34 @@ function plannedSemanticRoles(classifications: ReadonlyMap<string, SemanticClass
 }
 
 /**
+ * Parse the request metadata, counting a target the schema does not declare as an entity set that cannot be
+ * generated, so it is reported and the declared targets still generate.
+ *
+ * @param request the generation request
+ * @returns the parsed schema
+ */
+function parseRequestSchema(request: MockDataServiceRequest): SchemaGraph {
+    const graph = parseServiceMetadata(request.metadata, request.service);
+    const declared = new Set(
+        [...graph.entities, ...(graph.skippedEntitySets ?? [])].map(({ entitySetName }) => entitySetName)
+    );
+    const undeclared = [...new Set(request.targets.map(({ name }) => name))].filter((name) => !declared.has(name));
+    if (undeclared.length === 0) {
+        return graph;
+    }
+    return {
+        ...graph,
+        skippedEntitySets: [
+            ...(graph.skippedEntitySets ?? []),
+            ...undeclared.map((entitySetName) => ({
+                entitySetName,
+                reason: 'name is not declared by the service schema'
+            }))
+        ]
+    };
+}
+
+/**
  * Parse the request metadata, report the parts the schema cannot generate, and apply the application
  * domains and the synthetic scenario.
  *
@@ -927,7 +951,7 @@ function plannedSemanticRoles(classifications: ReadonlyMap<string, SemanticClass
 function prepareSchema(context: ServiceGenerationContext): PreparedSchema {
     const { request, options, timingsMs, diagnostics } = context;
     const parseStartedAt = performance.now();
-    const parsedGraph = parseServiceMetadata(request.metadata, request.service);
+    const parsedGraph = parseRequestSchema(request);
     timingsMs.schema = performance.now() - parseStartedAt;
     // Requested entity sets the schema cannot generate are reported and left out; the rest proceed, with the
     // entities they contain.

@@ -227,16 +227,26 @@ describe('entity sets whose rows cannot be generated', () => {
         );
     });
 
-    it('still rejects a target the schema does not declare at all', async () => {
-        // Given a target that names no entity set in the metadata
-        const serviceRequest = request(danglingMetadata, ['Shelves', 'Missing']);
+    it.each(['Missing', 'constructor', 'toString'])(
+        'generates the declared targets and reports a target %s that the schema does not declare as skipped',
+        async (name) => {
+            // Given a target that names no entity set in the metadata, next to one that does
+            const serviceRequest = request(danglingMetadata, ['Shelves', name]);
 
-        // When the service is generated
-        // Then the request is refused as before
-        await expect(generateServiceForTesting(serviceRequest, semanticV2)).rejects.toThrow(
-            'Generated target Missing is not declared by the service schema'
-        );
-    });
+            // When the service is generated and inspected
+            const result = await generateServiceForTesting(serviceRequest, semanticV2);
+            const inspection = await inspectService(serviceRequest, semanticV2);
+
+            // Then the declared target has rows, and the undeclared one carries a warning instead of aborting
+            expect(Object.keys(result.resources)).toEqual(['Shelves']);
+            expect(result.resources.Shelves.length).toBeGreaterThan(0);
+            expect(
+                result.diagnostics.filter(({ target }) => target === name).map(({ code, severity }) => [code, severity])
+            ).toEqual([['SCHEMA_ENTITY_SET_SKIPPED', 'warning']]);
+            expect(() => validateGeneratedResult(serviceRequest, result, semanticV2)).not.toThrow();
+            expect(inspection).toBeDefined();
+        }
+    );
 });
 
 describe('malformed references inside a declared entity type', () => {
