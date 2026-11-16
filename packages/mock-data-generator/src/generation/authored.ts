@@ -1,6 +1,7 @@
 import type { SchemaEntity, SchemaGraph } from '../schema/graph.js';
 import type { ExistingMockData, MockDataGeneratorDiagnostic, MockDataRow } from '../types.js';
 import { MAX_ROWS_PER_ENTITY } from '../limits.js';
+import { canonicalJson } from '../hash.js';
 import { keySignature } from './rows.js';
 import { MOCKGEN_ERROR_CODE, MockGenError } from '../errors.js';
 
@@ -171,11 +172,19 @@ export function publishedRows(
             return values.every((value) => value != null && value !== '') ? [`${index}:${JSON.stringify(values)}`] : [];
         });
     const suppliedIdentifiers = new Set(supplied.flatMap(signatures));
+    // A supplied row without a complete key, already published by an earlier pass, is recognised by its content.
+    const suppliedContents = new Set(
+        supplied.filter((row) => !signatures(row).some((signature) => signature.startsWith('0:'))).map(canonicalJson)
+    );
     // Generated rows follow the supplied rows up to the generated size, less the rows the supplied keys take; one
     // that repeats an identifier of a supplied row (its key, semantic key or an alternate key) would make two rows
     // one, so the next takes its place.
     const additional = generated
-        .filter((row) => !signatures(row).some((signature) => suppliedIdentifiers.has(signature)))
+        .filter(
+            (row) =>
+                (suppliedContents.size === 0 || !suppliedContents.has(canonicalJson(row))) &&
+                !signatures(row).some((signature) => suppliedIdentifiers.has(signature))
+        )
         .slice(0, Math.max(0, generated.length - suppliedRowSlots(entity, supplied)));
     return [...supplied, ...additional];
 }
