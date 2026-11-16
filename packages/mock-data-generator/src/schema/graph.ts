@@ -176,3 +176,16 @@ export interface SchemaGraph {
      */
     requestedValueListGrowth?: ReadonlySet<string>;
 }
+
+const OBJECT_PROTOTYPE_KEYS: ReadonlySet<string> = new Set(Object.getOwnPropertyNames(Object.prototype));
+
+/**
+ * Why an entity set is skipped when its name is one every JavaScript object inherits as a property, such as
+ * `constructor` or `__proto__`: rows are kept in objects keyed by entity set name.
+ *
+ * @param entitySetName - the entity set name
+ * @returns the skip reason, or undefined for a supported name
+ */
+export function inheritedNameSkipReason(entitySetName: string): string | undefined {
+    return OBJECT_PROTOTYPE_KEYS.has(entitySetName) ? 'name is a property every JavaScript object inherits' : undefined;
+}

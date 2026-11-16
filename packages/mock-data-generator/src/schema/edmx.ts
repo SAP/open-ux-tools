@@ -13,7 +13,7 @@ import type {
     SchemaStructuredProperty,
     SchemaValueListParameter
 } from './graph.js';
-import { valueListParameterDirection } from './graph.js';
+import { inheritedNameSkipReason, valueListParameterDirection } from './graph.js';
 import { compareCodePoints } from '../ordering.js';
 import { errorMessage, isRecord } from '../guards.js';
 import {
@@ -1137,26 +1137,26 @@ function collectEntitySet(
     containedBy?: SchemaContainment
 ): void {
     const entitySetName = requiredString(entitySet.Name, 'entity set name');
+    const skip = (reason: string): void => {
+        collection.skippedEntitySets.push({ entitySetName, reason, ...(containedBy ? { containedBy } : {}) });
+    };
+    const inheritedName = inheritedNameSkipReason(entitySetName);
+    if (inheritedName !== undefined) {
+        skip(inheritedName);
+        return;
+    }
     const qualifiedType = requiredString(entitySet[typeAttribute], `entity type for ${entitySetName}`);
     const resolved = context.entityTypes.get(qualifiedType);
     const hierarchy = entityTypeHierarchy(context.entityTypes, qualifiedType);
     if (!resolved || typeof hierarchy === 'string') {
-        collection.skippedEntitySets.push({
-            entitySetName,
-            reason: typeof hierarchy === 'string' ? hierarchy : `entity type ${qualifiedType} is unresolved`,
-            ...(containedBy ? { containedBy } : {})
-        });
+        skip(typeof hierarchy === 'string' ? hierarchy : `entity type ${qualifiedType} is unresolved`);
         return;
     }
     const keyNames = hierarchyKeyNames(hierarchy);
     const { properties, structuredProperties, omittedProperties } = hierarchyProperties(context, hierarchy, keyNames);
     const keyReason = ungeneratableKeyReason(keyNames, omittedProperties, structuredProperties);
     if (keyReason !== undefined) {
-        collection.skippedEntitySets.push({
-            entitySetName,
-            reason: keyReason,
-            ...(containedBy ? { containedBy } : {})
-        });
+        skip(keyReason);
         return;
     }
     const semanticKey = semanticKeyOf(context, hierarchy, properties);
@@ -1872,7 +1872,8 @@ function redundant(entry: NavigationRelationship, index: number, resolved: reado
  *
  * @param content - The EDMX document.
  * @returns The schema graph.
- * @throws {MockGenError} `METADATA_INVALID` when the document has no schema or a required name or type is missing
+ * @throws {MockGenError} `METADATA_INVALID` when the document has no schema, a required name or type is missing or an
+ *   entity set name is a property every JavaScript object inherits
  */
 export function parseEdmx(content: string): SchemaGraph {
     const schemas = readEdmxSchemas(content);

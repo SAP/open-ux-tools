@@ -1628,7 +1628,7 @@ function keepOneTextPerCode(attempt: SftResourceAttempt, merged: MergedSftRows):
             } else if (row[text.name] !== first) {
                 merged.generatedRows[rowIndex] = Object.freeze({ ...row, [text.name]: first });
                 const accepted = merged.acceptedValues[rowIndex];
-                if (accepted && text.name in accepted) {
+                if (accepted && Object.hasOwn(accepted, text.name)) {
                     accepted[text.name] = first;
                 }
             }
@@ -1742,7 +1742,9 @@ function reuseModelValues(attempt: SftResourceAttempt, merged: MergedSftRows, st
     const grouped = new Set(coupledGroups.flat());
     const units = reuseUnits(attempt, grouped);
     const sources = units.map((unit) =>
-        merged.acceptedValues.filter((values) => values !== undefined && unit.every((name) => name in values))
+        merged.acceptedValues.filter(
+            (values) => values !== undefined && unit.every((name) => Object.hasOwn(values, name))
+        )
     );
     const properties = new Map(entity.properties.map((property) => [property.name, property]));
     const reuse: ModelValueReuse = {
@@ -1807,7 +1809,7 @@ function identifierNumbering(
     const nextNumber = new Map<string, Map<string, bigint>>();
     for (const { name } of attempt.fields.filter((field) => !grouped.has(field.name))) {
         const values = merged.acceptedValues.flatMap((accepted) =>
-            accepted !== undefined && name in accepted ? [accepted[name] as JsonValue] : []
+            accepted !== undefined && Object.hasOwn(accepted, name) ? [accepted[name] as JsonValue] : []
         );
         if (distinctIdentifiers(properties.get(name), attempt.likelyRoles.get(name), values)) {
             nextNumber.set(name, nextNumbersByForm(values.map(String)));

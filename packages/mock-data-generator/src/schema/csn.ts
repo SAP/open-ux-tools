@@ -7,7 +7,7 @@ import type {
     SchemaRelationship,
     SchemaValueListParameter
 } from './graph.js';
-import { valueListParameterDirection } from './graph.js';
+import { inheritedNameSkipReason, valueListParameterDirection } from './graph.js';
 import { compareCodePoints } from '../ordering.js';
 import { errorMessage, isRecord } from '../guards.js';
 import { MOCKGEN_ERROR_CODE, MockGenError } from '../errors.js';
@@ -439,7 +439,8 @@ function property(name: string, declared: CsnRecord, resolved: CsnRecord): Schem
  * @param content the CSN document
  * @param selection picks the service when the document defines more than one
  * @returns the schema graph
- * @throws {MockGenError} `METADATA_INVALID` when the document is not CSN JSON, several services match or two definitions resolve to the same entity set name
+ * @throws {MockGenError} `METADATA_INVALID` when the document is not CSN JSON, several services match, or two
+ *   definitions resolve to the same entity set name
  */
 export function parseCsn(content: string, selection: CsnServiceSelection = {}): SchemaGraph {
     const definitions = csnDefinitions(content);
@@ -448,9 +449,17 @@ export function parseCsn(content: string, selection: CsnServiceSelection = {}): 
         ([qualifiedName, definition]) =>
             definition.kind === 'entity' && (service === undefined || qualifiedName.startsWith(`${service}.`))
     );
-    const names = entitySetNames(
+    const allNames = entitySetNames(
         entityDefinitions.map(([qualifiedName]) => qualifiedName),
         service
+    );
+    // An entity whose name cannot key a row object is skipped; associations to it then lead nowhere.
+    const skippedEntitySets = [...allNames.values()].flatMap((entitySetName) => {
+        const reason = inheritedNameSkipReason(entitySetName);
+        return reason === undefined ? [] : [{ entitySetName, reason }];
+    });
+    const names = new Map(
+        [...allNames].filter(([, entitySetName]) => inheritedNameSkipReason(entitySetName) === undefined)
     );
     const entities: SchemaEntity[] = [];
     const relationships: SchemaRelationship[] = [];
@@ -463,6 +472,7 @@ export function parseCsn(content: string, selection: CsnServiceSelection = {}): 
 
     return Object.freeze({
         namespace: 'CAPService',
+        ...(skippedEntitySets.length > 0 ? { skippedEntitySets: Object.freeze(skippedEntitySets) } : {}),
         entities: Object.freeze(
             entities.toSorted((left, right) => compareCodePoints(left.entitySetName, right.entitySetName))
         ),
@@ -599,7 +609,9 @@ function associationMappings(
             continue;
         }
         const sourceProperty = typeof key.as === 'string' ? key.as : `${associationName}_${targetProperty}`;
-        const targetElement = targetElements[targetProperty];
+        const targetElement = Object.hasOwn(targetElements, targetProperty)
+            ? targetElements[targetProperty]
+            : undefined;
         if (!isRecord(targetElement) || isAssociation(targetElement)) {
             continue;
         }
