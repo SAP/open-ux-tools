@@ -128,4 +128,9 @@ export { readPackageUpAsync, type ReadResult } from './utils/read-package-up-com
 export type { Options as ReadOptions } from 'read-package-up';
 
 // Public API - Error code utilities for telemetry
-export { MigrationErrorCode, extractErrorCode, errorCodeFromI18nKey, type MigrationErrorCode as MigrationErrorCodeType } from './utils/error-codes.js';
+export {
+    MigrationErrorCode,
+    extractErrorCode,
+    errorCodeFromI18nKey,
+    type MigrationErrorCode as MigrationErrorCodeType
+} from './utils/error-codes.js';

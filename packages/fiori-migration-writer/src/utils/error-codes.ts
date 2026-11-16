@@ -43,52 +43,60 @@ export const MigrationErrorCode = {
 export type MigrationErrorCode = (typeof MigrationErrorCode)[keyof typeof MigrationErrorCode];
 
 /**
- * Extract a telemetry-safe error code from an error object or message string.
- * This function extracts standard codes (file system errors, known patterns) without
- * including any PII, paths, or sensitive data.
+ * Extract Node.js file system error code from error message.
  *
- * @param error - Error object, string, or unknown error
- * @returns A safe error code string for telemetry
- *
- * @example
- * extractErrorCode(new Error('ENOENT: no such file or directory'))
- * // Returns: 'ENOENT'
- *
- * extractErrorCode('The V2_ANALYTICAL floorplan is not supported')
- * // Returns: 'UNSUPPORTED_FLOORPLAN'
+ * @param errorMessage - Error message string
+ * @returns Error code if found and valid, null otherwise
  */
-export function extractErrorCode(error: unknown): string {
-    const errorMessage = error instanceof Error ? error.message : String(error);
-    const lowerMessage = errorMessage.toLowerCase();
-
-    // Extract Node.js file system error codes (ENOENT, EACCES, etc.)
-    const nodeErrorMatch = errorMessage.match(/\b(E[A-Z]+):/);
-    if (nodeErrorMatch) {
-        const code = nodeErrorMatch[1];
+function extractNodeErrorCode(errorMessage: string): string | null {
+    const nodeErrorPattern = /\b(E[A-Z]+):/;
+    const match = nodeErrorPattern.exec(errorMessage);
+    if (match) {
+        const code = match[1];
         if (code in MigrationErrorCode) {
             return code;
         }
     }
+    return null;
+}
 
-    // Match known error patterns in error messages
+/**
+ * Match parsing-related error patterns.
+ *
+ * @param lowerMessage - Lowercase error message
+ * @returns Error code if pattern matches, null otherwise
+ */
+function matchParsingError(lowerMessage: string): string | null {
+    if (!lowerMessage.includes('parse') && !lowerMessage.includes('parsing')) {
+        return null;
+    }
+
+    if (lowerMessage.includes('manifest')) {
+        return MigrationErrorCode.MANIFEST_PARSE_ERROR;
+    }
+    if (lowerMessage.includes('json')) {
+        return MigrationErrorCode.JSON_PARSE_ERROR;
+    }
+    if (lowerMessage.includes('yaml') || lowerMessage.includes('yml')) {
+        return MigrationErrorCode.YAML_PARSE_ERROR;
+    }
+    if (lowerMessage.includes('xml')) {
+        return MigrationErrorCode.XML_PARSE_ERROR;
+    }
+
+    return null;
+}
+
+/**
+ * Match configuration and migration process error patterns.
+ *
+ * @param lowerMessage - Lowercase error message
+ * @returns Error code if pattern matches, null otherwise
+ */
+function matchKnownPatterns(lowerMessage: string): string | null {
     if (lowerMessage.includes('not supported') || lowerMessage.includes('unsupported')) {
         if (lowerMessage.includes('floorplan')) {
             return MigrationErrorCode.UNSUPPORTED_FLOORPLAN;
-        }
-    }
-
-    if (lowerMessage.includes('parse') || lowerMessage.includes('parsing')) {
-        if (lowerMessage.includes('manifest')) {
-            return MigrationErrorCode.MANIFEST_PARSE_ERROR;
-        }
-        if (lowerMessage.includes('json')) {
-            return MigrationErrorCode.JSON_PARSE_ERROR;
-        }
-        if (lowerMessage.includes('yaml') || lowerMessage.includes('yml')) {
-            return MigrationErrorCode.YAML_PARSE_ERROR;
-        }
-        if (lowerMessage.includes('xml')) {
-            return MigrationErrorCode.XML_PARSE_ERROR;
         }
     }
 
@@ -114,6 +122,45 @@ export function extractErrorCode(error: unknown): string {
 
     if (lowerMessage.includes('migration') && lowerMessage.includes('error')) {
         return MigrationErrorCode.MIGRATION_FAILED;
+    }
+
+    return null;
+}
+
+/**
+ * Extract a telemetry-safe error code from an error object or message string.
+ * This function extracts standard codes (file system errors, known patterns) without
+ * including any PII, paths, or sensitive data.
+ *
+ * @param error - Error object, string, or unknown error
+ * @returns A safe error code string for telemetry
+ * @example
+ * extractErrorCode(new Error('ENOENT: no such file or directory'))
+ * // Returns: 'ENOENT'
+ *
+ * extractErrorCode('The V2_ANALYTICAL floorplan is not supported')
+ * // Returns: 'UNSUPPORTED_FLOORPLAN'
+ */
+export function extractErrorCode(error: unknown): string {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    const lowerMessage = errorMessage.toLowerCase();
+
+    // Try Node.js error codes first (highest priority)
+    const nodeCode = extractNodeErrorCode(errorMessage);
+    if (nodeCode) {
+        return nodeCode;
+    }
+
+    // Try parsing errors
+    const parseCode = matchParsingError(lowerMessage);
+    if (parseCode) {
+        return parseCode;
+    }
+
+    // Try other known patterns
+    const patternCode = matchKnownPatterns(lowerMessage);
+    if (patternCode) {
+        return patternCode;
     }
 
     // Default to unknown if no pattern matches

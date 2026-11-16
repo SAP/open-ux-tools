@@ -33,22 +33,22 @@ describe('error-codes', () => {
     describe('extractErrorCode', () => {
         describe('Node.js file system errors', () => {
             it('should extract ENOENT from file not found error', () => {
-                const error = new Error('ENOENT: no such file or directory, open \'/path/to/file.json\'');
+                const error = new Error("ENOENT: no such file or directory, open '/path/to/file.json'");
                 expect(extractErrorCode(error)).toBe('ENOENT');
             });
 
             it('should extract EACCES from permission denied error', () => {
-                const error = new Error('EACCES: permission denied, access \'/restricted/file\'');
+                const error = new Error("EACCES: permission denied, access '/restricted/file'");
                 expect(extractErrorCode(error)).toBe('EACCES');
             });
 
             it('should extract EEXIST from file already exists error', () => {
-                const error = new Error('EEXIST: file already exists, mkdir \'/path/to/dir\'');
+                const error = new Error("EEXIST: file already exists, mkdir '/path/to/dir'");
                 expect(extractErrorCode(error)).toBe('EEXIST');
             });
 
             it('should extract EBUSY from resource busy error', () => {
-                const error = new Error('EBUSY: resource busy or locked, rmdir \'/path\'');
+                const error = new Error("EBUSY: resource busy or locked, rmdir '/path'");
                 expect(extractErrorCode(error)).toBe('EBUSY');
             });
 
@@ -58,12 +58,12 @@ describe('error-codes', () => {
             });
 
             it('should extract ENOTDIR from not-a-directory error', () => {
-                const error = new Error('ENOTDIR: not a directory, scandir \'/file.txt/subdir\'');
+                const error = new Error("ENOTDIR: not a directory, scandir '/file.txt/subdir'");
                 expect(extractErrorCode(error)).toBe('ENOTDIR');
             });
 
             it('should extract EPERM from operation not permitted error', () => {
-                const error = new Error('EPERM: operation not permitted, unlink \'/system/file\'');
+                const error = new Error("EPERM: operation not permitted, unlink '/system/file'");
                 expect(extractErrorCode(error)).toBe('EPERM');
             });
 
@@ -233,7 +233,7 @@ describe('error-codes', () => {
 
             it('should handle complex manifest parse error', () => {
                 const error = new Error(
-                    'Failed to parse manifest.json at line 42: Unexpected token \'}\', expected property name or \'}\'  in JSON at position 1234'
+                    "Failed to parse manifest.json at line 42: Unexpected token '}', expected property name or '}'  in JSON at position 1234"
                 );
                 expect(extractErrorCode(error)).toBe('MANIFEST_PARSE_ERROR');
             });
@@ -242,9 +242,7 @@ describe('error-codes', () => {
 
     describe('errorCodeFromI18nKey', () => {
         it('should return the i18n key as the error code', () => {
-            expect(errorCodeFromI18nKey('ERROR_NOT_SUITABLE_FOR_MIGRATION')).toBe(
-                'ERROR_NOT_SUITABLE_FOR_MIGRATION'
-            );
+            expect(errorCodeFromI18nKey('ERROR_NOT_SUITABLE_FOR_MIGRATION')).toBe('ERROR_NOT_SUITABLE_FOR_MIGRATION');
         });
 
         it('should handle various i18n key formats', () => {

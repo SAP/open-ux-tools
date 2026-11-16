@@ -41,11 +41,13 @@ export class BulkProjectMigrator {
                 results.push({
                     ...project,
                     status: 'ERROR',
-                    messages: [{
-                        type: 'ERROR',
-                        description: error instanceof Error ? error.message : String(error),
-                        code: extractErrorCode(error)
-                    }]
+                    messages: [
+                        {
+                            type: 'ERROR',
+                            description: error instanceof Error ? error.message : String(error),
+                            code: extractErrorCode(error)
+                        }
+                    ]
                 });
             }
         }
