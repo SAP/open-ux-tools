@@ -720,6 +720,42 @@ function withinDeadline(options: MockDataGeneratorOptions, elapsedMs: number): M
 }
 
 /**
+ * The options with their locale in canonical form (`en_US` reads as `en-US`). A locale the platform cannot read is
+ * left out, so display names use English, and reported.
+ *
+ * @param options the requested options
+ * @returns the options to generate with, and the diagnostic for an unreadable locale
+ */
+function withReadableLocale(options: MockDataGeneratorOptions): {
+    options: MockDataGeneratorOptions;
+    diagnostics: MockDataGeneratorResult['diagnostics'][number][];
+} {
+    const requested: unknown = options.locale;
+    if (requested === undefined) {
+        return { options, diagnostics: [] };
+    }
+    const { locale: _unreadable, ...withoutLocale } = options;
+    if (typeof requested === 'string' && requested.length > 0) {
+        try {
+            const [locale] = Intl.getCanonicalLocales(requested.replaceAll('_', '-'));
+            return { options: { ...withoutLocale, locale }, diagnostics: [] };
+        } catch {
+            // Reported below.
+        }
+    }
+    return {
+        options: withoutLocale,
+        diagnostics: [
+            {
+                code: 'OPTION_LOCALE_UNSUPPORTED',
+                severity: 'warning',
+                message: `The locale ${JSON.stringify(requested) ?? String(requested)} is not a BCP 47 language tag, so display names are in English.`
+            }
+        ]
+    };
+}
+
+/**
  * Whether an optional count or duration is set but not a safe integer from 1 to a maximum.
  *
  * @param value the option value, if set
@@ -1526,13 +1562,13 @@ function assembleGenerationResult(
  * Generate a complete, coherent snapshot for the requested service resources.
  *
  * @param request the service to generate
- * @param options generation options
+ * @param requestedOptions generation options
  * @param runtime learned components, if any
  * @returns the result with what the generation planned and measured
  */
 async function executeServiceGeneration(
     request: MockDataServiceRequest,
-    options: MockDataGeneratorOptions = {},
+    requestedOptions: MockDataGeneratorOptions = {},
     runtime: MockDataGeneratorRuntime = {}
 ): Promise<ServiceInspectionExecution> {
     request.signal?.throwIfAborted();
@@ -1540,7 +1576,8 @@ async function executeServiceGeneration(
     const startedAt = performance.now();
     const rssBefore = process.memoryUsage().rss;
     const timingsMs: Record<string, number> = {};
-    validateOptions(options);
+    validateOptions(requestedOptions);
+    const { options, diagnostics: optionDiagnostics } = withReadableLocale(requestedOptions);
     validateSampleDataset(options.sampleDataset ?? packagedBanks().defaultSampleDataset);
     assertMetadataInputWithinLimit(request.metadata);
     const activeRuntime: MockDataGeneratorRuntime =
@@ -1553,7 +1590,7 @@ async function executeServiceGeneration(
         runtime: activeRuntime,
         startedAt,
         timingsMs,
-        diagnostics: [],
+        diagnostics: optionDiagnostics,
         valueTiers: new Map(),
         projectedProperties: new Map(),
         withheld: { cells: 0, fallback: 0, fallbackByField: new Map() }
