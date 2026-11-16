@@ -91,6 +91,9 @@ const adpTools = [
         - Extracts the server URL and editor path from the command output
         - Returns the full editor URL and process ID
         - Provides instructions on how to stop the editor process
+        - For Cloud Foundry projects in BAS, opens an external login tab and waits for the embedded editor to become ready before returning success
+
+        If the result contains needsUserAction: backend_login_required, pause and ask the user to finish login and wait for the editor in Simple Browser. Do not propose or run RTA steps until the user has finished. Then run start with the same returned editor URL.
 
         The editor server will run independently in the background. Use the returned process ID or port to stop it if needed.`,
         annotations: {

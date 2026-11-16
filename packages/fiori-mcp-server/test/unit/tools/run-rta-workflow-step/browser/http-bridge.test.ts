@@ -11,7 +11,8 @@ jest.unstable_mockModule('../../../../../src/utils/logger.js', () => ({
     logger: { debug: jest.fn() }
 }));
 
-const { httpTransport } = await import('../../../../../src/tools/run-rta-workflow-step/browser/http-bridge.js');
+const { httpTransport, waitForEditorReady } =
+    await import('../../../../../src/tools/run-rta-workflow-step/browser/http-bridge.js');
 
 const SITE = 'https://editor-workspaces-test.eu10.applicationstudio.cloud.sap/test/adaptation-editor.html';
 const LOCAL_SITE = 'http://127.0.0.1:49152/test/adaptation-editor.html';
@@ -156,9 +157,28 @@ describe('browser/http-bridge', () => {
 
     test('surfaces malformed JSON without retries', async () => {
         fetchMock.mockResolvedValueOnce(new Response('not JSON'));
-        await expect(httpTransport.callFrontendAction(SITE, START)).rejects.toMatchObject({ name: 'SyntaxError' });
+        await expect(httpTransport.callFrontendAction(SITE, START)).rejects.toThrow(
+            'Editor relay HTTP 200: received a non-JSON response'
+        );
         expect(fetchMock).toHaveBeenCalledTimes(1);
         expect(jest.getTimerCount()).toBe(0);
+    });
+
+    test('reports a missing relay endpoint without mistaking it for pending login', async () => {
+        fetchMock.mockResolvedValueOnce(new Response('Cannot POST /adp/api/rta/action', { status: 404 }));
+        await expect(httpTransport.callFrontendAction(SITE, START)).rejects.toThrow(
+            'Editor relay HTTP 404: received a non-JSON response. The relay endpoint is unavailable.'
+        );
+        expect(fetchMock).toHaveBeenCalledTimes(1);
+        expect(jest.getTimerCount()).toBe(0);
+    });
+
+    test('keeps waiting when a proxy returns a non-JSON 504 during login', async () => {
+        fetchMock.mockResolvedValueOnce(new Response('Gateway timeout', { status: 504 }));
+        respondWith({ result: success, clientId: CLIENT_ID });
+        const pending = httpTransport.callFrontendAction(SITE, START);
+        await jest.advanceTimersByTimeAsync(2000);
+        await expect(pending).resolves.toEqual(success);
     });
 
     test.each([null, [], 'not an object', 42])(
@@ -287,6 +307,53 @@ describe('browser/http-bridge', () => {
             await expect(httpTransport.callFrontendAction(SITE, START)).resolves.toEqual(notStarted);
             expect(fetchMock).toHaveBeenCalledTimes(1);
             expect(jest.getTimerCount()).toBe(0);
+        });
+    });
+
+    describe('waitForEditorReady', () => {
+        test('waits for login and the embedded editor without invoking startRTA', async () => {
+            respondWith({}, 504);
+            respondWith({ result: { isSuccess: true, payload: { ready: true } }, clientId: CLIENT_ID });
+            let finished = false;
+            const pending = waitForEditorReady(SITE).then((result) => {
+                finished = true;
+                return result;
+            });
+            await jest.advanceTimersByTimeAsync(1999);
+            expect(finished).toBe(false);
+            await jest.advanceTimersByTimeAsync(1);
+            await expect(pending).resolves.toBeUndefined();
+            expect(fetchMock).toHaveBeenCalledTimes(2);
+            for (const [, options] of fetchMock.mock.calls) {
+                expect(JSON.parse(String(options?.body))).toEqual({
+                    actionName: '__ready__',
+                    payload: {},
+                    frameId: 'preview'
+                });
+            }
+        });
+
+        test('returns user-action guidance on timeout while keeping the editor session alive', async () => {
+            process.env.SAP_FIORI_MCP_ADP_RELAY_LOGIN_WAIT_MS = '0';
+            respondWith({}, 504);
+            await expect(waitForEditorReady(SITE)).resolves.toEqual({
+                __needsUserAction: 'backend_login_required',
+                message: expect.stringContaining('Pause the RTA workflow')
+            });
+            expect(stopEditorSessionMock).not.toHaveBeenCalled();
+        });
+
+        test('surfaces editor initialization failures instead of reporting login success', async () => {
+            respondWith({
+                result: { isSuccess: false, payload: null, error: { message: 'Editor initialization failed' } },
+                clientId: CLIENT_ID
+            });
+            await expect(waitForEditorReady(SITE)).rejects.toThrow('Editor initialization failed');
+        });
+
+        test.each([null, {}, { ready: false }, 'ready'])('rejects invalid readiness payload %p', async (payload) => {
+            respondWith({ result: { isSuccess: true, payload }, clientId: CLIENT_ID });
+            await expect(waitForEditorReady(SITE)).rejects.toThrow('Invalid editor readiness response');
         });
     });
 

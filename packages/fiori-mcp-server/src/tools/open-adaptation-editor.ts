@@ -16,6 +16,7 @@ import {
     trackEditorProcess
 } from '../adaptation-editor/editor-session.js';
 import { isSimpleBrowserRelayEnabled } from '../adaptation-editor/simple-browser-relay.js';
+import { waitForEditorReady } from './run-rta-workflow-step/browser/http-bridge.js';
 
 /** Startup timeout for ABAP projects — `fiori run` is quick to announce its URL. */
 const ABAP_TIMEOUT_MS = 30000;
@@ -334,11 +335,14 @@ export async function openAdaptationEditor(params: OpenAdaptationEditorInput): P
         if (autoOpen) {
             signalEditor('open', editorUrl, launch.projectType);
         }
+        // CF login opens outside BAS first. Server startup alone does not mean the embedded editor is ready.
+        const loginRequired =
+            isAppStudio() && launch.projectType === 'cf' ? await waitForEditorReady(editorUrl) : undefined;
 
         const killCommandsSection = buildKillInstructions(processId, isWindows, useHttpRelay);
         const portLine = port ? `Actual listening port: ${port}` : '';
 
-        const message = `Adaptation editor started successfully.
+        const message = `${loginRequired ? loginRequired.message : 'Adaptation editor started successfully.'}
 Editor URL: ${editorUrl}
 Process ID: ${processId}
 ${portLine}
@@ -346,8 +350,9 @@ ${portLine}
 ${killCommandsSection}`;
 
         return {
-            status: 'Success',
+            status: loginRequired ? 'WaitingForLogin' : 'Success',
             message,
+            ...(loginRequired && { needsUserAction: loginRequired.__needsUserAction }),
             editorUrl,
             processId,
             ...(port && { port })

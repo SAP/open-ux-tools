@@ -1,5 +1,5 @@
 import type { FetchViaContextResult, FrontendActionResult, FrontendActionTransport } from './types.js';
-import type { NeedsUserActionPayload } from './login-page.js';
+import { isNeedsUserAction, type NeedsUserActionPayload } from './login-page.js';
 import { requireEditorSession, stopEditorSession } from '../../../adaptation-editor/editor-session.js';
 import { logger } from '../../../utils/logger.js';
 
@@ -12,8 +12,9 @@ const MAX_PERMISSION_RETRIES = 4;
 const DEFAULT_RELAY_LOGIN_WAIT_MS = 120000;
 
 const RELAY_LOGIN_REQUIRED_MESSAGE =
-    'The adaptation editor could not be reached — it is likely still on the backend login screen. ' +
-    'Complete the login in the Simple Browser, then run the start step again.';
+    'The adaptation editor has not connected yet. Complete login in the browser tab opened for sign-in ' +
+    '(or in Simple Browser if login is shown there), and wait for the editor to appear in Simple Browser. ' +
+    'Pause the RTA workflow until then; retry the start step with the same editor URL after login.';
 
 /**
  * Login wait budget in ms.
@@ -76,7 +77,16 @@ async function requestRelay(
     if (response.status === 504) {
         throw new Error('Editor relay HTTP 504');
     }
-    const body: unknown = await response.json();
+    let body: unknown;
+    try {
+        body = await response.json();
+    } catch {
+        const guidance =
+            response.status === 404
+                ? ' The relay endpoint is unavailable. Check that this project uses preview-middleware with HTTP relay support and that /adp/api/rta/action reaches it.'
+                : ' Expected a JSON response from the editor relay.';
+        throw new Error(`Editor relay HTTP ${response.status}: received a non-JSON response.${guidance}`);
+    }
     if (typeof body !== 'object' || body === null || Array.isArray(body)) {
         throw new Error('Invalid editor relay response');
     }
@@ -138,26 +148,28 @@ function isClientAbsent(error: unknown): boolean {
 }
 
 /**
- * Retries startRTA until it succeeds, the permission-check budget is exhausted,
+ * Retries an editor readiness check or startRTA until it succeeds, the permission-check budget is exhausted,
  * or the login-wait deadline elapses. Uses recursion rather than a loop so each
  * attempt is a distinct async frame (no `await` inside a loop construct).
  *
  * @param site Registered editor URL.
+ * @param actionName Readiness check or startRTA action.
  * @param payload Action parameters.
  * @param frameId Optional target frame.
  * @param deadline Absolute timestamp after which a missing client prompts for login.
  * @param permissionRetries Retries consumed so far for the key-user permission check.
  * @returns Frontend result envelope.
  */
-async function startRtaWithRetry<TReturn>(
+async function waitForReadyAction<TReturn>(
     site: string,
+    actionName: string,
     payload: Record<string, unknown>,
     frameId: string | undefined,
     deadline: number,
     permissionRetries: number
 ): Promise<FrontendActionResult<TReturn>> {
     try {
-        const result = toFrontendResult<TReturn>(await requestRelay(site, START_RTA_ACTION, payload, frameId));
+        const result = toFrontendResult<TReturn>(await requestRelay(site, actionName, payload, frameId));
         if (
             result.isSuccess ||
             permissionRetries >= MAX_PERMISSION_RETRIES ||
@@ -169,7 +181,7 @@ async function startRtaWithRetry<TReturn>(
             `HTTP relay: startRTA key-user check not ready, retry ${permissionRetries + 1}/${MAX_PERMISSION_RETRIES}`
         );
         await delay(START_RETRY_DELAY_MS);
-        return startRtaWithRetry(site, payload, frameId, deadline, permissionRetries + 1);
+        return waitForReadyAction(site, actionName, payload, frameId, deadline, permissionRetries + 1);
     } catch (error) {
         if (!isClientAbsent(error)) {
             throw error;
@@ -183,13 +195,13 @@ async function startRtaWithRetry<TReturn>(
             return { isSuccess: true, payload: loginPayload as unknown as TReturn, error: null };
         }
         await delay(START_RETRY_DELAY_MS);
-        return startRtaWithRetry(site, payload, frameId, deadline, permissionRetries);
+        return waitForReadyAction(site, actionName, payload, frameId, deadline, permissionRetries);
     }
 }
 
 /**
  * Calls a frontend action over the relay. Non-start actions are single-shot. The `startRTA`
- * path delegates to `startRtaWithRetry` for its bounded key-user and login-wait logic.
+ * path delegates to `waitForReadyAction` for its bounded key-user and login-wait logic.
  *
  * @param site Registered editor URL.
  * @param actionName Fully-qualified frontend action.
@@ -206,7 +218,33 @@ async function callFrontendActionHttp<TReturn = unknown>(
     if (actionName !== START_RTA_ACTION) {
         return toFrontendResult<TReturn>(await requestRelay(site, actionName, payload, frameId));
     }
-    return startRtaWithRetry<TReturn>(site, payload, frameId, Date.now() + getRelayLoginWaitMs(), 0);
+    return waitForReadyAction<TReturn>(site, actionName, payload, frameId, Date.now() + getRelayLoginWaitMs(), 0);
+}
+
+/**
+ * Waits for the authenticated embedded editor without invoking the startRTA action.
+ * A login timeout preserves the session and gives the caller explicit user-action guidance.
+ *
+ * @param site Registered editor URL.
+ * @returns Login guidance if no browser client connected within the wait budget.
+ */
+export async function waitForEditorReady(site: string): Promise<NeedsUserActionPayload | undefined> {
+    const result = await waitForReadyAction(site, '__ready__', {}, 'preview', Date.now() + getRelayLoginWaitMs(), 0);
+    if (!result.isSuccess) {
+        throw new Error(`Adaptation editor did not become ready: ${result.error?.message ?? 'readiness check failed'}`);
+    }
+    if (isNeedsUserAction(result.payload)) {
+        return result.payload;
+    }
+    if (
+        typeof result.payload !== 'object' ||
+        result.payload === null ||
+        !('ready' in result.payload) ||
+        result.payload.ready !== true
+    ) {
+        throw new Error('Invalid editor readiness response');
+    }
+    return undefined;
 }
 
 /**

@@ -133,6 +133,7 @@ export const ReadODataMetadataOutputSchema = zod.object({
 export const OpenAdaptationEditorOutputSchema = zod.object({
     status: zod.string(),
     message: zod.string(),
+    needsUserAction: zod.literal('backend_login_required').optional(),
     editorUrl: zod.string().optional(),
     processId: zod.number().optional(),
     port: zod.number().optional()

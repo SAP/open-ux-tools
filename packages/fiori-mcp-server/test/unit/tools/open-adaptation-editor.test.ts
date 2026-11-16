@@ -4,6 +4,12 @@ import type { ChildProcess } from 'node:child_process';
 import { PassThrough } from 'node:stream';
 import { join } from 'node:path';
 import type { EditorSession } from '../../../src/adaptation-editor/editor-session.js';
+import type { NeedsUserActionPayload } from '../../../src/tools/run-rta-workflow-step/browser/login-page.js';
+
+const mockWaitForEditorReady = jest.fn<(site: string) => Promise<NeedsUserActionPayload | undefined>>();
+jest.unstable_mockModule('../../../src/tools/run-rta-workflow-step/browser/http-bridge.js', () => ({
+    waitForEditorReady: mockWaitForEditorReady
+}));
 
 const mockLoggerWarn = jest.fn<any>();
 const mockLoggerInfo = jest.fn<any>();
@@ -91,6 +97,8 @@ describe('openAdaptationEditor', () => {
         mockIsAppStudio.mockReturnValue(false);
         mockExposePort.mockReset();
         mockRegisterSession.mockReset();
+        mockIsCFEnvironment.mockResolvedValue(false);
+        mockWaitForEditorReady.mockReset().mockResolvedValue(undefined);
         mockTerminate.mockResolvedValue(true);
         delete process.env.SAP_FIORI_MCP_ADP_FORCE_AUTOOPEN;
         delete process.env.SAP_FIORI_MCP_ADP_RELAY_TOKEN;
@@ -581,6 +589,62 @@ describe('openAdaptationEditor', () => {
         expect(result.status).toBe('Error');
         expect(result.message).toContain('dist');
         expect(mockSpawn).not.toHaveBeenCalled();
+    });
+
+    test('BAS CF does not return success until login and embedded editor readiness complete', async () => {
+        mockIsAppStudio.mockReturnValue(true);
+        mockIsCFEnvironment.mockResolvedValue(true);
+        mockExistsSync.mockImplementation((p: unknown) => p === join('/tmp/myapp', 'dist'));
+        mockExposePort.mockResolvedValue('https://port8080.example.cloud.sap/');
+        let ready: (() => void) | undefined;
+        mockWaitForEditorReady.mockImplementation(
+            () =>
+                new Promise((resolve) => {
+                    ready = () => resolve(undefined);
+                })
+        );
+        let finished = false;
+        const pending = startEditor().then((result) => {
+            finished = true;
+            return result;
+        });
+        await new Promise(setImmediate);
+        const editorUrl = 'https://port8080.example.cloud.sap/test/adaptation-editor.html';
+        expect(mockSignalEditor).toHaveBeenCalledWith('open', editorUrl, 'cf');
+        expect(mockWaitForEditorReady).toHaveBeenCalledWith(editorUrl);
+        expect(finished).toBe(false);
+        ready?.();
+        await expect(pending).resolves.toMatchObject({ status: 'Success', editorUrl });
+    });
+
+    test('BAS CF login timeout asks the agent to pause and preserves the session for retry', async () => {
+        mockIsAppStudio.mockReturnValue(true);
+        mockIsCFEnvironment.mockResolvedValue(true);
+        mockExistsSync.mockImplementation((p: unknown) => p === join('/tmp/myapp', 'dist'));
+        mockWaitForEditorReady.mockResolvedValue({
+            __needsUserAction: 'backend_login_required',
+            message: 'Pause until login completes.'
+        });
+        const result = await startEditor();
+        expect(result).toMatchObject({
+            status: 'WaitingForLogin',
+            needsUserAction: 'backend_login_required',
+            processId: 1234
+        });
+        expect(result.message).toContain('Pause until login completes.');
+        expect(result.editorUrl).toBeDefined();
+        expect(mockTerminate).not.toHaveBeenCalled();
+    });
+
+    test.each([
+        { bas: true, cf: false },
+        { bas: false, cf: true }
+    ])('does not wait for external login for %p', async ({ bas, cf }) => {
+        mockIsAppStudio.mockReturnValue(bas);
+        mockIsCFEnvironment.mockResolvedValue(cf);
+        mockExistsSync.mockImplementation((p: unknown) => p === join('/tmp/myapp', 'dist'));
+        await expect(startEditor()).resolves.toMatchObject({ status: 'Success' });
+        expect(mockWaitForEditorReady).not.toHaveBeenCalled();
     });
 
     test('Cloud Foundry timeout message references the 300-second window', async () => {
