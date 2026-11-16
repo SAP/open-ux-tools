@@ -585,9 +585,10 @@ export function validateGeneratedResult(
     assertRelationshipIntegrity(graph, flat.resources, request.existingData);
 
     assertAuthoredRowsPreserved(graph, request, flat);
-    // Supplied rows are published as supplied: the plan's checks hold the generated rows only.
+    // Temporal violations are reported for the final rows, supplied rows included, so they are checked there.
+    assertTemporalFailuresReported(graph, flat, options);
+    // Supplied rows are published as supplied: the plan's other checks hold the generated rows only.
     const generated = generatedResources(graph, flat.resources, request.existingData);
-    assertTemporalFailuresReported(graph, { ...flat, resources: generated }, options);
     assertSemanticValues(graph, generated, result.semanticRoles);
     assertCurrencyMetadata(graph, generated);
     const invalidTuple = validateTupleDomains(graph, generated, request.existingData, result.semanticRoles).find(
