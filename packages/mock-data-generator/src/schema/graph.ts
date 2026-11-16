@@ -170,6 +170,8 @@ export interface SchemaGraph {
     relationships: ReadonlyArray<SchemaRelationship>;
     complexTypes?: ReadonlyArray<SchemaComplexType>;
     skippedEntitySets?: ReadonlyArray<SchemaSkippedEntitySet>;
+    /** How many containment paths were left out because the service reached its limit of contained entities. */
+    omittedContainmentPaths?: number;
     /**
      * Value-list entity sets that a per-entity-set request asks rows of. For this request their supplied rows
      * are not the whole domain, so the requested rows are added after them.

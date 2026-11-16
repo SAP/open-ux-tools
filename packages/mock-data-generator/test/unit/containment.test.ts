@@ -1,4 +1,5 @@
 import { generateServiceForTesting, validateGeneratedResult } from '../../src/index.js';
+import { MAX_CONTAINED_ENTITIES } from '../../src/limits.js';
 import { parseEdmx } from '../../src/schema/edmx.js';
 import type { MockDataRow, MockDataServiceRequest } from '../../src/types.js';
 
@@ -152,5 +153,64 @@ describe('contained entities', () => {
         // When the result is validated
         // Then the shape is rejected
         expect(() => validateGeneratedResult(input, tampered)).toThrow(/invalid contained rows under Ybn/u);
+    });
+});
+
+/**
+ * A service of types without entity sets that each contain every other, under one root entity set: every order of the
+ * types is a containment path, so the paths grow factorially with the number of types.
+ *
+ * @param types the number of mutually containing types
+ * @returns the EDMX document
+ */
+function mutualContainment(types: number): string {
+    const navigations = (self: number): string =>
+        Array.from({ length: types }, (_, index) =>
+            index === self
+                ? ''
+                : `<NavigationProperty Name="c${index}" Type="Collection(n.T${index})" ContainsTarget="true"/>`
+        ).join('');
+    const entityTypes = Array.from(
+        { length: types },
+        (_, index) =>
+            `<EntityType Name="T${index}"><Key><PropertyRef Name="ID"/></Key><Property Name="ID" Type="Edm.Int32" Nullable="false"/>${navigations(index)}</EntityType>`
+    ).join('');
+    return `<?xml version="1.0"?><edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx"><edmx:DataServices><Schema Namespace="n" xmlns="http://docs.oasis-open.org/odata/ns/edm">${entityTypes}<EntityType Name="Root"><Key><PropertyRef Name="ID"/></Key><Property Name="ID" Type="Edm.Int32" Nullable="false"/>${navigations(-1)}</EntityType><EntityContainer Name="C"><EntitySet Name="Roots" EntityType="n.Root"/></EntityContainer></Schema></edmx:DataServices></edmx:Edmx>`;
+}
+
+describe('containment that grows faster than a service can hold', () => {
+    it('reads the shallowest containment paths up to the limit and counts the deeper ones', () => {
+        // Given nine mutually containing types, whose containment paths number almost a million
+        const content = mutualContainment(9);
+
+        // When the metadata is parsed
+        const graph = parseEdmx(content);
+
+        // Then it reads at most the limit of contained entities, every first-level one among them
+        const contained = graph.entities.filter(({ containedBy }) => containedBy !== undefined);
+        expect(contained.length).toBeLessThanOrEqual(MAX_CONTAINED_ENTITIES);
+        expect(contained.filter(({ containedBy }) => containedBy?.entitySetName === 'Roots')).toHaveLength(9);
+        // And the paths beyond the limit are counted
+        expect(graph.omittedContainmentPaths).toBeGreaterThan(0);
+        expect(graph.skippedEntitySets).toBeUndefined();
+    });
+
+    it('generates the root entity set of such a service', async () => {
+        // Given the same service
+        const request: MockDataServiceRequest = {
+            metadata: { format: 'edmx', content: mutualContainment(9) },
+            service: { urlPath: '/roots', odataVersion: '4.0' },
+            targets: [{ name: 'Roots', kind: 'entity-set' }],
+            existingData: {}
+        };
+
+        // When ten rows of its root entity set are generated
+        const result = await generateServiceForTesting(request, { mode: 'deterministic', seed: 1, rowsPerEntity: 10 });
+
+        // Then the root has its rows, and one warning reports the paths left out
+        expect(result.resources.Roots).toHaveLength(10);
+        const skipped = result.diagnostics.filter(({ code }) => code === 'SCHEMA_ENTITY_SET_SKIPPED');
+        expect(skipped.map(({ severity }) => severity)).toEqual(['warning']);
+        expect(skipped[0]?.message).toContain(`at most ${MAX_CONTAINED_ENTITIES}`);
     });
 });

@@ -78,6 +78,7 @@ import type { VerifiedModelArtifacts } from './model/runtime-artifacts.js';
 import {
     DEADLINE_FINALIZATION_RESERVE_MS,
     DEFAULT_SFT_SERVICE_BUDGET_MS,
+    MAX_CONTAINED_ENTITIES,
     MAX_ROWS_PER_ENTITY,
     MAX_SFT_DEADLINE_MS,
     MAX_SFT_FIELDS_PER_CALL,
@@ -650,7 +651,17 @@ function schemaCoverageDiagnostics(
     targets: ReadonlyArray<MockDataTarget>
 ): MockDataGeneratorResult['diagnostics'][number][] {
     const requested = new Set(targets.map(({ name }) => name));
+    const omittedPaths = graph.omittedContainmentPaths ?? 0;
     return [
+        ...(omittedPaths > 0
+            ? [
+                  {
+                      code: 'SCHEMA_ENTITY_SET_SKIPPED' as const,
+                      severity: 'warning' as const,
+                      message: `No rows are generated for ${omittedPaths} containment paths, because a service holds at most ${MAX_CONTAINED_ENTITIES} contained entities; the shallowest are generated.`
+                  }
+              ]
+            : []),
         ...(graph.skippedEntitySets ?? [])
             .filter(({ entitySetName }) => requested.has(entitySetName))
             .map(({ entitySetName, reason }) => ({

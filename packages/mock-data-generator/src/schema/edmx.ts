@@ -14,6 +14,7 @@ import type {
     SchemaValueListParameter
 } from './graph.js';
 import { inheritedNameSkipReason, valueListParameterDirection } from './graph.js';
+import { MAX_CONTAINED_ENTITIES } from '../limits.js';
 import { compareCodePoints } from '../ordering.js';
 import { errorMessage, isRecord } from '../guards.js';
 import {
@@ -580,6 +581,8 @@ interface EntitySetCollection {
      * in the containing row, so no key mapping links them.
      */
     containedNavigations: Set<string>;
+    /** Containment paths left out at the limit of contained entities. */
+    omittedContainmentPaths: number;
 }
 
 /** One navigation property of an entity set, with what every kind of relationship reads from it. */
@@ -1194,7 +1197,8 @@ function collectEntitySets(context: EdmxParseContext): EntitySetCollection {
         skippedEntitySets: [],
         entitySetByType: new Map(),
         entitySets: [],
-        containedNavigations: new Set()
+        containedNavigations: new Set(),
+        omittedContainmentPaths: 0
     };
     for (const schema of context.schemas) {
         for (const container of asArray(schema.EntityContainer)) {
@@ -1252,7 +1256,9 @@ function collectContainedEntities(context: EdmxParseContext, collection: EntityS
             new Set([context.entityTypes.get(qualifiedType)?.qualifiedType ?? qualifiedType])
         ])
     );
-    // The loop also visits the contained entities appended to the array while it runs.
+    let contained = 0;
+    // The loop also visits the contained entities appended to the array while it runs, so paths are read shallowest
+    // first and the limit keeps the shallowest.
     for (const { entitySet, entitySetName, qualifiedType } of collection.entitySets) {
         const hierarchy = entityTypeHierarchy(context.entityTypes, qualifiedType);
         const containing = pathTypes.get(entitySetName) ?? new Set<string>();
@@ -1271,6 +1277,11 @@ function collectContainedEntities(context: EdmxParseContext, collection: EntityS
             if (DRAFT_NAVIGATION_NAMES.has(name.toLowerCase()) || containing.has(canonicalType)) {
                 continue;
             }
+            if (contained >= MAX_CONTAINED_ENTITIES) {
+                collection.omittedContainmentPaths += 1;
+                continue;
+            }
+            contained += 1;
             const containedName = `${entitySetName}/${name}`;
             const prefix = `${name}/`;
             const bindings = asArray(entitySet.NavigationPropertyBinding)
@@ -1910,6 +1921,9 @@ export function parseEdmx(content: string): SchemaGraph {
                       compareCodePoints(left.entitySetName, right.entitySetName)
                   )
               }
+            : {}),
+        ...(collection.omittedContainmentPaths > 0
+            ? { omittedContainmentPaths: collection.omittedContainmentPaths }
             : {})
     };
 }

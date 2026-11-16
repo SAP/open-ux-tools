@@ -18,6 +18,13 @@ export const MAX_ROWS_PER_ENTITY = 1_000;
  */
 export const SATURATED_KEY_CAPACITY = MAX_ROWS_PER_ENTITY + 1;
 
+/**
+ * Most entities one service may contain without an entity set of their own. Every containment path of an entity
+ * type is an entity, and mutually containing types have factorially many paths, so a few kilobytes of metadata
+ * could otherwise exhaust the heap. The shallowest paths are kept; real services contain a handful.
+ */
+export const MAX_CONTAINED_ENTITIES = 500;
+
 /** Maximum UTF-8 size accepted for one EDMX or CSN input, checked before hashing or parsing. */
 export const MAX_METADATA_INPUT_BYTES = 32 * 1024 * 1024;
 
