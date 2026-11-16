@@ -60,41 +60,49 @@ describe('executable semantic validation', () => {
         expect(generate).not.toHaveBeenCalled();
     });
     it.each([
-        ['Jan', 'van Dijk', 'jan.van.dijk@example.com'],
-        ['Mary Ann', 'De la Cruz', 'mary.ann.de.la.cruz@example.com']
-    ])('builds a valid email for the host names %s %s', async (firstName, lastName, email) => {
-        // Given a host sample dataset whose names hold spaces, and a field routed to email
-        const contacts = {
-            ...request,
-            metadata: { ...request.metadata, content: metadata.replace('MaxLength="5"', 'MaxLength="80"') }
-        };
-
-        // When the service is generated
-        const result = await generateServiceForTesting(
-            contacts,
-            {
-                rowsPerEntity: 1,
-                syntheticScenario: ibanScenario,
-                sampleDataset: {
-                    id: 'spaced-names',
-                    version: '1',
-                    firstNames: [firstName],
-                    lastNames: [lastName],
-                    organizations: ['Example'],
-                    descriptions: ['Synthetic narrative']
+        ['Jan', 'van Dijk', 80, 'jan.van.dijk@example.com'],
+        ['Mary Ann', 'De la Cruz', 80, 'mary.ann.de.la.cruz@example.com'],
+        ['Ann', 'Smith', 30, 'ann.smith@example.com'],
+        ['Ann', 'Smith', 20, 'a@b.test']
+    ])(
+        'builds a valid email for the host names %s %s in %d characters',
+        async (firstName, lastName, maxLength, email) => {
+            // Given a host sample dataset, and a field of that length routed to email
+            const contacts = {
+                ...request,
+                metadata: {
+                    ...request.metadata,
+                    content: metadata.replace('MaxLength="5"', `MaxLength="${maxLength}"`)
                 }
-            },
-            {
-                classifier: {
-                    fingerprint: 'test',
-                    classify: async () => ({ role: 'email', confidence: 1, source: 'classifier' })
-                }
-            }
-        );
+            };
 
-        // Then the address joins the name parts with dots
-        expect(result.resources.Accounts[0].Email).toBe(email);
-    });
+            // When the service is generated
+            const result = await generateServiceForTesting(
+                contacts,
+                {
+                    rowsPerEntity: 1,
+                    syntheticScenario: ibanScenario,
+                    sampleDataset: {
+                        id: 'spaced-names',
+                        version: '1',
+                        firstNames: [firstName],
+                        lastNames: [lastName],
+                        organizations: ['Example'],
+                        descriptions: ['Synthetic narrative']
+                    }
+                },
+                {
+                    classifier: {
+                        fingerprint: 'test',
+                        classify: async () => ({ role: 'email', confidence: 1, source: 'classifier' })
+                    }
+                }
+            );
+
+            // Then the address is the person's when it fits, with the name parts joined by dots
+            expect(result.resources.Accounts[0].Email).toBe(email);
+        }
+    );
     it('does not infer an IBAN jurisdiction from an unrelated address country', async () => {
         const report = await inspectService(request, { rowsPerEntity: 1 });
         expect(report.fieldDecisions.find(({ property }) => property === 'IBAN')?.acceptedRole).toBeUndefined();

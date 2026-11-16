@@ -431,15 +431,15 @@ function contactOrLocationValue(
     rowIndex: number
 ): string | undefined {
     switch (role) {
-        case 'email':
-            if (property.maxLength !== undefined && property.maxLength < 40) {
-                return 'a@b.test';
-            }
+        case 'email': {
             // Names such as "van Dijk" hold spaces, which an address cannot.
-            return `${context.givenName.toLowerCase()}.${context.familyName.toLowerCase()}@example.com`.replaceAll(
-                /\s+/gu,
-                '.'
-            );
+            const address =
+                `${context.givenName.toLowerCase()}.${context.familyName.toLowerCase()}@example.com`.replaceAll(
+                    /\s+/gu,
+                    '.'
+                );
+            return property.maxLength === undefined || [...address].length <= property.maxLength ? address : 'a@b.test';
+        }
         case 'phone':
             return `${context.location.phonePrefix} ${subscriberDigits(hash, context.location.phoneSubscriberDigits)}`;
         case 'mobile_phone':
