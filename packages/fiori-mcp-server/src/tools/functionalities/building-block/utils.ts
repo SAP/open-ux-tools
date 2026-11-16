@@ -213,11 +213,15 @@ export const versionRequirementsNote: string = (() => {
     const versionGroups = [...byVersion.entries()]
         .map(([version, types]) => `Types requiring UI5 >= ${version}: ${types.join(', ')}.`)
         .join(' ');
+    const unversionedTypes = Object.values(BuildingBlockType)
+        .filter((type) => !(type in BB_TYPE_MIN_UI5_VERSION))
+        .map(toDisplayName)
+        .join(', ');
     return (
         `${versionGroups} ` +
         'All building blocks require an OData V4 service. ' +
-        'Other building block types (Table, Chart, FilterBar, Field, Form, CustomColumn, CustomFilterField, ' +
-        'CustomFormField, Action) have no specific minimum UI5 version beyond the application baseline. ' +
+        `Other building block types (${unversionedTypes}) have no specific minimum UI5 version beyond ` +
+        'the application baseline. ' +
         'Chart: on UI5 < 1.97 the chart is always generated with contextPath applied.'
     );
 })();

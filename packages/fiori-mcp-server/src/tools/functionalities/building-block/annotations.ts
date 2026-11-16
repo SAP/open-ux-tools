@@ -8,8 +8,6 @@ import { getServiceName } from '../../../page-editor-api/index.js';
 import { logger } from '../../../utils/index.js';
 import { ANNOTATION_SHELL_TERMS } from './utils.js';
 
-export { ANNOTATION_SHELL_TERMS };
-
 /** Minimal building-block fields the annotation-shell writer needs. */
 export interface AnnotationShellInput {
     buildingBlockType: BuildingBlockType;
