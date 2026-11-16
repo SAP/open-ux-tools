@@ -23,8 +23,7 @@ function containedEntities(graph: SchemaGraph): SchemaEntity[] {
 }
 
 /**
- * The contained entities generated with the requested targets: those a requested entity set contains, at any
- * depth. Their rows are generated as entities of their own and published inside the rows that contain them.
+ * The entities a requested entity set contains, at any depth; generated on their own and nested on publish.
  *
  * @param graph - Service schema.
  * @param targets - The requested targets that can be generated.
@@ -50,8 +49,8 @@ interface ContainerMappings {
 }
 
 /**
- * The properties a contained row copies from its container, matched as the SAP Fiori elements mockserver does: by the
- * referential constraints towards the container, else by key names both types declare.
+ * The properties a contained row copies from its container, matched as the SAP Fiori elements mockserver does:
+ * referential constraints towards the container, else key names both types declare.
  *
  * @param graph - Service schema.
  * @param entity - The contained entity.
@@ -78,9 +77,8 @@ function containerMappings(graph: SchemaGraph, entity: SchemaEntity, container: 
 }
 
 /**
- * Publish the rows of contained entities inside the generated rows that contain them, as the SAP Fiori elements
- * mockserver reads them. Every container holds one row before any holds two; supplied rows are published as supplied,
- * and unplaced rows or empty containers are reported.
+ * Nest contained rows inside the generated rows that contain them, as the SAP Fiori elements mockserver reads them.
+ * Supplied rows are published as supplied; unplaced rows and empty containers are reported.
  *
  * @param graph - Service schema.
  * @param resources - Generated rows by entity set, contained entities included.
@@ -247,9 +245,8 @@ function placeContainedRows(
 }
 
 /**
- * Read the contained rows back out of the generated rows that hold them, shallowest first: the inverse of
- * `nestContainedRows`, so a published result can be checked entity by entity. The containment navigation is
- * removed from each generated container row; a supplied row keeps what it holds.
+ * The inverse of `nestContainedRows`: contained rows read back out of the generated rows, shallowest first, so a
+ * result can be checked entity by entity. Supplied rows keep what they hold.
  *
  * @param graph - Service schema.
  * @param resources - Published rows by entity set.

@@ -3,9 +3,8 @@ import { semanticRules } from '../semantics/rule-store.js';
 import type { SchemaEntity, SchemaGraph, SchemaProperty } from '../schema/graph.js';
 
 /**
- * Whether a word names the form of a field rather than what it is about (`Unit Category Description` is
- * about a unit category): a text or identifier form word of the rule store's `realismChecks`. Two fields
- * that share only such words are not about the same thing.
+ * Whether a word names a field's form rather than its subject (`Unit Category Description` is about a unit
+ * category): a text or identifier form word of the rule store's `realismChecks`.
  *
  * @param word a lower-case word
  * @returns true for a form word
@@ -50,8 +49,8 @@ export function subjectWords(property: SchemaProperty): Set<string> {
 }
 
 /**
- * Every phrase the service uses to name something (property, entity and entity set names, labels and
- * descriptions), and every trailing run of words of each, so `Unit Price` also yields `price`.
+ * Every name, label and description phrase of the service and each trailing run of its words, so `Unit Price`
+ * also yields `price`.
  *
  * @param graph service schema
  * @returns the phrases

@@ -37,9 +37,8 @@ export interface EmbeddingClassifierHead {
     registryFingerprint?: string;
     abstentionLabels?: ReadonlyArray<string>;
     /**
-     * Labels the head was trained on to keep its decision boundary sharp but never routes: they
-     * lack calibration support or calibration precision. A decision that lands on one of them is
-     * treated exactly like an unsupported role (route threshold above 1).
+     * Labels trained to sharpen the decision boundary but never routed (no calibration support or precision): a
+     * decision on one gets a route threshold above 1.
      */
     auxiliaryLabels?: ReadonlyArray<string>;
     roleCalibration?: Readonly<Record<string, number>>;
@@ -98,8 +97,8 @@ function isOptional(value: unknown, check: (present: unknown) => boolean): boole
 }
 
 /**
- * Check the JSON shape of a head: the type of every field the later checks read. Values (finiteness,
- * lengths, thresholds) are checked by the named checks that follow.
+ * Check the JSON types of the head's dimension, layers, labels, abstention labels and calibration records; values
+ * are checked later.
  *
  * @param value the parsed head
  * @throws {TypeError} naming the first field with the wrong type
@@ -150,8 +149,6 @@ function assertHeadShape(value: unknown): asserts value is EmbeddingClassifierHe
  * @throws {TypeError} naming the inconsistent layer
  */
 function assertHeadLayers(head: EmbeddingClassifierHead): void {
-    // Each class weight row spans the hidden units when the head has a hidden layer, the embedding
-    // dimensions otherwise.
     const classWeightLength = head.hidden ? head.hidden.bias.length : head.dim;
     const finiteRow = (weights: ReadonlyArray<number>, length: number): boolean =>
         weights.length === length && weights.every((weight) => Number.isFinite(weight));
@@ -290,8 +287,6 @@ function assertCalibration(head: EmbeddingClassifierHead, contract: EmbeddingHea
 
 /**
  * Validate a parsed classifier head against the runtime's v3 contract before any native session is created.
- * Checks run in order: JSON shape, layer dimensions, temperature, input format and registered labels,
- * training contract, calibration.
  *
  * @param head the parsed head
  * @param contract the runtime's v3 dependencies
@@ -332,7 +327,7 @@ function applyHead(
               for (let dimension = 0; dimension < vector.length; dimension += 1) {
                   sum += vector[dimension] * weights[dimension];
               }
-              // ReLU; a NaN sum gives 0, as `sum > 0 ? sum : 0` does.
+              // ReLU; a NaN sum gives 0.
               return Number.isNaN(sum) ? 0 : Math.max(sum, 0);
           })
         : vector;
@@ -447,7 +442,7 @@ export function createEmbeddingSemanticClassifier(options: EmbeddingSemanticClas
     ): Promise<ReadonlyArray<SemanticClassification>> => {
         signal.throwIfAborted();
         const texts = inputs.map(fieldText);
-        // Resolve the batch from its own map: remembering new entries may evict others from the bounded cache.
+        // A batch-local map: remembering new entries may evict others from the bounded cache.
         const resolved = new Map<string, SemanticClassification>();
         for (const text of texts) {
             const cached = cache.get(text);

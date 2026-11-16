@@ -9,9 +9,8 @@ import type { SchemaGraph, SchemaProperty } from '../schema/graph.js';
 import type { JsonValue } from '../types.js';
 
 /**
- * The standard mock server's value for a string property at a row. A column too short to hold a part of the
- * name with the index gets no value: the standard mock server would write a value longer than the column, and
- * the index alone would read as a code or flag the column does not hold.
+ * The standard mock server's value for a string property at a row; none for a column too short for part of the
+ * name plus the index, since the index alone would read as a code or flag.
  *
  * @param property the string property
  * @param index zero-based row index

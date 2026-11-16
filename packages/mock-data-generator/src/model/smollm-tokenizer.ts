@@ -9,8 +9,7 @@ interface RawTokenizer {
 }
 
 /**
- * Whether a parsed tokenizer JSON is a BPE model: a token-to-id vocabulary, merges written as `a b` or
- * `[a, b]`, and optional added tokens.
+ * Whether a parsed tokenizer JSON is a BPE model with a vocabulary, `a b` or `[a, b]` merges and optional added tokens.
  *
  * @param value parsed `tokenizer.json`
  * @returns true for a BPE tokenizer of the expected shape
@@ -75,8 +74,7 @@ function byteAlphabet(): { bytesToCharacters: string[]; charactersToBytes: Reado
 }
 
 const { bytesToCharacters: BYTE_CHARACTER, charactersToBytes: CHARACTER_BYTE } = byteAlphabet();
-// The GPT-2 pre-tokenizer pattern of the model's tokenizer.json, kept verbatim: any other split changes the token ids
-// the model was trained on, so its regex complexity is accepted.
+// The GPT-2 pre-tokenizer pattern of tokenizer.json, kept verbatim: any other split changes the trained token ids.
 const GPT2_SPLIT = /'s|'t|'re|'ve|'m|'ll|'d| ?\p{L}+| ?\p{N}+| ?[^\s\p{L}\p{N}]+|\s+(?!\S)|\s+/gu; // NOSONAR
 
 function splitDigits(text: string): string[] {

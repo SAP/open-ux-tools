@@ -48,8 +48,8 @@ export function stringFacets(property: SchemaProperty): StringFacets {
 }
 
 /**
- * The form a string takes in a field with facets: upper case in an upper-case field. A string with other
- * characters than digits has no form in a digit field, nor has a string that upper case makes too long.
+ * A string in a field's facet form (upper case for an upper-case field); none for a non-digit string in a digit
+ * field or a form longer than the field's maximum length.
  *
  * @param property the field
  * @param value the string

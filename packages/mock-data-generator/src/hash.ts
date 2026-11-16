@@ -4,9 +4,8 @@ import { compareCodePoints } from './ordering.js';
 import { isRecord } from './guards.js';
 
 /**
- * JSON with object keys in code-point order, so the text depends only on the value and never on how
- * the literal is written or on the host locale. Arrays keep their order; `undefined` array entries and
- * values render as `JSON.stringify` renders them.
+ * JSON with object keys sorted by `compareCodePoints`, so the text depends only on the value, not on key
+ * order or host locale. Arrays keep their order; other values render as `JSON.stringify` renders them.
  *
  * @param value a JSON-compatible value
  * @returns the canonical JSON text
@@ -36,8 +35,7 @@ export function sha256(data: string | Uint8Array): string {
 }
 
 /**
- * The first 32 bits of the SHA-256 of a text, as an unsigned integer: a stable, seedable number for
- * deterministic choices.
+ * The first 32 bits of the SHA-256 of a text as an unsigned integer, for deterministic choices.
  *
  * @param text the text to hash
  * @returns an integer in [0, 2^32)

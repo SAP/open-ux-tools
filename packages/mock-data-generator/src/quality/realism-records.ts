@@ -102,8 +102,8 @@ function checkRecordEntity(
 }
 
 /**
- * A row of a record entity keyed by ISO 3166 or ISO 4217 codes describes one record: same-kind code columns hold the
- * row's code and name columns its name. Codes and names are recognised with the host's ICU data.
+ * A row of an entity keyed by ISO 3166 or ISO 4217 codes describes one record: same-kind code columns hold the
+ * row's code and name columns its name, recognised with the host's ICU data.
  *
  * @param input check input
  * @param minimum the fewest values that make a pattern

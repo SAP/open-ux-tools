@@ -41,11 +41,9 @@ import { compareCodePoints } from '../ordering.js';
 import { withReservedHost } from '../spec/reserved-domains.js';
 
 const SFT_PRIMITIVE_TYPES = new Set<SchemaProperty['primitiveType']>(['string', 'int', 'decimal']);
-// How long past its budget a generator may take to return its completed rows: one native decode step
-// of a batch on a loaded machine.
+// Grace past its budget for a generator to return completed rows: one native decode step on a loaded machine.
 const GENERATOR_STOP_GRACE_MS = 1_500;
-// `SAP__` entity sets are SAP Gateway protocol plumbing that no application renders, so they are left to the
-// deterministic tier.
+// `SAP__` entity sets are SAP Gateway protocol plumbing no application renders; the deterministic tier fills them.
 const PROTOCOL_ARTIFACT_ENTITY_SET_PREFIX = SAP_PROTOCOL_ENTITY_SET_PREFIX;
 
 class CandidateRelevanceError extends Error {
@@ -69,8 +67,7 @@ interface SftRunResult {
 }
 
 /**
- * Whether an entity set is one of the framework-provided sets a service carries rather than
- * application data.
+ * Whether an entity set is a framework-provided protocol set rather than application data.
  *
  * @param entitySetName the entity set name as declared by the service
  * @returns true when the set belongs to the reserved SAP Gateway namespace
@@ -96,8 +93,8 @@ function escapedRegExp(value: string): string {
 }
 
 /**
- * Whether a proposed value repeats the prompt's instructions instead of holding content. Such a value
- * shows the model lost track of the task, so the other values of its row are not trusted either.
+ * Whether a proposed value repeats the prompt's instructions instead of holding content; its whole row is
+ * then distrusted.
  *
  * @param property the field
  * @param value proposed value
@@ -122,9 +119,8 @@ export function isInstructionEcho(property: SchemaProperty, value: unknown): boo
 }
 
 /**
- * Whether a proposed string is a placeholder rather than content: one of the field's own names, a
- * placeholder word, a bare path or URL, an echoed instruction, or a field name with a placeholder word or
- * an ordinal number.
+ * Whether a proposed string is a placeholder: a field name, placeholder word, bare path or URL, echoed
+ * instruction, or a field name with a placeholder word or ordinal.
  *
  * @param property the field
  * @param value proposed string
@@ -159,9 +155,8 @@ export function isNarrativePlaceholder(property: SchemaProperty, value: string):
 }
 
 /**
- * Whether a proposed string carries code or JSON fragments instead of field content: it starts with closing
- * punctuation, contains braces or backticks, or repeats a JSON key/value separator. These are shape defects
- * of the answer, independent of what the field means.
+ * Whether a proposed string carries code or JSON fragments: leading closing punctuation, braces or backticks,
+ * or a JSON key/value separator.
  *
  * @param value proposed string
  * @returns true for a structural fragment
@@ -187,8 +182,8 @@ function validCandidate(property: SchemaProperty, value: unknown, strictNarrativ
 }
 
 /**
- * Whether the model rows of a generated code/text domain give it at least one row with a valid key and a lettered text
- * that differs from it. Invalid rows are dropped at merge, not the whole domain.
+ * Whether the model rows of a generated code/text domain hold at least one valid row whose lettered text
+ * differs from its key; invalid rows are dropped at merge.
  *
  * @param entity the domain's entity
  * @param fields the requested fields
@@ -244,8 +239,8 @@ function linkedTextOwners(
 }
 
 /**
- * Fields the model must propose in one call and that are accepted together: a code with its text
- * when the model proposes both (a generated domain key and its caption, or a linked pair).
+ * Fields the model must propose in one call and that are accepted together: a code and its text when both
+ * are requested.
  *
  * @param entity the resource's entity
  * @param fields the fields the model proposes
@@ -287,7 +282,7 @@ function completionStatistics(output: Awaited<ReturnType<SftGenerator['generate'
 }
 
 function isResidual(classification: SemanticClassification | undefined): boolean {
-    // A field the prototype head decided is filled from its concept's bank, not by the model.
+    // A concept decision is filled from its concept's bank, not by the model.
     if (classification?.source === 'concept') {
         return false;
     }
@@ -299,8 +294,7 @@ function isResidual(classification: SemanticClassification | undefined): boolean
 }
 
 /**
- * Whether no deterministic tier gave a field a value in any row: its role's sources abstained (a free text
- * with no host sample, a bank value too long for the field), so the field is the model's to write.
+ * Whether no deterministic tier gave a field a value in any row, so the field is the model's to write.
  *
  * @param property the field
  * @param fallbackRows the deterministic rows
@@ -342,7 +336,7 @@ function residualFields(
                     ...fieldRelationshipContext(graph, entity, property),
                     name: property.name,
                     primitiveType: property.primitiveType,
-                    // A descriptive key column need not be unique: another key column tells the rows apart.
+                    // A descriptive key column need not be unique; another key column distinguishes rows.
                     isKey: property.isKey && !descriptiveKeys.has(property.name),
                     ...(property.label === undefined ? {} : { label: property.label }),
                     ...(property.precision === undefined ? {} : { precision: property.precision }),
@@ -389,9 +383,10 @@ function valueListReferences(graph: SchemaGraph, entity: SchemaEntity, relatedNa
 /**
  * Preserve graph evidence for the model, including the consumers of reference captions.
  *
- * @param graph
- * @param entity
- * @param property
+ * @param graph the service schema
+ * @param entity the field's entity
+ * @param property the field
+ * @returns the relationship context of the field request
  */
 function fieldRelationshipContext(
     graph: SchemaGraph,
@@ -431,11 +426,12 @@ function fieldRelationshipContext(
 /**
  * Only unbound, fully synthetic code/text reference domains may receive model-generated keys.
  *
- * @param graph
- * @param entity
- * @param existingData
- * @param structural
- * @param classifications
+ * @param graph the service schema
+ * @param entity the candidate domain entity
+ * @param existingData the caller's existing data, by entity set
+ * @param structural the reserved properties of the entity
+ * @param classifications the planned roles by semantic key
+ * @returns the domain key name, or undefined when the entity is no synthetic domain
  */
 function syntheticDomainKey(
     graph: SchemaGraph,
@@ -498,15 +494,15 @@ function reservedSftProperties(
 }
 
 /**
- * Report the generated code/text domains whose display values need a model that is not available; those resources keep
- * their deterministic values and are marked unverified.
+ * Report the generated code/text domains whose display values need an unavailable model; they keep their
+ * deterministic values and are marked unverified.
  *
- * @param graph
- * @param targets
- * @param existingData
- * @param classifications
- * @param sftAvailable
- * @param options
+ * @param graph the service schema
+ * @param targets the entity sets to generate
+ * @param existingData the caller's existing data, by entity set
+ * @param classifications the planned roles by semantic key
+ * @param sftAvailable whether a fine-tuned generator is available
+ * @param options generation options
  * @returns one warning per affected entity set
  */
 export function syntheticDomainReadinessDiagnostics(
@@ -651,8 +647,7 @@ async function verifyWithinBudget(
 }
 
 /**
- * The model rows that propose a usable caption for every linked text: letters, valid for the field, and
- * different from its code.
+ * The model rows proposing a usable caption (lettered, valid, differing from its code) for every linked text.
  *
  * @param entity the resource's entity
  * @param linkedTexts linked text fields and their code owners
@@ -688,9 +683,8 @@ function captionRows(
 }
 
 /**
- * The rows whose proposed linked texts the independent relevance check accepts. Only rows that
- * propose a usable caption for every linked text (letters, valid, different from its code) are sent.
- * A check that fails or runs out of time verifies no row.
+ * The rows whose proposed linked texts the relevance check accepts; only rows with usable captions are sent,
+ * and a check that fails or times out verifies none.
  *
  * @param entity the resource's entity
  * @param linkedTexts linked text fields and their code owners
@@ -835,7 +829,7 @@ interface SftResourceAttempt {
 /** The model rows of one attempt that passed generation and the relevance check. */
 interface SftCandidates {
     readonly rows: ReadonlyArray<MockDataRow>;
-    /** Rows whose linked texts the relevance check accepted; linked texts of other rows keep their fallback. */
+    /** Rows whose linked texts are kept; linked texts of other rows keep their fallback. */
     readonly verifiedTextRows: ReadonlySet<number>;
 }
 
@@ -884,9 +878,7 @@ const SFT_FAILURES = {
  */
 function structuralPropertiesByEntitySet(graph: SchemaGraph): Map<string, Set<string>> {
     const structuralProperties = new Map<string, Set<string>>();
-    // One set per entity set: a self-referencing relationship names the same entity set on both
-    // ends, so separate sets would let the second end replace the first and leave its foreign key
-    // free for the model to overwrite.
+    // One shared set per entity set, so a self-referencing relationship keeps both ends protected.
     const structuralPropertiesOf = (entitySetName: string): Set<string> => {
         const existing = structuralProperties.get(entitySetName);
         if (existing) {
@@ -904,8 +896,7 @@ function structuralPropertiesByEntitySet(graph: SchemaGraph): Map<string, Set<st
             target.add(targetProperty);
         });
     }
-    // A value next to a reference is copied from the referenced row after generation; the model's time goes
-    // to the referenced row's own value instead.
+    // A value next to a reference is copied from the referenced row after generation, so the model skips it.
     for (const { relationship, sourceField } of referencedValueLinks(graph)) {
         structuralPropertiesOf(relationship.fromEntitySet).add(sourceField);
     }
@@ -942,7 +933,7 @@ function prepareSftResources(
         if (protocolArtifact) {
             protocolArtifacts += 1;
         }
-        // CAP code lists are filled from their codes by the code-list provider, so the model is not asked.
+        // CAP code lists are filled by the code-list provider.
         const codeList = entity !== undefined && capCodeList(entity) !== undefined;
         const fields =
             entity && !contributed && !protocolArtifact && !codeList
@@ -959,8 +950,7 @@ function prepareSftResources(
             })
         );
     }
-    // Priority targets go first in the caller's order, then referenced domains, then resources with fewer fields.
-    // Display texts of references are aligned after generation, so the order does not affect them.
+    // Priority targets first (caller's order), then referenced domains, then resources with fewer fields.
     const priority = new Map((options.sftPriorityTargets ?? []).map((target, index) => [target, index]));
     const priorityOf = (resourceName: string): number => priority.get(resourceName) ?? Number.MAX_SAFE_INTEGER;
     prepared.sort(
@@ -988,8 +978,7 @@ function verifiableFields(
     diagnostics: MockDataGeneratorDiagnostic[]
 ): ReadonlyArray<SftFieldRequest> {
     const { resourceName, fields: plannedFields, domainKey } = resource;
-    // Without an independent relevance check, a generated code/text domain keeps its deterministic
-    // rows and linked texts keep their fallback; the other fields may still take model values.
+    // Without a relevance check, a generated domain stays deterministic and linked texts keep their fallback.
     const plannedTexts = linkedTextOwners(entity, plannedFields);
     if ((domainKey !== undefined || plannedTexts.length > 0) && !candidateVerifier) {
         diagnostics.push(
@@ -1011,18 +1000,7 @@ function verifiableFields(
 }
 
 /**
- * Decide whether a resource is attempted and, if so, the budget of its attempt. A resource that is not
- * attempted keeps its fallback rows.
- *
- * @param resource the prepared resource
- * @param request the run's options and relevance check
- * @param state receives the fallback rows, skip records and eligible slots
- * @param schedule the service budget, updated with this resource
- * @returns the attempt, or undefined when the resource keeps its fallback rows
- */
-/**
- * The best-effort roles of the requested fields. The model may replace a best-effort value, but only with a
- * value the role accepts, so the planned role still holds for every row.
+ * The best-effort roles of the requested fields; a model value must fit the role to replace one.
  *
  * @param entity the resource's entity
  * @param fields the fields the model is asked for
@@ -1045,8 +1023,7 @@ function bestEffortRoles(
 }
 
 /**
- * The likely role of each requested field that has one: its planned role, or else the classifier's best-ranked
- * role when that is not `unknown`, even below the routing threshold.
+ * The likely role of each requested field: its planned role, else the classifier's best-ranked non-`unknown` role.
  *
  * @param entity the resource's entity
  * @param fields the fields the model is asked for
@@ -1069,6 +1046,16 @@ function likelyRoles(
     return roles;
 }
 
+/**
+ * Decide whether a resource is attempted and, if so, the budget of its attempt. A resource that is not
+ * attempted keeps its fallback rows.
+ *
+ * @param resource the prepared resource
+ * @param request the run's options and relevance check
+ * @param state receives the fallback rows, skip records and eligible slots
+ * @param schedule the service budget, updated with this resource
+ * @returns the attempt, or undefined when the resource keeps its fallback rows
+ */
 function scheduleSftAttempt(
     resource: PreparedSftResource,
     request: SftGenerationRequest,
@@ -1088,17 +1075,16 @@ function scheduleSftAttempt(
     }
     const linkedTexts = linkedTextOwners(entity, fields);
     const coupledGroups = coupledFieldGroups(entity, fields);
-    // The model writes the first rows; the rest reuse their values field by field. A generated
-    // domain needs every row's own key, and a text whose code the model does not write cannot move to
-    // another row's code, so both are written whole.
+    // The model writes the first rows and the rest reuse their values, except for a generated domain (each
+    // row needs its own key) or a text whose code the model does not write.
     const names = new Set(fields.map(({ name }) => name));
     const unreusableText = linkedTexts.some(({ owner, text }) => names.has(text.name) && !names.has(owner.name));
     const modelRowCount =
         domainKey === undefined && !unreusableText
             ? Math.min(fallbackRows.length, options.sftModelRows ?? fallbackRows.length)
             : fallbackRows.length;
-    // An attempt may use what remains of the service budget, up to the per-resource timeout, since an even share
-    // starves wide resources. Once the budget cannot fund a minimum slice, the rest keep deterministic rows.
+    // An attempt may use the remaining service budget up to the per-resource timeout (an even share starves
+    // wide resources); below a minimum slice, the rest stay deterministic.
     const remainingServiceMs = schedule.serviceBudgetMs - (performance.now() - schedule.startedAt);
     if (schedule.attemptedResources > 0 && remainingServiceMs < schedule.minimumAttemptMs) {
         state.generated[resourceName] = fallbackRows;
@@ -1143,15 +1129,14 @@ function scheduleSftAttempt(
 }
 
 /**
- * Check the linked texts of the model rows row by row: a verified row keeps its texts, the others keep
- * their fallback, and the other fields are accepted on their own merits.
+ * Check the linked texts of the model rows with the relevance check and report unconfirmed captions.
  *
  * @param attempt the resource attempt
  * @param rows the model rows
  * @param candidateVerifier the relevance check
  * @param request the run's service and cancellation signal
  * @param state receives the resource when any caption is verified
- * @returns the indexes of the rows whose linked texts were verified
+ * @returns the indexes of the rows whose linked texts are kept
  */
 async function verifyLinkedTextRows(
     attempt: SftResourceAttempt,
@@ -1176,8 +1161,7 @@ async function verifyLinkedTextRows(
         { service, resource: resourceName }
     );
     signal.throwIfAborted();
-    // A caption the check cannot confirm is still closer to the field than the fallback, so every usable
-    // caption is kept and the unconfirmed ones are reported.
+    // An unconfirmed caption is still closer than the fallback: keep every usable caption, report the rest.
     const usableRows = captionRows(attempt.entity, attempt.linkedTexts, rows, attempt.modelFallbackRows);
     if (usableRows.length > verifiedTextRows.size) {
         reportUnverifiedCandidates(state, resourceName);
@@ -1207,15 +1191,15 @@ function reportUnverifiedCandidates(state: SftRunState, resourceName: string): v
 }
 
 /**
- * Check a generated code/text domain, which is accepted whole or not at all. A complete and consistent
- * domain is kept even when the relevance check does not confirm it, and reported.
+ * Check a generated code/text domain, accepted whole or not at all; an unconfirmed but consistent domain is
+ * kept and reported.
  *
  * @param attempt the resource attempt
  * @param rows the model rows
  * @param domainKey the key property of the generated domain
  * @param candidateVerifier the relevance check
  * @param request the run's service and cancellation signal
- * @param state receives the rejected slots, or the resource when the domain is verified
+ * @param state receives the rejected slots or the resource
  * @throws {CandidateRelevanceError} when the domain is incomplete or inconsistent
  */
 async function verifyGeneratedDomain(
@@ -1271,7 +1255,7 @@ async function verifyGeneratedDomain(
             decisions.length === pairs.length &&
             decisions.every((decision) => decision === true);
     }
-    // A complete, consistent domain the check cannot confirm is still closer to the fields than the fallback.
+    // An unconfirmed, consistent domain is still closer than the fallback.
     if (!accepted) {
         reportUnverifiedCandidates(state, resourceName);
     }
@@ -1284,8 +1268,8 @@ async function verifyGeneratedDomain(
  * @param attempt the resource attempt
  * @param request the run's generator, service, options, relevance check and cancellation signal
  * @param state receives the completion statistics, rejected slots and verified resources
- * @returns the model rows and the rows whose linked texts were verified
- * @throws {CandidateRelevanceError} when the budget is spent or the candidates are not verified
+ * @returns the model rows and the rows whose linked texts are kept
+ * @throws {CandidateRelevanceError} when the budget is spent or a generated domain is unusable
  */
 async function requestSftCandidates(
     attempt: SftResourceAttempt,
@@ -1294,9 +1278,8 @@ async function requestSftCandidates(
 ): Promise<SftCandidates> {
     const { sft, service, options, signal, candidateVerifier } = request;
     const { entity, fields, domainKey, coupledGroups, budgetMs, startedAt } = attempt;
-    // One candidate per resource: a retry only changes the seed of the same prompt and costs a
-    // full model call (a status value list spent 12 s on three declined attempts), while a
-    // declined resource keeps its deterministic rows either way.
+    // One candidate per resource: a retry only reseeds the same prompt at the cost of a full model call,
+    // and a declined resource keeps its deterministic rows anyway.
     signal.throwIfAborted();
     const remainingBudgetMs = budgetMs - (performance.now() - startedAt);
     if (remainingBudgetMs <= 0) {
@@ -1316,8 +1299,7 @@ async function requestSftCandidates(
             seed: (options.seed ?? 1) % Number.MAX_SAFE_INTEGER
         }),
         signal,
-        // The generator stops at its own budget and returns the rows it completed; the outer
-        // bound only catches a generator that does not stop, so it allows one slow native step.
+        // The outer bound only catches a generator that ignores its own budget.
         attemptBudgetMs + GENERATOR_STOP_GRACE_MS
     );
     if (!output || !Array.isArray(output.rows)) {
@@ -1382,10 +1364,9 @@ function recordFailedAttempt(
         acceptedSlots: 0,
         durationMs: performance.now() - attempt.startedAt
     });
-    // A verifier that declines every candidate keeps the deterministic rows and reports the resource as unverified,
-    // rather than rejecting the whole service.
+    // An unverified resource keeps its deterministic rows rather than rejecting the whole service.
     const failure = SFT_FAILURES[failureKind];
-    // An unexpected failure keeps its cause; a timeout or an unverified domain is fully described by its code.
+    // Only an unexpected failure carries its cause; the codes describe the others.
     const message = failureKind === 'failed' ? `${failure.message} Cause: ${errorMessage(error)}` : failure.message;
     state.diagnostics.push(Object.freeze({ code: failure.code, message, severity: 'warning', target: resourceName }));
 }
@@ -1429,8 +1410,8 @@ function candidateFieldIsValid(
 }
 
 /**
- * Whether a complete, valid row of a generated domain introduces a new key. A row whose key repeats is
- * dropped; an identical repeat counts as legitimate deduplication.
+ * Whether a complete, valid row of a generated domain introduces a new key; an identical repeat counts as
+ * deduplication.
  *
  * @param merge the resource's merge state
  * @param domainKey the key property of the generated domain
@@ -1448,7 +1429,7 @@ function acceptsDomainRow(
 ): boolean {
     const { fields } = merge.attempt;
     const { merged } = merge;
-    // A generated domain row is one unit: every field valid, or the row stays deterministic.
+    // A domain row is one unit: every field valid, or the row stays deterministic.
     if (presentCount !== fields.length || validCount !== fields.length) {
         merge.state.rejectedSlots += fields.length;
         return false;
@@ -1466,8 +1447,8 @@ function acceptsDomainRow(
 }
 
 /**
- * Write the acceptable fields of a model row over its fallback row. Fields are accepted one by one;
- * coupled fields only together, and linked texts only in rows the relevance check verified.
+ * Write the acceptable fields of a model row over its fallback row; coupled fields only together, and
+ * linked texts only in rows listed in `verifiedTextRows`.
  *
  * @param merge the resource's merge state
  * @param rowIndex the row's index
@@ -1510,9 +1491,8 @@ function acceptCandidateFields(
 }
 
 /**
- * Merge one model row into the resource: its valid values replace the fallback values, and a row with
- * an instruction echo or no candidate keeps the fallback row. An e-mail or web address the model writes
- * takes a reserved domain, since the model may name a host someone could register.
+ * Merge one model row into the resource; a row with an instruction echo or no candidate keeps the fallback.
+ * Hosts in model strings take reserved domains, since the model may name a registrable host.
  *
  * @param merge the resource's merge state
  * @param rowIndex the row's index
@@ -1608,8 +1588,7 @@ function mergeModelRows(attempt: SftResourceAttempt, candidates: SftCandidates, 
 }
 
 /**
- * Make each linked text a function of its code: a code that rows show with different texts keeps the text
- * of its first row everywhere, so the model's caption is kept rather than replaced by a placeholder.
+ * Make each linked text a function of its code: every row of a code takes the text of its first row.
  *
  * @param attempt the resource attempt
  * @param merged the merged model rows, updated in place
@@ -1640,8 +1619,8 @@ function keepOneTextPerCode(attempt: SftResourceAttempt, merged: MergedSftRows):
 const LINE_TERMINATORS = new Set(['\n', '\r', '\u2028', '\u2029']);
 
 /**
- * The last run of ASCII digits of a value, as offsets `[start, end)`. Within a value of several lines, it is the
- * last run of the first line that holds a digit. One linear scan, so long values cannot make it backtrack.
+ * The last run of ASCII digits of a value, as offsets `[start, end)`, within the first line holding a digit.
+ * A linear scan, so long values cannot cause backtracking.
  *
  * @param value the value
  * @returns the run's offsets, or undefined when the value holds no digit
@@ -1679,8 +1658,8 @@ function replaceLastDigitRun(value: string, replacement: (run: string) => string
 }
 
 /**
- * Whether the model's values of a field are distinct identifiers: a string field with no role or an identifier role,
- * and at least two distinct single-token values holding a digit. Such values are not reused across rows.
+ * Whether the model's values of a field are distinct identifiers: a string field with no or an identifier
+ * role, and at least two distinct single-token values holding a digit.
  *
  * @param property the field
  * @param role the field's likely role, if any
@@ -1702,8 +1681,7 @@ function distinctIdentifiers(
 }
 
 /**
- * The form of an identifier: the value with its last run of digits marked, so `AC02` and `AC17` share a form
- * and `B012` has another. Two values of different forms always differ.
+ * The form of an identifier: the value with its last digit run marked, so `AC02` and `AC17` share a form.
  *
  * @param value the identifier
  * @returns its form
@@ -1713,9 +1691,8 @@ function identifierForm(value: string): string {
 }
 
 /**
- * A new identifier in the form of a model value: its last run of digits takes a number above every number of
- * that form in the column, zero-padded to the run's width, so the value differs from every value of the column
- * and keeps the length and look of its form.
+ * A new identifier in the form of a model value: its last digit run takes the given number, zero-padded to
+ * the run's width.
  *
  * @param value the model value whose form the identifier keeps
  * @param next the number to write
@@ -1726,9 +1703,8 @@ function renumbered(value: string, next: bigint): string {
 }
 
 /**
- * Fill the rows beyond the model's by reusing its values unit by unit, each unit from a different model row so the
- * combinations vary. Distinct identifiers get new numbers in the model's form, other semantic-key members keep the
- * row's value, and unlinked texts are never reused.
+ * Fill the rows beyond the model's by reusing its values unit by unit, each from a different model row.
+ * Distinct identifiers are renumbered, and other semantic-key members keep the row's value.
  *
  * @param attempt the resource attempt
  * @param merged the merged model rows, extended with the reusing rows
@@ -1777,8 +1753,8 @@ interface ModelValueReuse {
 }
 
 /**
- * The units whose values are reused together: each coupled group, and each other field alone. A unit holding the
- * text of a code without the code is left out, so a text never leaves its code.
+ * The units whose values are reused together: each coupled group and each other field; a unit with a code's
+ * text but not the code is left out.
  *
  * @param attempt the resource attempt
  * @param grouped the fields of the coupled groups
@@ -1836,9 +1812,8 @@ function nextNumbersByForm(values: ReadonlyArray<string>): Map<string, bigint> {
 }
 
 /**
- * The value a reusing row writes for a field from a model row, or undefined to keep the row's own value: a
- * distinct identifier takes the next number of its form, a semantic-key member keeps the row's value, and any
- * other field takes the model value.
+ * The value a reusing row writes for a field: a renumbered distinct identifier, the model value, or
+ * undefined to keep the row's own (semantic-key members, invalid renumbering).
  *
  * @param reuse the reuse state
  * @param name the field
@@ -1894,9 +1869,8 @@ function reuseUnitValues(
 }
 
 /**
- * Keep the semantic key of every generated row unique in its set: a row whose key repeats an earlier row's
- * (the model wrote one key twice) takes the deterministic values of its key fields, and those cells no longer
- * count as the model's. A key that still repeats is left for the realism check to report.
+ * Keep generated semantic keys unique: a repeated key takes its deterministic key values, which no longer
+ * count as the model's. A key that still repeats is left for the realism check.
  *
  * @param attempt the resource attempt
  * @param merged the merged rows; rewritten in place
@@ -1946,8 +1920,7 @@ function recordGeneratedResource(
     const { generatedRows, generatedDomainRows, acceptedByField, invalidByField, rowsWithoutCandidate } = merged;
     state.generated[resourceName] = Object.freeze(generatedDomainRows.length ? generatedDomainRows : generatedRows);
     const publishedRowCount = state.generated[resourceName].length;
-    // Only identical complete proposals are legitimate finite-domain deduplication.
-    // Missing, invalid or conflicting proposals must remain visible as unresolved slots.
+    // Only identical complete proposals count as deduplication; others stay visible as unresolved slots.
     const eligibleRowCount = fallbackRows.length - merged.duplicateDomainRows;
     state.eligibleSlots -= merged.duplicateDomainRows * fields.length;
     const entityAcceptedSlots = [...acceptedByField.values()].reduce((sum, count) => sum + count, 0);
@@ -2088,9 +2061,8 @@ function sftRunResult(state: SftRunState, budgetSkipped: number): SftRunResult {
  */
 export async function applySftGeneration(request: SftGenerationRequest): Promise<SftRunResult> {
     const existingData = request.existingData ?? {};
-    // The model fills the generated rows only: the caller's rows are published as supplied and shape no
-    // prompt, so they are set aside and put back ahead of the generated rows, where they are published. The
-    // model may leave fewer generated rows (a synthetic domain keeps the rows it proposed).
+    // The model fills generated rows only; the caller's rows shape no prompt and are put back ahead of them.
+    // A synthetic domain may leave fewer generated rows.
     const entities = new Map(request.graph.entities.map((entity) => [entity.entitySetName, entity]));
     const generatedFlags = new Map(
         Object.entries(request.resources).map(([name, rows]) => {

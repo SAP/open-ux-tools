@@ -41,9 +41,9 @@ export interface FacetFormInput {
 }
 
 /**
- * Put every generated string in the form its field's facets give: upper case, ISO 3166-1 numeric country codes, or
- * zero-padded digit sequences. Supplied rows, keys, enumerations, relationship ends, fixed properties and forms the
- * planned role rejects are not written.
+ * Put every generated string in the form its field's facets give: upper case, ISO 3166-1 numeric country codes or
+ * zero-padded digit sequences. Supplied rows, protected and fixed properties, and forms the planned role rejects
+ * are not written.
  *
  * @param input the rows and what is fixed
  * @returns the rows

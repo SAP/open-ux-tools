@@ -98,14 +98,13 @@ function compact(value: string, maximumLength: number): string {
 }
 
 /**
- * The candidate value and field identity precede optional context in the shared 64-token budget.
+ * Render a field/value pair as short natural-language text; the value and field identity precede optional context
+ * in the shared 64-token budget.
  *
  * @param pair
  */
 export function serializeCandidateRelevancePair(pair: SftCandidateRelevancePair): string {
-    // A short natural-language rendering: the frozen sentence encoder reads words, not
-    // pipe-delimited technical fields. The value comes first, then what the field is, then the
-    // code it is linked to and the surrounding structure.
+    // The frozen sentence encoder reads words, not pipe-delimited technical fields.
     const clause = (prefix: string, value: string | undefined, maximumLength: number): string[] =>
         value ? [`${prefix}${compact(value, maximumLength)}`] : [];
     return [

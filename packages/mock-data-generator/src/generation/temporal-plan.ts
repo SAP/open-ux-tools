@@ -53,8 +53,8 @@ const lifecycleWords = lazy(() => {
 });
 
 /**
- * The words of a field for the temporal vocabulary: its label's, or its name's when the label names no
- * event (a generic `Time Stamp` label on both `CreatedStamp` and `ChangedStamp`).
+ * A field's words for the temporal vocabulary: its label's, or its name's when the label names no event (a generic
+ * `Time Stamp` label on `CreatedStamp` and `ChangedStamp`).
  *
  * @param property the field
  * @returns the words
@@ -83,9 +83,8 @@ function diagnostic(
 }
 
 /**
- * The one field that ends the pair a field starts: a field with a later word whose other words are the
- * same, or, when there is none, of the same type and the same once the words of the clock are set aside
- * (`creationTime` and `modifiedAt`).
+ * The one field that ends the pair a field starts: a field with a later word and the same other words, else one of the
+ * same type whose other words match once clock words are ignored (`creationTime` and `modifiedAt`).
  *
  * @param properties the entity's temporal fields
  * @param before the field with an earlier word
@@ -221,8 +220,7 @@ export function compileTemporalPlan(
             );
         }
     }
-    // Lifecycle words of the semantic rule store: administrative created/changed timestamps and interval
-    // start/end bounds. Which business event comes before another is not known from words, so none is ordered.
+    // Only created/changed and start/end are inferred; words do not tell which business event comes first.
     const vocabulary = semanticRules().temporalVocabulary;
     for (const entity of graph.entities) {
         if (
@@ -312,9 +310,8 @@ const EVENT_PART_TYPES = new Set(['date', 'time']);
 const TIMESTAMP_TYPES = new Set(['datetime', 'datetimeoffset']);
 
 /**
- * A later instant for the second event of a row, from the first, by the rule store's temporal spread: in
- * most rows an exponentially distributed number of days and a number of minutes later, in the others at
- * the same instant.
+ * A later instant for a row's second event by the rule store's temporal spread: in most rows an exponentially
+ * distributed number of days plus some minutes later, in the others the same instant.
  *
  * @param value the earlier event's value
  * @param property the later event's field
@@ -347,8 +344,7 @@ function laterEvent(
 }
 
 /**
- * The minutes a time of day moves by, uniform in the rule store's range and independent of the days the
- * cell's hash gives.
+ * The minutes a time moves by, uniform in the rule store's range and independent of the days from the same hash.
  *
  * @param hash stable hash of the cell
  * @returns the minutes
@@ -377,9 +373,7 @@ function laterTime(value: JsonValue | undefined, minutes: number): string | unde
 }
 
 /**
- * Spread the later event of each ordered pair from the earlier one where generation wrote both at the same
- * instant, so a change or an end follows its creation or start. A change may keep the instant of its creation
- * in some rows; the end of an interval finer than a day never keeps the instant of its start.
+ * Move the later event of an ordered pair past the earlier one where generation wrote both at the same instant.
  *
  * @param graph the service schema
  * @param rows the entity's rows; written in place
@@ -405,7 +399,7 @@ function spreadLaterEvents(
         ) {
             return;
         }
-        // A record may never have changed, but an interval finer than a day has a length.
+        // A change may keep its creation's instant in some rows; an interval finer than a day always has a length.
         const later = laterEvent(
             row[before.name],
             after,
@@ -419,9 +413,8 @@ function spreadLaterEvents(
 }
 
 /**
- * Spread the date and time fields of a row that generation wrote at one instant although no ordered pair relates them:
- * a field moves later than an earlier-declared field of the same type, by the temporal spread. Only dates may keep the
- * value in some rows; CSN elements arrive sorted by name, so there the order carries no meaning.
+ * Move a temporal field later than an earlier-declared field of the same type that holds the same instant and that no
+ * ordered pair relates to it. CSN elements arrive sorted by name, so there the declaration order carries no meaning.
  *
  * @param entity the entity
  * @param rows the entity's rows; written in place
@@ -468,8 +461,8 @@ function spreadDeclaredEvents(
 }
 
 /**
- * The event a temporal field names: its name words without clock words (`ReceiptDateTime`, `ReceiptDate`
- * and `ReceiptTime` all name the receipt).
+ * The event a temporal field names: its name words without clock words (`ReceiptDateTime` and `ReceiptDate` name the
+ * receipt).
  *
  * @param property the field
  * @returns the event's words
@@ -482,8 +475,8 @@ function eventOf(property: SchemaProperty): string {
 }
 
 /**
- * Keep the separate date and time of an event equal to its timestamp: where an entity has exactly one
- * timestamp, one date and one time naming the same event, the free date and time take the timestamp's.
+ * Write a timestamp's date and time parts into the free date field and time field naming the same event, when each
+ * is the only one of its type for that event and no other timestamp names it.
  *
  * @param properties the entity's properties
  * @param rows the entity's rows; written in place
@@ -586,8 +579,8 @@ function creationField(properties: ReadonlyArray<SchemaProperty>): SchemaPropert
 }
 
 /**
- * The relationships from a record to the record it belongs to, by metadata alone: a single-valued reference whose
- * fields are part of the record's key, or the reference back from a contained record (`ContainsTarget`).
+ * The relationships from a record to its parent, by metadata alone: a single-valued reference whose fields are part
+ * of the record's key, or the reference back from a contained record (`ContainsTarget`).
  *
  * @param graph the service schema
  * @returns the relationships, from the dependent record to its parent
@@ -690,9 +683,8 @@ function followParent(
 }
 
 /**
- * Create a record no earlier than the record it belongs to (see `dependenceRelationships`): where both have
- * one creation field and the dependent record was created first, its creation, and the events the plan
- * orders after it, move to or after the parent's creation. Other dates of the record are left alone.
+ * Move a dependent record's creation, and the events the plan orders after it, to or after its parent's creation
+ * (see `dependenceRelationships`) when both have one creation field. Other dates are left alone.
  *
  * @param graph the service schema
  * @param constraints the ordered pairs
@@ -721,8 +713,7 @@ function followParentCreation(
         return [{ relationship, child, childCreated, parentCreated, events }];
     });
     const applied = new Set<Dependence>();
-    // A grandchild may follow a child that has just followed its own parent: one pass per dependence settles
-    // any chain.
+    // One pass per dependence settles chains (a grandchild following a child that just moved).
     for (let remainingPasses = dependences.length; remainingPasses > 0; remainingPasses--) {
         const moved = dependences.filter((dependence) => followParent(dependence, rows));
         moved.forEach((dependence) => applied.add(dependence));
@@ -746,8 +737,7 @@ function followParentCreation(
 }
 
 /**
- * Move the events of a row later by one offset, so they keep their order and gaps: dates by whole days,
- * at least the offset.
+ * Move a row's events later by one offset, keeping their order and gaps; dates move by whole days, at least the offset.
  *
  * @param row the row; written in place
  * @param fields the date and timestamp fields of its timeline
@@ -778,8 +768,7 @@ function sameInstant(time: number, property: SchemaProperty): string {
 }
 
 /**
- * Swap the values of an ordered pair that generation wrote in the wrong order, or move the free one onto
- * the fixed one, repeated so that chained pairs settle.
+ * Put every ordered pair that generation wrote in the wrong order back in order (see `repairRowOrder`).
  *
  * @param graph the service schema
  * @param constraints the ordered pairs

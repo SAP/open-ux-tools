@@ -9,9 +9,8 @@ import { MOCKGEN_ERROR_CODE, MockGenError } from '../errors.js';
 export const METADATA_FORMATS: ReadonlyArray<MockDataMetadata['format']> = ['edmx', 'csn'];
 
 /**
- * Parse service metadata into the schema graph, dispatching on the declared format, with the value lists the
- * metadata implies ({@link withDerivedValueHelpLinks}).
- * An unknown format is rejected instead of being handed to a parser that cannot read it.
+ * Parse service metadata of the declared format into the schema graph, with the value lists it implies
+ * ({@link withDerivedValueHelpLinks}). An unknown format is rejected.
  *
  * @param metadata the request metadata
  * @param service the requested service; selects the CAP service when a CSN document defines several

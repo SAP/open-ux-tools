@@ -92,8 +92,8 @@ function numberPrefixAllowed(text: string): boolean {
 }
 
 /**
- * Whether a number prefix can still become a value of the given format: no exponent, no leading
- * zeros, bounded digit counts, and, for the side of zero the sign selects, within the range.
+ * Whether a number prefix can still become a value of the format: no exponent or leading zeros, bounded
+ * digits, and within the range on the sign's side of zero.
  *
  * @param format type-exact number format
  * @param text number text so far
@@ -192,8 +192,8 @@ function stringCharacterAllowed(state: JsonRowGrammarState, character: string): 
     ) {
         return false;
     }
-    // Canonical output has no \u escapes, so an escape cannot supply the letter or digit a string still
-    // needs in its last position; a backslash there would lead into a dead end.
+    // Canonical output has no \u escapes, so a backslash in the last position cannot supply the letter or
+    // digit the string still needs: a dead end.
     return (
         state.stringHasAlphanumeric ||
         LETTER_OR_NUMBER.test(character) ||
@@ -372,10 +372,9 @@ const VALUE_PHASES: ReadonlySet<Phase> = new Set(['before-value', 'in-string-val
  *
  * @param state grammar state before the text
  * @param text token text
- * @param options `withinValue`: a text that starts in a value may end the value and take the following
- *   delimiter, but may not reach into the next key; this keeps the tokens a value can sample
- *   independent of the field names that follow it
- * @param options.withinValue see above
+ * @param options check options
+ * @param options.withinValue a text starting in a value may end it and take the delimiter but not reach the
+ *   next key, so a value's tokens do not depend on the field names after it
  * @returns true when the grammar accepts every character
  */
 export function textAllowed(
@@ -409,9 +408,8 @@ export function advanceText(state: JsonRowGrammarState, text: string): JsonRowGr
 }
 
 /**
- * The only character the grammar accepts next, when exactly one is possible without the model's
- * choice: key text, `:` and `,` punctuation, canonical spaces, the opening quote of a required string
- * and the closing brace. Undefined whenever the model has a choice.
+ * The only character the grammar accepts next (key text, punctuation, canonical spaces, a required
+ * string's opening quote, the closing brace), or undefined when the model has a choice.
  *
  * @param state grammar state
  * @returns the forced character, if any
@@ -476,8 +474,7 @@ export function withinSteeringWindow(state: JsonRowGrammarState): boolean {
 }
 
 /**
- * A key for the set of tokens a value state can sample. Under `withinValue` token checks, that set
- * depends on the value's own state and whether another field follows, never on the field names, so
+ * A key for the tokens a value state can sample; under `withinValue` checks it omits field names, so
  * resources with different fields share entries.
  *
  * @param state grammar state in a value phase

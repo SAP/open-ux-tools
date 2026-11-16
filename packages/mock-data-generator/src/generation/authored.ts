@@ -17,9 +17,8 @@ export function authoredRows(ownership: ExistingMockData | undefined): ReadonlyA
 }
 
 /**
- * Whether generation wrote each row of an entity set: rows whose key a supplied row carries are the caller's.
- * An entity without keys publishes its supplied rows first, in order (see `publishedRows`), so its first rows,
- * as many as were supplied, are the caller's.
+ * Whether generation wrote each row of an entity set: rows whose key a supplied row carries are the caller's;
+ * for an entity without keys, the first rows (as many as were supplied) are, see `publishedRows`.
  *
  * @param entity the entity
  * @param rows its rows
@@ -41,8 +40,8 @@ export function generatedRowFlags(
 }
 
 /**
- * How many generated rows the supplied rows of an entity set stand for: generation gives each supplied key one
- * row, so supplied rows that share a key stand for one; rows of an entity without keys stand for one each.
+ * How many generated rows the supplied rows of an entity set stand for: one per distinct key, or one per row
+ * for an entity without keys.
  *
  * @param entity - The entity.
  * @param supplied - The supplied rows of its entity set.
@@ -54,8 +53,8 @@ export function suppliedRowSlots(entity: SchemaEntity, supplied: ReadonlyArray<M
 }
 
 /**
- * The rows generation wrote, by entity set: every set's rows without the rows the caller supplied. Supplied rows
- * are published as supplied, so the checks of the generated rows do not hold them to the plan.
+ * The rows generation wrote, by entity set, without the caller's supplied rows, which checks of the generated
+ * rows do not hold to the plan.
  *
  * @param graph - Service schema.
  * @param resources - The published rows by entity set.
@@ -108,9 +107,8 @@ export function completeValueListDomains(graph: SchemaGraph): ReadonlySet<string
 }
 
 /**
- * Marks the value-list entity sets a per-entity-set request asks rows of (e.g. `{ Products: 1 }` from an
- * editor's Add Row): the caller asked for rows of that set by name, so its supplied rows are not its whole domain.
- * A request for the same number of rows of every set (a number) names no set and changes nothing.
+ * Marks the value-list entity sets a per-entity-set request asks rows of (e.g. `{ Products: 1 }`), whose
+ * supplied rows are then not the whole domain. A plain number names no set and changes nothing.
  *
  * @param graph - Service schema of the request.
  * @param rowsPerEntity - Rows requested per entity set or entity type name, or for every set.
@@ -132,9 +130,9 @@ export function withRequestedValueListGrowth(
 }
 
 /**
- * The rows an entity set publishes, for resolving references to it while generating: the supplied
- * rows alone for a value-list domain, and otherwise the supplied rows, as supplied, followed by the generated
- * rows that repeat no identifier of a supplied row — the same rows `preserveAuthoredRows` publishes.
+ * The rows an entity set publishes (as `preserveAuthoredRows` does), for resolving references while generating:
+ * only the supplied rows for a value-list domain, else the supplied rows followed by generated rows that repeat
+ * no identifier of a supplied row.
  *
  * @param graph - Service schema.
  * @param resource - Entity set.
@@ -176,9 +174,8 @@ export function publishedRows(
     const suppliedContents = new Set(
         supplied.filter((row) => !signatures(row).some((signature) => signature.startsWith('0:'))).map(canonicalJson)
     );
-    // Generated rows follow the supplied rows up to the generated size, less the rows the supplied keys take; one
-    // that repeats an identifier of a supplied row (its key, semantic key or an alternate key) would make two rows
-    // one, so the next takes its place.
+    // Generated rows fill the generated size less the supplied keys' slots; one repeating an identifier (key,
+    // semantic key or alternate key) of a supplied row would merge two rows, so the next takes its place.
     const additional = generated
         .filter(
             (row) =>
@@ -224,8 +221,7 @@ function authoredEntity(
 }
 
 /**
- * Warn when two supplied rows share a key, as a hand-edited file or another generator may leave them. They are
- * still the caller's rows, so they are published as written; new rows take keys of their own.
+ * Warn when two supplied rows share a key; they are still published as written.
  *
  * @param entity the schema entity of the rows
  * @param resource the authored resource
@@ -253,10 +249,11 @@ function reportDuplicatedSuppliedKeys(
 /**
  * Keep authored target rows and finite value-help domains authoritative in the new snapshot.
  *
- * @param graph
- * @param resources
- * @param existingData
- * @param diagnostics
+ * @param graph service schema
+ * @param resources generated rows by entity set
+ * @param existingData the caller's existing rows
+ * @param diagnostics receives the row-count and duplicate-key diagnostics
+ * @returns the published rows by entity set
  */
 export function preserveAuthoredRows(
     graph: SchemaGraph,
@@ -277,8 +274,7 @@ export function preserveAuthoredRows(
         // Supplied rows are published as the caller wrote them; a field a row leaves out stays out.
         const merged = authored.map((row) => Object.freeze({ ...row }));
         reportDuplicatedSuppliedKeys(entity, resource, merged, diagnostics);
-        // The same rows that references resolve against while generating: a generated row that
-        // repeats a supplied key is represented by the supplied row.
+        // The same rows references resolved against while generating.
         const rows = finiteDomain
             ? merged
             : publishedRows(graph, resource, resources, existingData).map((row) => Object.freeze({ ...row }));
@@ -292,8 +288,7 @@ export function preserveAuthoredRows(
             });
         }
         if (finiteDomain) {
-            // The supplied rows are the whole domain, so none of the requested rows are appended to them,
-            // however many rows they hold.
+            // The supplied rows are the whole domain; no requested rows are appended.
             diagnostics.push({
                 code: 'ROW_COUNT_REDUCED_AUTHORED_DOMAIN',
                 severity: 'info',

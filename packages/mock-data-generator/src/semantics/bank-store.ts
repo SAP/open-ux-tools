@@ -5,9 +5,8 @@ import { lazy } from '../lazy.js';
 import { loadDomainResource, packagedResourceInvalid } from './resource-integrity.js';
 
 /**
- * The single store of every value bank the generator draws from, `resources/banks/value-banks.v2.json`, keyed by
- * `<kind>:<id>`: `role` banks feed the role value providers, `concept` banks the classifier's concept head. Value order
- * is behaviour: generators index banks by a row hash.
+ * The store of every value bank, keyed by `<kind>:<id>`: `role` banks feed the role value providers, `concept` banks
+ * the classifier's concept head. Value order is behaviour: generators index banks by a row hash.
  */
 export const VALUE_BANK_STORE_ID = 'mockgen-value-banks';
 export const VALUE_BANK_STORE_PATH = 'resources/banks/value-banks.v2.json';
@@ -28,7 +27,7 @@ type BankRecord<Fields extends RecordFields> = {
 };
 
 /**
- * Whether a list holds a value; an unknown value is simply not found, so the list's element type need not admit it.
+ * Whether a list holds a value of any type, so the list's element type need not admit it.
  *
  * @param values the list
  * @param value the candidate
@@ -492,8 +491,8 @@ const IBAN_COUNTRY = /^[A-Z]{2}$/u;
 const BBAN_TEMPLATE = /^[A-Z0-9]*#+$/u;
 
 /**
- * Check an IBAN format against ISO 13616: an IBAN is the country, two check digits and the BBAN, so the
- * template must be exactly four characters shorter than the declared length.
+ * Check an IBAN format against ISO 13616: country plus two check digits plus BBAN, so the template is four
+ * characters shorter than the declared length.
  *
  * @param format the IBAN format record
  * @returns the format
@@ -582,48 +581,39 @@ export interface PackagedBanks {
     /** SHA-256 of the exact store bytes that were parsed; the package manifest must declare the same digest. */
     readonly sha256: string;
     /**
-     * One location per country: city, region, postal code, telephone numbering, a major bank with its BIC,
-     * and the city's IANA time zone, so every place field of a row can follow one country.
+     * One location per country (city, region, postal code, phone numbering, bank and BIC, IANA time zone), so every
+     * place field of a row can follow one country.
      */
     readonly locations: ReadonlyArray<BankRecord<typeof LOCATION_FIELDS>>;
     /**
-     * The units the value banks generate: internal code, ISO/UN-ECE code, text, display decimals (counted
-     * units have none) and, where recorded, the exact conversion to the SI base unit as numerator/denominator.
+     * The units the banks generate: code, ISO/UN-ECE code, text, display decimals and, where recorded, the exact
+     * conversion to the SI base unit as numerator/denominator.
      */
     readonly unitSamples: ReadonlyArray<BankRecord<typeof UNIT_FIELDS>>;
     readonly units: ReadonlyArray<string>;
     readonly unitIsoCodes: Readonly<Record<string, string>>;
     readonly currencies: ReadonlyArray<string>;
     /**
-     * ISO 4217 currency records (List One as published by SIX): code, numeric code and minor-unit digits.
-     * A record without `minorUnits` is a currency without a minor unit (SIX "N.A."); the numeric code is
-     * recorded for the currencies the value banks generate. A code without a record has two minor units.
+     * ISO 4217 List One records (SIX): code, numeric code (for generated currencies) and minor units. No `minorUnits`
+     * means none (SIX "N.A."); a code without a record has two.
      */
     readonly iso4217Currencies: ReadonlyArray<BankRecord<typeof ISO_4217_FIELDS>>;
     readonly statusSamples: PairValueBank['pairs'];
     readonly fieldControlValues: ReadonlyArray<number>;
     readonly measurementDimensions: ReadonlyArray<string>;
-    /**
-     * The IBAN formats synthetic IBANs are generated in, per ISO 13616 and the SWIFT IBAN Registry. Each
-     * format's bank part is fixed and its account digits come from the row hash.
-     */
+    /** IBAN formats per ISO 13616 and the SWIFT IBAN Registry; account digits come from the row hash. */
     readonly ibanFormats: Readonly<Record<IbanCountry, IbanFormat>>;
-    /**
-     * Value ranges of the numeric roles, keyed by role. They are plausible synthetic magnitudes (a rating of
-     * 1 to 5, a temperature of -30 to 50), not facts; the property's precision and scale still apply.
-     */
+    /** Plausible synthetic ranges of the numeric roles, by role; the property's precision and scale still apply. */
     readonly numericRoleRanges: ReadonlyMap<string, NumericRoleRange>;
     /**
-     * The default names, organizations and descriptions. Hosts may replace them through the
-     * `sampleDataset` option; the identity, recorded in the store, names this sample set so generation
-     * provenance stays comparable across releases.
+     * The default names, organizations and descriptions, replaceable through the `sampleDataset` option; its
+     * identity keeps generation provenance comparable across releases.
      */
     readonly defaultSampleDataset: SyntheticSampleDataset;
 }
 
 /**
- * Resolve the banks the generator reads by name and check their shape; a missing bank or a record that
- * breaks its declared fields stops loading.
+ * Resolve the banks the generator reads by name; a missing or malformed bank stops loading.
  *
  * @param store the parsed store
  * @param digest SHA-256 of the exact store bytes that were parsed

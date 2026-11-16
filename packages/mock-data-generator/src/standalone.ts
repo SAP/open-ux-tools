@@ -143,7 +143,6 @@ export interface CreateMockDataGeneratorOptions {
     resourceRoot?: string;
 }
 
-// Execution modes are budget presets named by the host's purpose; explicit generation options always win.
 const EXECUTION_MODE_DEFAULTS: Readonly<
     Record<NonNullable<CreateMockDataGeneratorOptions['executionMode']>, StandaloneGenerationOptions>
 > = Object.freeze({
@@ -244,8 +243,9 @@ export function getMockDataGeneratorInfo(options: MockDataGeneratorInfoOptions =
 /**
  * Classify actual learned participation without hiding a degraded classifier tier.
  *
- * @param result
- * @param mode
+ * @param result the generation result
+ * @param mode the requested generation mode
+ * @returns the execution mode the result was actually produced in
  */
 export function actualExecutionMode(
     result: MockDataGeneratorResult,
@@ -372,8 +372,7 @@ function semanticCoverage(
                 fields.filter(({ acceptedSlots }) => acceptedSlots > 0).map(({ name }) => `${resource}.${name}`)
             )
         ),
-        // A best-effort role fills a field no role was certain for; routing counts that field as abstained, so
-        // coverage does too.
+        // Routing counts a best-effort field as abstained, so coverage does too.
         bestEffortFields: new Set(
             result.diagnostics.filter(({ code }) => code === 'SEMANTIC_ROLE_BEST_EFFORT').map(({ target }) => target)
         )
@@ -396,9 +395,8 @@ function semanticCoverage(
 }
 
 /**
- * Whether every published reference resolves. Generation asserts that the references it writes
- * resolve, so only references in caller-supplied rows can remain unresolved; they are published as
- * written and reported with a `SUPPLIED_REFERENCE_UNRESOLVED` diagnostic.
+ * Whether every published reference resolves. Only caller-supplied references can stay unresolved; they
+ * carry a `SUPPLIED_REFERENCE_UNRESOLVED` diagnostic.
  *
  * @param result the generation result
  * @returns false when a supplied reference does not resolve
@@ -455,8 +453,7 @@ function assertLoadedResourceDeclared(manifest: PackagedModelManifest, resource:
 }
 
 /**
- * The value-bank store was parsed when the package loaded; the manifest must declare it and vouch for
- * exactly those bytes, so generation never draws from a store the manifest did not verify.
+ * The manifest must declare the value-bank store parsed at load with exactly those bytes.
  *
  * @param manifest the parsed package manifest
  * @param loadedSha256 digest of the store bytes that were parsed
@@ -474,8 +471,7 @@ export function assertValueBankStoreDeclared(
 }
 
 /**
- * The semantic rule store was parsed when the package loaded; the manifest must declare it and vouch
- * for exactly those bytes, so routing never applies rules the manifest did not verify.
+ * The manifest must declare the semantic rule store parsed at load with exactly those bytes.
  *
  * @param manifest the parsed package manifest
  * @param loadedSha256 digest of the store bytes that were parsed
@@ -493,8 +489,8 @@ export function assertSemanticRuleStoreDeclared(
 }
 
 /**
- * The role registry was parsed when the package loaded; the manifest must declare it and vouch for
- * exactly those bytes. Its canonical fingerprint is also pinned by the classifier head.
+ * The manifest must declare the role registry parsed at load with exactly those bytes (the classifier head
+ * also pins its fingerprint).
  *
  * @param manifest the parsed package manifest
  * @param loadedSha256 digest of the registry bytes that were parsed
@@ -517,8 +513,8 @@ interface LoadedSessionRuntime {
 }
 
 /**
- * A learned component that could not load leaves generation on the lower tiers; that is a warning,
- * not an error, so validation of the generated data is unaffected. The installation path is not disclosed.
+ * Report a learned component that could not load as a warning (generation falls back to the lower tiers),
+ * without disclosing installation paths.
  *
  * @param diagnostic diagnostic recorded while loading the learned runtime
  * @param location where the session reads the resources from
@@ -654,9 +650,8 @@ function assertCreateOptions(options: CreateMockDataGeneratorOptions): void {
 }
 
 /**
- * A session on another resource root than the one the domain resources were loaded from is accepted only
- * when that root's manifest declares the same value banks, semantic rules and role registry: one process
- * uses one set of them.
+ * Accept a session on another resource root only when its manifest declares the same value banks, semantic
+ * rules and role registry: one process uses one set of them.
  *
  * @param manifest the manifest below the session's root, whose datasets were verified against their files
  * @param root the session's resource root
@@ -728,8 +723,8 @@ async function readVerifiedManifest(location: ResourceLocation): Promise<Package
 }
 
 /**
- * Create the learned-runtime holder of one session. The installed onnxruntime-node version is checked when a
- * model first loads (createLearnedRuntime), so a deterministic session does not depend on the native package.
+ * Create the learned-runtime holder of one session. onnxruntime-node is checked only when a model first loads,
+ * so a deterministic session does not need the native package.
  *
  * @param manifest the verified package manifest
  * @param options the creation options
@@ -769,14 +764,14 @@ function createSessionRuntime(
         const pendingLoad = (learnedLoad ??= verifiedModelArtifacts(manifest, location).then((cache) =>
             createLearnedRuntime(manifest, cache, undefined, completionStore ? { completionStore } : {})
         ));
-        // A failed load is not kept, so the next request retries it instead of failing for the session's lifetime.
+        // A failed load is not kept, so the next request retries it.
         pendingLoad.catch(() => {
             if (learnedLoad === pendingLoad) {
                 learnedLoad = undefined;
             }
         });
         const learned = await pendingLoad;
-        // dispose() may have run while the load was pending; it releases the runtime, the request stops here.
+        // dispose() may have run while the load was pending.
         assertActive();
         return {
             runtime: learned.runtime,
@@ -902,8 +897,8 @@ async function inspectSessionService(
 }
 
 /**
- * Verify the package manifest and value-bank store and create one reusable generation session.
- * Model artifacts are verified when a request first needs the learned runtime, never in deterministic mode.
+ * Verify the package manifest and domain resources and create one reusable generation session. Model
+ * artifacts are verified when a request first needs the learned runtime, never in deterministic mode.
  *
  * @param options how the session runs: execution mode, progress observer, answer cache and resource root
  * @returns the generation session

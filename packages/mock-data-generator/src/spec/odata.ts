@@ -7,8 +7,8 @@ import type { PrimitiveType } from '../schema/graph.js';
  */
 
 /**
- * The entity-set prefix SAP Gateway reserves for the sets it adds to every service (code lists, PDF
- * export formats, value helps and other protocol plumbing).
+ * The entity-set prefix SAP Gateway reserves for the protocol sets it adds to every service (code lists, PDF
+ * export formats, value helps).
  *
  * @see https://github.com/SAP/odata-vocabularies/blob/main/docs/v4-annotations.md
  */
@@ -104,9 +104,9 @@ export const VOCABULARY_TERM_SUFFIX = Object.freeze({
 } as const);
 
 /**
- * The generator's primitive type of each EDM primitive type it can write inline (OData CSDL XML 4.01,
- * section 4.4, plus the V2 types `Edm.DateTime` and `Edm.Time`). `Edm.Stream`, `Edm.Duration` and the
- * geospatial types are absent: they have no generatable inline JSON value.
+ * The generator's primitive type of each EDM primitive type it can write inline (OData CSDL XML 4.01 section 4.4,
+ * plus V2 `Edm.DateTime` and `Edm.Time`). `Edm.Stream`, `Edm.Duration` and geospatial types have no generatable
+ * inline JSON value.
  *
  * @see https://docs.oasis-open.org/odata/odata-csdl-xml/v4.01/odata-csdl-xml-v4.01.html#sec_PrimitiveTypes
  */

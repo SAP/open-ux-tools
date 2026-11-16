@@ -71,9 +71,8 @@ export function capCodeList(entity: SchemaEntity): CapCodeList | undefined {
 }
 
 /**
- * The fixed meaning of a standard code-list column. Columns with a matching semantic role are routed to
- * it; columns without one (a currency symbol, an ISO numeric code, a language or time-zone name) are
- * companions that the code-list provider fills from the row's code.
+ * The fixed meaning of a standard code-list column: its semantic role, or a companion without one (a currency
+ * symbol, an ISO numeric code, a language or time-zone name) that the code-list provider fills from the row's code.
  *
  * @param entity schema entity
  * @param property one of its properties

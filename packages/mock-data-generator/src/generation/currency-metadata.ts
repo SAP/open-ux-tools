@@ -14,8 +14,8 @@ function currencyProperty(entity: SchemaEntity): SchemaProperty | undefined {
 }
 
 /**
- * Whether a field is the display text that a value list copies from its value help. Such a text
- * belongs to the value-help tuple, so it mirrors the value help rather than any format provider.
+ * Whether a field is a display text a value list copies from its value help, so it mirrors the value help
+ * rather than a format provider.
  *
  * @param graph schema graph
  * @param entity owning entity
@@ -231,8 +231,8 @@ function assertCurrencyRow(graph: SchemaGraph, entity: SchemaEntity, code: Schem
         return;
     }
     const scaleField = entity.properties.find(({ name }) => name === scale);
-    // ISO 4217 minor units are the authority, matching what applyCurrencyMetadata writes; CLDR display
-    // digits (Intl.NumberFormat) differ for codes such as HUF and IQD. Codes without a minor unit are not checked.
+    // ISO 4217 minor units, as applyCurrencyMetadata writes them; CLDR digits (Intl.NumberFormat) differ for codes
+    // such as HUF and IQD. Codes without a minor unit are not checked.
     const expectedScale = currencyFractionDigits(currency);
     if (
         !Number.isInteger(row[scale]) ||

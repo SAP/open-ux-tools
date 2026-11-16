@@ -193,8 +193,7 @@ export interface ServiceInspectionExecution {
 type UnsupportedSchemaElements = MockDataGeneratorInspectionV1['unsupportedSchemaElements'];
 
 /**
- * Describe who owns the rows of every requested resource and of every resource the caller supplied as
- * context, without exposing the supplied values: only their source, count and hash.
+ * Who owns the rows of every requested and supplied resource, reporting only source, count and hash.
  *
  * @param request the generation request
  * @param targets the requested resources by name

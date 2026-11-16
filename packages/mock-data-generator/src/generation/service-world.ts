@@ -47,10 +47,7 @@ import {
     sameValue
 } from './rows.js';
 
-/**
- * Recomputes format-provider companions (currency, country and code-list columns) of every row
- * from its codes; returns rows in the same order.
- */
+/** Recomputes format-provider companions (currency, country, code-list columns) from the codes; keeps row order. */
 type CompanionRefresh = (
     resources: Readonly<Record<string, ReadonlyArray<MockDataRow>>>
 ) => Readonly<Record<string, ReadonlyArray<MockDataRow>>>;
@@ -113,8 +110,8 @@ interface AssignedValue {
 }
 
 /**
- * Extend a generated value help with the protected tuples of its owner rows that it lacks. A tuple that cannot be
- * added, for want of capacity, a valid row or verified texts, is reported as a conflict.
+ * Extend a generated value help with the protected owner tuples it lacks; a tuple that cannot be added is
+ * reported as a conflict.
  *
  * @param ownerRows the generated owner rows
  * @param extension the value help and how it may grow
@@ -160,9 +157,8 @@ function extendGeneratedValueListDomain(
         ) {
             continue;
         }
-        // A descriptive value was verified for its original code only. Reusing it with a protected,
-        // previously unseen code would create an unverified pair, so the tuple is reported as a
-        // conflict, as when the domain is full, instead of failing the whole service.
+        // A verified text belongs to its original code; pairing it with a new code would be unverified,
+        // so report a conflict (as for a full domain) instead of failing the service.
         if (
             (extension.relevanceVerifiedDomain &&
                 values.some(({ property }) => targetProperties.get(property)?.links?.text)) ||
@@ -181,8 +177,8 @@ function extendGeneratedValueListDomain(
 }
 
 /**
- * Add a value-help row holding the assigned values: a copy of an existing row, tried from the owner row's position
- * on, that is valid for every field and role, takes a new key and keeps every relationship.
+ * Add a value-help row holding the assigned values: the first copy of an existing row, from the owner row's
+ * position on, that is valid, takes a new key and keeps every relationship.
  *
  * @param extension the value help and how it may grow
  * @param values the values the owner row assigns
@@ -224,9 +220,8 @@ function addAssignedTuple(
 }
 
 /**
- * A projected owner field: the tuple value it holds and the value list that first bound it.
- * Only the binding value list may later change the field; any other value list sharing the field
- * must select a tuple that agrees with it.
+ * A projected owner field: its tuple value and the value list that bound it. Only that list may change it;
+ * other lists sharing the field must agree with it.
  */
 interface ProjectedBinding {
     value: JsonValue;
@@ -234,8 +229,7 @@ interface ProjectedBinding {
 }
 
 /**
- * Whether the members that fill the same owner field (for example an In and an Out parameter on
- * one field) carry the same value from a value-help row.
+ * Whether members that fill the same owner field carry the same value from a value-help row.
  *
  * @param members tuple members
  * @param candidate value-help row
@@ -254,9 +248,7 @@ function membersAgree(members: ReadonlyArray<ValueListTupleMember>, candidate: M
     });
 }
 
-/**
- * Inputs for adding one value-help row that an owner row can be a member of.
- */
+/** Inputs for adding one value-help row that an owner row can be a member of. */
 interface RowExtension {
     ownerRow: MockDataRow;
     rowIndex: number;
@@ -273,8 +265,7 @@ interface RowExtension {
 }
 
 /**
- * Whether a new value-help row is valid for every property of the value-help entity and its planned
- * semantic role.
+ * Whether a new value-help row is valid for every property of the value-help entity and its planned role.
  *
  * @param targetEntity value-help entity
  * @param row the new value-help row
@@ -352,8 +343,8 @@ function assignGroupValue(
 }
 
 /**
- * Give every owner field of a new value-help row one value: the fixed value, else the copied row's own when it fits,
- * else the owner row's.
+ * Give every owner field of a new value-help row one value: the fixed value, else the copied row's when it
+ * fits, else the owner row's.
  *
  * @param clone the new value-help row, updated in place
  * @param tuple the member groups and their values
@@ -380,8 +371,7 @@ function completeOwnerGroups(clone: Record<string, JsonValue>, tuple: OwnerTuple
 }
 
 /**
- * Give a new value-help row whose key repeats an existing row the owner row's own values of the key fields that are
- * not fixed, so it takes a key of its own.
+ * Give a new value-help row whose key repeats an existing row the owner row's values for its unfixed key fields.
  *
  * @param clone the new value-help row, updated in place
  * @param tuple the member groups and their values
@@ -405,9 +395,8 @@ function keepOwnerKeyValues(
 }
 
 /**
- * Add a generated value-help row carrying an owner row's fixed context, so the owner can be a tuple member without
- * rewriting that context. The row clones a domain row with the fixed values and is added only when it is valid, keeps a
- * unique key and stays within the domain capacity.
+ * Add a generated value-help row carrying an owner row's fixed context, so the owner can be a tuple member
+ * without rewriting it. The clone is added only when valid, uniquely keyed and within capacity.
  *
  * @param extension owner row, domain and constraints
  * @returns the added value-help row, or undefined when no valid row can be added
@@ -431,7 +420,7 @@ function extendValueListForRow(extension: RowExtension): Record<string, JsonValu
     const keys = targetEntity.properties.filter(({ isKey }) => isKey);
     const signature = (row: MockDataRow): string => keySignature(keys, row);
     const signatures = new Set(domain.map(signature));
-    // Members that fill the same owner field must carry one value, so they are set together.
+    // Members that fill the same owner field are set together.
     const groups = [...new Set(members.map(({ localProperty }) => localProperty.name))].map((name) =>
         members.filter(({ localProperty }) => localProperty.name === name)
     );
@@ -467,9 +456,7 @@ function extendValueListForRow(extension: RowExtension): Record<string, JsonValu
     return undefined;
 }
 
-/**
- * A value list of an owner entity as projection sees it.
- */
+/** A value list of an owner entity as projection sees it. */
 interface ProjectionList {
     collection: string;
     parameters: ReadonlyArray<SchemaValueListParameter>;
@@ -478,9 +465,7 @@ interface ProjectionList {
     members: ReadonlyArray<ValueListTupleMember>;
 }
 
-/**
- * Owner-row operations that joint solving needs from projection.
- */
+/** Owner-row operations that joint solving needs from projection. */
 interface JointSolvingContext {
     /** Current value-help rows of a list, or undefined when its context is unavailable. */
     domain: (list: ProjectionList) => ReadonlyArray<MockDataRow> | undefined;
@@ -497,9 +482,8 @@ interface JointSolvingContext {
 }
 
 /**
- * Solve the rows whose value lists failed individually by choosing one tuple per connected value list
- * at once (see solveTupleChoice). A solved component replaces the bindings of the fields it covers;
- * each field is then owned by the first connected list that determines it.
+ * Solve rows whose value lists failed individually by choosing one tuple per connected list at once (see
+ * solveTupleChoice); each field is then owned by the first connected list that determines it.
  *
  * @param failedRows failure message per value list, by owner row index
  * @param rows owner rows (mutated)
@@ -634,7 +618,7 @@ interface ValueListProjectionOptions {
     targetKinds: ReadonlyMap<string, 'entity-set' | 'singleton'>;
     /** Receives the owner properties whose values were projected, by entity set. */
     projectedProperties: Map<string, Set<string>>;
-    /** Value-help resources whose display values the relevance verifier accepted; no row is added to them per owner row. */
+    /** Value-help resources whose display values the relevance verifier accepted; never extended per owner row. */
     relevanceVerifiedResources: ReadonlySet<string>;
     /** Recomputes format-provider companions of codes after each projection pass. */
     refreshCompanions?: CompanionRefresh;
@@ -651,14 +635,11 @@ interface ProjectionState {
     readonly projectedBindings: Map<string, Map<string, ProjectedBinding>>;
     /** Which value lists projected each owner field, so a list is not constrained by its own choice. */
     readonly projectedBy: Map<string, Map<string, Set<string>>>;
-    /** Conflicts collected in the current fixed-point pass; only those of the final pass describe the result. */
+    /** Conflicts of the current fixed-point pass; only the final pass's are reported. */
     pendingConflicts: Map<string, string>;
-    /**
-     * Owner-side values each value list can supply, per shared field set, sampled during the current pass.
-     * Used to prefer tuples that another value list of the same row can agree with.
-     */
+    /** Owner-side values each value list can supply per shared field set, sampled per pass. */
     supportCache: Map<string, ReadonlySet<string>>;
-    /** Value-help rows added to hold an owner row's tuple; their values stay as assigned when they are owners themselves. */
+    /** Value-help rows added to hold an owner row's tuple; they keep their assigned values as owners. */
     readonly assignedRows: WeakSet<object>;
 }
 
@@ -668,7 +649,7 @@ interface OwnerProjection {
     /** The owner rows (mutated). */
     readonly rows: Array<Record<string, JsonValue>>;
     readonly properties: ReadonlyMap<string, SchemaProperty>;
-    /** Per owner row, whether generation wrote it: the caller's rows are published as supplied, so projection leaves them. */
+    /** Per owner row, whether generation wrote it; projection leaves the caller's rows. */
     readonly generated: ReadonlyArray<boolean>;
     /** Owner properties that take part in a relationship. */
     readonly relationshipProtected: ReadonlySet<string>;
@@ -690,7 +671,7 @@ interface SharingList {
 /** One value list of an owner entity during a projection pass, with what does not depend on the owner row. */
 interface ListProjection {
     readonly list: ProjectionList;
-    /** Current value-help rows; a generated domain grows while rows are added for owner rows. */
+    /** Current value-help rows; a generated domain grows as rows are added. */
     readonly domain: ReadonlyArray<MockDataRow>;
     readonly sharing: ReadonlyArray<SharingList>;
     /** Owner fields of the InOut parameters. */
@@ -808,9 +789,8 @@ function outgoingRelationshipCheck(state: ProjectionState, collection: string): 
 }
 
 /**
- * Project value-help tuples into owner rows until a fixed point: the owner fields a value list
- * determines take the values of one value-help row, and a generated value-help domain is extended where
- * it lacks an owner's fixed context. Conflicts that remain after the final pass are reported.
+ * Project value-help tuples into owner rows until a fixed point, extending generated domains that lack an
+ * owner's fixed context. Conflicts left after the final pass are reported.
  *
  * @param options rows, schema and constraints to project, and where to report
  * @returns the projected rows by entity set, frozen
@@ -840,9 +820,8 @@ function projectValueLists(options: ValueListProjectionOptions): Readonly<Record
                 changed = true;
             }
         }
-        // Format providers describe codes (currency names, country names, code-list columns). A
-        // projected or cloned code must carry its provider values before owners copy them, so the
-        // providers take part in the fixed point instead of rewriting value-help rows afterwards.
+        // A projected or cloned code must carry its format-provider values before owners copy them, so
+        // providers take part in the fixed point rather than rewriting value-help rows afterwards.
         if (refreshCompanions && applyCompanions(state.generated, refreshCompanions(state.generated))) {
             changed = true;
         }
@@ -879,9 +858,7 @@ function projectEntityValueLists(
             changed = true;
         }
     }
-    // A row whose value lists share fields may need a tuple choice that no list finds on its
-    // own (for example a text shared by two lists whose domains agree only on rows that a third
-    // list's binding excludes). Such rows are solved jointly over the connected lists.
+    // Lists that share fields may need a tuple choice no single list finds; solve those rows jointly.
     const joint = solveFailedRowsJointly(owner.failedRows, rows, owner.lists, {
         domain: (list) => {
             const context = resolveValueListContext(graph, list.collection, state.generated, existingData);
@@ -899,8 +876,7 @@ function projectEntityValueLists(
 }
 
 /**
- * Describe an owner entity for one projection pass: its fields, which of them are protected, how values
- * are checked against them, and its value lists.
+ * Describe an owner entity for one projection pass: fields, protection, value checks and value lists.
  *
  * @param state projection state
  * @param entity owner entity
@@ -916,9 +892,8 @@ function ownerProjection(
     const properties = new Map(entity.properties.map((candidate) => [candidate.name, candidate]));
     const protectedProperties = protectedPropertyNames(graph, entity);
     const generated = generatedRowFlags(entity, rows, existingData);
-    // A projected value must be valid for the owner field's facets and its planned semantic
-    // role, exactly as the field's own generated values are; a value-help column may be
-    // generated under a different role (for example a key placeholder for a fax number).
+    // A projected value must fit the owner field's facets and planned role; the value-help column may
+    // have been generated under a different role.
     const fits = (local: SchemaProperty, value: JsonValue | undefined): boolean => {
         if (value === undefined || !propertyValueIsValid(local, value)) {
             return false;
@@ -956,8 +931,8 @@ function ownerProjection(
 }
 
 /**
- * Whether an owner row could adopt a value-help row of a list on its own: it satisfies the list's constants, fits its
- * owner fields, keeps the protected fields and agrees with members filling the same field.
+ * Whether an owner row could adopt a value-help row on its own: constants match, values fit, protected
+ * fields keep their values and members filling one field agree.
  *
  * @param owner owner entity
  * @param list the value list
@@ -996,16 +971,13 @@ interface TupleAdoption {
     list: ProjectionList;
     /** The value-help row. */
     selected: MockDataRow;
-    /**
-     * For a joint choice, the value list that owns each field's binding; the choice then replaces
-     * existing bindings. Without it, a field bound by another value list is left unchanged.
-     */
+    /** For a joint choice, the list owning each field's binding; without it, fields bound elsewhere are kept. */
     jointOwners?: ReadonlyMap<string, string>;
 }
 
 /**
- * Write one member value of a selected tuple into an owner row, unless the field is protected or bound by another
- * value list, and record the binding and projection it establishes.
+ * Write one member value of a selected tuple into an owner row, unless protected or bound by another list,
+ * and record the binding.
  *
  * @param state projection state
  * @param owner owner entity
@@ -1159,8 +1131,7 @@ function projectList(state: ProjectionState, owner: OwnerProjection, list: Proje
     const maxRows = targetKinds.get(collection) === 'singleton' ? 1 : MAX_ROWS_PER_ENTITY;
     const preservesRelationships = outgoingRelationshipCheck(state, collection);
     if (extensible && context.targetEntity) {
-        // The generated owner rows extend the value help: the caller's rows are published as supplied and
-        // shape no generated row.
+        // Only generated owner rows extend the value help; the caller's rows shape no generated row.
         const domainBefore = state.generated[collection]?.length ?? 0;
         const extended = extendGeneratedValueListDomain(
             owner.rows.filter((_, index) => owner.generated[index]),
@@ -1190,8 +1161,7 @@ function projectList(state: ProjectionState, owner: OwnerProjection, list: Proje
             changed = true;
         }
     }
-    // A declared enumeration is its own closed domain: a generated value help that lacks
-    // the enumerated value is a schema conflict, not a gap to fill.
+    // A declared enumeration is a closed domain: a value help lacking its value is a conflict, not a gap.
     const enumerationPinned = members.some(
         ({ localProperty }) => localProperty.enumValues !== undefined && owner.isProtected(localProperty)
     );
@@ -1213,8 +1183,8 @@ function projectList(state: ProjectionState, owner: OwnerProjection, list: Proje
 }
 
 /**
- * Choose a tuple of a value list for every generated owner row; the caller's rows are published as written, and
- * a tuple of theirs that the value help does not list is only reported.
+ * Choose a tuple of a value list for every generated owner row; an unlisted tuple in a caller's row is
+ * only reported.
  *
  * @param state projection state
  * @param owner owner entity (its rows and failed rows are updated)
@@ -1241,8 +1211,7 @@ function projectOwnerRows(state: ProjectionState, owner: OwnerProjection, projec
 }
 
 /**
- * Whether a row the caller supplied holds a tuple its value help lists: some value-help row gives every member
- * field the row holds the value it holds.
+ * Whether a supplied row holds a tuple its value help lists, comparing only the member fields it holds.
  *
  * @param list the value list
  * @param row the supplied owner row
@@ -1284,9 +1253,8 @@ function sharingLists(owner: OwnerProjection, list: ProjectionList): SharingList
 }
 
 /**
- * Choose a tuple of a value list for one owner row and adopt it. When no value-help row fits, a row
- * carrying the owner's fixed context may be added to an open generated domain; otherwise the failure
- * is recorded for joint solving.
+ * Choose and adopt a tuple for one owner row; when none fits, extend an open generated domain or record the
+ * failure for joint solving.
  *
  * @param state projection state
  * @param owner owner entity
@@ -1355,9 +1323,8 @@ function projectRow(
 }
 
 /**
- * Narrow the compatible tuples of an owner row to the preferred ones: those that keep a current
- * binding or authored value of the InOut fields, and those every other value list sharing a field of
- * the row can agree with.
+ * Narrow an owner row's compatible tuples to those keeping a current InOut binding and those every sharing
+ * value list can agree with.
  *
  * @param state projection state
  * @param owner owner entity
@@ -1384,8 +1351,8 @@ function rowCandidatePool(
                     const binding = rowBindings.get(localProperty);
                     return binding !== undefined && sameValue(row[localProperty], binding.value);
                 })));
-    // A generated scalar that happens to equal one target value is not evidence of a prior binding. Only a tuple
-    // projected during an earlier fixed-point pass, or a row added to hold an owner's tuple, constrains selection.
+    // A generated scalar equal to a target value is no prior binding; only an earlier projected tuple or an
+    // added row constrains selection.
     const preferred = generatedBindingIsCurrent
         ? base.filter((candidate) =>
               list.parameters.every(
@@ -1451,8 +1418,7 @@ function matchingRelationship(
 }
 
 /**
- * Whether a field is governed by a value list: it carries a value-list annotation itself, or a value
- * list of its entity maps it as an In, InOut or Out parameter.
+ * Whether a field is governed by a value list: annotated itself, or mapped as a non-DisplayOnly parameter.
  *
  * @param entity owning entity
  * @param property candidate field
@@ -1470,8 +1436,7 @@ function isValueListField(entity: SchemaEntity, property: SchemaProperty): boole
 }
 
 /**
- * Whether a value-help column is copied into owners by some value list: a non-DisplayOnly parameter
- * maps it, or it is the display text an owner mirrors.
+ * Whether some value list copies a value-help column into owners, as a tuple member.
  *
  * @param graph schema graph
  * @param entity value-help entity
@@ -1514,8 +1479,7 @@ function derivedRelationshipForProperty(
             const parentKeys = parent.properties.filter(
                 ({ isKey, name }) => isKey && !DRAFT_KEY_PROPERTY_NAMES.has(name.toLowerCase())
             );
-            // A child field governed by a value list takes its values from that list's tuples, so a
-            // name match to the parent key is not evidence of a link the generator may enforce.
+            // A value-list field takes its values from the list, so a name match is no enforceable link.
             const mappings = parentKeys.flatMap((parentKey) => {
                 const childProperty = childProperties.get(parentKey.name);
                 return childProperty?.primitiveType === parentKey.primitiveType &&
@@ -1565,7 +1529,7 @@ function derivedRelationships(graph: SchemaGraph): ReadonlyArray<SchemaRelations
         const incoming = existing.filter((relationship) => relationship.toEntitySet === parent.entitySetName);
         for (const property of parent.properties) {
             const propertyTokens = new Set(rawTokens(property.name));
-            // A draft flag says whether the row has a draft or an active instance; the draft framework sets it.
+            // Draft flags are set by the draft framework.
             const isDerivedField =
                 !DRAFT_KEY_PROPERTY_NAMES.has(property.name.toLowerCase()) &&
                 (propertyTokens.has('has') ||
@@ -1592,8 +1556,7 @@ function derivedRelationships(graph: SchemaGraph): ReadonlyArray<SchemaRelations
 }
 
 /**
- * Properties on either end of a generated relationship. Their values tie rows together, so a
- * derived-field pass must not rewrite them.
+ * Properties on either end of a generated relationship, which a derived-field pass must not rewrite.
  *
  * @param graph - Service schema.
  * @returns `entitySet\u0000property` references of every foreign key and referenced property.
@@ -1674,9 +1637,8 @@ interface FieldDerivation {
 }
 
 /**
- * Whether a field holds a count or a presence flag of related rows that may be derived from them. A field governed
- * by a value list, a key or relationship value, a draft key, a field planned with a format (such as a phone
- * number) and a value-help column copied by value-list owners are never derived.
+ * Whether a field holds a derivable count or presence flag of related rows. Value-list fields, keys,
+ * relationship ends, draft keys, format-validated fields and copied value-help columns are never derived.
  *
  * @param derivation the schema, rows and planned roles
  * @param parent the entity of the field
@@ -1688,8 +1650,7 @@ function derivedFieldKind(
     parent: SchemaEntity,
     property: SchemaProperty
 ): { isCount: boolean; isPresence: boolean } | undefined {
-    // A field governed by a value list takes its values from that list's tuples; a count
-    // derived from its name would replace a projected tuple value with one outside the domain.
+    // A derived count would replace a projected tuple value with one outside the domain.
     if (isValueListField(parent, property)) {
         return undefined;
     }
@@ -1700,9 +1661,8 @@ function derivedFieldKind(
             property.primitiveType === 'string') &&
         (propertyTokens.has('count') || (propertyTokens.has('number') && propertyTokens.has('of')));
     const isPresence = property.primitiveType === 'bool' && propertyTokens.has('has');
-    // A key or relationship value identifies rows, and a field planned with a format such as a
-    // phone number cannot hold a count; a derived value must not replace either. A value-help
-    // column copied by value-list owners is a tuple member, not a derived count either.
+    // Keys and relationship ends identify rows, format-validated fields cannot hold a count, and copied
+    // value-help columns are tuple members.
     const role = derivation.classifications.get(semanticPropertyKey(parent.entitySetName, property.name))?.role;
     const validator = role ? semanticRoleDefinition(role)?.validator : undefined;
     if (
@@ -1719,8 +1679,7 @@ function derivedFieldKind(
 }
 
 /**
- * Set a count that no modeled child domain backs to zero in every row, and the presence flags describing the same
- * children to false.
+ * Set an unbacked count to zero in every row, and its matching presence flags to false.
  *
  * @param parent the entity of the count
  * @param property the count field
@@ -1840,7 +1799,7 @@ function deriveRelationshipFields(
 
 /**
  * The properties coherence rules must not change, by entity set: relationship ends, keys and enumerated
- * properties. The caller's rows are left by row (see `coherentGeneratedRows`), not by field.
+ * properties.
  *
  * @param graph the service schema
  * @returns new sets of protected property names by entity set
@@ -1856,8 +1815,7 @@ function coherenceProtectedProperties(graph: SchemaGraph): Map<string, Set<strin
 }
 
 /**
- * Apply the coherence rules to the rows generation wrote. The caller's rows are published as supplied, so they
- * stay as they are, ahead of the generated rows, and no rule reads them for a generated row.
+ * Apply the coherence rules to the generated rows only; the caller's rows stay unchanged, ahead of them.
  *
  * @param entity the entity
  * @param rows its rows, the caller's first
@@ -1879,9 +1837,7 @@ function coherentGeneratedRows(
 }
 
 /**
- * Put the caller's rows back after a pass that orders the rows of every set in place, keeping their order and
- * keys: the pass reads them (a new child follows the creation of the existing parent it references), but they
- * are published as supplied.
+ * Restore the caller's rows after an in-place ordering pass that read them but must not publish changes.
  *
  * @param graph the service schema
  * @param before the rows the pass read
@@ -1933,16 +1889,9 @@ export interface SemanticServiceWorldFinalization {
     temporalConstraints?: readonly TemporalConstraint[];
     /** Resources whose display values the relevance verifier accepted. */
     relevanceVerifiedResources?: ReadonlySet<string>;
-    /**
-     * Receives the properties whose values were projected from a related entity or from a code in the
-     * same row, so the caller can attribute those cells to the tier that supplied them rather than to the
-     * deterministic sweep that filled them first.
-     */
+    /** Receives the properties projected from a related entity or a same-row code, for tier attribution. */
     projectedProperties?: Map<string, Set<string>>;
-    /**
-     * Recomputes format-provider companions of codes; applied after every value-list projection pass so
-     * owners copy the companions of the final value-help codes.
-     */
+    /** Recomputes format-provider companions of codes after every value-list projection pass. */
     refreshCompanions?: CompanionRefresh;
     /** Display locale of the record names of codes; English by default. */
     locale?: string;
@@ -2000,9 +1949,8 @@ export function finalizeSemanticServiceWorld(
             })
         )
     );
-    // Value-list owners copy value-help dates, so value-help rows are put in temporal order before they
-    // are projected; the ordering pass after projection then leaves those copied columns unchanged and
-    // reports the final state.
+    // Owners copy value-help dates, so order value-help rows before projection; the later pass reports
+    // the final state.
     const temporallyOrdered = withSuppliedRows(
         graph,
         coherent,
@@ -2081,8 +2029,7 @@ export function finalizeSemanticServiceWorld(
     );
     const aligned = alignDerivedChildDomains(graph, ordered, existingData);
     const related = deriveRelationshipFields(graph, aligned, existingData, diagnostics, classifications);
-    // Countries arrive through references and value lists after the place fields were drawn, so the place
-    // fields follow the final country of each row.
+    // Countries arrive through references and value lists after place fields were drawn; follow the final one.
     return anchorRowGeography({
         graph,
         resources: related,

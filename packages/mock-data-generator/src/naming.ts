@@ -1,32 +1,23 @@
 /**
- * Splitting of technical identifiers (property, entity and parameter names) into words, following SAP and CAP naming
- * conventions in English. Only ASCII letters and digits take part in case boundaries; identifiers in other scripts are
- * kept whole.
+ * Splitting of technical identifiers into words, following SAP and CAP naming conventions. Only ASCII letters and
+ * digits form case boundaries; identifiers in other scripts are kept whole.
  */
 
 /**
- * The boundary inside a run of capitals before a capitalised word, as in `HTTP|Server`. Replacing it with a space
- * splits acronyms like `replace(/([A-Z]+)([A-Z][a-z])/g, '$1 $2')` does, but with fixed-width lookarounds that
- * cannot backtrack.
+ * The boundary inside a run of capitals before a capitalised word, as in `HTTP|Server`. Fixed-width lookarounds
+ * avoid the backtracking of `/([A-Z]+)([A-Z][a-z])/`.
  */
 export const ACRONYM_BOUNDARY = /(?<=[A-Z])(?=[A-Z][a-z])/gu;
 
 /** How an identifier is split into words. */
 export interface IdentifierWordOptions {
-    /**
-     * Also separate a run of capitals from a following capitalised word, so `HTTPServer` yields `HTTP Server`. Defaults
-     * to true; rules that match whole lowercased names such as `orderid` turn it off.
-     */
+    /** Split `HTTPServer` into `HTTP Server`. Defaults to true. */
     splitAcronyms?: boolean;
 }
 
 /** How an identifier is split into lowercase tokens. */
 export interface IdentifierTokenOptions extends IdentifierWordOptions {
-    /**
-     * Keep only the ASCII letters of each token and split at every other character, so digits and
-     * punctuation never become part of a token (`Date2From` yields `date`, `from`). Defaults to false.
-     * Temporal markers are letter-only words, so the temporal planner turns it on.
-     */
+    /** Split tokens at every character other than an ASCII letter, so `Date2From` yields `date`, `from`. Defaults to false. */
     lettersOnly?: boolean;
 }
 

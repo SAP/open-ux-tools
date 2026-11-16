@@ -73,8 +73,7 @@ function optionalInteger(value: unknown): number | undefined {
  * Map a declared EDM primitive type to the generator's primitive type.
  *
  * @param type - Declared property type.
- * @returns The primitive type, or undefined for a type that has no generatable inline JSON value,
- * such as `Edm.Stream`, the geospatial types, `Edm.Duration`, or a name that is not an EDM type.
+ * @returns The primitive type, or undefined for a type without a generatable inline JSON value (such as `Edm.Stream`).
  */
 function primitiveType(type: string): PrimitiveType | undefined {
     return Object.hasOwn(EDM_PRIMITIVE_TYPES, type) ? EDM_PRIMITIVE_TYPES[type] : undefined;
@@ -85,8 +84,7 @@ function integerBounds(type: string): Readonly<{ numericMinimum: number; numeric
 }
 
 /**
- * Convert a constant expression to the JSON type its EDM expression kind declares.
- * The XML parser keeps every value as text, so typing follows the expression, never the spelling.
+ * Type a constant expression by its EDM expression kind; the XML parser keeps every value as text.
  *
  * @param kind - The expression attribute name, such as Bool or String.
  * @param value - The raw attribute value.
@@ -220,8 +218,7 @@ function valueListParameter(record: XmlRecord): SchemaValueListParameter {
     const constantValue = constantEntry ? typedExpressionValue(constantEntry, constant?.[constantEntry]) : undefined;
     const direction = typeof record.Type === 'string' ? valueListParameterDirection(record.Type) : undefined;
     return {
-        // Older metadata omits the ValueListParameter type. Treat that
-        // mapping as InOut conservatively while retaining explicit types.
+        // Older metadata omits the ValueListParameter type; treat it as InOut.
         direction: direction ?? 'InOut',
         ...(typeof localProperty === 'string' ? { localProperty } : {}),
         ...(typeof valueListProperty === 'string' ? { valueListProperty } : {}),
@@ -292,10 +289,7 @@ function documentationRefDataElement(propertyAnnotations: ReadonlyArray<SchemaAn
     return /[?&]id=([a-z\d_]+)/iu.exec(reference)?.[1];
 }
 
-/**
- * Outcome of parsing one declared property: a generatable scalar, a structured (complex or
- * collection) property, or a property whose type has no generatable inline JSON value.
- */
+/** A parsed property: a generatable scalar, a complex or collection property, or one without a generatable value. */
 type ParsedProperty =
     | Readonly<{ kind: 'scalar'; property: SchemaProperty }>
     | Readonly<{ kind: 'structured' }>
@@ -322,8 +316,7 @@ function scalarPropertyType(
 }
 
 /**
- * The declared precision. CSDL requires a positive decimal precision; a declared 0 admits no digit,
- * so it is treated as unspecified.
+ * The declared precision. CSDL requires a positive decimal precision, so a decimal precision of 0 is unspecified.
  *
  * @param scalarType - Generator type of the property.
  * @param value - Declared Precision attribute.
@@ -447,8 +440,7 @@ function associationTargetCardinality(multiplicity: unknown): SchemaRelationship
 }
 
 /**
- * Record the member names of each enumeration type a schema declares, under its namespace- and
- * alias-qualified names. An enumeration without members has no generatable value and is skipped.
+ * Record each enumeration's member names under its namespace- and alias-qualified names, skipping empty ones.
  *
  * @param schema - Parsed EDMX schema node.
  * @param namespace - Schema namespace.
@@ -502,8 +494,7 @@ function ungeneratableKeyReason(
 }
 
 /**
- * Keep only relationships between declared scalar properties of generated entity sets. One that
- * reaches a skipped set, an omitted property, or a property the entity does not declare would write
+ * Keep only relationships between declared scalar properties of generated entity sets; any other would write
  * values the schema cannot describe.
  *
  * @param entities - Generated entity sets.
@@ -576,22 +567,19 @@ interface EntitySetCollection {
     entitySetByType: Map<string, string>;
     /** Generatable entity sets with their container nodes, in document order, then the contained entities. */
     entitySets: DeclaredEntitySet[];
-    /**
-     * Containment navigations, as `EntitySet/navigation`, whose target type has no entity set: their rows live
-     * in the containing row, so no key mapping links them.
-     */
+    /** Containment navigations (`EntitySet/navigation`) to a type without an entity set; no key mapping links them. */
     containedNavigations: Set<string>;
     /** Containment paths left out at the limit of contained entities. */
     omittedContainmentPaths: number;
 }
 
-/** One navigation property of an entity set, with what every kind of relationship reads from it. */
-/** A navigation's relationship, and whether it starts from the navigation's target: the target rows reference the source. */
+/** A navigation's relationship, and whether it starts from the target (the target rows reference the source). */
 interface NavigationRelationship {
     relationship: SchemaRelationship;
     fromTarget: boolean;
 }
 
+/** One navigation property of an entity set, with what every kind of relationship reads from it. */
 interface NavigationSource {
     /** The navigation property node. */
     navigation: XmlRecord;
@@ -612,15 +600,15 @@ interface NavigationSource {
  *
  * @param content - The EDMX document.
  * @returns The schema nodes in document order.
- * @throws {MockGenError} `METADATA_INVALID` when the document cannot be parsed as XML or has no Edmx/DataServices or no Schema
+ * @throws {MockGenError} `METADATA_INVALID` when the document is not XML or has no Edmx/DataServices or no Schema
  */
 function readEdmxSchemas(content: string): XmlRecord[] {
     const parser = new XMLParser({
         ignoreAttributes: false,
         attributeNamePrefix: '',
         removeNSPrefix: true,
-        // Values stay as written: a String such as "0042" or a Multiplicity of "1" must not become a number.
-        // EDM-typed expressions (Bool, Int, Float, Decimal) are converted explicitly by typedExpressionValue.
+        // Keep values as written: "0042" and a Multiplicity of "1" stay strings. typedExpressionValue types Bool,
+        // Int, Float and Decimal expressions.
         parseAttributeValue: false,
         parseTagValue: false
     });
@@ -757,8 +745,7 @@ function collectTypeAnnotations(
 }
 
 /**
- * The semantic key an entity type hierarchy declares (`Common.SemanticKey`), inline or through an external
- * target, kept only when it names declared scalar properties.
+ * The `Common.SemanticKey` of an entity type hierarchy, inline or external, kept only when it names scalar properties.
  *
  * @param context - The parsed document.
  * @param hierarchy - The entity type and its base types.
@@ -786,8 +773,8 @@ function semanticKeyOf(
 }
 
 /**
- * The alternate keys an entity type hierarchy declares (`Core.AlternateKeys`), inline or through an external
- * target: each key's property paths, kept only when every path names a declared scalar property.
+ * The `Core.AlternateKeys` of an entity type hierarchy, inline or external; a key is kept only when every path names
+ * a scalar property.
  *
  * @param context - The parsed document.
  * @param hierarchy - The entity type and its base types.
@@ -1024,8 +1011,8 @@ function containerCodeLists(
 }
 
 /**
- * The code lists an EDMX service declares in other services, such as SAP Gateway's common
- * `Currencies` and `UnitsOfMeasure`. UI5 formats an amount or quantity only when its code is in that list.
+ * The code lists an EDMX service declares in other services, such as SAP Gateway's `Currencies` and
+ * `UnitsOfMeasure`. UI5 formats an amount or quantity only when its code is in that list.
  *
  * @param content - The EDMX document.
  * @returns The code lists that live in another service, in document order.
@@ -1041,8 +1028,7 @@ export function edmxExternalCodeLists(content: string): ReadonlyArray<EdmxCodeLi
 }
 
 /**
- * The key property names an entity type hierarchy declares. A blank key reference names no property,
- * so it contributes no key value.
+ * The key property names an entity type hierarchy declares; blank key references are ignored.
  *
  * @param hierarchy - The entity type and its base types, root first.
  * @returns The key property names.
@@ -1058,8 +1044,7 @@ function hierarchyKeyNames(hierarchy: ReadonlyArray<ResolvedEntityType>): Set<st
 }
 
 /**
- * Parse the properties of an entity type hierarchy; a derived type's property replaces a base property
- * of the same name.
+ * Parse the properties of an entity type hierarchy; a derived type's property replaces a base one of the same name.
  *
  * @param context - The parsed document.
  * @param hierarchy - The entity type and its base types, root first.
@@ -1120,9 +1105,8 @@ function withCurrencyLinks(properties: ReadonlyMap<string, SchemaProperty>): Sch
 }
 
 /**
- * Parse one entity set or singleton into the collection, or record why it is skipped. An entity set
- * whose rows cannot be generated is skipped on its own; the rest of the service is still generated,
- * and the caller receives a diagnostic for a skipped target.
+ * Parse one entity set or singleton into the collection, or record why it is skipped; the rest of the service is
+ * still generated.
  *
  * @param context - The parsed document.
  * @param entitySet - The entity set or singleton node.
@@ -1241,9 +1225,8 @@ function containedTargetType(
 }
 
 /**
- * Parse the entity types that only other rows contain (`ContainsTarget` to a type without an entity set) as entities
- * named by their containment path. Recursive containment ends at a type the path already contains, and draft
- * navigations are not containment.
+ * Parse entity types only other rows contain (`ContainsTarget` to a type without an entity set) as entities named by
+ * their containment path. Recursion stops at a type already on the path; draft navigations are not containment.
  *
  * @param context - The parsed document.
  * @param collection - The entity sets; receives the contained entities and the containment navigations.
@@ -1257,8 +1240,8 @@ function collectContainedEntities(context: EdmxParseContext, collection: EntityS
         ])
     );
     let contained = 0;
-    // The loop also visits the contained entities appended to the array while it runs, so paths are read shallowest
-    // first and the limit keeps the shallowest.
+    // The loop also visits contained entities appended while it runs: paths are read shallowest first, so the limit
+    // keeps the shallowest.
     for (const { entitySet, entitySetName, qualifiedType } of collection.entitySets) {
         const hierarchy = entityTypeHierarchy(context.entityTypes, qualifiedType);
         const containing = pathTypes.get(entitySetName) ?? new Set<string>();
@@ -1351,9 +1334,8 @@ function constrainedNavigationRelationship(
 }
 
 /**
- * The relationship of a navigation without referential constraints, inferred from shared key names and types as the SAP
- * Fiori elements mockserver does. Its direction depends on whether the shared values are the source's complete key;
- * draft navigations are never inferred.
+ * A navigation's relationship inferred, as the SAP Fiori elements mockserver does, from shared key names and types.
+ * Its direction depends on whether they are the source's complete key; draft navigations are never inferred.
  *
  * @param source - The navigation and its entity set.
  * @param context - The parsed document.
@@ -1391,8 +1373,7 @@ function inferredNavigationRelationship(
         names.map((key) => ({ sourceProperty: key, targetProperty: key }));
     const toMany = navigationDetails.targetCardinality === 'many';
     const sourceKeys = sharedKeyNames(sourceEntity, targetEntity);
-    // Target keys that are the source's complete key are the source row's identity: the target rows
-    // reference the source through them.
+    // Target keys that form the source's complete key identify the source row: target rows reference it through them.
     const sourceIdentified =
         targetKeys.shared.length === sourceKeys.declared && namesBusinessKey(sourceEntity, targetKeys.shared);
     if (
@@ -1433,8 +1414,7 @@ function inferredNavigationRelationship(
 }
 
 /**
- * The business keys of an entity, draft keys left out, that another entity declares as properties of the
- * same names and types.
+ * The business (non-draft) keys of an entity that another entity declares with the same name and type.
  *
  * @param keyed - The entity whose keys are matched.
  * @param other - The entity that may declare them.
@@ -1470,9 +1450,8 @@ function namesBusinessKey(entity: SchemaEntity | undefined, names: readonly stri
 }
 
 /**
- * The relationship of an OData V2 navigation whose association declares a referential constraint: the dependent's
- * properties reference the principal's. When the constraint cannot select one principal row, the principal references
- * the dependent instead.
+ * The relationship of an OData V2 navigation whose association declares a referential constraint: the dependent
+ * references the principal, or, when the constraint cannot select one principal row, the reverse.
  *
  * @param source - The navigation and its entity set.
  * @param relationshipName - The qualified association name.
@@ -1588,8 +1567,7 @@ function associationTarget(
 }
 
 /**
- * The relationship of one navigation: its referential constraint, its association's, or one inferred from
- * the keys its ends declare when neither declares a constraint.
+ * The relationship of one navigation: from its own or its association's referential constraint, else inferred.
  *
  * @param source - The navigation and its entity set.
  * @param target - The navigation's association and target end, for an OData V2 navigation.
@@ -1636,8 +1614,7 @@ function navigationRelationship(
 }
 
 /**
- * Read the relationships of the navigation properties of one entity set, in declaration order along its type
- * hierarchy. Navigations to contained entities are left out: a contained row lives in its container's row.
+ * Read the relationships of one entity set's navigations, in declaration order along its type hierarchy.
  *
  * @param declared - The entity set with its container node and entity type.
  * @param context - The parsed document.
@@ -1662,7 +1639,7 @@ function entitySetNavigationRelationships(
             unqualifiedName(requiredString(binding.Target, 'navigation binding target'))
         ])
     );
-    // A contained row lives in its container's row, so no key mapping links them.
+    // Navigations to contained entities are left out: a contained row lives in its container's row.
     const navigations = sourceTypes
         .flatMap((sourceType) => asArray(sourceType.NavigationProperty))
         .filter(({ Name }) => !collection.containedNavigations.has(`${entitySetName}/${String(Name)}`));
@@ -1716,9 +1693,8 @@ function navigationSource(
 }
 
 /**
- * Read the relationships of every navigation property of the generatable entity sets, in document order. A navigation
- * without a referential constraint resolves as the SAP Fiori elements mockserver does: through a declared back
- * reference, else through keys both declare by name.
+ * Read the relationships of every navigation of the generatable entity sets, in document order. An unconstrained
+ * navigation resolves as the SAP Fiori elements mockserver does: by a declared back reference, else by shared keys.
  *
  * @param context - The parsed document.
  * @param collection - The generatable entity sets.
@@ -1751,9 +1727,9 @@ function collectRelationships(context: EdmxParseContext, collection: EntitySetCo
 }
 
 /**
- * Point a relationship between a contained row and a type its own path contains at that row's container of
- * the type. A type contained in several places is parsed once per containment path, and a navigation resolves
- * to the first; a contained row's reference back up its path names the row that holds it, in its own path.
+ * Point a relationship between a contained row and a type on its own path at that row's container of the type. A type
+ * contained in several places is parsed once per path and a navigation resolves to the first, so a reference back up
+ * the path must name the row that holds it.
  *
  * @param relationship - The resolved relationship.
  * @param typeOf - The canonical entity type of each entity set and contained entity, by name.
@@ -1786,8 +1762,8 @@ function withinContainers(relationship: SchemaRelationship, typeOf: ReadonlyMap<
 }
 
 /**
- * Whether an inferred relationship links two entity sets whose reference the metadata already declares the other way.
- * Target rows inferred to reference their source give way only to a declared reference between the same properties.
+ * Whether an inferred relationship is declared the other way. One inferred from the target gives way only to a
+ * declared reference between the same properties.
  *
  * @param entry - The relationship to check and its direction.
  * @param relationships - All relationships of the service.
@@ -1813,7 +1789,7 @@ function declaredBackwards(entry: NavigationRelationship, relationships: readonl
 
 /**
  * Whether an inferred relationship maps two or more properties that a declared reference of the same set maps to
- * another parent, which then decides them. A single shared property is no conflict.
+ * another parent; a single shared property is no conflict.
  *
  * @param relationship - The relationship to check.
  * @param relationships - All relationships of the service.
@@ -1851,9 +1827,8 @@ function outranked(relationship: SchemaRelationship, relationships: readonly Sch
 }
 
 /**
- * Whether a relationship a navigation's target rows hold towards its source is already held another way:
- * an inferred one when the target rows reference the source through a navigation of their own, a declared
- * one when an earlier relationship declares the same reference.
+ * Whether a relationship from a navigation's target is already held: an inferred one by the target's own
+ * navigation, a declared one by an earlier relationship with the same mappings.
  *
  * @param entry - The relationship to check and its direction.
  * @param index - Its position among the relationships.
@@ -1883,8 +1858,8 @@ function redundant(entry: NavigationRelationship, index: number, resolved: reado
  *
  * @param content - The EDMX document.
  * @returns The schema graph.
- * @throws {MockGenError} `METADATA_INVALID` when the document has no schema, a required name or type is missing or an
- *   entity set name is a property every JavaScript object inherits
+ * @throws {MockGenError} `METADATA_INVALID` when the document is not EDMX XML, has no schema, or misses a required
+ *   name or type
  */
 export function parseEdmx(content: string): SchemaGraph {
     const schemas = readEdmxSchemas(content);

@@ -48,9 +48,8 @@ export function resolveValueListContext(
 }
 
 /**
- * Values the supplied rows of the field's value helps hold: a value list whose rows are supplied is the domain
- * the field chooses from. The supplied rows of the field's own entity set are not evidence for new rows, since
- * they may be placeholders a person or another generator wrote.
+ * The values in the supplied rows of the field's value helps, the domain the field chooses from. Supplied rows of the
+ * field's own entity set are not evidence for new rows, since they may be placeholders.
  *
  * @param graph
  * @param entity
@@ -99,9 +98,8 @@ export function authoredDomainValues(
 }
 
 /**
- * Value-list parameters of an owner property. Both metadata parsers derive `valueListMappings` from
- * these parameters (one mapping per parameter with a local and a value-list property), so the
- * parameters are the single source of the owner's value-list tuple.
+ * Value-list parameters of an owner property, the single source of its value-list tuple (both metadata parsers
+ * derive `valueListMappings` from them).
  *
  * @param owner property carrying the value-list annotation
  * @returns the parameters that govern the owner's value-list tuple
@@ -111,8 +109,7 @@ export function effectiveValueListParameters(owner: SchemaProperty): ReadonlyArr
 }
 
 /**
- * Project a value-help text into the local text property that displays it, cut in code points to a narrower local
- * facet. Values that already fit, and non-string values, are returned unchanged.
+ * Cut a value-help text in code points to the local text property's narrower length; other values are unchanged.
  *
  * @param localProperty local text property receiving the display value
  * @param value value-help text value
@@ -131,9 +128,8 @@ export function fitDisplayText(localProperty: SchemaProperty, value: JsonValue |
 }
 
 /**
- * Find display propagation supported by a value-help key's explicit text link; DisplayOnly parameters without a local
- * property are ignored. With several mapped text-bearing keys and no owner mapping the source is ambiguous, and no link
- * is returned.
+ * Find the display link given by a mapped value-help key's explicit text link. With several such keys and no
+ * single owner mapping the source is ambiguous, and no link is returned.
  *
  * @param owner property carrying the value-list annotation
  * @param parameters the owner's value-list parameters
@@ -196,8 +192,8 @@ export interface ValueListTupleMember {
 }
 
 /**
- * The owner fields that a value-list tuple determines, with how each value is carried into the owner. An Out parameter
- * copying a key's text is a display copy that may be cut to the local facet; InOut and In parameters stay exact.
+ * The owner fields a value-list tuple determines. An Out parameter copying a key's text may be cut to the local facet;
+ * InOut and In parameters stay exact.
  *
  * @param owner property carrying the value-list annotation
  * @param parameters the owner's effective value-list parameters
@@ -250,6 +246,5 @@ export function valueListTupleMembers(
 export function memberValue(member: ValueListTupleMember, candidate: MockDataRow): JsonValue | undefined {
     const value = candidate[member.valueListProperty];
     const fitted = member.fitted ? fitDisplayText(member.localProperty, value) : value;
-    // The owner field holds the value in the form its facets give (an upper-case field in upper case).
     return typeof fitted === 'string' ? (inFacetForm(member.localProperty, fitted) ?? fitted) : fitted;
 }

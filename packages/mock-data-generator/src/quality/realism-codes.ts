@@ -35,8 +35,7 @@ function isTextForm(property: SchemaProperty): boolean {
 }
 
 /**
- * The rows' texts of one code are a single text, and the text is not the code itself when the text field is
- * longer than the code field.
+ * Each code has a single text, which is not the code itself when the text field is longer than the code field.
  *
  * @param rows generated rows
  * @param code code property
@@ -70,8 +69,8 @@ function linkedTextFailures(
 }
 
 /**
- * Which values of a text column are codes, when codes fill the column: the share of code-shaped values
- * reaches the rule store's `codeShare`. A column of words with the odd code in it passes.
+ * Which values of a text column are codes, when code-shaped values reach the rule store's `codeShare`; a column
+ * of words with the odd code passes.
  *
  * @param values the column's non-empty values
  * @returns per value, whether it is a code in a column that codes fill
@@ -99,8 +98,8 @@ export function holdsTextByName(property: SchemaProperty): boolean {
 }
 
 /**
- * Texts of codes are a function of the code, and texts are not codes. Checked for every declared text link within an
- * entity, except the entity's own key text, and for text-named fields whose values look like codes.
+ * Texts of codes are a function of the code and are not codes: checked for every declared text link within an
+ * entity and for text-named fields filled with codes.
  *
  * @param input check input
  * @returns findings per text field
@@ -143,8 +142,8 @@ export function checkCodeTexts(input: RealismInput): CheckOutcome {
 }
 
 /**
- * Properties that a relationship maps or that another property names as its unit or currency: their
- * values are shared by design and may be constant.
+ * Properties a relationship maps or another property names as its unit or currency: shared by design, so they
+ * may be constant.
  *
  * @param graph service schema
  * @returns `entitySet.property` keys
@@ -170,8 +169,7 @@ function sharedByDesign(graph: SchemaGraph): Set<string> {
 }
 
 /**
- * Non-key, non-enumerated text and number columns that hold one value in every row: a field that tells
- * nothing apart.
+ * Non-key, non-enumerated text and number columns holding one value in every row.
  *
  * @param input check input
  * @returns findings per field

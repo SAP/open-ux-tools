@@ -124,7 +124,7 @@ function mergeTokenIds(left: ReadonlyArray<number>, right: ReadonlyArray<number>
 
 /**
  * Cache the tokenizer-wide grammar scan for equivalent decoder states. Inside a value the allowed tokens depend on the
- * value's state alone and are shared by every grammar; outside values the cache keys on the whole state.
+ * value's state alone; outside values the next key matters, so the cache keys on the whole state.
  *
  * @param texts decoded tokenizer vocabulary
  * @param specialIds token IDs that cannot be emitted
@@ -200,7 +200,6 @@ export function createAllowedTokenResolver(
         return result;
     };
     return (state) => {
-        // Outside values the next key matters, so those states keep the whole-state key.
         const inValue = VALUE_PHASES.has(state.phase);
         const key = inValue
             ? `v${valueStateKey(state, maximumTokenLength)}`
@@ -331,8 +330,8 @@ function tokenTextTable(tokenizer: CausalTokenizer): ReadonlyArray<string | unde
             try {
                 return tokenizer.decode([id]);
             } catch (error) {
-                // A token that is not text on its own (an unmapped id or a partial UTF-8 sequence) is never
-                // allowed by the grammar; the tokenizer reports it as a TypeError.
+                // The tokenizer throws a TypeError for a token that is not text on its own (an unmapped id or a
+                // partial UTF-8 sequence); the grammar never allows it.
                 if (isErrorNamed(error, 'TypeError')) {
                     return undefined;
                 }
@@ -401,8 +400,8 @@ interface DecodingSequence {
 const TRAILING_SEPARATORS = new Set([',', ';', ':', '&', '+', '/', '(', '-', '–', '—']);
 
 /**
- * Remove the whitespace and separators a text ends with, scanning back once so long runs cannot make a
- * regular expression backtrack.
+ * Remove trailing whitespace and separators in one backward scan, so long runs cannot make a regular expression
+ * backtrack.
  *
  * @param value the text
  * @returns the text without its trailing whitespace and separators
@@ -420,9 +419,8 @@ export function trimTrailingSeparators(value: string): string {
 }
 
 /**
- * A string cut at its maximum length, shortened to its last complete word: the text before the last
- * whitespace, without trailing separators; a code without whitespace keeps its complete segments. A
- * single word is kept as it is, and so is a value that would lose too much of its text.
+ * Shorten a string cut at its maximum length to its last complete word, or a code without whitespace to its complete
+ * segments. A single word, or a value that would lose too much text, is kept as it is.
  *
  * @param value the cut string
  * @returns the shortened string, or the value itself
@@ -430,7 +428,7 @@ export function trimTrailingSeparators(value: string): string {
 export function trimToWordBoundary(value: string): string {
     const boundary = value.search(/\s\S*$/u);
     if (boundary <= 0) {
-        // A code cut inside its last segment keeps its complete segments (`INV-2018-0` becomes `INV-2018`).
+        // `INV-2018-0` becomes `INV-2018`.
         const separator = value.search(/[-_/.:][^-_/.:]*$/u);
         const code = separator > 0 ? value.slice(0, separator) : value;
         return /[\p{L}\p{N}]/u.test(code) && code.length * 2 >= value.length ? code : value;
@@ -524,8 +522,8 @@ function forcedTokens(decoder: CausalDecoder, text: string): ReadonlyArray<numbe
 }
 
 /**
- * Run the session after every run queued before it. A prompt prefill (`prompt` set) is cached and
- * reused for the exact same prompt; row continuations are never cached.
+ * Run the session after every run queued before it. A prompt prefill (`prompt` set) is seed-independent, so it is
+ * cached and reused for the exact same prompt; row continuations are never cached.
  *
  * @param decoder the generator's model and shared state
  * @param input the session inputs
@@ -543,8 +541,6 @@ function runSession(
         .catch(() => undefined)
         .then(async () => {
             signal.throwIfAborted();
-            // The session and tokenizer belong to this generator. Only exact
-            // prompts share seed-independent prefill, never row continuations.
             if (prompt !== undefined && decoder.cachedPrefill?.prompt === prompt) {
                 return clonePrefillOutput(decoder.cachedPrefill.output);
             }
@@ -570,9 +566,8 @@ function runSession(
 }
 
 /**
- * Feed the grammar-forced text of a row without sampling, except its last token: the model samples
- * across the boundary itself (token healing), so a key and the value after it are tokenized the way
- * the model learned rather than split where the grammar stops forcing.
+ * Feed the grammar-forced text of a row without sampling, except its last token: the model samples across the
+ * boundary itself (token healing), so a key and its value are tokenized the way the model learned.
  *
  * @param decoder the generator's model and vocabulary
  * @param sequence the row
@@ -619,8 +614,8 @@ function chooseNextToken(
     if (feedForcedText(decoder, sequence)) {
         return;
     }
-    // At a string's maximum only its closing quote is allowed. When the model's own first choice
-    // was to keep writing, the string was cut and is shortened to a word boundary afterwards.
+    // At a string's maximum only the closing quote is allowed; if the model wanted to keep writing, the string
+    // was cut and is shortened to a word boundary afterwards.
     if (
         sequence.state.phase === 'in-string-value' &&
         sequence.state.fieldName !== undefined &&
@@ -640,8 +635,7 @@ function chooseNextToken(
         run.samplingWeights,
         run.samplingHeap
     );
-    // Near a string's maximum length, a token that starts a new word ends the string instead,
-    // so text stops at a word boundary rather than being cut off inside a word.
+    // Near a string's maximum, a token starting a new word closes the string instead, so text ends at a word boundary.
     const startsWord = /^\s/u.test(tokenTexts[sampled] ?? '');
     const token =
         startsWord && closingQuoteToken >= 0 && withinSteeringWindow(sequence.state) ? closingQuoteToken : sampled;
@@ -650,8 +644,8 @@ function chooseNextToken(
         throw new TypeError('SFT selected an undecodable token');
     }
     sequence.generated.push(token);
-    // Only value content counts as a repetition: not the token that opens a value across the key
-    // boundary (a healed ` "`, a digit after the separator) and not the one that closes a string.
+    // Only value content counts for the repetition penalty: not a token opening a value across the key boundary
+    // (a healed ` "`) nor the one closing a string.
     if (
         CONTENT_PHASES.has(sequence.state.phase) &&
         !(sequence.state.phase === 'in-string-value' && text.startsWith('"'))
@@ -667,8 +661,7 @@ function chooseNextToken(
 }
 
 /**
- * The text of a completed row; strings the grammar cut at their maximum are shortened to a word
- * boundary.
+ * The text of a completed row, with strings cut at their maximum shortened to a word boundary.
  *
  * @param decoder the generator's tokenizer
  * @param sequence the completed row
@@ -744,7 +737,6 @@ async function advanceSequences(
         );
         cacheBatch = active.length;
         active.forEach((index, row) => (rows[index] = row));
-        // A lone row takes all its forced tokens at once; rows in a batch advance together.
         const step =
             active.length === 1
                 ? requiredElement(sequences, requiredElement(active, 0, 'active'), 'sequence').pending.length
@@ -766,7 +758,6 @@ async function advanceSequences(
             pastKeyValues: cache,
             batchSize: active.length
         };
-        // Autoregressive decoding: every step feeds the cache of the step before.
         const output = await runSession(decoder, feeds, signal); // NOSONAR: sequential, autoregressive decoding
         signal.throwIfAborted();
         cache = output.presentKeyValues;
@@ -787,8 +778,7 @@ async function advanceSequences(
 }
 
 /**
- * Decode one completion per seed for a shared prompt. Rows advance together, one token per row and
- * step; a lone row takes all grammar-forced tokens in one step. Forced text is fed without sampling.
+ * Decode one completion per seed for a shared prompt.
  *
  * @param decoder the generator's model and shared state
  * @param input shared prompt, grammar and sampling options

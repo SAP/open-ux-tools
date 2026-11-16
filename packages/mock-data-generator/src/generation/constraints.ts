@@ -87,8 +87,9 @@ function decimalIsValid(property: SchemaProperty, value: unknown): boolean {
 /**
  * Shared structural constraint check used for deterministic and learned candidates.
  *
- * @param property
- * @param value
+ * @param property the field
+ * @param value the candidate value
+ * @returns true when the value satisfies the field's type and facets
  */
 export function propertyValueIsValid(property: SchemaProperty, value: unknown): value is JsonValue {
     if (value === null) {

@@ -7,8 +7,7 @@ interface ValueSource {
 }
 
 /**
- * The collection a field takes its values from through its own value list: the list's parameter that maps the
- * field itself, in or out.
+ * The collection and column a field takes its values from through its own value list's InOut or Out parameter.
  *
  * @param field the field
  * @returns the collection and its column, or undefined when the field has no such value list
@@ -27,8 +26,8 @@ function ownValueSource(field: SchemaProperty): ValueSource | undefined {
 }
 
 /**
- * The value-help columns that feed a field taking its values from another collection, with that collection: an owner
- * field with a value list of its own, which another value list of the same entity also writes from one of its columns.
+ * The value-help columns another value list of the entity writes into a field that draws from a different collection
+ * through its own value list, each with that field's source.
  *
  * @param entity the owner entity
  * @returns per value-help collection and column, the sources found for it
@@ -57,10 +56,9 @@ function feedingColumns(entity: SchemaEntity): Array<{ collection: string; colum
 }
 
 /**
- * Give a value-help column the value list of the field it feeds. When a value list copies one of its columns into an
- * owner field that takes its values from another collection through a value list of its own, the column must hold
- * values of that collection too, or no value-help row can agree with both lists. A column with a value list of its
- * own, of another type, or that two sources claim differently is left as declared.
+ * Give a value-help column the value list of the field it feeds when that field draws from another collection;
+ * otherwise no value-help row can agree with both lists.
+ * A column with a value list of its own, of another type, or that two sources claim differently is left as declared.
  *
  * @param graph the parsed schema
  * @returns the schema, with the derived value lists

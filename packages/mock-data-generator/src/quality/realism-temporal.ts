@@ -98,8 +98,8 @@ function unique<Field>(fields: ReadonlyArray<Field>, matches: (field: Field) => 
 }
 
 /**
- * Ordered event pairs of an entity (creation before change, validity start before end) of the same type
- * and subject, each named by exactly one field.
+ * Ordered event pairs (creation before change, start before end) of the same type and subject, each named by
+ * exactly one field.
  *
  * @param fields temporal fields of the entity
  * @returns the pairs as (earlier, later)
@@ -120,8 +120,7 @@ function orderedPairs(fields: ReadonlyArray<TemporalField>): Array<readonly [Tem
 }
 
 /**
- * Ordering and identity of event pairs: the earlier event never lies after the later one, and a change is
- * not the creation in every row.
+ * Event pairs: the earlier event never lies after the later one, and a change is not the creation in every row.
  *
  * @param entity schema entity
  * @param rows generated rows
@@ -166,8 +165,7 @@ function checkPairs(
 }
 
 /**
- * Distinct fields of one temporal type are not one value in every row: two events a service records
- * separately do not always coincide. Ordered pairs are left to the ordering and identity checks.
+ * Distinct fields of one temporal type are not equal in every row; ordered pairs are left to {@link checkPairs}.
  *
  * @param entity schema entity
  * @param rows generated rows
@@ -211,8 +209,7 @@ function checkTwins(
 }
 
 /**
- * Timestamps agree with the date and the time field of the same name, and a timestamp that names a time
- * is not midnight in every row.
+ * Timestamps agree with the date and time fields of the same stem, and one that names a time is not always midnight.
  *
  * @param entity schema entity
  * @param rows generated rows

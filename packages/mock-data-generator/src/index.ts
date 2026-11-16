@@ -95,8 +95,8 @@ import { t } from './i18n.js';
  * @param manifest - Verified model manifest.
  * @param cache - Verified local model cache.
  * @param factories - Optional test/component factories.
- * @param options - `completionStore` keeps model answers (the process-wide in-memory store when absent).
- * @param options.completionStore - See above.
+ * @param options - Runtime options.
+ * @param options.completionStore - Keeps model answers; the process-wide in-memory store when absent.
  * @returns Loaded classifier/SFT runtime plus degradation diagnostics.
  */
 export async function createLearnedRuntime(
@@ -127,8 +127,7 @@ function fingerprint(value: unknown): string {
 const GENERATOR_LOGIC_VERSION = 54;
 
 /**
- * Marks every cell of a resource the caller supplied as authored, because `preserveAuthoredRows`
- * puts those rows back exactly as they arrived.
+ * Retag the properties of every supplied resource as authored, since `preserveAuthoredRows` restores those rows.
  *
  * @param tally the running value-tier tally
  * @param existingData the caller's own rows, by entity set
@@ -166,8 +165,7 @@ function dominantTier(tally: ValueTierTally, resourceName: string, propertyName:
 }
 
 /**
- * Why a typed-floor column of a resource has no better tier: a protocol artifact, a key, a boolean, or
- * an addressable field no tier could fill.
+ * Why a typed-floor column has no better tier: protocol artifact, key, boolean, or an addressable field.
  *
  * @param resource the entity set
  * @param property the column's property, when the schema declares it
@@ -187,17 +185,15 @@ function typedFloorCause(
 }
 
 /**
- * Count every published cell against the tier that wrote it and split the typed floor by cause, in one walk over the
- * published rows so the totals match what the caller receives.
+ * Count every published cell against the tier that wrote it, walking the published rows so totals match the result.
  *
  * @param graph the schema graph, for the key and type of each property
  * @param tally the completed value-tier tally
  * @param targets the entity sets the caller asked for
  * @param resources the published rows
  * @param statistics the fine-tuned tier's own per-field accounting
- * @param fallbackByField
- * @returns generated value slots by writing tier, the typed floor by cause, and each published
- * property's split between the fine-tuned tier and the tier that wrote its remaining cells
+ * @param fallbackByField cells the standard fallback filled, by property key
+ * @returns slots by tier, the typed floor by cause, the abstained cell count, and each property's tier split
  */
 function valueTierStatistics(
     graph: SchemaGraph | undefined,
@@ -252,8 +248,7 @@ function valueTierStatistics(
             const cause = typedFloorCause(name, properties.get(propertyName));
             causes[cause] += remaining;
             if (cause === 'addressable') {
-                // The model writes no empty values, so every empty cell of the column, and every cell the standard
-                // fallback filled after the floor left it empty, is one the floor abstained on.
+                // The model writes no empty values: empty cells and fallback-filled cells are floor abstentions.
                 const empty =
                     rows.filter((row) => row[propertyName] === null || row[propertyName] === '').length +
                     (fallbackByField.get(semanticPropertyKey(name, propertyName)) ?? 0);
@@ -288,7 +283,7 @@ export function createGenerationFingerprint(
             service: request.service,
             targets: request.targets,
             existingData: request.existingData,
-            // Present only when given, so fingerprints of requests without referenced services keep their value.
+            // Only when given, so fingerprints of requests without referenced services stay stable.
             ...(request.referencedServices ? { referencedServices: request.referencedServices } : {})
         },
         options: { ...options, pipeline: 'semantic-v2' },
@@ -319,9 +314,8 @@ interface GeneratedResultValidationContext {
 }
 
 /**
- * Check the rows of one requested resource: a skipped entity set has none and is reported; any other
- * target has the requested row count, every declared property with a valid value, no undeclared
- * property and no duplicate key. Supplied cells are published as the caller wrote them and pass as they are.
+ * Check the rows of one requested resource: a skipped entity set has none and is reported; any other has a valid
+ * row count, valid declared properties, no undeclared ones and no duplicate key. Supplied cells pass as written.
  *
  * @param request the generation request
  * @param result the generated result
@@ -354,8 +348,7 @@ function assertGeneratedTarget(
     }
     const keyProperties = entity.properties.filter((property) => property.isKey);
     const keys = new Set<string>();
-    // Supplied rows lead the resource and are published as the caller wrote them, including
-    // columns the schema no longer declares and values it would not generate.
+    // Supplied rows lead the resource and are published as written, even with undeclared columns or values.
     const supplied = authoredRows(request.existingData[targetName]);
     const check: GeneratedRowCheck = {
         targetName,
@@ -367,7 +360,7 @@ function assertGeneratedTarget(
         assertGeneratedRow(check, rowIndex, row);
         if (keyProperties.length > 0) {
             const key = canonicalJson(keyProperties.map((property) => row[property.name]));
-            // Supplied rows may share a key among themselves (reported as SUPPLIED_KEY_DUPLICATED); a generated row may not.
+            // Supplied rows may share a key (SUPPLIED_KEY_DUPLICATED); a generated row may not.
             if (keys.has(key) && rowIndex >= supplied.length) {
                 throw new TypeError(`Generated resource ${targetName} contains a duplicate key`);
             }
@@ -431,8 +424,7 @@ function isSuppliedCell(
 }
 
 /**
- * Check one published row: no undeclared property unless supplied, and every declared property present (a
- * supplied row may leave one out) with a valid value unless supplied as written.
+ * Check one published row: no undeclared property and every declared property present and valid, except as supplied.
  *
  * @param check the resource being checked
  * @param rowIndex the row's index in the resource
@@ -452,7 +444,6 @@ function assertGeneratedRow(
     }
     for (const property of entity.properties) {
         if (!Object.hasOwn(row, property.name)) {
-            // A supplied row is published as the caller wrote it, so a field it leaves out stays out.
             if (rowIndex < supplied.length) {
                 continue;
             }
@@ -516,8 +507,7 @@ function assertTemporalFailuresReported(
         options.syntheticScenario?.coherence
     );
     for (const failure of temporalFailures) {
-        // Conflicting protected assignments remain inspectable, but their failed
-        // invariant must travel with the result.
+        // Conflicting protected assignments stay, but their failure must be reported.
         if (
             !result.diagnostics.some(
                 ({ code, target, message }) =>
@@ -572,7 +562,7 @@ export function validateGeneratedResult(
             throw new TypeError(`Generated resource ${resourceName} was not requested`);
         }
     }
-    // Contained rows are published inside the rows that contain them; they are checked as entities of their own.
+    // Contained rows are published nested but checked as entities of their own.
     const targets = new Map(
         [...request.targets, ...withContainedTargets(graph, request.targets)].map((target) => [target.name, target])
     );
@@ -586,9 +576,9 @@ export function validateGeneratedResult(
     assertRelationshipIntegrity(graph, flat.resources, request.existingData);
 
     assertAuthoredRowsPreserved(graph, request, flat);
-    // Temporal violations are reported for the final rows, supplied rows included, so they are checked there.
+    // Temporal violations are reported over all final rows, supplied ones included.
     assertTemporalFailuresReported(graph, flat, options);
-    // Supplied rows are published as supplied: the plan's other checks hold the generated rows only.
+    // The plan's other checks cover generated rows only.
     const generated = generatedResources(graph, flat.resources, request.existingData);
     assertSemanticValues(graph, generated, result.semanticRoles);
     assertCurrencyMetadata(graph, generated);
@@ -601,8 +591,7 @@ export function validateGeneratedResult(
 }
 
 /**
- * The targets a request generates: the requested entity sets the schema can generate, followed by the entities
- * they contain (see `containedTargets`).
+ * The generatable requested entity sets, followed by the entities they contain.
  *
  * @param graph - Parsed service schema.
  * @param targets - Resources the caller requested.
@@ -616,8 +605,8 @@ function withContainedTargets(graph: SchemaGraph, targets: ReadonlyArray<MockDat
 }
 
 /**
- * The resources whose schema coverage a request reports: the requested ones, the entities they contain, and
- * the contained entities they would contain whose rows cannot be generated.
+ * The resources whose schema coverage is reported: the requested ones, their contained entities, and skipped
+ * contained entities.
  *
  * @param graph - Parsed service schema.
  * @param targets - Resources the caller requested.
@@ -639,12 +628,11 @@ function coveredTargets(graph: SchemaGraph, targets: ReadonlyArray<MockDataTarge
 }
 
 /**
- * Report the schema elements a requested resource leaves out: entity sets whose rows cannot be
- * generated, and properties whose type has no generatable inline JSON value.
+ * Report the schema elements requested resources leave out: skipped entity sets and omitted properties.
  *
  * @param graph - Parsed service schema.
  * @param targets - Resources the caller requested.
- * @returns One warning per skipped requested entity set and one info per omitted property.
+ * @returns Warnings for omitted containment paths and skipped entity sets, one info per omitted property.
  */
 function schemaCoverageDiagnostics(
     graph: SchemaGraph,
@@ -684,9 +672,7 @@ function schemaCoverageDiagnostics(
 }
 
 /**
- * Align the reported temporal violations with the final rows.
- * Passes after reconciliation, such as derived child-domain alignment, can copy protected,
- * conflicting dates into further rows; every violation must travel with the result.
+ * Align the reported temporal violations with the final rows, since later passes can copy conflicting dates.
  *
  * @param graph - Service schema.
  * @param resources - Final rows, the caller's rows as supplied included.
@@ -731,8 +717,7 @@ function withinDeadline(options: MockDataGeneratorOptions, elapsedMs: number): M
 }
 
 /**
- * The options with their locale in canonical form (`en_US` reads as `en-US`). A locale the platform cannot read is
- * left out, so display names use English, and reported.
+ * The options with a canonical locale (`en_US` reads as `en-US`); an unreadable locale is dropped and reported.
  *
  * @param options the requested options
  * @returns the options to generate with, and the diagnostic for an unreadable locale
@@ -962,8 +947,7 @@ function plannedSemanticRoles(classifications: ReadonlyMap<string, SemanticClass
 }
 
 /**
- * Parse the request metadata, counting a target the schema does not declare as an entity set that cannot be
- * generated, so it is reported and the declared targets still generate.
+ * Parse the request metadata, treating an undeclared target as a skipped entity set so the others still generate.
  *
  * @param request the generation request
  * @returns the parsed schema
@@ -990,8 +974,7 @@ function parseRequestSchema(request: MockDataServiceRequest): SchemaGraph {
 }
 
 /**
- * Parse the request metadata, report the parts the schema cannot generate, and apply the application
- * domains and the synthetic scenario.
+ * Parse the request metadata, report what cannot be generated, and apply application domains and scenario.
  *
  * @param context the generation
  * @returns the adjusted schema and the targets it can generate
@@ -1001,8 +984,6 @@ function prepareSchema(context: ServiceGenerationContext): PreparedSchema {
     const parseStartedAt = performance.now();
     const parsedGraph = parseRequestSchema(request);
     timingsMs.schema = performance.now() - parseStartedAt;
-    // Requested entity sets the schema cannot generate are reported and left out; the rest proceed, with the
-    // entities they contain.
     const generationTargets = withContainedTargets(parsedGraph, request.targets);
     diagnostics.push(...schemaCoverageDiagnostics(parsedGraph, coveredTargets(parsedGraph, request.targets)));
     let graph = applyApplicationDomains(parsedGraph, request.existingData, diagnostics);
@@ -1035,8 +1016,7 @@ function prepareSchema(context: ServiceGenerationContext): PreparedSchema {
 }
 
 /**
- * Classify the schema's fields, when a classifier is available, and arbitrate the candidates with the
- * lexical rules.
+ * Classify the schema's fields when a classifier is available, and arbitrate with the lexical rules.
  *
  * @param context the generation
  * @param graph the adjusted schema
@@ -1066,8 +1046,7 @@ async function detectSemanticRoles(
 }
 
 /**
- * Compile the semantic plan from the detected roles, demote roles bound by supplied data and report
- * whether the synthetic domains are ready.
+ * Compile the semantic plan, demote bound roles and report synthetic domain readiness.
  *
  * @param context the generation
  * @param schema the adjusted schema and its generation targets
@@ -1143,8 +1122,8 @@ function generateDeterministicTier(
 }
 
 /**
- * Re-run the deterministic invariants on the final relationship world, attribute projected cells to the
- * tier that supplied them, refresh the format providers and put the supplied rows back.
+ * Finalize the relationship world: re-run the invariants, retag projected cells, refresh format providers and
+ * restore supplied rows.
  *
  * @param context the generation
  * @param schema the adjusted schema and its generation targets
@@ -1163,8 +1142,7 @@ function finalizeGeneratedResources(
     const { request, options, diagnostics, valueTiers, projectedProperties } = context;
     const { graph, generationTargets } = schema;
     const codeTextProperties = new Map<string, Set<string>>();
-    // Format providers take part in value-list projection, so owners copy the companions
-    // of the final value-help codes (see finalizeSemanticServiceWorld).
+    // Format providers run during value-list projection, so owners copy companions of the final value-help codes.
     let finalResources = finalizeSemanticServiceWorld({
         graph,
         resources,
@@ -1194,16 +1172,13 @@ function finalizeGeneratedResources(
                 options.locale
             )
     });
-    // A projected cell carries the value of the entity it points at, so it belongs to the
-    // tier that supplied that value rather than to the deterministic sweep that filled it
-    // before projection ran.
+    // A projected cell carries the referenced entity's value, so it is not the deterministic sweep's.
     for (const [resourceName, properties] of projectedProperties) {
         for (const propertyName of properties) {
             retagValueTier(valueTiers, resourceName, propertyName, VALUE_TIER.recognised);
         }
     }
-    // Projection and the coherence rules after it can leave a code with several texts or a new code
-    // without one; the texts of codes are made a function of their codes once more over the final rows.
+    // Projection and coherence can leave a code with several texts or none; make texts a function of codes again.
     const reconciled = reconcileCodeTexts({
         graph,
         resources: finalResources,
@@ -1213,25 +1188,20 @@ function finalizeGeneratedResources(
         projectedProperties
     });
     finalResources = reconciled.resources;
-    // A text that names its code from a record, a supplied row or a fixed cell is recognised; a text copied
-    // from another row of its code keeps the tier that wrote it.
+    // A text named from a record, a supplied row or a fixed cell is recognised; a copied text keeps its tier.
     for (const [resourceName, properties] of [...codeTextProperties, ...reconciled.named]) {
         for (const propertyName of properties) {
             retagValueTier(valueTiers, resourceName, propertyName, VALUE_TIER.recognised);
         }
     }
-    // Generated value-help domains can expand while solving cross-resource tuples.
-    // Re-run format providers so derived companions describe the final codes rather
-    // than the source row that was cloned to create the new domain member.
+    // Value-help domains can grow while solving tuples; re-run format providers so companions match the final codes.
     finalResources = applyCurrencyMetadata(graph, finalResources, diagnostics, options.locale);
     finalResources = applyCountryMetadata(graph, finalResources, diagnostics, options.locale, classifications);
     finalResources = applyCapCodeListMetadata(graph, finalResources, valueTiers, options.locale);
-    // Supplied rows are published as the caller wrote them. Derivations, projections and
-    // format providers above work on whole resources, so restore every supplied cell once
-    // they have all run; the checks below then treat those cells as fixed.
+    // The passes above rewrite whole resources, so restore supplied cells; later steps treat them as fixed.
     finalResources = preserveAuthoredRows(graph, finalResources, request.existingData, []);
     const plannedRoles = plannedSemanticRoles(classifications);
-    // The steps above may rewrite a field a value list determines; rows rejoin a tuple they can still adopt.
+    // Rows whose value-list field was rewritten rejoin a tuple they can still adopt.
     finalResources = adoptCompatibleTuples(graph, finalResources, request.existingData, plannedRoles).resources;
     // A row of a country or currency entity describes the record its key names.
     finalResources = alignRecordRows({
@@ -1242,9 +1212,8 @@ function finalizeGeneratedResources(
         fixedProperties: projectedProperties,
         locale: options.locale
     });
-    // The text next to a reference is the text of the row it references, and a repeated semantic key is
-    // the referenced row's; a referenced row without a text takes the first text written next to a reference
-    // to it. A text a value list pairs with its code keeps the value-help row's, and the referenced row takes it.
+    // Texts and repeated semantic keys next to a reference follow the referenced row; a referenced row without
+    // a text takes the first one written next to a reference. A value-list text keeps the value-help row's.
     finalResources = alignReferencedValues({
         graph,
         resources: finalResources,
@@ -1255,7 +1224,7 @@ function finalizeGeneratedResources(
     }).resources;
     const guarded = withholdUnrealisticValues(graph, finalResources, request.existingData, plannedRoles, diagnostics);
     context.withheld.cells += guarded.withheld;
-    // Last resort, as the standard mock server does: what no tier filled gets the property name and row index.
+    // Last resort, as in the standard mock server: unfilled cells get the property name and row index.
     const completed = applyStandardFallback(
         graph,
         guarded.resources,
@@ -1265,7 +1234,7 @@ function finalizeGeneratedResources(
     );
     context.withheld.fallback += completed.filled;
     context.withheld.fallbackByField = completed.filledByField;
-    // Every generated string takes the form its field's facets give (upper case, digits only).
+    // Generated strings take their field's facet form (upper case, digits only).
     const formed = putInFacetForm({
         graph,
         resources: completed.resources,
@@ -1273,11 +1242,9 @@ function finalizeGeneratedResources(
         plannedRoles,
         fixedProperties: projectedProperties
     });
-    // Record rows and facet forms may rewrite a field a value list determines, on either side of the list;
-    // rows rejoin a tuple they can still adopt.
+    // Record rows and facet forms may rewrite value-list fields; rows rejoin a tuple they can still adopt.
     const rejoined = adoptCompatibleTuples(graph, formed, request.existingData, plannedRoles).resources;
-    // A referenced value the guard withheld, no tier wrote or the facets reshaped has its final value now; the
-    // values next to its references follow it.
+    // Referenced values are final now; the values next to their references follow them.
     const aligned = alignReferencedValues({
         graph,
         resources: rejoined,
@@ -1321,8 +1288,8 @@ function reportUnresolvedSuppliedReferences(
 }
 
 /**
- * Run the tiers for the requested targets: schema (T0), semantic plan (T1), deterministic rows, the
- * fine-tuned tier when available, then finalization and the relationship check.
+ * Run the tiers: schema (T0), semantic plan (T1), deterministic rows, the fine-tuned tier when available,
+ * finalization and the relationship check.
  *
  * @param context the generation
  * @returns everything the tiers produced
@@ -1438,7 +1405,7 @@ function artifactIdentity(runtime: MockDataGeneratorRuntime): ServiceInspectionE
             ? {
                   classifier: {
                       fingerprint: runtime.classifier.fingerprint,
-                      // Only the supported contract is reported; a value outside it (possible from JavaScript) reads as unspecified.
+                      // Any value other than the supported contract (possible from JavaScript) reads as unspecified.
                       inputFormat: runtime.classifier.inputFormat === 'v3' ? 'v3' : ('unspecified' as const)
                   }
               }
@@ -1448,8 +1415,7 @@ function artifactIdentity(runtime: MockDataGeneratorRuntime): ServiceInspectionE
 }
 
 /**
- * The hard realism checks over the final rows: how many generated fields fail one, under which version of the
- * checks. Rows the caller supplied are not the generator's to answer for and are skipped.
+ * Count the generated fields failing a hard realism check; supplied rows are skipped.
  *
  * @param world what the tiers produced
  * @param existingData the rows the caller supplied, by entity set
@@ -1655,9 +1621,8 @@ async function executeServiceGeneration(
 }
 
 /**
- * Generate a complete, coherent snapshot for the requested service resources with explicitly supplied
- * learned components. Internal to the package: tests and tools call it to run the engine without a
- * session; consumers use `generateService` or `createMockDataGenerator` of the public API.
+ * Generate with explicitly supplied learned components, without a session. Internal to the package; consumers
+ * use `generateService` or `createMockDataGenerator`.
  *
  * @param request the service to generate
  * @param options generation options
@@ -1673,8 +1638,8 @@ export async function generateServiceForTesting(
 }
 
 /**
- * Generate like generateServiceForTesting and also return the parsed request metadata, so a caller that
- * reports on the result does not parse the metadata again. Internal to the package.
+ * Generate like generateServiceForTesting and also return the parsed schema, so it need not be parsed again.
+ * Internal to the package.
  *
  * @param request the service to generate
  * @param options generation options
@@ -1691,12 +1656,14 @@ export async function generateServiceWithSchema(
 }
 
 /**
- * Inspect the exact generation execution using a versioned, privacy-aware local report.
+ * Run a generation and return its versioned, privacy-aware inspection report.
  *
- * @param request
- * @param options
- * @param runtime
- * @param inspectionOptions
+ * @param request the service to generate
+ * @param options generation options
+ * @param runtime learned components, if any
+ * @param inspectionOptions what the report includes
+ * @returns the inspection report
+ * @throws {MockGenError} when `includeGeneratedValues` is not a boolean
  */
 export async function inspectService(
     request: MockDataServiceRequest,

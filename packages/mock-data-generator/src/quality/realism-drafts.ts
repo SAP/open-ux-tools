@@ -3,9 +3,8 @@ import { generatedRows, OutcomeCollector, REALISM_CHECK } from './realism-types.
 import type { CheckOutcome, RealismInput } from './realism-types.js';
 
 /**
- * Every generated row of a draft-enabled entity is an active instance without a draft, as a mockserver loads
- * mock data and the app expects it: a row that says it has a draft, or is one, opens an object page whose draft
- * does not exist. Each draft administration field of such an entity is examined.
+ * Every generated row of a draft-enabled entity is an active instance without a draft: a row that has or is a
+ * draft opens an object page whose draft does not exist.
  *
  * @param input check input
  * @returns findings and coverage

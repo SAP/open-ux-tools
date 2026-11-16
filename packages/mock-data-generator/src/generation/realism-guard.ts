@@ -101,8 +101,7 @@ function unrealisticCells(
 /**
  * Withhold generated string values that only look like data: a field or entity name, a service name with a number
  * ({@link echoFlags}) or codes in a text field ({@link codeFilledText}). Supplied rows, keys, enumerations,
- * relationship ends and unit or currency fields keep their values, and a withheld value that breaks a final check is
- * put back ({@link undoChangesBreakingFinalChecks}).
+ * relationship ends and unit or currency fields are kept; a withholding that breaks a final check is undone.
  *
  * @param graph service schema
  * @param resources the final rows

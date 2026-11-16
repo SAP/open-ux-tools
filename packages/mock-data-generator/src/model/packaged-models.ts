@@ -203,9 +203,8 @@ export function assertReleaseClassifier(manifest: unknown, head: unknown): void 
 }
 
 /**
- * Whether every routable label of a classifier head carries its own calibration support at the floor the head
- * declares. Auxiliary labels are trained but never routed, so they need none, but must be labels of the head.
- * A floor that is not an integer also fails `hasCalibrationSupport`, so the release is rejected either way.
+ * Whether every routable label of a classifier head has calibration support at the head's declared floor.
+ * Auxiliary labels are never routed, so they need none, but must be labels of the head.
  *
  * @param head the parsed classifier head
  * @param labels the head's labels, when it declares an array of them
@@ -230,8 +229,8 @@ function routableLabelsSupported(head: unknown, labels: ReadonlyArray<unknown> |
 }
 
 /**
- * Whether the sealed evaluation of a classifier passes the release floors: breadth of services and domains,
- * accepted-role precision, supported-field and status recall, and the critical false-positive rate.
+ * Whether a classifier's sealed evaluation passes the release floors for breadth, precision, recall and critical
+ * false positives.
  *
  * @param evaluation the qualification's `sealedEvaluation`
  * @returns true for passing evidence
@@ -256,8 +255,8 @@ function sealedEvaluationPasses(evaluation: unknown): boolean {
         evaluation.unannotatedStatusServices >= 4 &&
         isInteger(evaluation.unannotatedStatusDomains) &&
         evaluation.unannotatedStatusDomains >= 2 &&
-        // At most 3% of accepted decisions may carry a cross-family role or classify an unknown field.
-        // `passingRatio` above already required an integer, positive accepted total.
+        // At most 3% of accepted decisions may carry a cross-family role or classify an unknown field;
+        // `passingRatio` above guarantees a positive accepted total.
         isInteger(evaluation.criticalFalsePositives) &&
         isInteger(evaluation.acceptedRoles.total) &&
         evaluation.criticalFalsePositives / evaluation.acceptedRoles.total <= 0.03
@@ -288,8 +287,8 @@ export function assertReleaseRelevanceHead(head: unknown): void {
         isSafeInteger(positiveAccepted) &&
         positiveAccepted >= 0 &&
         positiveAccepted <= positives &&
-        // The verifier must admit almost no reviewed hard negative; its acceptance of valid candidates is recorded but
-        // not required, since a conservative verifier falls back to deterministic values.
+        // The verifier must admit almost no reviewed hard negative; a conservative verifier falls back to
+        // deterministic values.
         positiveAccepted >= 1 &&
         isSafeInteger(hardNegatives) &&
         hardNegatives > 0 &&
@@ -483,7 +482,6 @@ async function verifyDatasetFiles(
     for (const dataset of datasets) {
         signal?.throwIfAborted();
         const path = resolve(canonicalRoot, relativePath(dataset));
-        // One file after the other, to bound I/O and stop promptly when aborted.
         // Sequential: bounded I/O, prompt abort.
         const reason = await datasetFileFailure(canonicalRoot, path, dataset, signal); // NOSONAR
         if (reason) {
@@ -494,8 +492,7 @@ async function verifyDatasetFiles(
 }
 
 /**
- * Why a dataset file cannot be used, if it cannot: it must be a regular file inside the root with the declared
- * size and checksum.
+ * Why a dataset file is unusable: it must be a regular file inside the root with the declared size and checksum.
  *
  * @param canonicalRoot the resolved resource root
  * @param path the dataset file
@@ -521,8 +518,7 @@ async function datasetFileFailure(
         return valid ? undefined : 'invalid';
     } catch (error) {
         signal?.throwIfAborted();
-        // File-system failures (missing, unreadable, a dangling link) make the dataset unusable; any
-        // other failure is a defect and propagates.
+        // File-system failures make the dataset unusable; any other failure is a defect and propagates.
         if (errnoCode(error) === undefined) {
             throw error;
         }
@@ -531,8 +527,8 @@ async function datasetFileFailure(
 }
 
 /**
- * Verify the packaged value-bank store (and any other declared data resource) against its manifest
- * size and checksum, without using it as a realism oracle.
+ * Verify the declared data resources against their manifest size and checksum, without using them as a realism
+ * oracle.
  *
  * @param packageRoot the package directory the dataset paths are relative to
  * @param manifestValue the manifest
@@ -549,8 +545,8 @@ export async function verifyPackagedDatasets(
 }
 
 /**
- * Verify the declared data resources below a relocated resource root: a copy of the package's `resources/`
- * directory, so `resources/banks/x.json` is read from `<resourceRoot>/banks/x.json`.
+ * Verify the declared data resources below a relocated copy of `resources/`, so `resources/banks/x.json` is
+ * read from `<resourceRoot>/banks/x.json`.
  *
  * @param resourceRoot the relocated `resources/` directory
  * @param manifestValue the manifest
@@ -575,8 +571,7 @@ export async function verifyDatasetsBelowResourceRoot(
 }
 
 /**
- * Why a model artifact cannot be used, if it cannot: it must be a regular file inside the root with the declared
- * size and checksum.
+ * Why a model artifact is unusable: it must be a regular file inside the root with the declared size and checksum.
  *
  * @param canonicalRoot the resolved resource root
  * @param filePath the artifact, inside the root
@@ -638,7 +633,6 @@ export async function verifyPackagedModels(
             if (!isPathInside(canonicalRoot, filePath)) {
                 throw new TypeError('Packaged model path escapes resource root');
             }
-            // One file after the other, to bound I/O and stop promptly when aborted.
             // Sequential: bounded I/O, prompt abort.
             const reason = await componentFileFailure(canonicalRoot, filePath, file, signal); // NOSONAR
             if (reason) {

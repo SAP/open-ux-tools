@@ -40,17 +40,15 @@ export const DRAFT_UUID_PROPERTY_NAME = 'draftuuid';
 export const DRAFT_ADMINISTRATIVE_DATA_KEY_NAME = 'draftadministrativedata_draftuuid';
 
 /**
- * The draft key of an active instance in the SAP draft model: an active row has no draft, so its draft UUID is
- * the initial (nil) UUID.
+ * The draft UUID of an active instance: an active row has no draft, so it holds the initial (nil) UUID.
  *
  * @see https://help.sap.com/docs/abap-cloud/abap-rap/draft
  */
 export const INITIAL_DRAFT_UUID = '00000000-0000-0000-0000-000000000000';
 
 /**
- * The draft flags of an active row as the SAP Fiori elements mockserver gives every row it loads from a mock data
- * file, and as the SAP Fiori tools data editor writes them: drafts are created at runtime by the Edit action, so
- * mock data holds active instances only.
+ * The draft flags of an active row, as the SAP Fiori elements mockserver loads mock rows and the SAP Fiori tools
+ * data editor writes them: drafts arise at runtime from the Edit action, so mock data holds active instances only.
  *
  * @see https://github.com/SAP/open-ux-odata/blob/main/packages/fe-mockserver-core/src/data/entitySets/entitySet.ts
  */

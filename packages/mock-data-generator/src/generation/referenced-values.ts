@@ -36,9 +36,8 @@ function localText(entity: SchemaEntity, propertyName: string): string | undefin
 const linkCache = new WeakMap<SchemaGraph, ReadonlyArray<ReferencedValueLink>>();
 
 /**
- * Whether a text field is the text of a key of its own entity other than the given property: it then names
- * the row itself, so it is not the text of a reference too (CAP gives a foreign key the text annotation of
- * the key it references, which in a self-reference names the row's own text field).
+ * Whether a text field is the text of another key of its own entity: it then names the row itself, not a reference
+ * (CAP gives a foreign key the text annotation of the key it references, which in a self-reference is the row's own).
  *
  * @param entity schema entity
  * @param text the text field name
@@ -198,15 +197,11 @@ export interface ReferencedValueAlignment {
     /** Properties that another step fixed, by entity set: never written. */
     fixedProperties?: ReadonlyMap<string, ReadonlySet<string>>;
     /**
-     * Properties on either side of a value list, by entity set: owner fields it pairs with value-help columns,
-     * and those columns. The value list decides them, so a reference never rewrites them; the referenced row
-     * takes such a text instead.
+     * Properties on either side of a value list, by entity set. The value list decides them, so a reference never
+     * rewrites them; the referenced row takes such a text instead.
      */
     listedProperties?: ReadonlyMap<string, ReadonlySet<string>>;
-    /**
-     * Whether a referenced row without a text takes the text of the first generated row that references it,
-     * so a text some tier wrote is kept rather than replaced by nothing.
-     */
+    /** Whether a referenced row without a text takes the text of a generated row that references it. */
     fillReferenced: boolean;
 }
 

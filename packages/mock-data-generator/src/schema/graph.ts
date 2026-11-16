@@ -38,8 +38,8 @@ export interface SchemaProperty {
     dataElement?: string;
     enumValues?: ReadonlyArray<SchemaScalar>;
     /**
-     * A value help is declared for the field without an inline collection (V2 `sap:value-list`), so its
-     * values come from a code list. Kept apart from `annotations`, which feed the classifier.
+     * A value help without an inline collection (V2 `sap:value-list`): values come from a code list. Kept apart
+     * from `annotations`, which feed the classifier.
      */
     valueHelp?: boolean;
     links?: Readonly<{
@@ -93,20 +93,13 @@ export interface SchemaComplexType {
     structuredProperties: ReadonlyArray<SchemaStructuredProperty>;
 }
 
-/**
- * A declared property whose type has no inline JSON value the generator can produce, such as
- * `Edm.Stream`, a geospatial type, or an undeclared type. Rows omit it, as they omit structured
- * properties.
- */
+/** A property whose type has no generatable inline JSON value (such as `Edm.Stream`); rows omit it. */
 export interface SchemaOmittedProperty {
     name: string;
     declaredType: string;
 }
 
-/**
- * A declared entity set the generator cannot produce rows for, because its entity type is not
- * resolvable in the document or one of its keys has no generatable type.
- */
+/** A declared entity set the generator cannot produce rows for, with the reason. */
 export interface SchemaSkippedEntitySet {
     entitySetName: string;
     reason: string;
@@ -114,10 +107,7 @@ export interface SchemaSkippedEntitySet {
     containedBy?: SchemaContainment;
 }
 
-/**
- * Where the rows of an entity type without an entity set live: inside the rows of the entity set or contained
- * entity that contains them (OData `ContainsTarget`), under the containment navigation.
- */
+/** Where rows of a type without an entity set live: in their containing rows (OData `ContainsTarget`). */
 export interface SchemaContainment {
     /** The entity set, or contained entity, whose rows hold these rows. */
     readonly entitySetName: string;
@@ -129,23 +119,14 @@ export interface SchemaContainment {
 
 export interface SchemaEntity {
     name: string;
-    /**
-     * The entity set of the rows. A contained entity has none and is named by its containment path instead,
-     * `Container/navigation`, which no entity set name can take.
-     */
+    /** The entity set of the rows; a contained entity uses its path `Container/navigation`, which no set can take. */
     entitySetName: string;
     /** Set for an entity type whose rows live inside the rows that contain them. */
     containedBy?: SchemaContainment;
     codeList?: 'currency' | 'unit';
-    /**
-     * The properties that identify a row to people (`Common.SemanticKey`), when the service declares them:
-     * a business identifier beside a technical key. Their values are unique within the entity set.
-     */
+    /** The business identifier beside the technical key (`Common.SemanticKey`); unique within the entity set. */
     semanticKey?: ReadonlyArray<string>;
-    /**
-     * Further property sets that identify a row (`Core.AlternateKeys`), when the service declares them; the values
-     * of each set are unique within the entity set.
-     */
+    /** Further identifying property sets (`Core.AlternateKeys`); each is unique within the entity set. */
     alternateKeys?: ReadonlyArray<ReadonlyArray<string>>;
     properties: ReadonlyArray<SchemaProperty>;
     structuredProperties?: ReadonlyArray<SchemaStructuredProperty>;
@@ -173,8 +154,8 @@ export interface SchemaGraph {
     /** How many containment paths were left out because the service reached its limit of contained entities. */
     omittedContainmentPaths?: number;
     /**
-     * Value-list entity sets that a per-entity-set request asks rows of. For this request their supplied rows
-     * are not the whole domain, so the requested rows are added after them.
+     * Value-list entity sets a per-entity-set request asks rows of: their supplied rows are not the whole domain, so
+     * the requested rows are added after them.
      */
     requestedValueListGrowth?: ReadonlySet<string>;
 }
@@ -182,9 +163,8 @@ export interface SchemaGraph {
 const OBJECT_PROTOTYPE_KEYS: ReadonlySet<string> = new Set(Object.getOwnPropertyNames(Object.prototype));
 
 /**
- * Whether a semantic-key property the referencing entity repeats identifies the referencing row itself, so it is no
- * copy of the referenced row's value: the entity references its own entity set, or the copy would make its whole
- * semantic key the referenced row's.
+ * Whether a repeated semantic-key property identifies the referencing row itself, so it is not copied: the entity
+ * references its own entity set, or the copy would make its whole semantic key the referenced row's.
  *
  * @param source - the referencing entity
  * @param target - the referenced entity
@@ -201,8 +181,8 @@ export function identifiesReferencingRow(source: SchemaEntity, target: SchemaEnt
 }
 
 /**
- * Why an entity set is skipped when its name is one every JavaScript object inherits as a property, such as
- * `constructor` or `__proto__`: rows are kept in objects keyed by entity set name.
+ * Why an entity set named like an inherited `Object.prototype` property (`constructor`, `__proto__`) is skipped:
+ * rows are kept in objects keyed by entity set name.
  *
  * @param entitySetName - the entity set name
  * @returns the skip reason, or undefined for a supported name

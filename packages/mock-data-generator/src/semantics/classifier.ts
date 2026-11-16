@@ -72,8 +72,7 @@ interface BatchClassificationContext {
 }
 
 /**
- * Classify a batch of properties in one call. A failed or invalid batch is recovered field by field: each field
- * is classified on its own, and a field that still fails reports its own cause.
+ * Classify a batch of properties in one call; a failed or invalid batch falls back to classifying each field alone.
  *
  * @param batch the properties
  * @param context the batch classifier and the run's results

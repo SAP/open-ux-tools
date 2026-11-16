@@ -1,6 +1,5 @@
 /**
- * Compare two strings by UTF-16 code unit, independent of the host locale. Use it for every order
- * that reaches generated output, fingerprints or files, so results are identical on every machine.
+ * Compare two strings by UTF-16 code unit, independent of the host locale, for every order that reaches output.
  *
  * @param left first string
  * @param right second string

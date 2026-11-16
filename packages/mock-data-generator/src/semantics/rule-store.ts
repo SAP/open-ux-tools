@@ -5,8 +5,8 @@ import { loadDomainResource } from './resource-integrity.js';
 import { lazy } from '../lazy.js';
 
 /**
- * The semantic rule store, `resources/rules/semantic-rules.v1.json`: the vocabulary and heuristics applied to field
- * names, kept as reviewable data. This parser is the authority on its format, and the manifest declares its SHA-256.
+ * The semantic rule store, `resources/rules/semantic-rules.v1.json`: field-name vocabulary and heuristics as
+ * reviewable data. This parser defines its format; the manifest declares its SHA-256.
  */
 export const SEMANTIC_RULE_STORE_ID = 'mockgen-semantic-rules';
 export const SEMANTIC_RULE_STORE_PATH = 'resources/rules/semantic-rules.v1.json';
@@ -255,9 +255,9 @@ export interface Thresholds {
 }
 
 /**
- * Filters for values the fine-tuned model proposes, tested against the normalized value (trimmed, with
- * whitespace collapsed and lower-cased). A field template holds `{fields}` where the escaped alternation of
- * the field's normalized name, label and description goes; {@link fieldFilter} compiles it.
+ * Filters for values the fine-tuned model proposes, tested against the trimmed, whitespace-collapsed, lower-cased
+ * value. A field template holds `{fields}` for the escaped alternation of the field's normalized name, label and
+ * description; {@link fieldFilter} compiles it.
  */
 export interface ModelOutputFilters {
     /** A value that repeats the prompt's instruction to return a JSON array. */
@@ -509,8 +509,7 @@ function parseLexicalRule(entry: unknown, label: string): LexicalRule {
 }
 
 /**
- * The ordered lexical rules; no rule may name an abbreviation that tokenization expands, since it
- * could never match.
+ * The ordered lexical rules; no rule may name an abbreviation that tokenization expands, as it could never match.
  *
  * @param value candidate list
  * @param applied the abbreviations tokenization expands
@@ -726,7 +725,7 @@ function fieldProfile<Source extends string, Name extends string, Integer extend
 }
 
 /**
- * The interface-view field-name profiles of the restored coherence rules.
+ * The interface-view field-name profiles of the coherence rules.
  *
  * @param value candidate object
  * @returns the frozen profiles

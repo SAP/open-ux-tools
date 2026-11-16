@@ -22,8 +22,7 @@ interface CreateMiniLmTextEmbedderOptions {
 }
 
 /**
- * Adapt an already integrity-verified runtime module to the classifier backend: sequential, fully
- * optimized CPU sessions for the sentence encoder.
+ * Adapt an integrity-verified runtime module to the classifier backend: sequential, fully optimized CPU sessions.
  *
  * @param module imported runtime module
  * @param label privacy-safe source label for diagnostics
@@ -53,8 +52,7 @@ export async function createMiniLmTextEmbedder(options: CreateMiniLmTextEmbedder
         { path: options.modelPath, expected: options.expectedEncoderSha256 },
         { path: options.vocabularyPath, expected: options.expectedVocabularySha256 }
     ].filter((check): check is { path: string; expected: string } => Boolean(check.path && check.expected));
-    // The artifacts are hashed concurrently; the outcomes are judged in artifact order, so the reported failure
-    // is the same as for one check after the other.
+    // Hashed concurrently but judged in artifact order, so the reported failure is deterministic.
     const digests = await Promise.allSettled(fingerprintChecks.map(({ path }) => sha256File(path)));
     for (const [index, digest] of digests.entries()) {
         if (digest.status === 'rejected') {
@@ -97,7 +95,6 @@ export async function createMiniLmTextEmbedder(options: CreateMiniLmTextEmbedder
                             dimensions
                         )
                     };
-                    // One ONNX session embeds one text at a time.
                     const output = await session.run(feeds); // NOSONAR: sequential, one ONNX session
                     signal.throwIfAborted();
                     const hidden = output.last_hidden_state;

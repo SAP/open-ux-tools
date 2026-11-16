@@ -39,9 +39,9 @@ interface CodeFacts {
 type CodeUsage = Map<string, number>;
 
 /**
- * The folder the SAP Fiori tools mockserver serves a referenced service from, relative to the folder of the
- * requested service's metadata. It is the referenced service path below the part it shares with the requested
- * service path, as `@sap-ux/fe-mockserver-core` resolves it.
+ * The folder the SAP Fiori tools mockserver serves a referenced service from, relative to the requested service's
+ * metadata folder: the referenced path below the part it shares with the requested path, as
+ * `@sap-ux/fe-mockserver-core` resolves it.
  *
  * @param serviceUrlPath - URL path of the requested service
  * @param url - the code list's `Url`, relative to the requested service

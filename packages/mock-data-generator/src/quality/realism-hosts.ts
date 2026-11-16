@@ -4,7 +4,7 @@ import type { CheckOutcome, RealismInput } from './realism-types.js';
 
 /**
  * Generated e-mail and web addresses lie in reserved domains (RFC 2606, RFC 6761), so mock data never names a
- * host someone could register. Every string field holding an address is examined, whatever its role.
+ * host someone could register. Every string field holding an address is examined.
  *
  * @param input check input
  * @returns findings and coverage

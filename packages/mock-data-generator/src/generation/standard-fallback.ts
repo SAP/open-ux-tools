@@ -52,8 +52,8 @@ interface EntityFallbackFill {
 }
 
 /**
- * Fill a field's empty generated cells with the standard fallback. The text of a code takes the ordinal of the
- * first row holding the same code, so equal codes get equal texts.
+ * Fill a field's empty generated cells with the standard fallback; a code text uses the ordinal of the first row
+ * with the same code, so equal codes get equal texts.
  *
  * @param fill the entity being filled
  * @param property the fillable string field
@@ -85,9 +85,8 @@ function fillPropertyFallbacks(fill: EntityFallbackFill, property: SchemaPropert
 }
 
 /**
- * Copy value-help values into owner rows until nothing changes. A value-help row may itself receive a copy from
- * its own value help, so copying repeats; each pass only fills empty cells, so there are at most as many
- * productive passes as lists.
+ * Copy value-help values into owner rows until nothing changes. A value-help row may itself receive a copy, so
+ * copying repeats; each pass only fills empty cells, so at most as many passes as lists are productive.
  *
  * @param graph service schema
  * @param lists the owned value lists
@@ -124,10 +123,9 @@ function copyValueHelpFallbacks(
 }
 
 /**
- * Fill the generated string cells no tier gave a value the way the standard mock server does
- * ({@link standardFallbackValue}), as the last step. Code texts, value-list tuples, supplied rows, keys, enumerations
- * and relationship ends stay intact, and a change that breaks a final check is undone
- * ({@link undoChangesBreakingFinalChecks}).
+ * As the last step, fill generated string cells no tier filled the way the standard mock server does
+ * ({@link standardFallbackValue}). Code texts, value-list tuples, supplied rows, keys, enumerations and relationship
+ * ends stay intact; a change that breaks a final check is undone ({@link undoChangesBreakingFinalChecks}).
  *
  * @param graph service schema
  * @param resources the final rows
@@ -166,7 +164,7 @@ export function applyStandardFallback(
             fits,
             replacements: new Map<number, Record<string, JsonValue>>()
         };
-        // An empty indicator says "no", so it holds a value already, as does a field a coherence rule decides.
+        // An empty indicator already means "no"; a coherence-governed field keeps the rule's value.
         const fillable = entity.properties.filter(
             (property) =>
                 property.primitiveType === 'string' &&
@@ -218,8 +216,8 @@ function filledCells(
 }
 
 /**
- * Copy the empty owner string fields a value list determines from the value-help row that agrees with the
- * owner row on the list's constants and on every member the owner row already holds.
+ * Copy empty owner string fields of a value list from the value-help row that matches the list's constants and every
+ * member the owner row already holds.
  *
  * @param graph service schema
  * @param list the value list
@@ -330,8 +328,8 @@ function ownedValueLists(
 }
 
 /**
- * The properties per entity set the first pass of the fallback leaves alone: keys, enumerations, relationship ends,
- * value-list owner fields (the second pass copies them) and value-help columns an owner field cannot follow.
+ * The properties per entity set the first fallback pass leaves alone: keys, enumerations, relationship ends,
+ * value-list owner fields (copied by the second pass) and value-help columns an owner field cannot follow.
  *
  * @param graph service schema
  * @param lists the value lists of the service
@@ -362,8 +360,8 @@ function heldPropertyNames(graph: SchemaGraph, lists: ReadonlyArray<OwnedValueLi
 }
 
 /**
- * The fallback value of one cell: the standard mock server's value when the whole field name fits the field,
- * else a code of the field's initials, which a short field holds better than a cut-off name (`Addr_0`).
+ * The fallback value of one cell: the standard mock server's value when the whole field name fits, else a code of the
+ * field's initials, which suits a short field better than a cut-off name (`Addr_0`).
  *
  * @param entity the field's entity
  * @param property the string field

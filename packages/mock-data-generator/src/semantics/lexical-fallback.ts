@@ -16,8 +16,7 @@ function has(words: ReadonlySet<string>, ...candidates: ReadonlyArray<string>): 
     return candidates.some((candidate) => words.has(candidate));
 }
 
-// Framework bookkeeping fields (CAP draft administration, Fiori `*_ac` action-control flags) carry no business meaning,
-// so they are not routed to business roles.
+// Framework bookkeeping (CAP draft administration, Fiori `*_ac` action-control flags), never routed to business roles.
 const TECHNICAL_FIELD_PATTERN = /^(?:Is|Has)(?:Active|Draft)Entity$|^Draft(?:AdministrativeData|Entity|UUID)|_ac$/iu;
 
 /**
@@ -30,8 +29,7 @@ function isTechnicalField(propertyName: string): boolean {
 }
 
 /**
- * The words of a name for the lexical rules: split as {@link tokens}, with each SAP abbreviation the
- * rule store marks as applied replaced by its full word, so the rules name only full words.
+ * The words of a name for the lexical rules, with each applied SAP abbreviation of the rule store expanded.
  *
  * @param name field name, label or description
  * @returns the words in name order
@@ -41,9 +39,8 @@ function lexicalWords(name: string): ReadonlyArray<string> {
 }
 
 /**
- * Whether a word rule matches: the type is one it names, the last word is one it names, every group
- * has a word of the name (consecutive words, in order, for an adjacent rule), and the name has none of the
- * excluded words.
+ * Whether a word rule matches: its type and last word fit, every group has a word of the name (consecutive and in
+ * order for an adjacent rule), and no excluded word occurs.
  *
  * @param rule lexical word rule
  * @param tokens the words of the name, in order
@@ -92,7 +89,7 @@ export function lexicalRoleForText(text: string, primitiveType: SchemaProperty['
 }
 
 /**
- * Prefer a business-facing label over the technical property name.
+ * A conservative lexical role from a field's name, label and description.
  *
  * @param property - Canonical schema property.
  * @returns A conservative lexical role, when one is recognized.
@@ -271,8 +268,7 @@ function explicitMetadataRole(property: SchemaProperty, entity?: SchemaGraph['en
 }
 
 /**
- * Whether an annotation is the OData `Measures.Unit` term, which names the unit of a measured field. A V2
- * `sap:unit` names a unit or a currency, so it is not one.
+ * Whether an annotation is the OData `Measures.Unit` term; a V2 `sap:unit` may name a currency, so it is not one.
  *
  * @param term the annotation term
  * @returns true for `Measures.Unit`
@@ -341,8 +337,8 @@ function abstention(
 }
 
 /**
- * Whether a string field displays the name of an organisation, from the rule store's name words: the word before its
- * display word, or else its entity's name, is a subject word, or it is the text of a code so named.
+ * Whether a string field displays an organisation name: the word before its display word (else its entity's name)
+ * is a subject word of the rule store, or it is the text of a code so named.
  *
  * @param entity the field's entity
  * @param property the field
@@ -379,14 +375,12 @@ function lexicalFallbackIsSafe(
     if (semanticRoleDefinition(role)?.lexicalPrecisionGate === true) {
         return true;
     }
-    // `time` is kept out of name-only routing, but a column the schema declares as a time of day
-    // is not name-only evidence: the declared type and the name agree independently. Decided here
-    // rather than in the registry, which would invalidate the packaged classifier head.
+    // A declared time-of-day column is not name-only evidence for `time`: type and name agree independently.
+    // Decided here, not in the registry, since a registry change would invalidate the packaged classifier head.
     if (role === 'time' && property.primitiveType === 'time') {
         return true;
     }
-    // RAP generates `<field>_fc` field-control properties; the suffix is a framework convention, not a
-    // naming guess, so an integer `_fc` column is the field-control state of its field.
+    // RAP generates `<field>_fc` field-control properties: the suffix is a framework convention, not a naming guess.
     if (role === 'field_control' && property.primitiveType === 'int' && property.name.toLowerCase().endsWith('_fc')) {
         return true;
     }
@@ -431,8 +425,7 @@ export function semanticRoleCandidate(
 }
 
 /**
- * The person or region name role of a field's technical name when its label is only a generic display label,
- * which is weaker evidence than an explicit technical semantic name.
+ * The person or region name role of a field's technical name when its label is only a generic display label.
  *
  * @param property the field
  * @returns the role, or undefined
@@ -483,9 +476,8 @@ function lexicalFallbackOr(
 }
 
 /**
- * The decision for a classifier role that fails its gates: a calibrated head carries its own per-role and
- * per-family route threshold (conformal calibration plus support floors), the registry default only governs
- * decisions that arrive without one, and the prediction set must hold the role alone.
+ * The decision for a classifier role that fails its gates: confidence below the decision's own route threshold
+ * (else the registry's), or a prediction set other than the role alone.
  *
  * @param candidates the field's candidates
  * @param classifier the classifier's decision
@@ -515,8 +507,8 @@ function classifierGateFailure(
 }
 
 /**
- * The decision for a classifier role that passed its gates: accepted when no compatible lexical role disagrees,
- * or when it outweighs a disagreeing one by its conflict threshold.
+ * The decision for a classifier role that passed its gates: accepted unless a compatible lexical role disagrees
+ * and the role does not reach its conflict threshold.
  *
  * @param candidates the field's candidates
  * @param classifier the classifier's decision
@@ -544,9 +536,7 @@ function classifierAgainstLexical(
 }
 
 /**
- * Decide between the classifier's and the lexical candidate of a field the classifier did not abstain
- * on: a classifier role must pass its route threshold and prediction set, and must outweigh a
- * disagreeing lexical role by its conflict threshold.
+ * Decide between the classifier and lexical candidates of a field the classifier did not abstain on.
  *
  * @param candidates the field's candidates
  * @returns the decision
@@ -575,8 +565,8 @@ function arbitrateCandidates(candidates: FieldCandidates): SemanticClassificatio
 }
 
 /**
- * Decide the role of one field: a compatible metadata role first, then no role for technical and
- * code-list companion fields, then the classifier and lexical candidates.
+ * Decide the role of one field: metadata first, no role for technical and code-list companion fields, then the
+ * classifier and lexical candidates.
  *
  * @param entity the field's entity
  * @param property the field
@@ -599,8 +589,7 @@ function arbitrateField(
     }
 
     const classifier = learned.get(key);
-    // CAP code-list companions (a currency symbol, an ISO numeric code, a language name) have a
-    // fixed meaning but no semantic role; the code-list provider fills them from the row's code.
+    // Code-list companions have no semantic role; the code-list provider fills them from the row's code.
     if (isTechnicalField(property.name) || capCodeListField(entity, property) !== undefined) {
         return abstention(classifier, 'technical-field');
     }
@@ -663,8 +652,8 @@ const UNIT_ROLE_OF_MEASURE: Readonly<Record<string, string>> = {
 };
 
 /**
- * The dimension a measured field measures, as the unit role of that dimension: from its decided role, the
- * classifier's role and the roles its name and label read as, when those that name a dimension agree.
+ * The unit role of the dimension a measured field measures, when its decided, classifier and lexical roles that
+ * name a dimension agree.
  *
  * @param entitySet the field's entity set
  * @param property the measured field
@@ -693,9 +682,8 @@ function measuredUnitRole(
 }
 
 /**
- * Give a generic unit field the unit role of the dimension its measured fields share: the unit of a distance
- * is a length unit. The measured fields are those whose unit link names the field; each must measure the
- * same dimension.
+ * Give a generic unit field the unit role of the one dimension measured by the fields whose unit link names it
+ * (a distance's unit is a length unit).
  *
  * @param graph schema graph
  * @param learned the classifier's decisions
@@ -737,9 +725,8 @@ const CONCEPT_ELIGIBLE_ABSTENTIONS = new Set<SemanticClassification['abstentionR
 ]);
 
 /**
- * Give a field that no role accepted the concept of the classifier's prototype head (head B), when
- * the field is an ordinary value column of an application entity set: never a key, a flag, a UUID, a
- * framework field or a column of a SAP Gateway protocol set.
+ * Give a field no role accepted the classifier's prototype-head concept, when it is an ordinary value column of an
+ * application entity set: not a key, flag, UUID, framework field or SAP Gateway protocol set column.
  *
  * @param graph schema graph
  * @param learned classifier decisions, which carry the prototype-head match
@@ -758,8 +745,8 @@ function acceptConcepts(
             const key = semanticPropertyKey(entity.entitySetName, property.name);
             const decision = resolved.get(key);
             const concept = learned.get(key)?.concept;
-            // A recognized role keeps its decision but carries the concept as a fallback, used when the
-            // semantic plan later finds that no provider can serve the role.
+            // A recognized role keeps its decision and carries the concept as a fallback for when no provider
+            // can serve the role.
             if (concept !== undefined && decision !== undefined && decision.role !== 'unknown' && !decision.concept) {
                 resolved.set(key, Object.freeze({ ...decision, concept }));
                 continue;
@@ -788,9 +775,7 @@ function acceptConcepts(
 const UNIT_ROLES: ReadonlySet<string> = new Set(['unit_of_measure', ...Object.values(UNIT_ROLE_OF_MEASURE)]);
 
 /**
- * Give a key that the service references from unit fields the unit role of those fields, when the key has no
- * role of its own and all references agree: the rows of the referenced entity are the units the references
- * hold.
+ * Give a key without a role, referenced from unit fields, their unit role when all references agree.
  *
  * @param graph schema graph
  * @param resolved arbitrated decisions, updated in place

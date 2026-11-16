@@ -251,8 +251,7 @@ function annotations(element: CsnRecord): ReadonlyArray<SchemaAnnotation> {
 }
 
 /**
- * The semantic key a CSN entity declares (`@Common.SemanticKey: [ID]`), kept only when it names its scalar
- * elements.
+ * The declared `@Common.SemanticKey`, kept only when every entry names a scalar element.
  *
  * @param definition the entity definition
  * @param scalarNames the names of its scalar elements
@@ -344,8 +343,7 @@ function valueListParameters(element: CsnRecord): SchemaProperty['links'] | unde
 }
 
 /**
- * The element that `@Common.Text` names as the text of this element, when the annotation is a path to an
- * element of the same entity (`{"=": "name"}`). Paths through associations are not followed.
+ * The same-entity element `@Common.Text` names (`{"=": "name"}`); paths through associations are not followed.
  *
  * @param element the element
  * @returns the text element's name
@@ -357,8 +355,7 @@ function textPath(element: CsnRecord): string | undefined {
 }
 
 /**
- * The element a measure annotation (`@Measures.Unit`, `@Measures.ISOCurrency`) names as the unit or currency
- * of this element, when it is a path (`{"=": "unit_code"}`); a literal unit (`'%'`) names no element.
+ * The path a `@Measures.Unit` or `@Measures.ISOCurrency` annotation names; a literal unit (`'%'`) names none.
  *
  * @param element the element
  * @param term the annotation term without its vocabulary (`Unit`, `ISOCurrency`)
@@ -370,8 +367,8 @@ function measurePath(element: CsnRecord, term: string): string | undefined {
 }
 
 /**
- * Keep the unit and currency links of an entity's elements that name one of its scalar elements. A path
- * through a managed association (`toUnit.code`) names the foreign key CAP flattens it to (`toUnit_code`).
+ * Keep only unit and currency links that name a scalar element of the entity. A path through a managed
+ * association (`toUnit.code`) names the foreign key CAP flattens it to (`toUnit_code`).
  *
  * @param properties the entity's scalar elements
  * @returns the elements with their resolved links
@@ -432,9 +429,8 @@ function property(name: string, declared: CsnRecord, resolved: CsnRecord): Schem
 }
 
 /**
- * Parse a JSON-serialized CAP CSN document into the canonical generation graph.
- * When the document defines services, only the selected service's entities are read and each entity set is
- * named after its service-local name (`CatalogService.Shelves.texts` becomes `Shelves_texts`), as CAP serves them.
+ * Parse a JSON CAP CSN document into the schema graph. With services, only the selected service's entities are
+ * read, named as CAP serves them (`CatalogService.Shelves.texts` becomes `Shelves_texts`).
  *
  * @param content the CSN document
  * @param selection picks the service when the document defines more than one
@@ -578,10 +574,9 @@ function csnEntity(context: CsnEntityContext, entitySetName: string, definition:
 }
 
 /**
- * An undeclared foreign key: typed like its target element, without that element's links, and key and nullable as the
- * association is.
+ * An undeclared foreign key, typed like its target element without its links; key and nullable follow the association.
  *
- * @param context the parsed CSN and the entity being read
+ * @param context the parsed CSN
  * @param name the foreign key's name
  * @param targetElement the target element it references
  * @param association the association element
@@ -603,8 +598,7 @@ function foreignKeyProperty(
 }
 
 /**
- * The foreign-key mappings of a managed association. A foreign key the entity does not declare is added to its
- * scalar properties, typed like the target element it refers to.
+ * The foreign-key mappings of a managed association; undeclared foreign keys are added to the scalar properties.
  *
  * @param context the definitions being read
  * @param association the association element with its name, target and keys

@@ -17,9 +17,9 @@ const DESCRIPTIVE_KEY_TYPES: ReadonlySet<PrimitiveType> = new Set([
 ]);
 
 /**
- * The key properties of an entity that describe a row rather than identify it, such as the name and price columns of a
- * view keyed by every column. Once an integer or UUID key column identifies every row, decimal, boolean, date, time and
- * name-form key columns take values from their meaning; draft keys are never descriptive.
+ * The key properties that describe a row rather than identify it, such as the name and price columns of a view keyed
+ * by every column. With an integer or UUID key column present, decimal, boolean, date, time and name-form key columns
+ * are descriptive; draft keys never are.
  *
  * @param graph the schema graph, whose relationships fix the columns they map
  * @param entity the entity

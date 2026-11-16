@@ -72,9 +72,8 @@ function nameInitials(name: string, maximum: number): string {
 }
 
 /**
- * A code-shaped value of at most `maximumLength` characters: initials of the name and a zero-padded
- * ordinal (`ST001`), or a single letter or digit for one-character columns. A field that holds digits only
- * gets the zero-padded ordinal alone (`00001`).
+ * A code of at most `maximumLength` characters: name initials and a zero-padded ordinal (`ST001`), one letter or
+ * digit for a one-character column, or the padded ordinal alone (`00001`) for a digits-only field.
  *
  * @param name technical name the initials come from
  * @param ordinal 1-based ordinal
@@ -119,10 +118,7 @@ function numericStringKey(length: number, ordinal: number): string {
 
 interface GovernedStringKeyDomain {
     cardinality: number;
-    /**
-     * The key of an ordinal below `cardinality`. `offset` rotates the domain so unrelated entity sets
-     * do not share keys; formats that ignore it keep one fixed domain.
-     */
+    /** The key of an ordinal below `cardinality`; `offset` rotates the domain so unrelated entity sets differ. */
     value: (ordinal: number, offset?: number) => string;
 }
 
@@ -206,9 +202,8 @@ function governedStringKeyDomain(property: SchemaProperty): GovernedStringKeyDom
 }
 
 /**
- * The typed key format of a string key no other rule governs, for columns of at least four characters: a zero-padded
- * number for an identifier, else the name's initials and an ordinal (`ST0001`). Shorter columns keep compact base-36
- * keys.
+ * The key format of a string key no other rule governs, for columns of four or more characters: a zero-padded
+ * number for an identifier, else name initials and an ordinal (`ST0001`).
  *
  * @param property the key property
  * @param words the lower-case words of its name
@@ -501,9 +496,8 @@ function keyReferenceLinks(graph: SchemaGraph, entities: ReadonlyMap<string, Sch
 }
 
 /**
- * Key-to-key links that value lists declare: a key whose value list maps it to the single key of an entity
- * set of the service takes its values from that entity set, as a key that a relationship maps to a key
- * does. Keys are never rewritten by value-list projection, so the link has to hold when keys are generated.
+ * Key-to-key links that value lists declare: a key mapped to the single key of a value-list entity set takes its
+ * values from it. Value-list projection never rewrites keys, so the link must hold at key generation.
  *
  * @param graph - The service schema.
  * @param entities - Entities by entity set name.
@@ -639,8 +633,8 @@ function relationshipKeyProfiles(graph: SchemaGraph): ReadonlyMap<string, KeyGen
  *
  * @param property the key, or the shared profile of keys generated together
  * @param referencing the foreign-key properties whose values are drawn from the key
- * @returns the narrowed property, or the input itself when no referencing facet is tighter or the
- * facets share no value; relationship assignment then keeps incompatible values out of the foreign key
+ * @returns the narrowed property, or the input when no referencing facet is tighter or the facets share no value
+ * (relationship assignment then keeps incompatible values out)
  */
 function narrowedKeyProperty(property: SchemaProperty, referencing: ReadonlyArray<SchemaProperty>): SchemaProperty {
     if (referencing.length === 0) {
@@ -662,9 +656,8 @@ function narrowedKeyProperty(property: SchemaProperty, referencing: ReadonlyArra
 }
 
 /**
- * Give every shared key domain one routed role: the role of its first key, in reference order, that has one.
- * Keys a relationship connects hold the same values, so they are generated with the same role, whatever role
- * each of them was routed on its own.
+ * Give every shared key domain the routed role of its first key, in reference order, that has one: keys a
+ * relationship connects hold the same values, so they share one role.
  *
  * @param profiles - Key generation profiles by property reference.
  * @param classifications - Planned semantic roles by `EntitySet.Property`.
@@ -815,8 +808,7 @@ function sourcedValueFor(
     if (governedValue !== undefined && propertyValueIsValid(property, governedValue)) {
         return { value: governedValue, tier: VALUE_TIER.recognised };
     }
-    // A boolean's type enumerates its whole domain, as a declared enumeration does, so its value is
-    // drawn from what the schema declares rather than from the typed floor.
+    // A boolean's type enumerates its whole domain, like a declared enumeration, so it counts as declared.
     if (property.primitiveType === 'bool') {
         return {
             value: typedValue(entity, property, rowIndex, seed, hash, rowContext.dateWindow),
@@ -827,8 +819,8 @@ function sourcedValueFor(
 }
 
 /**
- * A whole-second instant inside the date window. The day and the second of the day are separate
- * digits of the hash in a mixed radix, so year, month, day and time of day vary independently.
+ * A whole-second instant inside the date window; day and second of day are separate mixed-radix digits of the
+ * hash, so they vary independently.
  *
  * @param hash the stable per-cell hash
  * @param dateWindow the calendar window
@@ -865,8 +857,7 @@ function typedValue(
             return range.minimum + (hash % (range.maximum - range.minimum + 1));
         }
         case 'decimal': {
-            // Sized by the facets but kept to at most four integer digits and four fraction digits, so
-            // an undeclared or wide decimal reads as an ordinary quantity rather than a 13-digit figure.
+            // At most four integer and four fraction digits, so a wide decimal reads as an ordinary quantity.
             const precision = Math.min(property.precision ?? 8, 15);
             const scale = Math.min(property.scale ?? 2, precision, 4);
             const integerDigits = Math.min(Math.max(0, precision - Math.min(property.scale ?? 2, precision)), 4);
@@ -970,8 +961,8 @@ function keyPlan(
     classifications: ReadonlyMap<string, SemanticClassification>,
     descriptiveKeys: ReadonlySet<string>
 ): { rowCount: number; ordinals: ReadonlyMap<string, (rowIndex: number) => number> } {
-    // Descriptive key columns get no ordinal: another key column already tells every row apart. A descriptive
-    // string keeps its ordinal, so a key cell is never empty when no role names it; the model may replace it.
+    // Descriptive keys get no ordinal, as another key tells rows apart; a descriptive string keeps one so no key
+    // cell is empty when no role names it.
     const keys = entity.properties
         .map((property, index) => ({ property, index, profile: keyProfile(entity, property, profiles) }))
         .filter(
@@ -1013,9 +1004,8 @@ function keyPlan(
     for (const { property, cardinality } of cardinalities) {
         if (cardinality !== undefined && cardinality > 0) {
             const currentStride = stride;
-            // A triangular mixed-radix permutation spreads small samples across all
-            // dimensions. The lower digits determine the offset, so each original
-            // digit can be recovered in order and complete tuple uniqueness is retained.
+            // A triangular mixed-radix permutation spreads small samples across all dimensions; the lower digits
+            // set the offset, so every digit stays recoverable and tuples stay unique.
             ordinals.set(
                 property.name,
                 (rowIndex) => (Math.floor(rowIndex / currentStride) + (rowIndex % currentStride)) % cardinality
@@ -1145,8 +1135,7 @@ function relationshipAssignmentCandidates(
             : [];
     }
     const sourceProperties = new Map(sourceEntity?.properties.map((property) => [property.name, property]));
-    // A parent value that violates the foreign key's own facets (a longer code, another type) can
-    // never be copied into it; such parents are not candidates for this row.
+    // A parent value the foreign key's own facets reject can never be copied, so that parent is no candidate.
     const candidates = targetRows.flatMap((targetRow) => {
         const entries = relationship.mappings.map(
             ({ sourceProperty, targetProperty }) => [sourceProperty, targetRow[targetProperty]] as const
@@ -1200,9 +1189,8 @@ function compareDomains(left: IndexedRelationshipDomain, right: IndexedRelations
 }
 
 /**
- * The candidate references of one relationship in assignment order: the new parents first, then the parents
- * fewest existing rows reference, so the generated rows give the new parents their children before any row
- * of the caller's is referenced, and the parents without children theirs before any parent gets a second.
+ * The candidate references of one relationship in assignment order: new parents first, then those fewest existing
+ * rows reference, so new and childless parents get children before any parent gets a second.
  *
  * @param candidates - The references the parent rows offer.
  * @param existingRows - The rows of the source entity set already in the mock data folder.
@@ -1397,9 +1385,8 @@ export function assertRelationshipIntegrity(
 }
 
 /**
- * Every source row whose relationship values resolve to no target row. A reference the caller
- * supplied is published as written, so it is reported as `supplied` rather than treated as a
- * generation failure; every generated reference must resolve.
+ * Every source row whose relationship values resolve to no target row. A reference the caller supplied is
+ * published as written and reported as `supplied`; every generated reference must resolve.
  *
  * @param graph - Service schema.
  * @param resources - Final rows by entity set.
@@ -1457,9 +1444,8 @@ function rowCount(target: MockDataTarget, entity: SchemaEntity, options: MockDat
 }
 
 /**
- * The rows to generate for a resource: the requested rows after the rows the caller supplied, which are kept
- * as they are, so the generated rows that follow them number as many as requested. A value-list domain with
- * supplied rows is complete as supplied and gains none. A resource the row limit leaves less room is reported.
+ * The rows to generate for a resource: as many as requested after the supplied rows, which are kept as they are.
+ * A value-list domain with supplied rows is complete as supplied and gains none. A cut by the row limit is reported.
  *
  * @param context - The generation context.
  * @param target - The requested resource.
@@ -1640,8 +1626,7 @@ function generateTargetRows(
         ),
         reconciledProperties
     ).map((row) => ({ ...row }));
-    // A coherence rule that supplies a matching code and its text is producing recognised
-    // values, not the typed placeholder the first sweep wrote.
+    // A coherence rule that supplies a matching code and text writes recognised values, not typed placeholders.
     for (const propertyName of reconciledProperties) {
         retagValueTier(valueTiers, target.name, propertyName, VALUE_TIER.recognised);
     }
@@ -2000,8 +1985,7 @@ export function generateDeterministicResources(
     assignRelationships(context, resources, relationshipsBySource);
     applyFinalCoherence(context, resources, relationshipsBySource);
     const frozenResources = freezeValidatedResources(entities, resources);
-    // Foreign keys are decided by relational assignment against the rows that were actually
-    // generated, so their cells belong to no tier's value bank.
+    // Foreign keys come from relational assignment against the generated rows, so no tier's value bank owns them.
     for (const relationship of generationRelationships(graph)) {
         for (const { sourceProperty } of relationship.mappings) {
             retagValueTier(context.valueTiers, relationship.fromEntitySet, sourceProperty, VALUE_TIER.structural);

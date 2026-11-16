@@ -23,8 +23,8 @@ interface SemanticRoleDefinition {
     routeThreshold: number;
     conflictThreshold: number;
     /**
-     * The value bank whose distinct values are the role's whole key domain. The registry names the bank
-     * rather than its size, so editing a bank never changes the registry fingerprint the classifier head pins.
+     * The value bank whose distinct values are the role's whole key domain; named, not sized, so bank edits keep
+     * the registry fingerprint the classifier head pins.
      */
     keyDomain?: KeyDomain;
     /** The shortest key column that can hold every value of the key domain. */
@@ -207,10 +207,7 @@ export interface PackagedRoleRegistry {
     readonly roles: Readonly<Record<string, SemanticRoleDefinition>>;
     /** SHA-256 of the exact registry bytes that were parsed; the package manifest must declare the same digest. */
     readonly sha256: string;
-    /**
-     * SHA-256 of the canonical JSON of the role definitions. The classifier head pins it, so a head trained
-     * against other roles is rejected. Key domains enter by bank name, not size: bank edits keep it stable.
-     */
+    /** SHA-256 of the canonical JSON of the role definitions; the classifier head pins it to reject other roles. */
     readonly fingerprint: string;
 }
 
@@ -257,8 +254,8 @@ const STRING_DATE_ROLES: ReadonlySet<string> = new Set(['date', 'datetime', 'sta
 type StringDateFormat = 'yyyymmdd' | 'iso-date' | 'yyyymmddhhmmss' | 'iso-datetime';
 
 /**
- * The date format a string column's declared length implies: 8 characters `yyyymmdd`, 10 an ISO date,
- * 14 `yyyymmddhhmmss`, 19 or more (or no limit) an ISO date-time. Other lengths imply none.
+ * The date format a string column's length implies: 8 `yyyymmdd`, 10 ISO date, 14 `yyyymmddhhmmss`, 19 or more (or
+ * no limit) ISO date-time; none for other lengths.
  *
  * @param property the string column
  * @returns the format, or undefined
@@ -282,8 +279,7 @@ export function stringDateFormat(
 }
 
 /**
- * The time format a string column's declared length implies: 6 characters `HHMMSS`, 8 or more (or no
- * limit) `HH:MM:SS`. Other lengths imply none.
+ * The time format a string column's length implies: 6 `HHMMSS`, 8 or more (or no limit) `HH:MM:SS`; none otherwise.
  *
  * @param property the string column
  * @returns the format, or undefined
@@ -307,9 +303,8 @@ const DATE_OR_DATETIME_COLUMNS: ReadonlySet<SchemaProperty['primitiveType']> = n
 ]);
 
 /**
- * Role compatibility of a routed role with a non-key column the role registry's types leave out but the role's provider
- * writes, such as date and time roles on string columns whose length implies the format. Every other case is the
- * registry's compatibility.
+ * The registry's role compatibility, extended to non-key columns its types leave out but the role's provider writes,
+ * such as date and time roles on string columns whose length implies the format.
  *
  * @param role the routed role
  * @param property the column
@@ -348,8 +343,8 @@ function keyDomainCardinality(domain: KeyDomain): number {
 }
 
 /**
- * The number of distinct key values a role's provider can write into a key column, when the role's key
- * domain is a value bank and the column is wide enough for every value of it.
+ * The number of distinct key values a role's provider can write into a key column, when the role's key domain is a
+ * value bank and the column is wide enough for all of it.
  *
  * @param role the routed role
  * @param property the key column

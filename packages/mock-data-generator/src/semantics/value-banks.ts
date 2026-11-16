@@ -89,9 +89,8 @@ const SWITCH_PROVIDER_ROLES = [
     'year'
 ];
 
-// Roles that `semanticValue` can actually produce a value for: the switch roles and the numeric roles
-// of the value banks' ranges. A role outside this set has no value bank, so accepting it would claim
-// semantic coverage the generator cannot deliver: the cell would silently fall through to the typed floor.
+// Roles `semanticValue` can produce a value for: the switch roles and the value banks' numeric roles. Accepting
+// another role would claim coverage the generator cannot deliver; the cell would fall through to the typed floor.
 export const providerCapableRoles: () => ReadonlySet<string> = lazy(() =>
     Object.freeze(new Set([...SWITCH_PROVIDER_ROLES, ...packagedBanks().numericRoleRanges.keys()]))
 );
@@ -100,8 +99,7 @@ export const SEMANTIC_CATALOG_VERSION = 'synthetic-providers-v2' as const;
 
 /** The site every generated URL belongs to; the bare site is the shortest URL the providers write. */
 export const URL_ORIGIN = 'https://example.com';
-// The value-bank store's digest covers every bank a generated value can come from, the concept banks
-// included, so a changed bank changes the generation fingerprint and invalidates cached data.
+// The value-bank digest covers every bank, concept banks included, so a changed bank invalidates cached data.
 export const semanticCatalogFingerprint: () => string = lazy(() =>
     sha256(JSON.stringify({ version: SEMANTIC_CATALOG_VERSION, valueBanks: packagedBanks().sha256 }))
 );
@@ -211,8 +209,7 @@ function stableHex(hash: number, rowIndex: number, maximumLength: number): strin
 }
 
 /**
- * The first candidate that fits the column width, searching from `start` so that successive rows
- * draw different samples instead of all taking the first one that fits.
+ * The first candidate that fits the column width, searching from `start` so successive rows draw different samples.
  *
  * @param candidates the samples to choose from, in preference order
  * @param maximumLength the column width, when declared
@@ -327,8 +324,7 @@ export function semanticRowContext(
     ibanCountry?: SyntheticScenario['ibanCountry'],
     dateWindow: DateWindow = DEFAULT_DATE_WINDOW
 ): SemanticRowContext {
-    // The year, month, day and second of the day are read from the hash as digits of a mixed radix, so each
-    // is independent of the others and every day of a month and second of a day can occur.
+    // Year, month, day and second of day are mixed-radix digits of the hash: independent, and every value can occur.
     const years = Math.max(dateWindow.years - 1, 1);
     const yearOffset = dateWindow.years > 1 ? 1 + (hash % years) : 0;
     const month = Math.floor(hash / years) % 12;
@@ -509,16 +505,14 @@ function descriptiveValue(
         case 'equipment_name':
         case 'source_name':
         case 'account_description':
-            // Which products, equipment, sources or accounts a service names depends on its domain, which
-            // nothing here knows: only the names a host supplies as role samples are written.
+            // These names depend on the service's domain: only host role samples supply them.
             return undefined;
         case 'description':
         case 'long_text':
         case 'notes':
         case 'comment':
         case 'remark':
-            // What a free text says depends on the service's domain, which nothing here knows: only the
-            // descriptions a host supplies are written; the packaged sample set has none that fit every service.
+            // Free text depends on the service's domain: only host descriptions are written, not the packaged set.
             return context.dataset.id === packagedBanks().defaultSampleDataset.id
                 ? undefined
                 : completeString(context.dataset.descriptions, property.maxLength, hash);
@@ -530,8 +524,7 @@ function descriptiveValue(
         case 'manufacturer':
             return catalogSample(role, hash);
         case 'timezone':
-            // A zone name that does not fit gives way to the same place's offset from UTC, never to a zone of
-            // another place.
+            // A zone name that does not fit gives way to the same place's UTC offset, never another place's zone.
             return property.maxLength !== undefined && property.maxLength < context.location.timeZone.length
                 ? completeString([utcOffsetName(context.location.timeZone)], property.maxLength)
                 : context.location.timeZone;
@@ -620,15 +613,14 @@ function bankOrDocumentValue(
 }
 
 /**
- * The string value of a role: from the host's role samples when it has any, otherwise from the value
- * banks of the role's group.
+ * The string value of a role: from the host's role samples when it has any, else from the role's group.
  *
  * @param role the planned semantic role
  * @param property the property the value is for; its facets bound the value
  * @param context the shared values of the row
  * @param hash the stable hash of the cell
  * @param rowIndex the row's position in its entity set
- * @returns the value, or undefined when the role is not one of this group's or has no value here
+ * @returns the value, or undefined when no group has one for the role
  */
 function stringRoleValue(
     role: string,
@@ -671,8 +663,8 @@ export function semanticValue(
     }
     const stringValue = stringRoleValue(role, property, context, hash, rowIndex);
     if (stringValue !== undefined && property.primitiveType === 'string') {
-        // A value cut to the field's length is another value (`ES` cut to one letter is `E`, the SAP key of
-        // English), so a value that does not fit whole is not written; keys go to the facet-aware allocator.
+        // A cut value is another value (`ES` cut to `E` is the SAP key of English), so only whole values are written;
+        // keys go to the facet-aware allocator.
         return fits(stringValue, property.maxLength) ? stringValue : undefined;
     }
     const range = packagedBanks().numericRoleRanges.get(role);
@@ -758,7 +750,6 @@ function dateRoleValue(
         date.setUTCDate(date.getUTCDate() + drawn(semanticRules().generationRanges.endDateGapDays, hash));
     }
     if (property.primitiveType === 'string' && textFormat) {
-        // A string column carries the date in the fixed-width format its length implies.
         const iso = date.toISOString();
         const digits = iso.replace(/[-:T]/gu, '').slice(0, 14);
         const text: Readonly<Record<typeof textFormat, string>> = {

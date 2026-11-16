@@ -6,8 +6,7 @@ import { t } from '../i18n.js';
 import { domainResourceFile } from '../resource-root.js';
 
 /**
- * The error for a shipped data resource that cannot be read or fails its strict parser. The read error or
- * the parser's TypeError, naming the first defect, is kept as the cause.
+ * The error for a shipped data resource that cannot be read or fails its strict parser, with that failure as cause.
  *
  * @param nameKey translation key of the resource's name
  * @param error the parse or validation failure

@@ -21,9 +21,10 @@ import { isCountryNumericCode } from '../spec/iso3166.js';
 /**
  * Validate provider output independently of its catalog entries.
  *
- * @param role
- * @param property
- * @param value
+ * @param role the planned role
+ * @param property the field
+ * @param value the value to check
+ * @returns true when the value fits the field and the role's format validator
  */
 export function semanticValueIsValid(role: string, property: SchemaProperty, value: unknown): boolean {
     if (!propertyValueIsValid(property, value)) {
@@ -45,7 +46,7 @@ export function semanticValueIsValid(role: string, property: SchemaProperty, val
         case 'phone':
             return /^\+?[\d ()-]{7,25}$/u.test(value);
         case 'url': {
-            // Checked first, so an invalid URL is rejected without constructing (and catching) an error.
+            // Avoids constructing (and catching) an error for an invalid URL.
             if (!URL.canParse(value)) {
                 return false;
             }
@@ -77,9 +78,8 @@ export function semanticValueIsValid(role: string, property: SchemaProperty, val
 }
 
 /**
- * The decision for a field whose recognized role cannot be served. When the classifier's prototype
- * head accepted a concept for the field, the field is filled from that concept's bank instead of the
- * typed floor; otherwise it abstains with the given reason.
+ * The decision for a field whose recognized role cannot be served: the classifier's accepted concept when
+ * the field may take one, otherwise an abstention with the given reason.
  *
  * @param candidate the recognized decision being demoted
  * @param property the field
@@ -103,8 +103,8 @@ function demotedDecision(
 }
 
 /**
- * The status or narrative code/text fields of an entity whose linked meaning has no authored domain. A
- * generic role cannot validate such a field, so its recognized role is demoted.
+ * The status or narrative code/text fields of an entity whose linked meaning has no authored domain; a
+ * generic role cannot validate them.
  *
  * @param graph the service schema
  * @param entity the entity whose code fields are checked
@@ -138,8 +138,7 @@ function unevidencedLinkedFields(
 }
 
 /**
- * Whether a field is the code of a value help: it declares a value list, or another entity's value list maps
- * one of its fields to it.
+ * Whether a field is a value-help code: it declares a value list, or another entity's value list maps to it.
  *
  * @param graph the service schema
  * @param entity the code's entity
@@ -160,8 +159,8 @@ function isValueHelpDomainCode(graph: SchemaGraph, entity: SchemaEntity, code: S
 }
 
 /**
- * Whether a texted code's recognized meaning needs an authored domain: a status code, or a value-help code
- * with a narrative text, whose role has no format validator to check its values.
+ * Whether a texted code needs an authored domain: a status code, or a value-help code with a narrative
+ * text, whose role has no format validator.
  *
  * @param graph the service schema
  * @param entity the code's entity
@@ -212,9 +211,8 @@ interface EntityPlanReview {
 }
 
 /**
- * The role a field keeps given its form. The text of a code names the code, so a narrative role, whose
- * values are free sentences, never fills it. A name form (`ShelfName`) and the text of a code hold words, so a
- * role that yields codes becomes the role naming those codes, or is withdrawn when none does.
+ * The role a field keeps given its form. A narrative role never fills the text of a code; a code role on a
+ * name form (`ShelfName`) or a code's text becomes the role naming those codes, or is withdrawn.
  *
  * @param review the entity being reviewed
  * @param property the field
@@ -231,9 +229,8 @@ function roleForForm(review: EntityPlanReview, property: SchemaProperty, role: s
 }
 
 /**
- * Demote the planned role of one field when no provider can serve it: its declared domain conflicts
- * with the role's format, its linked meaning or application domain has no authored values, or its
- * facets are too narrow for the role's values.
+ * Demote the planned role of one field when no provider can serve it: a conflicting declared domain, no
+ * authored values for a linked meaning or application domain, or facets too narrow for the role.
  *
  * @param review the entity being reviewed and the plan and diagnostics to update
  * @param property the field
@@ -277,7 +274,7 @@ function reviewPlannedRole(review: EntityPlanReview, property: SchemaProperty): 
         return;
     }
     if (formRole !== candidate.role) {
-        // The name role is reviewed like any planned role; it is no code role, so this runs once.
+        // The name role is no code role, so this recursion runs once.
         plan.set(key, Object.freeze({ ...candidate, role: formRole }));
         reviewPlannedRole(review, property);
         return;
@@ -310,9 +307,8 @@ function reviewPlannedRole(review: EntityPlanReview, property: SchemaProperty): 
         return;
     }
     const minimum = definition ? review.minimumLengths[definition.validator] : undefined;
-    // A role with no value bank produces nothing of its own, so accepting it would report
-    // semantic coverage for a cell that silently falls through to the typed floor. A
-    // declared or authored domain supplies the values instead, and keeps the role honest.
+    // A role without a value bank would claim coverage for a cell that falls through to the typed floor,
+    // unless a declared or authored domain supplies the values.
     const producesNothing =
         !providerCapableRoles().has(candidate.role) &&
         !property.enumValues?.length &&
@@ -336,11 +332,12 @@ function reviewPlannedRole(review: EntityPlanReview, property: SchemaProperty): 
 /**
  * Compile routing into fields with feasible providers and validators.
  *
- * @param graph
- * @param classifications
- * @param diagnostics
- * @param scenario
- * @param existingData
+ * @param graph the schema graph
+ * @param classifications the recognized roles by semantic key
+ * @param diagnostics receives a warning per demoted role
+ * @param scenario the synthetic scenario, if any
+ * @param existingData the caller's existing data, by entity set
+ * @returns the compiled plan by semantic key
  */
 export function compileSemanticPlan(
     graph: SchemaGraph,
@@ -374,7 +371,7 @@ export function compileSemanticPlan(
         for (const property of entity.properties) {
             reviewPlannedRole(review, property);
         }
-        // A role another field of the entity holds would write that field's value again in the same row.
+        // A role another field holds would repeat that field's value in the same row.
         const taken = new Set(
             entity.properties
                 .map(({ name }) => plan.get(semanticPropertyKey(entity.entitySetName, name))?.role)
@@ -392,11 +389,7 @@ export function compileSemanticPlan(
     return plan;
 }
 
-/**
- * Why a field may still take a lower-ranked classifier role: the classifier named roles but none was certain
- * enough, or the field's form, facets or domain withdrew the role it had. A key, a technical field or a field
- * the classifier calls unknown keeps no role.
- */
+/** Abstention reasons that still allow a lower-ranked classifier role. */
 const BEST_EFFORT_REASONS = new Set<SemanticClassification['abstentionReason']>([
     'below-threshold',
     'conflicting-candidates',
@@ -405,9 +398,8 @@ const BEST_EFFORT_REASONS = new Set<SemanticClassification['abstentionReason']>(
 ]);
 
 /**
- * Give a field that ended the review without a role the best-ranked classifier role that fits it, rather than the
- * standard fallback. Candidates pass the same review, skip roles another field holds, and keep the classifier's
- * confidence so the model may still replace their values.
+ * Give a field left without a role the best-ranked classifier role that passes the same review and that no
+ * other field holds, rather than the standard fallback.
  *
  * @param review the entity being reviewed and the plan and diagnostics to update
  * @param property the field
@@ -431,7 +423,7 @@ function adoptBestEffortRole(
         return;
     }
     const silent: EntityPlanReview = { ...review, diagnostics: [] };
-    // A role the classifier ranks below `unknown` is less likely than no role at all, so it is no candidate.
+    // A role ranked below `unknown` is less likely than no role at all.
     const unknownRank = detected.top.findIndex(({ role }) => role === 'unknown');
     const ranked = unknownRank === -1 ? detected.top : detected.top.slice(0, unknownRank);
     for (const { role, confidence } of ranked) {
@@ -534,8 +526,8 @@ function bindValueList(
 }
 
 /**
- * Collect every field whose value another field supplies: foreign keys, value-list parameters and
- * their display texts, and declared text companions, which no field supplies with a format.
+ * Collect every field whose value another field supplies: foreign keys, value-list parameters, their
+ * display texts, and declared text companions.
  *
  * @param graph - Service schema.
  * @returns The bound fields with the semantic keys of their suppliers.
@@ -567,8 +559,7 @@ function supplierBindings(graph: SchemaGraph): SupplierBindings {
 }
 
 /**
- * Bind every declared text companion that no value list supplies. It holds a description written
- * from its code, so no field supplies it with a format.
+ * Bind every declared text companion that no value list supplies, with no supplying field.
  *
  * @param bindings - Receives the bindings; existing value-list bindings are kept.
  * @param graph - Service schema.
@@ -586,9 +577,8 @@ function bindTextCompanions(bindings: SupplierBindings, graph: SchemaGraph): voi
 }
 
 /**
- * Withdraw a format-validated role from a field whose values another field supplies (a foreign key, value-help
- * parameter or text companion), unless the supplying field has the same role. Otherwise the supplied values would fail
- * the role's format check.
+ * Withdraw a format-validated role from a field whose values another field supplies, unless every supplier
+ * has the same role; the supplied values would otherwise fail the format check.
  *
  * @param graph - Service schema.
  * @param plan - Compiled semantic plan.
@@ -636,9 +626,10 @@ export function demoteBoundSemanticRoles(
 /**
  * Check selected provider values after generation, repair or cache loading.
  *
- * @param graph
- * @param resources
- * @param roles
+ * @param graph the schema graph
+ * @param resources the rows by entity set
+ * @param roles planned roles by field
+ * @throws {TypeError} when a value fails its role
  */
 export function assertSemanticValues(
     graph: SchemaGraph,

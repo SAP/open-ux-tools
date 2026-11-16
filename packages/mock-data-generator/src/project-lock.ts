@@ -71,8 +71,8 @@ async function readOwner(lockPath: string): Promise<LockOwner | undefined> {
         const value: unknown = JSON.parse(await readFile(join(lockPath, OWNER_FILE), 'utf8'));
         return isLockOwner(value) ? value : undefined;
     } catch (error) {
-        // The owner file is written after the lock directory, and a concurrent release removes both, so a
-        // missing or half-written file means "no known owner". Any other failure is real and propagates.
+        // Written after the lock directory and removed by a concurrent release: missing or half-written
+        // means "no known owner".
         if (errnoCode(error) === 'ENOENT' || error instanceof SyntaxError) {
             return undefined;
         }
@@ -97,8 +97,7 @@ function processEnded(pid: number): boolean {
 }
 
 /**
- * Whether the lock can no longer be released by its owner: the owner process on this host has ended, or
- * the lock never got an owner record and is old.
+ * Whether the lock is stale: its owner process on this host has ended, or it has no owner record and is old.
  *
  * @param lockPath lock directory
  * @param owner the owner record, when readable
@@ -191,9 +190,8 @@ function sleep(milliseconds: number): Promise<void> {
 }
 
 /**
- * Take the lock that serializes project data transactions in one parent directory. The lock is a directory
- * created atomically on every platform, holding a record of its owner; a lock whose owner process on this
- * host has ended is broken, and a lock held by a live process is waited for with exponential backoff.
+ * Take the lock that serializes project data transactions in one parent directory: an atomically created
+ * directory with an owner record. A stale lock is broken; a live one is waited for with exponential backoff.
  *
  * @param parent existing directory that holds the project data directories
  * @param options how long to wait

@@ -31,7 +31,7 @@ interface PlaceGroup {
     places: ReadonlyArray<PlaceField>;
 }
 
-/** The bank locations by upper-case country code, by upper-case city and by the country of their BIC. */
+/** The bank locations by upper-case country code and by upper-case city. */
 const locationIndex = lazy(() => {
     const locations = packagedBanks().locations;
     return {
@@ -199,9 +199,9 @@ function anchorGroup(anchoring: RowAnchoring, group: PlaceGroup): void {
 }
 
 /**
- * Make the place fields of every generated row (city, region, postal code, telephone, bank, BIC, time zone) follow the
- * row's country through its location record. A fixed country decides, place fields of an unknown country stay empty,
- * and supplied rows, keys, enumerations, relationship ends and projected cells are never written.
+ * Make the place fields of every generated row follow the row's country through its location record. A fixed country
+ * decides, place fields of an unknown country stay empty, and supplied rows, keys, enumerations, relationship ends
+ * and projected cells are never written.
  *
  * @param input the rows, the plan and what is fixed
  * @returns the rows and the properties written, by entity set

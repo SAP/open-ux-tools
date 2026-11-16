@@ -2,8 +2,7 @@ import { availableParallelism } from 'node:os';
 import type { CausalLmInputs, CausalLmSession } from './causal-text-runtime.js';
 import { createOnnxRuntimeBackend, type OnnxBackend, type OnnxTensorLike } from './onnx-backend.js';
 
-// A 135M-parameter decoder stops gaining from threads well before 4 on this runtime, and more
-// threads than cores (a 2-core workspace) only add contention.
+// A 135M-parameter decoder stops gaining well before 4 threads; more threads than cores only add contention.
 const MAXIMUM_INTRA_OP_THREADS = 4;
 
 /**
@@ -34,8 +33,7 @@ interface CreateCausalOnnxSessionOptions {
 }
 
 /**
- * Adapt an already integrity-verified runtime module to the causal backend: CPU sessions with memory
- * arenas and a bounded intra-op thread count for the decoder.
+ * Adapt an integrity-verified runtime module to the causal backend: CPU sessions with a bounded intra-op thread count.
  *
  * @param module imported runtime module
  * @param label privacy-safe source label for diagnostics

@@ -33,10 +33,7 @@ export const REALISM_CHECK = {
     referenceCopy: 'reference-copy',
     /** Two rows of an entity set share their semantic key (`Common.SemanticKey`). */
     semanticKeyUnique: 'semantic-key-unique',
-    /**
-     * Two rows of an entity set share an identifier other than the key and the semantic key: an alternate key
-     * (`Core.AlternateKeys`) or the properties a declared to-one reference selects its target row by.
-     */
+    /** Two rows share an alternate key (`Core.AlternateKeys`) or the properties a to-one reference selects them by. */
     identifierUnique: 'identifier-unique',
     /** A row of a country or currency entity holds another record's code or name beside its key. */
     recordConsistency: 'record-consistency',
@@ -52,9 +49,8 @@ export const REALISM_CHECK = {
 export type RealismCheck = (typeof REALISM_CHECK)[keyof typeof REALISM_CHECK];
 
 /**
- * The checks no generated row may fail: each states what real data of any service holds. The others report
- * what may be legitimate in a particular service (one company code, records never changed) or need a
- * baseline to read.
+ * The checks no generated row may fail. The others report what may be legitimate in one service (one company code,
+ * records never changed) or need a baseline to read.
  */
 export const REALISM_HARD_CHECKS: ReadonlySet<RealismCheck> = new Set([
     REALISM_CHECK.placeholder,
@@ -114,8 +110,8 @@ export interface RealismInput {
     /** Without references the geography check is skipped. */
     geography?: GeographyReferences;
     /**
-     * UN/ECE Recommendation 20 common codes and unit symbols, from a source the generator does not read;
-     * without them the unit-field check is skipped.
+     * UN/ECE Recommendation 20 codes and unit symbols, from a source the generator does not read; without them the
+     * unit-field check is skipped.
      */
     units?: ReadonlySet<string>;
     /** The checks to run; all of them when absent. A check not run reports no finding and examines nothing. */
@@ -149,7 +145,7 @@ export function exampleOf(value: JsonValue | undefined): string {
 }
 
 /**
- * The generated rows of an entity set with their positions, without the rows the caller supplied.
+ * The generated rows of an entity set, without the rows the caller supplied.
  *
  * @param input check input
  * @param entitySet entity set name
@@ -215,13 +211,11 @@ export class OutcomeCollector {
 }
 
 /**
- * The value a field holds when it holds another field's value: a string in the form the field's facets give
- * (upper case in an upper-case field), anything else as it is.
+ * Another field's value as this field holds it: a string in the form its facets give, anything else as is.
  *
  * @param property the field that holds the value
  * @param value the other field's value
- * @returns the value in the field's form, or undefined when the field cannot hold it (letters in a digit
- * sequence), so it is not compared
+ * @returns the value in the field's form, or undefined when the field cannot hold it, so it is not compared
  */
 export function heldAs(property: SchemaProperty | undefined, value: JsonValue | undefined): JsonValue | undefined {
     return property && typeof value === 'string' ? inFacetForm(property, value) : value;

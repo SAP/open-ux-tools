@@ -262,9 +262,8 @@ function unitGroup(entity: SchemaEntity): UnitGroup | undefined {
 }
 
 /**
- * The four amounts of a statement balance. The rule uses the account holder's bank-statement convention,
- * closing = opening + credit - debit: credits (incoming payments) raise the balance and debits lower it.
- * A general-ledger asset account uses the opposite sign, so the rule only applies where a scenario opts in.
+ * The four amounts of a statement balance, in the bank-statement convention closing = opening + credit - debit.
+ * A general-ledger asset account uses the opposite sign, so the rule applies only where a scenario opts in.
  */
 interface BalanceGroup {
     opening: SchemaProperty;
@@ -377,8 +376,7 @@ function conversionGroup(entity: SchemaEntity): ConversionGroup | undefined {
         : undefined;
 }
 
-// Groups are keyed by a lifecycle flag's role, such as `available` or `deleted`, as the rule store's lifecycle
-// profile names it.
+// Each group maps a lifecycle role of the rule store (e.g. `available`, `deleted`) to its flag.
 function lifecycleGroups(entity: SchemaEntity): ReadonlyArray<Readonly<Record<string, SchemaProperty>>> {
     const groups = new Map<string, Record<string, SchemaProperty>>();
     for (const property of entity.properties) {
@@ -500,9 +498,8 @@ function displayText(code: string): string | undefined {
 }
 
 /**
- * The text of a status code: the status bank's meaning for a code the bank itself supplied, otherwise the words
- * the code spells, otherwise the code. A code the metadata declared or another source fixed has no meaning the
- * bank could know (`A` may be approved, active or anything else), so the bank never names it.
+ * The text of a status code: the status bank's meaning when the bank supplied the code, else the words the code
+ * spells, else the code. The bank never names a code from elsewhere (`A` may mean approved, active or anything).
  *
  * @param code the status code
  * @param property the text field
@@ -736,8 +733,8 @@ function reconcileBalance(row: MutableRow, group: BalanceGroup, protectedPropert
 }
 
 /**
- * The ISO 4217 minor-unit digits of each currency the value-bank store records (List One as published
- * by SIX); a recorded currency without a minor unit (precious metals, testing codes) maps to undefined.
+ * The ISO 4217 minor-unit digits of each recorded currency (SIX List One); undefined for a currency without
+ * a minor unit (precious metals, testing codes).
  *
  * @see https://www.six-group.com/dam/download/financial-information/data-center/iso-currrency/lists/list-one.xml
  */
@@ -885,8 +882,9 @@ function reconcileProcessingStatus(
 /**
  * Return fields governed as one cross-field coherence group.
  *
- * @param entity
- * @param rules
+ * @param entity the entity
+ * @param rules the selected coherence rules
+ * @returns the names of the governed fields
  */
 export function coherencePropertyNames(
     entity: SchemaEntity,
@@ -945,14 +943,14 @@ export function coherencePropertyNames(
 /**
  * Reconcile conservative, metadata-derived cross-field groups before relationship planning and learned completion.
  *
- * @param entity
- * @param inputRows
- * @param seed
- * @param protectedProperties
- * @param rules
- * @param reconciled receives the properties this pass supplied values for, so the caller can
- * attribute those cells to the coherence rule that wrote them rather than to the typed floor that
- * filled them first.
+ * @param entity the entity
+ * @param inputRows the rows to reconcile
+ * @param seed generation seed
+ * @param protectedProperties fields the pass leaves alone
+ * @param rules the selected coherence rules
+ * @param reconciled receives the properties this pass supplied values for, so the caller attributes them to
+ * the coherence rule rather than the typed floor
+ * @returns the reconciled rows
  */
 export function applySemanticCoherence(
     entity: SchemaEntity,

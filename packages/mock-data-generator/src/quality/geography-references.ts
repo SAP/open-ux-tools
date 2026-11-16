@@ -29,9 +29,8 @@ function addRegion(map: Map<string, Set<string>>, key: string, region: string): 
 }
 
 /**
- * Build the geography references the realism checks compare generated values against, from sources that
- * the generator does not use: CLDR time zones (IANA zone and principal city per region) and E.164 calling
- * codes.
+ * Build the realism checks' geography references from sources the generator does not use: CLDR time zones
+ * (IANA zone and principal city per region) and E.164 calling codes.
  *
  * @param sources CLDR time zones and calling codes
  * @returns regions, calling codes, city and time zone regions

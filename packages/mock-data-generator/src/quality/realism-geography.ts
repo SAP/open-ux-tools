@@ -23,7 +23,6 @@ type RegionsOf = (value: string) => ReadonlySet<string> | undefined;
 /** How a geographic column's regions are read, and whether they locate another party (a bank) than the row. */
 interface RegionReader {
     regionsOf: RegionsOf;
-    /** A bank identifier or account number locates its bank, which need not be in the row's country. */
     otherParty: boolean;
 }
 
@@ -142,8 +141,8 @@ function rowMismatches(
 }
 
 /**
- * The country keys whose subject words, apart from the country words, a column or its entity shares: the
- * country of the party the column identifies (`PayeeCountry` for `PayeeBic`, or for `Bic` of a payee).
+ * The country keys sharing a non-country subject word with a column or its entity: the country of the party the
+ * column identifies (`PayeeCountry` for `PayeeBic`, or for `Bic` of a payee).
  *
  * @param entityName the entity's name
  * @param column the column of another party
@@ -158,9 +157,8 @@ function partyKeys(entityName: string, column: Column, keys: ReadonlyArray<Colum
 }
 
 /**
- * Geographic values agree with their row: a city, phone number or time zone belongs to at least one of the
- * countries the row's country keys hold. A bank identifier or account number locates its bank, so it is
- * compared only with country keys whose subject words it shares (`PayeeBic` with `PayeeCountry`).
+ * A city, phone number or time zone belongs to a country of its row's country keys. A bank identifier or account
+ * locates its bank, so it is compared only with country keys sharing its subject words (`PayeeBic`, `PayeeCountry`).
  *
  * @param input check input with geography references
  * @returns findings per geographic field

@@ -16,9 +16,8 @@ const NUMBERED = /^(.*\S)\s+(\d+)$/u;
 const rules = (): ReturnType<typeof semanticRules>['realismChecks'] => semanticRules().realismChecks;
 
 /**
- * The string values of a property that the generator chose: declared enumeration members are the
- * service's own domain, and standard mock server fallback values, the field's own or one a value list copied
- * into it, say that nothing knew the field, so both are skipped. The fallback is counted on its own.
+ * The non-empty string values the generator chose. Enumeration members (the service's own domain) and standard
+ * mock server fallback values (nothing knew the field) are skipped; the fallback is counted on its own.
  *
  * @param graph service schema
  * @param property schema property
@@ -39,8 +38,7 @@ function chosenStrings(
 }
 
 /**
- * The prefixes of a column that are followed by several different numbers (`No 1`, `No 2`, `No 3`): the
- * column counts up a prefix instead of holding values.
+ * The prefixes a column follows with several different numbers (`No 1`, `No 2`, `No 3`).
  *
  * @param numbered the column's values split into prefix and number
  * @returns the counted prefixes
@@ -58,9 +56,8 @@ function countedStems(numbered: ReadonlyArray<RegExpExecArray | null>): Set<stri
 }
 
 /**
- * Which values of a column are placeholders: a multi-word service name followed by a number (`Unit Price 1`), or a
- * service name the column counts up (`Remark 1`, `Remark 2`). A counted prefix that names nothing in the service is
- * data.
+ * Which values are placeholders: a multi-word service name plus a number (`Unit Price 1`), or a service name the
+ * column counts up (`Remark 1`, `Remark 2`). A counted prefix that names nothing in the service is data.
  *
  * @param names the service's name phrases ({@link serviceNamePhrases})
  * @param values the column's string values
@@ -105,8 +102,7 @@ export function checkPlaceholders(input: RealismInput): CheckOutcome {
 }
 
 /**
- * Whether a value is the exact name of something in the service, or the multi-word name or label of a
- * property: a field name leaking into the data.
+ * Whether a multi-word value is the exact name of something in the service or the name or label of a property.
  *
  * @param graph service schema
  * @returns the test
@@ -159,8 +155,7 @@ interface TextField {
 }
 
 /**
- * Pairs of fields the schema itself connects: a relationship maps one to the other, or one is the
- * declared text of the other.
+ * Field pairs the schema connects: by a relationship mapping, or as a field and its declared text.
  *
  * @param graph service schema
  * @returns `entitySet.property` keys of connected fields, both directions
@@ -187,9 +182,8 @@ function connectedFields(graph: SchemaGraph): Set<string> {
 }
 
 /**
- * Fields about unrelated subjects that share several multi-word values: one generic list filled both
- * (`Valve repair` as a bank category description and as a payment type group name). Fields whose subject
- * words overlap, or that the schema connects, may share values.
+ * Fields about unrelated subjects that share several multi-word values, so one generic list filled both. Fields
+ * whose subject words overlap, or that the schema connects, may share values.
  *
  * @param input check input
  * @returns findings per field, naming one unrelated field it shares values with

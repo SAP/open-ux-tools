@@ -145,8 +145,7 @@ function parseRows(value: unknown, path: string): ReadonlyArray<MockDataRow> {
     if (!Array.isArray(value)) {
         return fail(path, 'mustBeList');
     }
-    // Row values are JSON from the parsed file; each row is checked to be an object, and its fields are
-    // checked against the schema by the generator.
+    // Fields are checked against the schema by the generator.
     return value.map((row: unknown, index) => requiredRecord(row, `${path}[${index}]`) as MockDataRow);
 }
 
@@ -222,15 +221,13 @@ function parseOptions(value: unknown): StandaloneGenerationOptions {
     if (options.locale !== undefined) {
         requiredString(options.locale, 'options.locale');
     }
-    // Only the option names, mode and locale are checked here: numeric bounds, the sample dataset and the
-    // synthetic scenario are validated by the generator before use, so the remaining values pass through.
+    // The generator validates the remaining values (numeric bounds, dataset, scenario) before use.
     return options as StandaloneGenerationOptions;
 }
 
 /**
- * Validate an untrusted request document (for example the CLI's request.json) and return it typed.
- * Option values that the generator validates itself (numeric bounds, datasets, scenarios) pass through unchanged.
- * An abort signal cannot be expressed in JSON, so a supplied `request.signal` is rejected.
+ * Validate an untrusted request document, such as the CLI's request.json, and return it typed. A
+ * `request.signal` is rejected, since JSON cannot express one.
  *
  * @param value the parsed JSON document
  * @returns the validated project data input

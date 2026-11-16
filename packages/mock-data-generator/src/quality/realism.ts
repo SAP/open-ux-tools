@@ -29,9 +29,8 @@ export type {
 } from './realism-types.js';
 
 /**
- * Check the final rows of one service for values no real data would hold (placeholders, leaked names, incoherent codes,
- * geography, dates, references, units, facets), reading only the schema and the rows. The realism guard withholds what
- * the placeholder and name-leak checks flag, so read `REALISM_VALUE_WITHHELD` for those.
+ * Check the final rows of one service for values no real data would hold, reading only the schema and the rows. The
+ * realism guard withholds what the placeholder and name-leak checks flag, so read `REALISM_VALUE_WITHHELD` for those.
  *
  * @param input schema, rows, and optionally which rows the caller supplied and geography references
  * @returns findings per field and how much each check examined

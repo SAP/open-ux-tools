@@ -1,7 +1,6 @@
 /**
- * Validation helpers shared by the strict parsers of the packaged JSON resources (the value-bank store
- * and the semantic rule store). Each throws a TypeError naming what was expected, so a defective
- * resource stops the package from loading instead of being partly ignored.
+ * Validation helpers of the strict parsers of the packaged JSON resources. Each throws a TypeError naming what
+ * was expected, so a defective resource fails loading instead of being partly ignored.
  */
 
 import { isRecord } from '../guards.js';

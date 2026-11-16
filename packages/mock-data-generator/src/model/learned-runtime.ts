@@ -95,17 +95,15 @@ interface SftArtifactConfiguration {
 type InstalledRuntime = Readonly<{ version: unknown }> | Readonly<{ error: unknown }>;
 
 /**
- * Read the installed native runtime's version from its package metadata. A learned-runtime load reads it
- * once, when the first model component needs it, so a session that never loads a model never requires
- * the native package.
+ * Read the installed native runtime's version from its package metadata, only when a component needs it, so a
+ * session that loads no model never requires the native package.
  *
  * @param runtime the runtime the manifest requires
  * @returns the installed version, or the error of reading it (for example, a missing package)
  */
 function readInstalledRuntime(runtime: PackagedModelManifest['runtime']): InstalledRuntime {
     try {
-        // Resolved per read, not at module load. An ES module (bundled or not) resolves from its URL; a
-        // CommonJS bundle gives this module no URL but its own `require`, which resolves from the bundle.
+        // An ES module resolves from its URL; a CommonJS bundle has no URL but its own `require`.
         const moduleUrl: unknown = import.meta.url;
         const resolveModule = typeof moduleUrl === 'string' ? createRequire(moduleUrl) : require;
         const metadata: unknown = resolveModule(`${runtime.package}/package.json`);
@@ -166,8 +164,8 @@ function positiveNumber(value: unknown, label: string): number {
 }
 
 /**
- * Validate the SFT artifact's generation config: only prompt contract 1 and runtime contract 2 are accepted, and the
- * prompt texts are required and parsed strictly. `noRepeatNgramSize` and `maxNewTokens` are accepted and ignored.
+ * Validate the SFT generation config: prompt contract 1, runtime contract 2 and a strictly parsed prompt template.
+ * `noRepeatNgramSize` and `maxNewTokens` are accepted and ignored.
  *
  * @param value parsed `generation-config.json`
  * @returns the validated configuration
@@ -212,8 +210,7 @@ export function parseSftConfiguration(value: unknown): SftArtifactConfiguration 
 }
 
 /**
- * Read the optional field-to-value relevance head. It shares the encoder, the vocabulary and the 64-token
- * contract with the classifier, so it is checked against the component's verified encoder digests.
+ * Read the optional field-to-value relevance head, checked against the verified encoder digests it shares.
  *
  * @param component the classifier component
  * @param files the component's verified files by role
@@ -244,8 +241,8 @@ async function readRelevanceHead(
 }
 
 /**
- * Read the optional concept prototype head (head B). It shares the classifier's encoder; it must load when
- * declared, and each of its concepts takes its values from the value-bank store the contract supplies.
+ * Read the optional concept prototype head (head B); when declared it must load, with values from the contract's
+ * value-bank store.
  *
  * @param component the classifier component
  * @param files the component's verified files by role
@@ -282,8 +279,7 @@ async function readConceptHead(
 }
 
 /**
- * Load the classifier component: validate its heads before any native session exists, then open the
- * sentence encoder and build the classifier and, when declared, the relevance verifier around it.
+ * Load the classifier component, validating its heads before any native session is opened.
  *
  * @param component the classifier component
  * @param files the component's verified files by role
@@ -311,7 +307,7 @@ async function loadClassifierComponent(
         expectedVocabularySha256: head.tokenizerSha256,
         backend
     });
-    // The native session is released if a later step fails, so a failed load leaks nothing.
+    // Release the native session if a later step fails.
     try {
         return {
             value: createEmbeddingSemanticClassifier({
@@ -344,8 +340,7 @@ async function loadClassifierComponent(
 }
 
 /**
- * Load the SFT component: validate its generation config and tokenizer, open the causal session and build
- * the row generator around it.
+ * Load the SFT component: validate its config and tokenizer, then build the row generator on a causal session.
  *
  * @param component the SFT component
  * @param files the component's verified files by role
@@ -387,7 +382,7 @@ async function loadSftComponent(
             completionStore
         });
     } catch (error) {
-        // The causal session is native memory; release it when the generator cannot be built around it.
+        // Release the native causal session when the generator cannot be built.
         await session.dispose?.();
         throw error;
     }
@@ -469,14 +464,14 @@ async function loadComponent(
 }
 
 /**
- * Build independently degradable classifier and SFT runtimes from a verified package-local artifacts.
+ * Build independently degradable classifier and SFT runtimes from verified package-local artifacts.
  *
  * @param manifest
  * @param cache
  * @param factories
  * @param classifierContract
- * @param options `completionStore` keeps model answers; the process-wide in-memory store when absent
- * @param options.completionStore see above
+ * @param options runtime options
+ * @param options.completionStore keeps model answers; the process-wide in-memory store when absent
  */
 export async function createLearnedRuntime(
     manifest: PackagedModelManifest,

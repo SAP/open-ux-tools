@@ -4,8 +4,7 @@ import translations from './translations/mock-data-generator.i18n.json' with { t
 
 const NS = 'mock-data-generator';
 
-// The translations are bundled with the module and initialization is synchronous (`initAsync: false`),
-// so `t()` works on synchronous paths, such as request validation, as soon as this module has loaded.
+// Bundled translations and `initAsync: false` make `t()` usable on synchronous paths once the module loads.
 const i18nInstance = i18next.createInstance({
     resources: {
         en: {
@@ -22,8 +21,7 @@ const i18nInstance = i18next.createInstance({
 });
 
 /**
- * Initialize i18next with the translations of this package. Initialization already ran when the module
- * loaded; calling it again is harmless.
+ * Initialize i18next with this package's translations; already done on module load, so repeating it is harmless.
  */
 export async function initI18n(): Promise<void> {
     if (!i18nInstance.isInitialized) {
@@ -42,7 +40,6 @@ export function t(key: string, options?: TOptions): string {
     return (i18nInstance.t as (key: string, opts?: TOptions) => string)(key, options);
 }
 
-// With `initAsync: false` and inline resources, `init` completes before it returns, so the module is ready once
-// loaded and no top-level await holds back importers (or breaks `require` of this ES module). Without a backend
-// there is nothing to load, so the returned promise cannot reject.
+// Synchronous init: no top-level await, which would break `require` of this ES module. Without a backend the
+// promise cannot reject.
 void i18nInstance.init();

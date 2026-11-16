@@ -42,16 +42,12 @@ function isMember(list: CheckedValueList, row: MockDataRow, candidate: MockDataR
     );
 }
 
-/**
- * Whether a value can be held by an owner field: its facets and, when the field has a planned
- * semantic role, that role's format.
- */
+/** Whether a value fits an owner field (see `fieldFit`). */
 type FieldFit = (local: SchemaProperty, value: JsonValue | undefined) => boolean;
 
 /**
- * Whether the owner row could adopt a value-help tuple without rewriting a protected field: the
- * tuple satisfies the list's constants, every value it carries fits its local field, members that
- * fill the same field carry the same value, and it agrees with the row on every protected field.
+ * Whether the owner row could adopt a value-help tuple: it satisfies the list's constants, every carried value fits
+ * its local field, members filling the same field agree, and protected fields keep their values.
  *
  * @param list value list
  * @param row owner row
@@ -86,9 +82,9 @@ function isAdoptable(
 }
 
 /**
- * Whether the owner row can be a member of `list` and of every connected value list at once, with one tuple per list
- * agreeing on shared fields. An exhausted search counts as satisfiable, so the row is reported as a membership failure,
- * not a conflict.
+ * Whether the owner row can be a member of `list` and every connected value list at once, the tuples agreeing on
+ * shared fields. An exhausted search counts as satisfiable, so the row is reported as a membership failure, not a
+ * conflict.
  *
  * @param list value list whose membership failed
  * @param lists every value list of the owner entity whose value-help rows are available
@@ -118,8 +114,8 @@ function hasJointlyCompatibleTuple(
 }
 
 /**
- * Why a value-list parameter keeps tuple membership from being validated: a missing local property, no value-list
- * property to pair it with, or value-help rows without that property.
+ * Why a value-list parameter prevents validating tuple membership: a missing local property, no value-list property,
+ * or value-help rows without that property.
  *
  * @param parameter the value-list parameter
  * @param properties the owner entity's properties by name
@@ -157,8 +153,8 @@ function parameterContextGaps(
 }
 
 /**
- * Why the display texts of a value list keep tuple membership from being validated: an unresolved key text link,
- * or value-help rows without a linked text.
+ * Why a value list's display texts prevent validating tuple membership: an unresolved key text link, or value-help
+ * rows without a linked text.
  *
  * @param owner the field that declares the value list
  * @param displayLinks the resolved display links of the list
@@ -250,9 +246,8 @@ function checkedValueLists(
 }
 
 /**
- * The properties on both sides of each value list whose membership is validated: the owner fields a list pairs
- * with the columns of a value-help row (codes, filters and the texts of codes), and those columns of the
- * value-help entity. A step that rewrites one of them breaks the tuple.
+ * The owner fields and value-help columns each validated value list pairs (codes, filters, code texts); rewriting
+ * one of them breaks the tuple.
  *
  * @param graph schema graph
  * @param resources rows by resource
@@ -283,10 +278,9 @@ export function valueListedProperties(
 }
 
 /**
- * Validate final/cache rows against authored value-list tuples; a non-enumerable contributor is reported as
- * unavailable. A non-member row is a `SEMANTIC_DOMAIN_CONFLICT` when no tuple can be adopted without breaking a
- * protected field, a constant, a facet, a role format or another list, and `SEMANTIC_TUPLE_MEMBERSHIP_INVALID`
- * otherwise.
+ * Validate final/cache rows against value-list tuples; unavailable context is reported. A non-member row is a
+ * `SEMANTIC_DOMAIN_CONFLICT` when no tuple can be adopted without breaking a protected field, a constant, a facet, a
+ * role format or another list, and `SEMANTIC_TUPLE_MEMBERSHIP_INVALID` otherwise.
  *
  * @param graph schema graph
  * @param resources final rows by resource
@@ -403,9 +397,9 @@ function tupleRowDiagnostic(
 }
 
 /**
- * Make every generated row a member of the value-list tuples it can join, as the last step before the checks, choosing
- * the tuples of lists that share a field together ({@link solveTupleChoice}). Repeats until no row changes; supplied
- * rows and protected fields keep their values.
+ * Before the final checks, make every generated row a member of the value-list tuples it can join, choosing tuples of
+ * lists sharing a field together ({@link solveTupleChoice}). Repeats until no row changes; supplied rows and
+ * protected fields keep their values.
  *
  * @param graph schema graph
  * @param resources final rows by resource
@@ -499,8 +493,7 @@ function tupleAssignment(
 }
 
 /**
- * The owner row after it adopted, for each list it is no member of, a tuple chosen together with the lists
- * sharing a field with it.
+ * The owner row after adopting, for each list it is no member of, a tuple chosen jointly with the lists sharing a field.
  *
  * @param row the owner row
  * @param index the row's position, which rotates the candidate order

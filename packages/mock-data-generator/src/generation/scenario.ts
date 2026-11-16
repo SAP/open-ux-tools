@@ -9,9 +9,10 @@ import { MOCKGEN_ERROR_CODE, MockGenError } from '../errors.js';
 /**
  * Bind finite domains from enumerable authored value helps before selecting providers.
  *
- * @param graph
- * @param existingData
- * @param diagnostics
+ * @param graph the schema graph
+ * @param existingData the caller's existing data, by entity set
+ * @param diagnostics receives domain conflict warnings
+ * @returns the graph with bound domains as enumeration values
  */
 export function applyApplicationDomains(
     graph: SchemaGraph,
@@ -112,8 +113,7 @@ function bindMappingDomain(
     if (!property) {
         return;
     }
-    // Relationship assignment is resolved as a tuple later. Do not turn a
-    // potentially conflicting value help into an unconditional scalar facet.
+    // Relationship fields are resolved as tuples later; do not bind a possibly conflicting scalar domain.
     if (isRelationshipField(graph, entity, property)) {
         if (relationshipConflictsWithValueList(context, property, initial, mapping)) {
             diagnostics.push({
@@ -205,9 +205,11 @@ function relationshipConflictsWithValueList(
 /**
  * Apply explicit fictional domains only where application metadata supplies no domain.
  *
- * @param graph
- * @param scenario
- * @param diagnostics
+ * @param graph the schema graph
+ * @param scenario the synthetic scenario, if any
+ * @param diagnostics receives scenario diagnostics
+ * @returns the graph with scenario domains applied
+ * @throws {MockGenError} when the scenario is invalid or references unknown fields
  */
 export function applySyntheticScenario(
     graph: SchemaGraph,

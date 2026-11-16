@@ -157,9 +157,8 @@ export function serializeFieldContextV3(context: FieldContextV3): string {
         ...(context.isKey ? ['key'] : []),
         ...(context.nullable ? [] : ['required'])
     ].join(', ');
-    // The identifier's head noun (its last word) is what a name means: `ShipmentStatus` is a
-    // status, `ShipmentStatusName` is a name. Mean pooling cannot weigh one token, so the head noun
-    // is stated once more as a short clause.
+    // The head noun (last word) carries a name's meaning; mean pooling cannot weigh one token, so it is
+    // repeated as a short clause.
     const propertyWords = identifierWords(context.propertyName);
     const headNoun = propertyWords.split(' ').at(-1)?.toLowerCase();
     return [

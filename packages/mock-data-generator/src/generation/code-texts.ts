@@ -39,9 +39,8 @@ function compactName(name: string): string {
 }
 
 /**
- * Whether a field is a name form: the last word of its name is a text word (`ShelfName`, `PaymentGroupText`),
- * so it holds words that name something, never a code. A name of one word (`Context`) has no word boundary to
- * read, so it is not a name form by its name alone.
+ * Whether a field is a name form: its name has several words and the last is a text word (`ShelfName`,
+ * `PaymentGroupText`), so it never holds a code. A one-word name (`Context`) is not.
  *
  * @param property the field
  * @returns true for a name form
@@ -52,8 +51,8 @@ export function isNameForm(property: SchemaProperty): boolean {
 }
 
 /**
- * Whether a string sibling holds the text of a code by its name alone: the code's name followed by one text
- * word, and room for more than the code. The code's name marks where the text word begins.
+ * Whether a string sibling holds a code's text by name: the code's name followed by one text word, with room
+ * for more than the code.
  *
  * @param code candidate code
  * @param text candidate text
@@ -158,9 +157,8 @@ function isValueListCode(graph: SchemaGraph, entity: SchemaEntity, code: SchemaP
 }
 
 /**
- * The names of the fields of an entity that hold the text naming one of its codes. A number or the
- * entity's own key identifies the row, and its text describes the row itself, so it counts only when the
- * code is a string and, for a key, when the entity is a value list.
+ * The fields of an entity holding the text of one of its codes. The text of a number or key describes the row
+ * itself, so only string codes count, and a key only when the entity is a value list.
  *
  * @param graph service schema
  * @param entity the entity
@@ -316,9 +314,8 @@ function pairSites(input: CodeTextReconciliation): PairSite[] {
 }
 
 /**
- * Texts the caller or another entity fixed, by domain and code: the supplied rows of a value help first, which
- * are the whole list of its codes, then generated cells generation may not write. Other supplied rows are
- * published as written and name no code of a generated row.
+ * Texts fixed by the caller or another entity, by domain and code: a value help's supplied rows first (its
+ * whole code list), then generated cells that may not be written. Other supplied rows name no generated code.
  *
  * @param input the reconciliation
  * @param sites the pair sites
@@ -391,8 +388,8 @@ function nameFrom(sites: ReadonlyArray<PairSite>, known: KnownTexts, source: Tex
 }
 
 /**
- * The text of every code no fixed text names: its record name or the first generated text of the code. A
- * code neither names keeps what it holds, which is empty unless a tier wrote a value that is no text.
+ * The text of every code without a fixed text: its record name or its first generated text. A code with
+ * neither keeps what it holds.
  *
  * @param input the reconciliation
  * @param sites the pair sites

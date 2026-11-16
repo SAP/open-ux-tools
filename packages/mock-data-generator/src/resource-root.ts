@@ -8,9 +8,8 @@ import { RESOURCES_PREFIX } from './model/packaged-models.js';
 let domainRoot: string | undefined;
 
 /**
- * The installed package directory, derived from this module's location when first needed, never when the
- * module loads. A CommonJS bundle gives the module no URL; an ES module bundle gives it the bundle's URL,
- * so a bundled host passes `resourceRoot` instead of relying on it.
+ * The installed package directory, derived lazily from this module's URL. Bundles give no URL (CommonJS) or
+ * the bundle's URL (ES module), so a bundled host passes `resourceRoot` instead.
  *
  * @returns the package directory, or undefined when the module has no file URL
  */
@@ -34,8 +33,8 @@ export function packageResourceRoot(): string {
 }
 
 /**
- * Fix the root the domain resources of this process are read from, unless it is already fixed. A process uses one set
- * of domain resources, so a session on another root must have byte-identical resources, which the caller checks.
+ * Fix the domain resource root of this process unless already fixed. A process uses one set of domain resources, so
+ * the caller checks that a session on another root has byte-identical resources.
  *
  * @param root absolute resource root
  * @returns the root the domain resources are read from: `root`, or the root fixed before it
@@ -46,8 +45,8 @@ export function claimDomainResourceRoot(root: string): string {
 }
 
 /**
- * The file a declared resource path names below the domain resource root. The root is the package's own
- * `resources/` directory unless a session fixed another one first.
+ * The file a declared resource path names below the domain resource root (the package's `resources/` unless
+ * a session fixed another root first).
  *
  * @param declaredPath a manifest dataset path such as `resources/banks/value-banks.v2.json`
  * @returns the absolute file path

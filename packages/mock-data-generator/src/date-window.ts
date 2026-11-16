@@ -2,11 +2,7 @@ import { DEFAULT_REFERENCE_DATE, DEFAULT_WINDOW_YEARS, MAX_WINDOW_YEARS } from '
 import { MOCKGEN_ERROR_CODE, MockGenError } from './errors.js';
 import { t } from './i18n.js';
 
-/**
- * The calendar window deterministic dates are drawn from: `years` calendar years starting at the
- * reference date (UTC midnight). The typed date floor spreads over the whole window, seeded key dates
- * start inside it, and the value banks' dates fall in the years after the reference year.
- */
+/** The calendar window deterministic dates are drawn from: `years` calendar years from the reference date (UTC). */
 export interface DateWindow {
     /** The reference date as epoch milliseconds at UTC midnight. */
     readonly startMs: number;

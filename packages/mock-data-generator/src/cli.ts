@@ -40,9 +40,7 @@ async function readRequestDocument(inputPath: string): Promise<GenerateProjectDa
 }
 
 /**
- * The CLI's logger: messages for people go to the console through `@sap-ux/logger`, as in the other
- * `@sap-ux` command-line tools. Standard output carries the command's JSON result only when the command
- * succeeds (exit code 0); a failure logs its message and exits with code 1 without a result.
+ * The CLI's console logger for messages to people; standard output is reserved for the JSON result.
  *
  * @returns the console logger
  */
@@ -51,8 +49,7 @@ export function createCliLogger(): Logger {
 }
 
 /**
- * Run one CLI command. The command's result is one JSON document on standard output, so it stays
- * machine-readable; messages for people go through the logger.
+ * Run one CLI command, writing its result as one JSON document to standard output.
  *
  * @param args command-line arguments after the executable
  * @param logger where messages for people go
@@ -89,8 +86,7 @@ async function runCommand(args: readonly string[], logger: Logger): Promise<numb
 }
 
 /**
- * Run the opt-in standalone CLI; the application mockserver is never modified by this command. A failure
- * is logged as an error through the logger and rethrown, so the caller decides the exit code.
+ * Run the standalone CLI. A failure is logged and rethrown, so the caller decides the exit code.
  *
  * @param args command-line arguments after the executable: `help`, `info` or `generate --input <request.json>`
  * @param logger where messages for people go; the console logger by default

@@ -3,9 +3,8 @@ import type { ConceptValueBank } from '../semantics/bank-store.js';
 import { isRecord, isSha256Hex } from '../guards.js';
 
 /**
- * The classifier's prototype head (head B): it shares the encoder with the role head and assigns the nearest concept
- * prototype when similarity and margin clear its thresholds. Concept values live in the value-bank store under
- * `concept:<id>` and are joined here.
+ * The classifier's prototype head (head B): shares the role head's encoder and assigns the nearest concept prototype
+ * when similarity and margin clear its thresholds. Concept values come from the value-bank store (`concept:<id>`).
  */
 export interface ConceptHead {
     readonly format: 'mockgen-concept-head';
@@ -34,8 +33,7 @@ function record(value: unknown, label: string): Record<string, unknown> {
     return value;
 }
 
-// `cohesion` (how close the concept's own training examples sit to its prototype) is training
-// provenance recorded by the head builder; the runtime accepts it in the file but does not use it.
+// `cohesion` is training provenance from the head builder; accepted but unused at runtime.
 const CONCEPT_KEYS = new Set(['id', 'minimumSimilarity', 'cohesion']);
 
 function parseConcept(
@@ -175,8 +173,7 @@ export function parseConceptHead(
 const NUMERIC_TYPES = new Set(['int', 'decimal']);
 
 function typeCompatible(concept: ConceptBank, primitiveType: string): boolean {
-    // Numeric ranges only fill numeric columns; string banks only fill text columns of a concept that
-    // was observed as text.
+    // Numeric ranges only fill numeric columns; string banks only fill text columns of a concept observed as text.
     if (concept.valueKind === 'number' || concept.valueKind === 'decimal') {
         return NUMERIC_TYPES.has(primitiveType);
     }

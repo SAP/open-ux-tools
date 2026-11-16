@@ -13,8 +13,7 @@ interface TextedMapping {
 }
 
 /**
- * The name of the local text field of a property: its text link when that names a property of the same
- * entity, not a navigation path.
+ * A property's text link when it names a property of the same entity rather than a navigation path.
  *
  * @param entity schema entity
  * @param propertyName property name
@@ -26,9 +25,8 @@ function localText(entity: SchemaEntity, propertyName: string): string | undefin
 }
 
 /**
- * Whether a text field is the text of a key of its own entity other than the given property: it then names
- * the row itself, so it is not the text of a reference too (CAP gives a foreign key the text annotation of
- * the key it references, which in a self-reference names the row's own text field).
+ * Whether a text field is the text of another key of its entity, so it names the row itself, not a reference
+ * (CAP gives a foreign key its referenced key's text annotation, which in a self-reference is the row's own text).
  *
  * @param entity schema entity
  * @param text the text field name
@@ -40,8 +38,7 @@ export function namesOwnRow(entity: SchemaEntity, text: string, propertyName: st
 }
 
 /**
- * The mappings of a relationship whose source and target properties both have a local text field, unless the
- * source's text field names the source row itself.
+ * The mappings whose source and target both have a local text field, unless the source's text names its own row.
  *
  * @param relationship the relationship
  * @param source entity of the relationship's source set
@@ -88,8 +85,8 @@ function isText(value: JsonValue | undefined): value is string {
 }
 
 /**
- * The text of a referencing field equals the text of the row it references, when the mapped properties at both ends
- * have a text field. References that select no single row, and empty texts, are not examined.
+ * A referencing field's text equals the referenced row's text when both mapped properties have one. References
+ * selecting no single row, and empty texts, are not examined.
  *
  * @param input check input
  * @returns findings per referencing text field
@@ -143,9 +140,8 @@ export function checkReferenceTexts(input: RealismInput): CheckOutcome {
 }
 
 /**
- * A property that repeats the referenced row's semantic key holds that row's value: when a relationship
- * references an entity that declares a semantic key, and the referencing entity has a non-key property of the
- * same name and type that no relationship maps, a row's value is the value of the row its reference selects.
+ * A non-key, unmapped property repeating (by name and type) the referenced entity's semantic key holds the value of
+ * the row its reference selects.
  *
  * @param input check input
  * @returns findings per repeating property
@@ -208,9 +204,8 @@ export function checkReferenceCopies(input: RealismInput): CheckOutcome {
 }
 
 /**
- * The generated rows of an entity set whose identifier repeats the identifier of another row of the set,
- * supplied or generated: the value of their first identifier property. Rows with an empty identifier value
- * are not examined.
+ * The generated rows whose identifier repeats another supplied or generated row's, reported by their first
+ * identifier value. Rows with an empty identifier value are not examined.
  *
  * @param input check input
  * @param entitySet the entity set
@@ -248,8 +243,8 @@ function repeatedIdentifiers(
 }
 
 /**
- * The semantic key of an entity (`Common.SemanticKey`) identifies one row: no generated row shares its values
- * with another row of the set, supplied or generated. Rows with an empty semantic-key value are not examined.
+ * The semantic key (`Common.SemanticKey`) identifies one row: no generated row shares its values with another
+ * row of the set. Rows with an empty semantic-key value are not examined.
  *
  * @param input check input
  * @returns findings per entity, on the first semantic-key property
@@ -271,9 +266,8 @@ export function checkSemanticKeys(input: RealismInput): CheckOutcome {
 }
 
 /**
- * The identifiers of each entity set beside its key and semantic key: its alternate keys (`Core.AlternateKeys`)
- * and the target properties of each declared to-one reference to it that do not hold its complete key, since
- * such a reference selects one row by them.
+ * Each entity set's other identifiers: alternate keys (`Core.AlternateKeys`) and the target properties of each
+ * declared to-one reference that does not hold its complete key, since it selects one row by them.
  *
  * @param input check input
  * @returns the property names of each identifier, by entity set
@@ -309,8 +303,8 @@ function declaredIdentifiers(input: RealismInput): Map<string, string[][]> {
 }
 
 /**
- * An alternate key, and the properties a declared to-one reference selects its target row by, identify one
- * row: no generated row shares their values with another row of the set, supplied or generated.
+ * Alternate keys and the properties a declared to-one reference selects by identify one row: no generated row
+ * shares their values with another supplied or generated row of the set.
  *
  * @param input check input
  * @returns findings per identifier, on its first property

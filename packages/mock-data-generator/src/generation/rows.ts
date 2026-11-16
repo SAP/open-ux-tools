@@ -7,14 +7,10 @@ import type {
     MockDataRow
 } from '../types.js';
 
-/**
- * Row helpers shared by the generation stages: value and key comparison, the two notions of caller-owned
- * data, protected fields, freezing and diagnostic de-duplication.
- */
+/** Row helpers shared by the generation stages. */
 
 /**
- * Whether two field values are the same JSON value. Objects and arrays compare by their JSON text, so
- * key order inside an object value matters.
+ * Whether two field values are the same JSON value; objects compare by JSON text, so key order matters.
  *
  * @param left first value
  * @param right second value
@@ -25,8 +21,7 @@ export function sameValue(left: JsonValue | undefined, right: JsonValue | undefi
 }
 
 /**
- * The identity of a row under an entity's key: the JSON text of its key values in key order. Two rows
- * with the same signature collide on the key. A missing key value renders as `null`.
+ * A row's key identity: the JSON text of its key values in key order (a missing value renders as `null`).
  *
  * @param keys the key properties, in declaration order
  * @param row the row
@@ -43,9 +38,8 @@ export function keySignature(
 export type AuthoritativeInitialRows = Extract<ExistingInitialRows, { rows: ReadonlyArray<MockDataRow> }>;
 
 /**
- * Whether the caller's initial rows for an entity set are authoritative: present and enumerable, so they
- * are the complete published domain of that set. Generation reads them as the rows references resolve
- * against and never rewrites them. A contributor that cannot enumerate its rows is not authoritative.
+ * Whether the caller's initial rows for an entity set are authoritative (present and enumerable): references
+ * resolve against them and generation never rewrites them.
  *
  * @param initialRows the caller's initial rows for one entity set
  * @returns true when the rows are present and enumerable
@@ -57,8 +51,8 @@ export function hasAuthoritativeRows(
 }
 
 /**
- * Whether the application's own mock data contributor fills an entity set with rows that cannot be read; the model tier
- * then leaves the set to the deterministic tier. Supplied rows do not count.
+ * Whether the application's mock data contributor fills an entity set with rows that cannot be read; the
+ * model tier then leaves the set to the deterministic tier.
  *
  * @param existing the caller's existing data for one entity set
  * @returns true when a contributor declares initial data whose rows cannot be read
@@ -72,9 +66,7 @@ export function contributorFillsUnreadably(existing: ExistingMockData | undefine
 }
 
 /**
- * Whether a property is a key or declares an enumeration (even an empty one). With
- * {@link isRelationshipEnd}, this is the definition of a field that format providers and tuple projection
- * must not rewrite.
+ * Whether a property is a key or declares an enumeration (even an empty one); see {@link isProtectedProperty}.
  *
  * @param property the property
  * @returns true for a key or an enumeration-typed property
@@ -84,9 +76,8 @@ function isKeyOrDeclaredEnumeration(property: SchemaProperty): boolean {
 }
 
 /**
- * Whether a property is a key or has a non-empty enumeration: the fields whose values coherence rules and
- * temporal repair keep. An enumeration without members imposes no domain, so, unlike
- * {@link isProtectedProperty}, it does not fix the field here.
+ * Whether a property is a key or has a non-empty enumeration: the fields coherence rules and temporal repair
+ * keep. Unlike {@link isProtectedProperty}, an empty enumeration does not count, as it imposes no domain.
  *
  * @param property the property
  * @returns true for a key or a property with enumeration members
@@ -127,8 +118,7 @@ export function isProtectedProperty(graph: SchemaGraph, entity: SchemaEntity, pr
 }
 
 /**
- * The names of an entity's protected fields as {@link isProtectedProperty} defines them, computed in one
- * pass over the relationships for callers that test many fields.
+ * The names of an entity's protected fields ({@link isProtectedProperty}), in one pass over the relationships.
  *
  * @param graph the schema graph
  * @param entity the entity
@@ -161,8 +151,8 @@ export function relationshipEndNames(graph: SchemaGraph, entity: SchemaEntity): 
 }
 
 /**
- * Freeze a list of rows and each row in it. The freeze is two levels deep on purpose: field values are
- * JSON scalars or are never mutated after generation, and a deeper freeze would cost a full walk.
+ * Freeze a list of rows and each row. Two levels deep on purpose: field values are never mutated after
+ * generation, and a deeper freeze would cost a full walk.
  *
  * @param rows the rows
  * @returns the same rows, frozen, in a frozen array
@@ -172,8 +162,7 @@ export function freezeRows<Row extends object>(rows: ReadonlyArray<Row>): Readon
 }
 
 /**
- * Append a diagnostic unless one with the same code and target was already reported, so a condition
- * found once per row is reported once per field.
+ * Append a diagnostic unless one with the same code and target was already reported.
  *
  * @param diagnostics the diagnostics so far, in report order
  * @param diagnostic the diagnostic to report

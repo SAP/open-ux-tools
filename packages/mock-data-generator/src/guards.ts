@@ -23,8 +23,7 @@ export function isSha256Hex(value: unknown): value is string {
 }
 
 /**
- * Whether a path lies inside a root directory, or is the root itself. Both paths must be resolved
- * (absolute) already; symbolic links are not followed here.
+ * Whether a resolved path is a root directory or lies inside it; symbolic links are not followed.
  *
  * @param root the containing directory
  * @param candidate the path to check
@@ -46,8 +45,7 @@ export function errorMessage(error: unknown): string {
 }
 
 /**
- * The text of a cell value: a scalar as `String` writes it, a structured value as JSON, so an object never reads
- * as `[object Object]`.
+ * The text of a cell value: a scalar via `String`, a structured value as JSON (never `[object Object]`).
  *
  * @param value the cell value
  * @returns its text
@@ -69,8 +67,7 @@ export function errnoCode(error: unknown): string | undefined {
 }
 
 /**
- * Whether a caught value is an error of the given built-in kind, checked by name so that errors raised by
- * host objects of another realm (for example `TextDecoder` under a test sandbox) are recognised too.
+ * Whether a caught value is an error of the given kind, checked by name so errors from another realm match too.
  *
  * @param error the caught value
  * @param name the error name, such as `TypeError`

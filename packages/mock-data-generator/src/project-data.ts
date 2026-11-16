@@ -151,9 +151,8 @@ const REMOVED_TRANSACTION_PREFIX = '.mockgen-trash-';
 const JOURNAL_PHASES: ReadonlySet<string> = new Set(['staging', 'prepared', 'backed-up', 'installed']);
 
 /**
- * The record of a project data transaction, written as soon as its directory exists. `staging`: files are
- * being written and the data directory is untouched. `prepared`: the staged files are complete.
- * `backed-up`: the data directory moved to the backup. `installed`: the staged files are the data directory.
+ * The journal of a project data transaction. Phases: `staging` (data directory untouched), `prepared` (staged
+ * files complete), `backed-up` (data directory moved to the backup), `installed` (staged files are the data directory).
  */
 interface ProjectJournal {
     formatVersion: 1;
@@ -188,8 +187,8 @@ async function writeProjectJournal(path: string, journal: ProjectJournal): Promi
 }
 
 /**
- * Remove a transaction directory. It is first renamed out of the transaction namespace, so a removal that
- * stops half-way never leaves something that looks like an interrupted transaction.
+ * Remove a transaction directory, renaming it out of the transaction namespace first so a half-done removal
+ * never looks like an interrupted transaction.
  *
  * @param parent directory that holds the transaction
  * @param transactionRoot the transaction directory
@@ -236,7 +235,7 @@ async function readProjectJournal(transactionRoot: string): Promise<ProjectJourn
     try {
         value = JSON.parse(journalText);
     } catch (error) {
-        // JSON.parse fails only with a SyntaxError; the journal is then reported unreadable with that cause.
+        // A SyntaxError becomes the cause of the unreadable-journal error below.
         if (!(error instanceof SyntaxError)) {
             throw error;
         }
@@ -253,8 +252,8 @@ async function readProjectJournal(transactionRoot: string): Promise<ProjectJourn
 }
 
 /**
- * Finish or undo the transactions an interrupted run left in a parent directory. The caller holds the
- * project lock of that directory, so every transaction found belongs to a run that has ended.
+ * Finish or undo the transactions an interrupted run left in a parent directory. The caller holds its
+ * project lock, so every transaction found belongs to an ended run.
  *
  * @param parent directory that holds the project data directories
  * @param directory the project data directory of this run
@@ -263,16 +262,15 @@ async function readProjectJournal(transactionRoot: string): Promise<ProjectJourn
 async function recoverProjectTransactions(parent: string, directory: string, targetName: string): Promise<void> {
     for (const entry of await readdir(parent, { withFileTypes: true })) {
         if (entry.isDirectory() && !entry.isSymbolicLink()) {
-            // One entry after the other: recovering a transaction may move the project data directory.
-            // Sequential: ordered file-system transaction.
+            // Sequential: recovering a transaction may move the project data directory.
             await recoverProjectEntry(parent, entry.name, directory, targetName); // NOSONAR
         }
     }
 }
 
 /**
- * Finish or undo one entry an interrupted run left in a parent directory: a removed transaction is deleted, a
- * transaction of this project data directory is rolled back or completed, and any other entry is left alone.
+ * Finish or undo one entry an interrupted run left: delete a removed transaction, roll back or complete one of
+ * this data directory, and leave any other entry alone.
  *
  * @param parent directory that holds the project data directories
  * @param name name of the entry, a directory
@@ -302,9 +300,8 @@ async function recoverProjectEntry(parent: string, name: string, directory: stri
 }
 
 /**
- * Bring the project data directory to the state a journaled transaction left consistent: before installation
- * the backup is put back (keeping output written since aside, unless it changed after the interruption);
- * after installation the installed directory must exist.
+ * Restore a consistent project data directory: before installation put the backup back (moving the interrupted
+ * output aside, or failing if it changed since); after installation require the installed directory.
  *
  * @param transactionRoot directory of the transaction
  * @param directory the project data directory of this run
@@ -407,8 +404,8 @@ interface ProjectDataLocation {
 }
 
 /**
- * Check that the project data directory is as it was before generation: present or absent as before, inside the
- * project, free of links and special files, and with the contents it had.
+ * Check that the project data directory is as before generation: same presence, inside the project, no links or
+ * special files, same contents.
  *
  * @param location where the data lives and what it held before generation
  * @throws {MockGenError} `PROJECT_DATA_CHANGED` or `PROJECT_PATH_UNSAFE` when it is not
@@ -431,8 +428,7 @@ async function assertUnchangedDuringGeneration(location: ProjectDataLocation): P
 }
 
 /**
- * Whether the project data directory changed since generation began: it appeared or disappeared, or its
- * contents differ.
+ * Whether the project data directory appeared, disappeared or changed contents since generation began.
  *
  * @param directory the project data directory
  * @param originallyPresent whether it existed before generation
@@ -451,8 +447,7 @@ async function projectDataChanged(
 }
 
 /**
- * Write the generated rows of each target into the staging directory, one JSON file per resource. A target the
- * schema skipped keeps any existing file.
+ * Write one JSON file per generated target into the staging directory; a skipped target keeps its existing file.
  *
  * @param staged the staging directory
  * @param targetNames the requested resources, in request order
@@ -471,7 +466,6 @@ async function stageGeneratedFiles(
     for (const name of targetNames) {
         const rows = generation.resources[name];
         if (!rows) {
-            // The schema cannot describe rows for a skipped entity set; any existing file stays untouched.
             if (
                 generation.diagnostics.some(
                     ({ code, target }) => code === 'SCHEMA_ENTITY_SET_SKIPPED' && target === name
@@ -490,8 +484,7 @@ async function stageGeneratedFiles(
 }
 
 /**
- * Replace the project data directory with the generated files through a journaled transaction. The caller
- * holds the project lock of the parent directory.
+ * Replace the project data directory through a journaled transaction; the caller holds the parent's project lock.
  *
  * @param input project, data directory, request and options
  * @param generation the validated generation result
@@ -561,8 +554,7 @@ async function replaceProjectData(
         throw error;
     } finally {
         if (!rollbackFailed) {
-            // A transaction left behind holds its journal, which the next run's recovery completes, so a failed
-            // cleanup neither turns an installed result into a failure nor hides the error that ended the run.
+            // A leftover transaction is completed by the next run's recovery, so a failed cleanup is ignored.
             await removeTransaction(parent, transactionRoot).catch(() => undefined);
         }
     }

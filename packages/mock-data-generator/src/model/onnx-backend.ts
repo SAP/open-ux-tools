@@ -44,8 +44,7 @@ interface NativeOnnxApi {
 }
 
 /**
- * Find the runtime API on an imported module: on the module itself, or on its `default` export when the
- * module is loaded through CommonJS interop.
+ * Find the runtime API on an imported module, or on its `default` export under CommonJS interop.
  *
  * @param module imported runtime module
  * @returns the API, or undefined when the module does not expose a session factory and a tensor class
@@ -70,8 +69,8 @@ function nativeOnnxApi(module: unknown): NativeOnnxApi | undefined {
 }
 
 /**
- * Adapt an already integrity-verified ONNX runtime module to the backend the model runtimes use. Every
- * session runs on the CPU provider; the profile adds the options of one model kind.
+ * Adapt an integrity-verified ONNX runtime module to the model runtimes' backend; the profile supplies the session
+ * options of one model kind.
  *
  * @param module imported runtime module
  * @param label privacy-safe source label for diagnostics

@@ -33,14 +33,11 @@ interface OpenFileCompletionStoreOptions {
     namespace: string;
     /** Entries kept; the oldest leave first. */
     maximumEntries?: number;
-    /**
-     * Size the file never exceeds. Past it the file is rewritten with the newest entries that fit in half of it,
-     * so rewrites stay rare.
-     */
+    /** File size cap; past it the file is rewritten with the newest entries that fit in half, so rewrites stay rare. */
     maximumBytes?: number;
 }
 
-// A completion is one JSON object of at most eight bounded fields.
+// A completion is one JSON object of bounded fields.
 const MAXIMUM_ANSWER_LENGTH = 8_192;
 
 /**
@@ -76,7 +73,7 @@ function existingStoreFile(path: string): Stats | undefined {
     try {
         return lstatSync(path);
     } catch (error) {
-        // No file yet: the store starts empty. Other failures are reported as the store's failure.
+        // No file yet: the store starts empty. Other failures become the store's failure.
         if (errnoCode(error) !== 'ENOENT') {
             throw error;
         }
@@ -129,9 +126,8 @@ function appendStoreLine(path: string, line: string): void {
 }
 
 /**
- * Open (or create) a bounded, append-only answer store in a caller-owned directory, one `{"k": <sha256 key>, "v":
- * <completion>}` line per answer. An oversized file is reset or rewritten atomically with the newest entries, and any
- * file error leaves a working in-memory store and records `failure`.
+ * Open (or create) a bounded, append-only answer store, one `{"k": <sha256 key>, "v": <completion>}` line per answer.
+ * An oversized file is rewritten atomically; any file error leaves an in-memory store and records `failure`.
  *
  * @param options directory, namespace and bounds
  * @returns the store

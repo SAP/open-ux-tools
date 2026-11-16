@@ -13,9 +13,8 @@ export interface FinalCheckedResult {
 }
 
 /**
- * The fields (`EntitySet.Property`) that fail a check generation ends with: a value its planned role rejects,
- * or a row that is not a member of a value-list tuple although a compatible tuple exists. Rows the caller supplied
- * are published as supplied and are not checked.
+ * The fields (`EntitySet.Property`) that fail a final check: a value its planned role rejects, or a row outside a
+ * value-list tuple although a compatible tuple exists. Supplied rows are not checked.
  *
  * @param graph service schema
  * @param resources the rows
@@ -40,9 +39,9 @@ export function finalCheckFailures(
 }
 
 /**
- * Undo the changes of a late step (the realism guard, the standard fallback) that make a previously passing semantic or
- * value-list check fail, so the step never aborts generation. Affected entity sets, and the value helps of a failing
- * tuple, are restored until no new failure remains.
+ * Undo a late step's changes (the realism guard, the standard fallback) that make a passing semantic or value-list
+ * check fail, so the step never aborts generation: affected entity sets and the value helps of a failing tuple are
+ * restored until no new failure remains.
  *
  * @param graph service schema
  * @param before the rows before the step

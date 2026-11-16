@@ -7,8 +7,8 @@ import type { CheckOutcome, RealismInput } from './realism-types.js';
 const SAP_V2_SEMANTICS_UNIT = 'unit-of-measure';
 
 /**
- * Whether metadata says a string field holds the unit of a measured field: a `Measures.Unit` annotation names it, or
- * its V2 `sap:semantics` is `unit-of-measure`. A currency field is not one, and `sap:unit` alone does not decide.
+ * Whether a string field is a unit: a `Measures.Unit` annotation names it or its V2 `sap:semantics` is
+ * `unit-of-measure`. A currency field is not one, and `sap:unit` alone does not decide.
  *
  * @param entity the field's entity
  * @param property the field
@@ -41,8 +41,8 @@ function isUnitField(entity: SchemaEntity, property: SchemaProperty): boolean {
 }
 
 /**
- * Unit fields hold units: a unit field fails when most of its values are neither a UN/ECE Recommendation 20 code nor a
- * unit symbol, compared without case. Skipped without the unit references.
+ * A unit field fails when most values are neither a UN/ECE Recommendation 20 code nor a unit symbol (case-insensitive).
+ * Skipped without the unit references.
  *
  * @param input check input
  * @returns findings and coverage

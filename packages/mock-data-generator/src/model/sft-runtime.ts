@@ -17,16 +17,9 @@ export interface SftGrammarField {
     valueKind: JsonValueKind;
     nullable: boolean;
     maxLength?: number;
-    /**
-     * Type-exact number format. When set, a number takes no exponent, `integer` numbers take digits
-     * only, and the digit counts and range below bound the value; when absent, any JSON number is
-     * accepted.
-     */
+    /** Type-exact number format: no exponent, bounded digits and range; any JSON number when absent. */
     numberFormat?: SftNumberFormat;
-    /**
-     * Within this many characters of `maxLength`, the string may finish its current word but not
-     * start another one it would have to cut off. 0 or absent disables the steering.
-     */
+    /** Within this many characters of `maxLength` the string may finish its word but not start one; 0 disables. */
     steerWithin?: number;
 }
 
@@ -62,9 +55,8 @@ export interface ConstrainedTextGenerationInput {
 export interface ConstrainedTextGenerator {
     generate(input: ConstrainedTextGenerationInput, signal: AbortSignal): Promise<string>;
     /**
-     * One completion of the same prompt per seed, decoded together. A row that does not complete
-     * within `maxNewTokens`, or before `signal` aborts, is undefined; cancellation returns the rows
-     * completed so far instead of throwing.
+     * One completion of the same prompt per seed, decoded together. A row not completed within
+     * `maxNewTokens` or before abort is undefined; cancellation returns completed rows instead of throwing.
      */
     generateBatch?(
         input: ConstrainedTextGenerationInput,
@@ -81,9 +73,8 @@ export interface SamplingOptions {
 }
 
 /**
- * The prompt texts of prompt contract 1, the model's training format. They are model-contract data and
- * live in the SFT artifact's `generation-config.json`, which the package manifest pins by SHA-256; the
- * user-prompt skeleton around them is rendering code in {@link renderRowPrompt}.
+ * The prompt texts of prompt contract 1, from the SHA-256-pinned `generation-config.json`; the user-prompt
+ * skeleton around them is in {@link renderRowPrompt}.
  */
 export interface SftPromptTemplate {
     /** Text of the system turn. */
@@ -98,9 +89,8 @@ const PROMPT_TEMPLATE_KEYS: ReadonlySet<string> = new Set(['systemPrompt', 'exam
 const CHAT_MARKER_KEYS: ReadonlySet<string> = new Set(['turnStart', 'turnEnd']);
 
 /**
- * Validate the prompt template of a `generation-config.json`. The parser is strict: unknown keys, empty
- * texts, non-scalar example values and integer-like example keys (whose JSON order is not preserved by
- * JavaScript objects) are rejected, so a defective artifact fails to load instead of changing the prompt.
+ * Strictly validate the prompt template of a `generation-config.json`, so a defective artifact fails to load
+ * instead of changing the prompt. Integer-like example keys are rejected because objects do not keep their order.
  *
  * @param value the `promptTemplate` value of the parsed config
  * @returns the frozen template
@@ -146,11 +136,7 @@ interface CreateRowGeneratorOptions {
     maxFieldsPerPrompt?: number;
     /** Punctuation outside strings; `spaced` when absent. */
     separators?: JsonSeparators;
-    /**
-     * Completed answers by request, so an identical request (same model, prompt, grammar, sampling
-     * and seed) returns the same values without running the model again. No answers are kept when
-     * absent.
-     */
+    /** Completed answers by request, so an identical request skips the model; none are kept when absent. */
     completionStore?: SftCompletionStore;
 }
 
@@ -177,8 +163,7 @@ export function createMemoryCompletionStore(maximumEntries = DEFAULT_COMPLETION_
 const PROCESS_COMPLETION_STORE = createMemoryCompletionStore();
 
 /**
- * The completion store shared by the generators of this process: a regeneration of the same service
- * gets the answers it already received, and its budget goes to the requests it has not seen.
+ * The completion store shared by this process's generators, so a regeneration spends its budget on new requests.
  *
  * @returns the process-wide store
  */
@@ -187,12 +172,10 @@ export function processCompletionStore(): SftCompletionStore {
 }
 
 /**
- * Runtime contract 2: separators fed by the runtime, type-exact numbers, no new word near a string's maximum length,
- * coupled fields kept in one call and rows sharing a prompt decoded together. Rows return with the fields that
- * completed, for per-field acceptance.
+ * Runtime contract 2: runtime-fed separators, type-exact numbers, length steering, coupled fields in one call,
+ * rows sharing a prompt decoded together, and rows returned with the fields that completed.
  */
-// Within this many characters of the maximum length a string stops starting words: a third of the
-// length, at least 2 and at most 12, so a 10-character column stops 3 characters before its limit.
+// Steering window: a third of the maximum length, clamped to 2..12 characters.
 const MAXIMUM_STEERING_CHARACTERS = 12;
 const MINIMUM_STEERING_CHARACTERS = 2;
 const DEFAULT_DECIMAL_INTEGER_DIGITS = 15;
@@ -338,8 +321,7 @@ export function grammarFields(fields: ReadonlyArray<SftFieldRequest>): ReadonlyA
             return Object.freeze({
                 name: field.name,
                 valueKind: valueKind(field),
-                // The model is asked only for values it should write: a null would publish an empty
-                // cell where the typed floor already has a value.
+                // A null would publish an empty cell where the typed floor already has a value.
                 nullable: false,
                 ...(field.maxLength === undefined ? {} : { maxLength: field.maxLength }),
                 ...(numberFormat ? { numberFormat } : {}),
@@ -350,8 +332,8 @@ export function grammarFields(fields: ReadonlyArray<SftFieldRequest>): ReadonlyA
 }
 
 /**
- * An upper bound on the tokens of a completion under a grammar: every token carries at least one
- * character, so the longest text the grammar admits bounds the tokens. Escapes count two characters.
+ * An upper bound on a completion's tokens: the longest text the grammar admits, since every token has at least
+ * one character. Escapes count two characters.
  *
  * @param grammar the call's grammar fields
  * @returns token bound
@@ -387,8 +369,8 @@ function rowSeed(seed: number, entityName: string, rowIndex: number, chunkKey: s
 }
 
 /**
- * Split fields into calls of at most `maximum` fields, in field order, keeping each coupled group in
- * one call (a group larger than `maximum` is a call of its own).
+ * Split fields into calls of at most `maximum` fields in order, keeping each coupled group in one call
+ * (a larger group is a call of its own).
  *
  * @param fields requested fields
  * @param maximum fields per call
@@ -523,23 +505,17 @@ function isIncompleteCompletion(error: unknown, signal: AbortSignal): boolean {
 
 /** The settings of a row generator, resolved once when it is created. */
 interface RowGeneratorSettings {
-    /** The generator's options. */
     options: CreateRowGeneratorOptions;
     /** Budget of one call in milliseconds. */
     budgetMs: number;
-    /** Punctuation enforced outside strings. */
     separators: JsonSeparators;
-    /** Fields per model call. */
     maxFieldsPerPrompt: number;
 }
 
 /** One `generate` call of a row generator: its request, its cancellation and what it has produced. */
 interface RowGenerationCall {
-    /** The row generator's options. */
     options: CreateRowGeneratorOptions;
-    /** Punctuation enforced outside strings. */
     separators: JsonSeparators;
-    /** The request. */
     input: SftGenerationInput;
     /** The caller's cancellation. */
     signal: AbortSignal;
@@ -578,8 +554,7 @@ function completionKey(fingerprint: string, request: ConstrainedTextGenerationIn
 }
 
 /**
- * The constrained request for some fields of a row. The prompt renders only the entity and the fields,
- * so every row of a call shares it.
+ * The constrained request for some fields of a row; the prompt is shared by every row of a call.
  *
  * @param call the generation call
  * @param fields the fields to generate
@@ -652,8 +627,7 @@ async function generateRowFields(
 }
 
 /**
- * Generate some fields of every row in batches; only the rows without a stored answer run through the
- * model. A row whose answer does not parse keeps its fallback values.
+ * Generate some fields of every row in batches, running only rows without a stored answer through the model.
  *
  * @param call the generation call
  * @param fields the fields to generate
@@ -696,8 +670,7 @@ async function generateRowsTogether(
         try {
             partial = parseCompletion(completion, fields);
         } catch (error) {
-            // An unparseable row (malformed JSON or off-contract keys) keeps its fallback values; the
-            // others are kept. Any other failure is a defect and propagates.
+            // An unparseable row keeps its fallback values; any other failure is a defect and propagates.
             if (error instanceof SyntaxError || error instanceof TypeError) {
                 return;
             }
@@ -710,8 +683,8 @@ async function generateRowsTogether(
 }
 
 /**
- * Generate a chunk of fields for every row together. A failure after the call's budget ran out ends
- * the chunk instead of the call; cancellation by the caller propagates.
+ * Generate a chunk of fields for every row together. A failure after the budget ran out ends only the chunk;
+ * caller cancellation propagates.
  *
  * @param call the generation call
  * @param fields the fields to generate
@@ -733,9 +706,8 @@ async function generateChunkTogether(
 }
 
 /**
- * Generate a chunk of fields row by row. An incomplete or off-contract answer leaves the row's fields
- * to the fallback; the chunk ends when the call's budget runs out; any other failure propagates with
- * the row and chunk it happened in.
+ * Generate a chunk of fields row by row. An incomplete answer leaves the row to the fallback, an exhausted
+ * budget ends the chunk, and any other failure propagates with its row and chunk.
  *
  * @param call the generation call
  * @param fields the fields to generate
@@ -762,7 +734,6 @@ async function generateChunkRowByRow(
             if (call.context.signal.aborted) {
                 return;
             }
-            // An incomplete or off-contract completion leaves the row's fields to the fallback.
             if (isIncompleteCompletion(error, call.context.signal)) {
                 continue;
             }
