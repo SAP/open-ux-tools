@@ -33,6 +33,18 @@ const TRAVELS = `<EntityType Name="Travel"><Key><PropertyRef Name="ID"/><Propert
 <Property Name="Title" Type="Edm.String" MaxLength="60"/></EntityType>
 <EntityContainer Name="C"><EntitySet Name="Travels" EntityType="Demo.Travel"/></EntityContainer>`;
 
+const ORDERS_WITH_ITEM_COUNTS = `<EntityType Name="Order"><Key><PropertyRef Name="OrderID"/></Key>
+<Property Name="OrderID" Type="Edm.String" Nullable="false" MaxLength="10"/>
+<Property Name="Description" Type="Edm.String" MaxLength="40"/>
+<Property Name="ItemCount" Type="Edm.Int32"/>
+<Property Name="HasItems" Type="Edm.Boolean"/></EntityType>
+<EntityType Name="OrderItem"><Key><PropertyRef Name="OrderID"/><PropertyRef Name="ItemNo"/></Key>
+<Property Name="OrderID" Type="Edm.String" Nullable="false" MaxLength="10"/>
+<Property Name="ItemNo" Type="Edm.String" Nullable="false" MaxLength="6"/>
+<Property Name="Product" Type="Edm.String" MaxLength="40"/>
+<Property Name="Quantity" Type="Edm.Int32"/></EntityType>
+<EntityContainer Name="C"><EntitySet Name="Orders" EntityType="Demo.Order"/><EntitySet Name="OrderItems" EntityType="Demo.OrderItem"/></EntityContainer>`;
+
 describe('generating again from rows the caller kept', () => {
     it('reports date-order violations of supplied and generated rows together instead of failing', async () => {
         // Given a supplied price row whose validity ends before it starts, and generated rows that do the same
@@ -85,5 +97,31 @@ describe('generating again from rows the caller kept', () => {
         expect(
             result.resources.Travels.filter((published) => published.Title === 'Lisbon' && published.ID === 1)
         ).toHaveLength(1);
+    });
+
+    it('leaves supplied child rows to themselves when it links child rows to parents it infers', async () => {
+        // Given supplied order items, and orders whose item counts make the generator infer the item-to-order link
+        const items = [
+            { OrderID: 'MY-ORDER-1', ItemNo: '000010', Product: 'Hand-written product A', Quantity: 111 },
+            { OrderID: 'MY-ORDER-1', ItemNo: '000020', Product: 'Hand-written product B', Quantity: 222 }
+        ];
+        const serviceRequest: MockDataServiceRequest = {
+            ...request(ORDERS_WITH_ITEM_COUNTS, 'Orders'),
+            targets: [
+                { name: 'Orders', kind: 'entity-set' },
+                { name: 'OrderItems', kind: 'entity-set' }
+            ],
+            existingData: { OrderItems: supplied(items) }
+        };
+
+        // When both entity sets are generated
+        const result = await generateService(serviceRequest, { mode: 'deterministic', seed: 1, rowsPerEntity: 6 });
+
+        // Then the supplied items lead as written, and no generated item copies their content
+        const published = result.resources.OrderItems;
+        expect(published.slice(0, 2)).toEqual(items);
+        const generatedItems = published.slice(2);
+        expect(generatedItems.length).toBeGreaterThan(0);
+        expect(generatedItems.filter(({ Product }) => String(Product).startsWith('Hand-written'))).toEqual([]);
     });
 });

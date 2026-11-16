@@ -1621,7 +1621,12 @@ function alignDerivedChildDomains(
             continue;
         }
         const original = childRows.map((row) => ({ ...row }));
+        // Supplied child rows are published as written; only generated ones are linked.
+        const generatedFlags = generatedRowFlags(childEntity, childRows, existingData);
         childRows.forEach((childRow, rowIndex) => {
+            if (!generatedFlags[rowIndex]) {
+                return;
+            }
             const parentRow = parentRows[rowIndex % parentRows.length];
             relationship.mappings.forEach(({ sourceProperty, targetProperty }) => {
                 const property = childEntity.properties.find(({ name }) => name === sourceProperty);
