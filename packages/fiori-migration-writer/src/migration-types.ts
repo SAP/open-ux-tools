@@ -186,6 +186,12 @@ export interface Message {
     description: string;
     messageUrl?: string;
     action?: postMigrationAction;
+    /**
+     * Optional error code for telemetry. When present, only the code should be reported in telemetry
+     * (not the description, which may contain PII or sensitive data). The description is for logs only.
+     * Examples: 'UNSUPPORTED_FLOORPLAN', 'ENOENT', 'MANIFEST_PARSE_ERROR', 'MISSING_ODATA_SERVICE'
+     */
+    code?: string;
 }
 
 export const TemplateDataKey = {
