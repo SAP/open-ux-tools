@@ -36,6 +36,7 @@ import { MigrationTypes } from './utils/constants.js';
 import type { Editor } from 'mem-fs-editor';
 import { hasStore } from './types/mem-fs-types.js';
 import { i18nText, initI18n } from './i18n.js';
+import { extractErrorCode } from './utils/error-codes.js';
 
 /**
  * Configuration options for the migrate method
@@ -131,7 +132,8 @@ export class ProjectMigrator {
             const useMessage = typeof e === 'object' && e !== null && 'useMessage' in e ? Boolean(e.useMessage) : false;
             messages.push({
                 type: 'ERROR',
-                description: `Error during migration: ${determineMessage(error, undefined, useMessage)}`
+                description: `Error during migration: ${determineMessage(error, undefined, useMessage)}`,
+                code: extractErrorCode(error)
             });
         }
 
@@ -145,7 +147,8 @@ export class ProjectMigrator {
                 migrationResult.result = false;
                 migrationResult.messages.push({
                     type: 'ERROR',
-                    description: `Error committing migration: ${error instanceof Error ? error.message : String(error)}`
+                    description: `Error committing migration: ${error instanceof Error ? error.message : String(error)}`,
+                    code: extractErrorCode(error)
                 });
             }
         }
@@ -202,7 +205,11 @@ export class ProjectMigrator {
         }
         return {
             result: false,
-            messages: messages.concat({ type: 'ERROR', description: i18nText('ERROR_FAILED_TO_GET_PROJECT_INFO') })
+            messages: messages.concat({
+                type: 'ERROR',
+                description: i18nText('ERROR_FAILED_TO_GET_PROJECT_INFO'),
+                code: 'PROJECT_INFO_FAILED'
+            })
         };
     }
 
@@ -346,7 +353,10 @@ export class ProjectMigrator {
         } catch (e) {
             return {
                 result: false,
-                messages: [...messages, { type: 'ERROR', description: createMigrationErrorMessage(e) }]
+                messages: [
+                    ...messages,
+                    { type: 'ERROR', description: createMigrationErrorMessage(e), code: extractErrorCode(e) }
+                ]
             };
         }
     }
@@ -395,7 +405,8 @@ export class ProjectMigrator {
         } catch (err) {
             messages.push({
                 type: 'ERROR',
-                description: `Error enabling TypeScript: ${err instanceof Error ? err.message : String(err)}`
+                description: `Error enabling TypeScript: ${err instanceof Error ? err.message : String(err)}`,
+                code: extractErrorCode(err)
             });
             return messages;
         }
