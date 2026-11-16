@@ -898,30 +898,29 @@ function indexEntityTypes(schemas: ReadonlyArray<XmlRecord>): Map<string, Resolv
  *
  * @param entityTypes - Entity types by qualified name.
  * @param qualifiedType - Namespace- or alias-qualified entity type name.
- * @param visiting - Types already on the inheritance path, to detect cycles.
  * @returns The hierarchy, or the reason it cannot be resolved within this document.
  */
 function entityTypeHierarchy(
     entityTypes: ReadonlyMap<string, ResolvedEntityType>,
-    qualifiedType: string,
-    visiting: ReadonlySet<string> = new Set()
+    qualifiedType: string
 ): ResolvedEntityType[] | string {
-    const resolved = entityTypes.get(qualifiedType);
-    if (!resolved) {
-        return `entity type ${qualifiedType} is not declared in the metadata document`;
+    // A loop, not recursion: an inheritance chain thousands of levels deep must not exhaust the stack.
+    const hierarchy: ResolvedEntityType[] = [];
+    const visited = new Set<string>();
+    let next: string | undefined = qualifiedType;
+    while (next !== undefined) {
+        const resolved = entityTypes.get(next);
+        if (!resolved) {
+            return `entity type ${next} is not declared in the metadata document`;
+        }
+        if (visited.has(resolved.qualifiedType)) {
+            return `entity inheritance contains a cycle at ${resolved.qualifiedType}`;
+        }
+        visited.add(resolved.qualifiedType);
+        hierarchy.push(resolved);
+        next = typeof resolved.entityType.BaseType === 'string' ? resolved.entityType.BaseType : undefined;
     }
-    if (visiting.has(resolved.qualifiedType)) {
-        return `entity inheritance contains a cycle at ${resolved.qualifiedType}`;
-    }
-    if (typeof resolved.entityType.BaseType !== 'string') {
-        return [resolved];
-    }
-    const base = entityTypeHierarchy(
-        entityTypes,
-        resolved.entityType.BaseType,
-        new Set([...visiting, resolved.qualifiedType])
-    );
-    return typeof base === 'string' ? base : [...base, resolved];
+    return hierarchy.reverse();
 }
 
 /** A currency or unit-of-measure code list an entity container declares (`CodeList.CurrencyCodes`, `UnitsOfMeasure`). */

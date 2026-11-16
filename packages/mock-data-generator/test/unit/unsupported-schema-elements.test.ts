@@ -187,6 +187,34 @@ describe('entity sets whose rows cannot be generated', () => {
         ]);
     });
 
+    it('resolves a long inheritance chain without exhausting the stack', () => {
+        // Given an entity type that derives from its key-declaring root through thousands of levels
+        const depth = 8000;
+        const levels = Array.from(
+            { length: depth },
+            (_, index) => `<EntityType Name="Level${index + 1}" BaseType="Library.Level${index}"/>`
+        ).join('');
+        const content = v4(`
+      <EntityType Name="Level0">
+        <Key><PropertyRef Name="ID"/></Key>
+        <Property Name="ID" Type="Edm.Int32" Nullable="false"/>
+      </EntityType>${levels}
+      <EntityContainer Name="Container">
+        <EntitySet Name="Leaves" EntityType="Library.Level${depth}"/>
+      </EntityContainer>`);
+
+        // When the metadata is parsed
+        const graph = parseEdmx(content);
+
+        // Then the set inherits the root's key
+        expect(
+            graph.entities.map(({ entitySetName, properties }) => [
+                entitySetName,
+                properties.filter(({ isKey }) => isKey).map(({ name }) => name)
+            ])
+        ).toEqual([['Leaves', ['ID']]]);
+    });
+
     it('generates the other requested sets and reports the skipped ones', async () => {
         // Given every declared entity set is requested, as the data editor does
         const serviceRequest = request(danglingMetadata, ['Shelves', 'Scans', 'Readers', 'Loans']);
