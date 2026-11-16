@@ -110,16 +110,38 @@
     }
 
     async function waitForEditorRta(targetWindow, deadline) {
-        const RuntimeAuthoring = await new Promise((resolve) =>
-            targetWindow.sap.ui.require(['sap/ui/rta/RuntimeAuthoring'], resolve, () => resolve(undefined))
-        );
-        while (!RuntimeAuthoring?.getCurrentInstance?.()) {
+        let timer;
+        try {
+            const RuntimeAuthoring = await requireModule(targetWindow, 'sap/ui/rta/RuntimeAuthoring', deadline);
+            let instance = RuntimeAuthoring.getCurrentInstance?.();
+            while (!instance) {
+                if (Date.now() >= deadline) {
+                    return false;
+                }
+                await delay(RTA_POLL_INTERVAL_MS);
+                instance = RuntimeAuthoring.getCurrentInstance?.();
+            }
             if (Date.now() >= deadline) {
                 return false;
             }
-            await delay(RTA_POLL_INTERVAL_MS);
+            // The current instance exists before start() finishes. getService waits for RTA's start event,
+            // and outline.get() waits for DesignTime synchronization, just as the editor's outline does.
+            const ready = async () => {
+                const outline = await instance.getService('outline');
+                await outline.get();
+                return true;
+            };
+            return await Promise.race([
+                ready(),
+                new Promise((resolve) => {
+                    timer = setTimeout(() => resolve(false), deadline - Date.now());
+                })
+            ]);
+        } catch {
+            return false;
+        } finally {
+            clearTimeout(timer);
         }
-        return true;
     }
 
     async function waitForAppLoaded(deadline) {

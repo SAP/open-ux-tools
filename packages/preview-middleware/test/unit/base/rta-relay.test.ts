@@ -281,7 +281,10 @@ describe('preview RTA relay', () => {
 describe('relay browser client', () => {
     const source = readFileSync(new URL('../../../templates/rta-relay-client.js', import.meta.url), 'utf8');
 
-    const editorRta = (instance: unknown = {}) => ({ getCurrentInstance: jest.fn(() => instance) });
+    const readyRtaInstance = () => ({
+        getService: jest.fn().mockResolvedValue({ get: jest.fn().mockResolvedValue([]) })
+    });
+    const editorRta = (instance: unknown = readyRtaInstance()) => ({ getCurrentInstance: jest.fn(() => instance) });
     const requireWith =
         (api: unknown, rta: unknown = editorRta()) =>
         (modules: string[], resolve: (module: unknown) => void) =>
@@ -428,7 +431,7 @@ describe('relay browser client', () => {
             await new Promise(setImmediate);
             expect(client.fetch).toHaveBeenCalledTimes(1);
             expect(startRTA).not.toHaveBeenCalled();
-            editor.instance = {};
+            editor.instance = readyRtaInstance();
             const body = await waitForResult(client);
             expect(body.result.isSuccess).toBe(true);
             expect(startRTA).toHaveBeenCalledTimes(actionName === '__ready__' ? 0 : 1);
@@ -455,7 +458,7 @@ describe('relay browser client', () => {
 
     test('waits for a same-origin app-loaded signal before adopting RTA, ignoring cross-origin senders', async () => {
         const startRTA = jest.fn().mockResolvedValue({ isSuccess: true, payload: { rtaStarted: true } });
-        const frameRequire = jest.fn(requireWith({ startRTA }, editorRta({})));
+        const frameRequire = jest.fn(requireWith({ startRTA }));
         const client = await runClient(
             [{ id: '1', actionName: 'com.sap.ui.flex.startRTA.v1', frameId: 'preview' }],
             {},
@@ -469,6 +472,126 @@ describe('relay browser client', () => {
         const body = await waitForResult(client);
         expect(body.result.isSuccess).toBe(true);
         expect(startRTA).toHaveBeenCalledTimes(1);
+    });
+
+    test.each(['__ready__', 'com.sap.ui.flex.startRTA.v1'])(
+        '%s waits for RTA startup and outline synchronization before the first overlay request',
+        async (actionName) => {
+            let finishStart!: (outline: unknown) => void;
+            let finishSync!: (nodes: unknown[]) => void;
+            const started = new Promise((resolve) => {
+                finishStart = resolve;
+            });
+            const synced = new Promise<unknown[]>((resolve) => {
+                finishSync = resolve;
+            });
+            const get = jest.fn(() => synced);
+            const getService = jest.fn(() => started);
+            let overlays: unknown[] = [];
+            const startRTA = jest.fn().mockResolvedValue({ isSuccess: true, payload: { rtaStarted: true } });
+            const getOverlaysInformation = jest.fn(async () => ({ isSuccess: true, payload: { overlays } }));
+            const client = await runClient(
+                [
+                    { id: '1', actionName },
+                    { id: '2', actionName: 'com.sap.ui.flex.getOverlaysInformation.v1' }
+                ],
+                { startRTA, getOverlaysInformation },
+                undefined,
+                false,
+                { rta: editorRta({ getService }) }
+            );
+            expect(client.fetch).toHaveBeenCalledTimes(1);
+            expect(startRTA).not.toHaveBeenCalled();
+            expect(getOverlaysInformation).not.toHaveBeenCalled();
+            expect(getService).toHaveBeenCalledWith('outline');
+
+            finishStart({ get });
+            await new Promise(setImmediate);
+            expect(get).toHaveBeenCalledTimes(1);
+            expect(client.fetch).toHaveBeenCalledTimes(1);
+            expect(startRTA).not.toHaveBeenCalled();
+            expect(getOverlaysInformation).not.toHaveBeenCalled();
+
+            overlays = [{ id: 'app-control' }];
+            finishSync([]);
+            await new Promise(setImmediate);
+            expect(startRTA).toHaveBeenCalledTimes(actionName === '__ready__' ? 0 : 1);
+            expect(getOverlaysInformation).toHaveBeenCalledTimes(1);
+            const results = client.fetch.mock.calls
+                .filter(([, options]) => options?.body)
+                .map(([, options]) => JSON.parse(options.body ?? ''));
+            expect(results).toEqual([
+                {
+                    id: '1',
+                    clientId: 'document-id',
+                    result: {
+                        isSuccess: true,
+                        payload: actionName === '__ready__' ? { ready: true } : { rtaStarted: true }
+                    }
+                },
+                { id: '2', clientId: 'document-id', result: { isSuccess: true, payload: { overlays } } }
+            ]);
+        }
+    );
+
+    test.each(['startup', 'outline synchronization'])(
+        'reports a %s failure instead of adopting an unfinished RTA instance',
+        async (stage) => {
+            const failure = jest.fn().mockRejectedValue(new Error('RTA initialization failed'));
+            const getService = stage === 'startup' ? failure : jest.fn().mockResolvedValue({ get: failure });
+            const startRTA = jest.fn();
+            const client = await runClient(
+                [{ id: '1', actionName: 'com.sap.ui.flex.startRTA.v1' }],
+                { startRTA },
+                undefined,
+                false,
+                { rta: editorRta({ getService }) }
+            );
+            expect((await waitForResult(client)).result.error.code).toBe('EDITOR_RTA_NOT_STARTED');
+            expect(startRTA).not.toHaveBeenCalled();
+        }
+    );
+
+    test.each(['startup', 'outline synchronization'])(
+        'bounds the wait for %s and ignores late completion',
+        async (stage) => {
+            let finish!: (value: unknown) => void;
+            const pending = new Promise((resolve) => {
+                finish = resolve;
+            });
+            const getService = jest.fn(() => (stage === 'startup' ? pending : Promise.resolve({ get: () => pending })));
+            const startRTA = jest.fn();
+            const client = await runClient(
+                [{ id: '1', actionName: 'com.sap.ui.flex.startRTA.v1' }],
+                { startRTA },
+                undefined,
+                false,
+                { rta: editorRta({ getService }), fastClock: true }
+            );
+            expect((await waitForResult(client)).result.error.code).toBe('EDITOR_RTA_NOT_STARTED');
+            finish(stage === 'startup' ? { get: async () => [] } : []);
+            await new Promise(setImmediate);
+            expect(startRTA).not.toHaveBeenCalled();
+            expect(client.fetch).toHaveBeenCalledTimes(3);
+        }
+    );
+
+    test('returns genuinely empty overlays once RTA is ready, without retrying', async () => {
+        const startRTA = jest.fn().mockResolvedValue({ isSuccess: true, payload: { rtaStarted: true } });
+        const getOverlaysInformation = jest.fn().mockResolvedValue({ isSuccess: true, payload: { overlays: [] } });
+        const client = await runClient(
+            [
+                { id: '1', actionName: 'com.sap.ui.flex.startRTA.v1' },
+                { id: '2', actionName: 'com.sap.ui.flex.getOverlaysInformation.v1' }
+            ],
+            { startRTA, getOverlaysInformation }
+        );
+        expect(startRTA).toHaveBeenCalledTimes(1);
+        expect(getOverlaysInformation).toHaveBeenCalledTimes(1);
+        expect(JSON.parse(client.fetch.mock.calls[3][1].body ?? '').result).toEqual({
+            isSuccess: true,
+            payload: { overlays: [] }
+        });
     });
 
     test('treats a missing RuntimeAuthoring module as not started', async () => {
