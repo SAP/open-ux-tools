@@ -141,6 +141,112 @@ describe('semantic keys repeated beside a reference', () => {
     });
 });
 
+/**
+ * EDMX of one schema with Common.SemanticKey annotations.
+ *
+ * @param types the entity types
+ * @param container the entity container content
+ * @param semanticKeys the semantic key property of each entity type
+ * @returns the EDMX document
+ */
+function semanticKeyEdmx(types: string, container: string, semanticKeys: Readonly<Record<string, string>>): string {
+    const annotations = Object.entries(semanticKeys)
+        .map(
+            ([type, key]) =>
+                `<Annotations Target="Demo.${type}"><Annotation Term="Common.SemanticKey"><Collection><PropertyPath>${key}</PropertyPath></Collection></Annotation></Annotations>`
+        )
+        .join('');
+    return `<?xml version="1.0" encoding="utf-8"?><edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx"><edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/Common.xml"><edmx:Include Namespace="com.sap.vocabularies.Common.v1" Alias="Common"/></edmx:Reference><edmx:DataServices><Schema Namespace="Demo" xmlns="http://docs.oasis-open.org/odata/ns/edm">${types}<EntityContainer Name="Container">${container}</EntityContainer>${annotations}</Schema></edmx:DataServices></edmx:Edmx>`;
+}
+
+describe('an entity that declares the semantic key it shares with the entity it references', () => {
+    it('keeps its own semantic key when it references rows of its own entity set', async () => {
+        // Given cost centers whose semantic key is CostCenter and which reference a parent cost center
+        const content = semanticKeyEdmx(
+            `<EntityType Name="CostCenter"><Key><PropertyRef Name="ID"/></Key><Property Name="ID" Type="Edm.Guid" Nullable="false"/><Property Name="CostCenter" Type="Edm.String" MaxLength="10" Nullable="false"/><Property Name="Parent_ID" Type="Edm.Guid"/><NavigationProperty Name="Parent" Type="Demo.CostCenter"><ReferentialConstraint Property="Parent_ID" ReferencedProperty="ID"/></NavigationProperty></EntityType>`,
+            '<EntitySet Name="CostCenters" EntityType="Demo.CostCenter"><NavigationPropertyBinding Path="Parent" Target="CostCenters"/></EntitySet>',
+            { CostCenter: 'CostCenter' }
+        );
+        const request = {
+            metadata: { format: 'edmx' as const, content },
+            service: { urlPath: '/cost-centers', odataVersion: '4.0' as const },
+            targets: [{ name: 'CostCenters', kind: 'entity-set' as const }],
+            existingData: {}
+        };
+
+        // When the service is generated
+        const result = await generateServiceForTesting(request, { seed: 1, rowsPerEntity: 8, mode: 'deterministic' });
+
+        // Then every cost center keeps a semantic key of its own, and the hard realism checks pass
+        const keys = result.resources.CostCenters.map((row) => row.CostCenter);
+        expect(new Set(keys).size).toBe(keys.length);
+        expect(result.realism?.passed).toBe(true);
+    });
+
+    it('copies the parent semantic key into a child whose own semantic key extends it', async () => {
+        // Given items keyed by a Guid whose semantic key is the order number of their order plus an item number
+        const content = semanticKeyEdmx(
+            `<EntityType Name="Order"><Key><PropertyRef Name="ID"/></Key><Property Name="ID" Type="Edm.Guid" Nullable="false"/><Property Name="OrderNo" Type="Edm.String" MaxLength="10" Nullable="false"/></EntityType><EntityType Name="Item"><Key><PropertyRef Name="ID"/></Key><Property Name="ID" Type="Edm.Guid" Nullable="false"/><Property Name="OrderNo" Type="Edm.String" MaxLength="10" Nullable="false"/><Property Name="ItemNo" Type="Edm.String" MaxLength="6" Nullable="false"/><Property Name="Order_ID" Type="Edm.Guid" Nullable="false"/><NavigationProperty Name="Order" Type="Demo.Order" Nullable="false"><ReferentialConstraint Property="Order_ID" ReferencedProperty="ID"/></NavigationProperty></EntityType>`,
+            '<EntitySet Name="Orders" EntityType="Demo.Order"/><EntitySet Name="Items" EntityType="Demo.Item"><NavigationPropertyBinding Path="Order" Target="Orders"/></EntitySet>',
+            { Order: 'OrderNo', Item: 'OrderNo</PropertyPath><PropertyPath>ItemNo' }
+        );
+        const request = {
+            metadata: { format: 'edmx' as const, content },
+            service: { urlPath: '/orders', odataVersion: '4.0' as const },
+            targets: [
+                { name: 'Orders', kind: 'entity-set' as const },
+                { name: 'Items', kind: 'entity-set' as const }
+            ],
+            existingData: {}
+        };
+
+        // When the service is generated
+        const result = await generateServiceForTesting(request, {
+            seed: 1,
+            rowsPerEntity: { Orders: 3, Items: 8 },
+            mode: 'deterministic'
+        });
+
+        // Then each item carries the order number of the order it references
+        const orderNumbers = new Map(result.resources.Orders.map((row) => [row.ID, row.OrderNo]));
+        expect(result.resources.Items).toHaveLength(8);
+        for (const item of result.resources.Items) {
+            expect(item.OrderNo).toBe(orderNumbers.get(item.Order_ID));
+        }
+        expect(result.realism?.passed).toBe(true);
+    });
+
+    it('keeps its own semantic key when the entity it references declares one of the same name', async () => {
+        // Given Kors whose semantic key Wex is also the semantic key of the Zibs they reference
+        const content = semanticKeyEdmx(
+            `<EntityType Name="Zib"><Key><PropertyRef Name="Qa"/></Key><Property Name="Qa" Type="Edm.Int32" Nullable="false"/><Property Name="Wex" Type="Edm.String" MaxLength="12" Nullable="false"/></EntityType><EntityType Name="Kor"><Key><PropertyRef Name="Qa"/></Key><Property Name="Qa" Type="Edm.Int32" Nullable="false"/><Property Name="Wex" Type="Edm.String" MaxLength="12" Nullable="false"/><Property Name="Zib_Qa" Type="Edm.Int32"/><NavigationProperty Name="Zib" Type="Demo.Zib"><ReferentialConstraint Property="Zib_Qa" ReferencedProperty="Qa"/></NavigationProperty></EntityType>`,
+            '<EntitySet Name="Zibs" EntityType="Demo.Zib"/><EntitySet Name="Kors" EntityType="Demo.Kor"><NavigationPropertyBinding Path="Zib" Target="Zibs"/></EntitySet>',
+            { Zib: 'Wex', Kor: 'Wex' }
+        );
+        const request = {
+            metadata: { format: 'edmx' as const, content },
+            service: { urlPath: '/kors', odataVersion: '4.0' as const },
+            targets: [
+                { name: 'Zibs', kind: 'entity-set' as const },
+                { name: 'Kors', kind: 'entity-set' as const }
+            ],
+            existingData: {}
+        };
+
+        // When more Kors are generated than there are Zibs
+        const result = await generateServiceForTesting(request, {
+            seed: 1,
+            rowsPerEntity: { Zibs: 2, Kors: 8 },
+            mode: 'deterministic'
+        });
+
+        // Then every Kor keeps a semantic key of its own, and the hard realism checks pass
+        const keys = result.resources.Kors.map((row) => row.Wex);
+        expect(new Set(keys).size).toBe(keys.length);
+        expect(result.realism?.passed).toBe(true);
+    });
+});
+
 describe('semantic keys in a facet form', () => {
     it('keeps a child equal to its parent when the model writes letters into a digit-sequence semantic key', async () => {
         // Given a parent semantic key and its repetition in a child, both digit sequences, and a model that

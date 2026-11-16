@@ -1,3 +1,4 @@
+import { identifiesReferencingRow } from '../schema/graph.js';
 import type { SchemaEntity, SchemaGraph, SchemaProperty, SchemaRelationship } from '../schema/graph.js';
 import type { ExistingMockData, JsonValue, MockDataRow } from '../types.js';
 import { generatedRowFlags } from './authored.js';
@@ -95,6 +96,7 @@ function semanticKeyLinks(
         return repeated &&
             declared &&
             !repeated.isKey &&
+            !identifiesReferencingRow(source, target, name) &&
             !mappedEnds.has(name) &&
             repeated.primitiveType === declared.primitiveType
             ? [{ relationship, kind: 'semantic-key' as const, sourceField: name, targetField: name }]

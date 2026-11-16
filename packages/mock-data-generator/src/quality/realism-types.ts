@@ -3,7 +3,7 @@ import { inFacetForm } from '../spec/facets.js';
 import type { JsonValue, MockDataRow } from '../types.js';
 
 /** Version of the realism checks; reports of different versions are not comparable. */
-export const REALISM_CHECKS_VERSION = 9;
+export const REALISM_CHECKS_VERSION = 10;
 
 /** The realism checks, each a property of final rows that holds for real data of any service. */
 export const REALISM_CHECK = {

@@ -180,6 +180,25 @@ export interface SchemaGraph {
 const OBJECT_PROTOTYPE_KEYS: ReadonlySet<string> = new Set(Object.getOwnPropertyNames(Object.prototype));
 
 /**
+ * Whether a semantic-key property the referencing entity repeats identifies the referencing row itself, so it is no
+ * copy of the referenced row's value: the entity references its own entity set, or the copy would make its whole
+ * semantic key the referenced row's.
+ *
+ * @param source - the referencing entity
+ * @param target - the referenced entity
+ * @param name - the repeated property
+ * @returns true when copying the referenced value would take the referencing row's identity
+ */
+export function identifiesReferencingRow(source: SchemaEntity, target: SchemaEntity, name: string): boolean {
+    const own = source.semanticKey ?? [];
+    if (!own.includes(name)) {
+        return false;
+    }
+    const referenced = target.semanticKey ?? [];
+    return source.entitySetName === target.entitySetName || own.every((member) => referenced.includes(member));
+}
+
+/**
  * Why an entity set is skipped when its name is one every JavaScript object inherits as a property, such as
  * `constructor` or `__proto__`: rows are kept in objects keyed by entity set name.
  *

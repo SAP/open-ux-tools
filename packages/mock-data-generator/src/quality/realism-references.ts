@@ -1,3 +1,4 @@
+import { identifiesReferencingRow } from '../schema/graph.js';
 import type { SchemaEntity, SchemaRelationship } from '../schema/graph.js';
 import type { JsonValue, MockDataRow } from '../types.js';
 import { generatedRows, heldAs, OutcomeCollector, REALISM_CHECK } from './realism-types.js';
@@ -166,9 +167,12 @@ export function checkReferenceCopies(input: RealismInput): CheckOutcome {
             const declared = target?.properties.find((property) => property.name === name);
             const field = `${relationship.fromEntitySet}.${name}`;
             if (
+                !source ||
+                !target ||
                 !repeated ||
                 !declared ||
                 repeated.isKey ||
+                identifiesReferencingRow(source, target, name) ||
                 mapped.has(field) ||
                 repeated.primitiveType !== declared.primitiveType ||
                 examined.has(field)
