@@ -1,7 +1,7 @@
 import type { Logger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
-import { PageTypeV4, type Parser } from '@sap/ux-specification/dist/types/src';
-type ApplicationModel = Parser.ApplicationModel;
+import { PageTypeV4 } from '@sap/ux-specification/dist/types/src/common/page.js';
+import type { ApplicationModel } from '@sap/ux-specification/dist/types/src/parser/index.js';
 import type {
     ActionButtonState,
     ContactCardField,
