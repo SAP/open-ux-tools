@@ -696,7 +696,6 @@ async function readVerifiedManifest(location: ResourceLocation): Promise<Package
         }
         return manifestText;
     });
-    const domainRoot = claimDomainResourceRoot(location.root);
     let datasetFailures: Awaited<ReturnType<typeof verifyDatasetsBelowResourceRoot>>;
     try {
         datasetFailures = await verifyDatasetsBelowResourceRoot(location.root, manifest);
@@ -713,6 +712,8 @@ async function readVerifiedManifest(location: ResourceLocation): Promise<Package
             t('integrity.datasetsCorrupt', { datasets: datasetFailures.map(({ id }) => id).join(', ') })
         );
     }
+    // A root is claimed only once its datasets verify, so a rejected root does not hold later sessions.
+    const domainRoot = claimDomainResourceRoot(location.root);
     if (domainRoot !== location.root) {
         assertSameDomainResources(manifest, location.root, domainRoot);
     }
