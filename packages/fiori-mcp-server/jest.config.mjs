@@ -3,7 +3,7 @@ import baseConfig from '../../jest.base.mjs';
 export default {
     ...baseConfig,
     setupFilesAfterEnv: ['<rootDir>/test/jest.setup.ts'],
-    modulePathIgnorePatterns: [...baseConfig.modulePathIgnorePatterns, '<rootDir>/test/data/'],
+    modulePathIgnorePatterns: [...baseConfig.modulePathIgnorePatterns, '<rootDir>/test/data/', '<rootDir>/test/test-data/'],
     transformIgnorePatterns: [
         'node_modules/(?!(@huggingface|@sap-ux|@sap-ux-private|@sap/ux-specification|@sap/ux-cds-compiler-facade)/)'
     ],

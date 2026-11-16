@@ -161,6 +161,7 @@ describe('getFunctionalityDetails', () => {
                                 'description':
                                     "Allows users to set the group for the action or action menu. When there's not enough space to display all grouped actions, they are moved together into overflow.",
                                 'descriptionSrcURL': 'https://ui5.sap.com/#/topic/cbf16c599f2d4b8796e3702f7d4aae6c',
+                                'hidden': true,
                                 'manifestPath': 'overflowGroup',
                                 'type': 'integer'
                             },
@@ -170,6 +171,7 @@ describe('getFunctionalityDetails', () => {
                                     'Allows users to set the priority of the action or action menu. This determines ordering and whether the action or action menu is moved into overflow.',
                                 'descriptionSrcURL': 'https://ui5.sap.com/#/topic/cbf16c599f2d4b8796e3702f7d4aae6c',
                                 'enum': ['AlwaysOverflow', 'High', 'Low', 'NeverOverflow'],
+                                'hidden': true,
                                 'manifestPath': 'priority',
                                 'type': 'string'
                             }
