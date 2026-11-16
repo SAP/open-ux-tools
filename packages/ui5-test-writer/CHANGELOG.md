@@ -1,5 +1,21 @@
 # @sap-ux/ui5-test-writer
 
+## 1.19.18
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-13
+
+#### Bug Fixes
+
+- Split the V4 template buckets at 1.120 so apps below 1.120 no longer emit OPA5 assertions their runtime cannot support. The former 1.84 bucket now serves >=1.120 <1.148, and a new <1.120 (1.84) bucket omits iCheckSection, iCheckNumberOfSections and iCheckColumns (unavailable / empty column headers before 1.120). Object page sections that would be left with only a section-tab navigation and no assertion are now skipped entirely, so the generated journey no longer produces an OPA5 test that fails with "Expected at least one assertion, but none were run". [[4702f41](https://github.com/SAP/open-ux-tools/commit/4702f417a3eacc8d2db3d3bccc7bd7db30e511ce)]
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.2.42 → 1.2.43
+
 ## 1.19.17
 
 ### Patch Changes

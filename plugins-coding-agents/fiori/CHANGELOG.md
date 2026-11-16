@@ -1,5 +1,29 @@
 # @sap-ux/fiori-tools-plugin
 
+## 1.17.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-11-16
+
+#### Features
+
+- add new skill to configure text and ID [[c1e6928](https://github.com/SAP/open-ux-tools/commit/c1e692854b953226eb33cfa7e05f017810b37d78)]
+
+## 1.16.16
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-13
+
+#### Dependency Updates
+
+- Sync version with @sap-ux/fiori-mcp-server [[73fdfbf](https://github.com/SAP/open-ux-tools/commit/73fdfbfe2a371d5b9666d2a69b55d1ed977bb69e)]
+
 ## 1.16.15
 
 ### Patch Changes

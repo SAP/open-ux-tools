@@ -34,10 +34,12 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const V4_TEMPLATE_LATEST = 'latest';
 const V4_TEMPLATE_1_84 = '1.84';
+const V4_TEMPLATE_1_120 = '1.120';
 const V4_TEMPLATE_BUCKETS = [
     { minVersion: '1.153.0', template: V4_TEMPLATE_LATEST },
     { minVersion: '1.152.0', template: '1.152' },
-    { minVersion: '1.148.0', template: '1.148' }
+    { minVersion: '1.148.0', template: '1.148' },
+    { minVersion: '1.120.0', template: V4_TEMPLATE_1_120 }
 ];
 
 function getTemplateUi5Version(ui5Version?: string): string {
@@ -56,14 +58,14 @@ function getTemplateUi5Version(ui5Version?: string): string {
  * Removes action tests the target template bucket cannot render, so journeys omit them instead of
  * emitting assertions that fail on older runtimes:
  * - custom (manifest-declared) actions: rendered only by `1.152` and `latest` buckets.
- * - menu (drop-down) actions: rendered by `1.148`, `1.152`, and `latest`; the `1.84` bucket has no menu template.
+ * - menu (drop-down) actions: rendered by `1.148`, `1.152`, and `latest`; the `1.84` and `1.120` buckets have no menu template.
  *
  * @param appFeatures - the extracted app feature data (mutated in place)
- * @param templateUi5Version - the selected template bucket ('1.84' / '1.148' / '1.152' / 'latest')
+ * @param templateUi5Version - the selected template bucket ('1.84' / '1.120' / '1.148' / '1.152' / 'latest')
  */
 export function removeUnsupportedActions(appFeatures: AppFeatures, templateUi5Version: string): void {
     const stripCustom = templateUi5Version !== V4_TEMPLATE_LATEST && templateUi5Version !== '1.152';
-    const stripMenu = templateUi5Version === V4_TEMPLATE_1_84;
+    const stripMenu = templateUi5Version === V4_TEMPLATE_1_84 || templateUi5Version === V4_TEMPLATE_1_120;
     if (!stripCustom && !stripMenu) {
         return;
     }

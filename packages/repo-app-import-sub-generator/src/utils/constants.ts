@@ -28,7 +28,7 @@ export const generatorTitleConfig: Record<AppDownloadType, { title: string; desc
         description: 'Download an application that was generated with the ADT Quick SAP Fiori Application generator'
     },
     [AppDownloadType.AbapRepository]: {
-        title: 'Download app from UI5 ABAP repository',
+        title: 'Download app from SAPUI5 ABAP repository',
         description: 'Download app from SAPUI5 ABAP repository'
     }
 };

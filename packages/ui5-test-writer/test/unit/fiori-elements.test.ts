@@ -1984,8 +1984,10 @@ export type Then = Opa5 & BaseArrangements & {
                 { ui5Version: undefined, expectedBucket: 'latest' },
                 { ui5Version: '', expectedBucket: 'latest' },
                 { ui5Version: '1.100.0', expectedBucket: '1.84' },
-                { ui5Version: '1.120.0', expectedBucket: '1.84' },
-                { ui5Version: '1.147.9', expectedBucket: '1.84' },
+                { ui5Version: '1.108.0', expectedBucket: '1.84' },
+                { ui5Version: '1.119.9', expectedBucket: '1.84' },
+                { ui5Version: '1.120.0', expectedBucket: '1.120' },
+                { ui5Version: '1.147.9', expectedBucket: '1.120' },
                 { ui5Version: '1.148.0', expectedBucket: '1.148' },
                 { ui5Version: '1.148.9', expectedBucket: '1.148' },
                 { ui5Version: '1.149.0', expectedBucket: '1.148' },
@@ -2007,23 +2009,53 @@ export type Then = Opa5 & BaseArrangements & {
         });
 
         describe('snapshot per bucket — JS', () => {
-            it('bucket 1.84 generates correct output (JS)', async () => {
+            it.each([
+                ['1.84', '1.108.0'],
+                ['1.120', '1.120.0'],
+                ['1.148', '1.148.0'],
+                ['latest', undefined]
+            ])('bucket %s generates correct output (JS)', async (_bucket, ui5Version) => {
                 const projectDir = prepareTestFiles('FullScreenLROP');
-                fs = await generateOPAFiles(projectDir, { ui5Version: '1.120.0' }, metadata, fs);
+                fs = await generateOPAFiles(projectDir, ui5Version ? { ui5Version } : {}, metadata, fs);
                 expect(fs.dump(projectDir)).toMatchSnapshot();
+            });
+        });
+
+        describe('assertions unsupported below 1.120 are stripped from the 1.84 bucket', () => {
+            const dumpContents = (): string =>
+                Object.values(fs!.dump())
+                    .map((file) => String((file as { contents: unknown }).contents))
+                    .join('\n');
+
+            // The LROPv4 model renders a ListReport with a table and an Object Page, exercising the
+            // assertions the sap/fe/test framework does not provide before 1.120.
+            it('omits iCheckSection / iCheckNumberOfSections / iCheckColumns for a <1.120 app', async () => {
+                readAppMock.mockResolvedValueOnce(JSON.parse(appModels.V4_MODEL));
+                const projectDir = prepareTestFiles('LROPv4');
+                fs = await generateOPAFiles(projectDir, { ui5Version: '1.108.0' }, metadata, fs);
+                const contents = dumpContents();
+                expect(contents).not.toContain('iCheckSection');
+                expect(contents).not.toContain('iCheckNumberOfSections');
+                expect(contents).not.toContain('iCheckColumns');
             });
 
-            it('bucket 1.148 generates correct output (JS)', async () => {
-                const projectDir = prepareTestFiles('FullScreenLROP');
-                fs = await generateOPAFiles(projectDir, { ui5Version: '1.148.0' }, metadata, fs);
-                expect(fs.dump(projectDir)).toMatchSnapshot();
-            });
-
-            it('bucket latest generates correct output (JS)', async () => {
-                const projectDir = prepareTestFiles('FullScreenLROP');
-                fs = await generateOPAFiles(projectDir, {}, metadata, fs);
-                expect(fs.dump(projectDir)).toMatchSnapshot();
-            });
+            // The 1.120 bucket is the former 1.84 bucket and must still carry these assertions in its
+            // journey templates; only the new <1.120 (1.84) bucket drops them.
+            it.each(['ObjectPageJourney.ts', 'ObjectPageJourney.js', 'ListReportJourney.ts', 'ListReportJourney.js'])(
+                '1.120 template %s keeps the pre-1.120 assertions that 1.84 drops',
+                (file) => {
+                    const templateDir = join(__dirname, '../../templates/v4');
+                    const v1_120 = readFileSync(join(templateDir, '1.120/integration', file)).toString();
+                    const v1_84 = readFileSync(join(templateDir, '1.84/integration', file)).toString();
+                    const assertions = file.startsWith('ObjectPage')
+                        ? ['iCheckSection', 'iCheckNumberOfSections', 'iCheckColumns']
+                        : ['iCheckColumns'];
+                    for (const assertion of assertions) {
+                        expect(v1_120).toContain(assertion);
+                        expect(v1_84).not.toContain(assertion);
+                    }
+                }
+            );
         });
 
         describe('text annotation sort-order test — JS', () => {
@@ -2080,10 +2112,12 @@ export type Then = Opa5 & BaseArrangements & {
                 expect(content).toContain('iChangeSortOrder({ name: "CustomerID" }, coreLibrary.SortOrder.None)');
             });
 
-            // Older buckets (1.84, 1.148) and any UI5 < 1.152.0 must NOT emit the text-annotation sort
-            // test; they still emit coreLibrary/SortOrder when a PresentationVariant has a SortOrder.
+            // Older buckets (1.84, 1.120, 1.148) and any UI5 < 1.152.0 must NOT emit the text-annotation
+            // sort test (it ships only in the latest bucket); they still emit coreLibrary/SortOrder when a
+            // PresentationVariant has a SortOrder. The 1.151.x range resolves to the 1.148 bucket.
             it.each([
-                ['1.84 bucket', '1.120.0'],
+                ['1.84 bucket', '1.108.0'],
+                ['1.120 bucket', '1.120.0'],
                 ['1.148 bucket', '1.148.0'],
                 ['1.148 bucket at 1.151.1', '1.151.1'],
                 ['1.148 bucket below 1.151.1', '1.151.0']
@@ -2187,10 +2221,12 @@ export type Then = Opa5 & BaseArrangements & {
                 expect(content).toContain('iChangeSortOrder({ name: "CustomerID" }, SortOrder.None)');
             });
 
-            // Older buckets (1.84, 1.148) and any UI5 < 1.152.0 must NOT emit the text-annotation sort
-            // test; they still emit SortOrder when a PresentationVariant has a SortOrder.
+            // Older buckets (1.84, 1.120, 1.148) and any UI5 < 1.152.0 must NOT emit the text-annotation
+            // sort test (it ships only in the latest bucket); they still emit SortOrder when a
+            // PresentationVariant has a SortOrder. The 1.151.x range resolves to the 1.148 bucket.
             it.each([
-                ['1.84 bucket', '1.120.0'],
+                ['1.84 bucket', '1.108.0'],
+                ['1.120 bucket', '1.120.0'],
                 ['1.148 bucket', '1.148.0'],
                 ['1.148 bucket at 1.151.1', '1.151.1'],
                 ['1.148 bucket below 1.151.1', '1.151.0']
@@ -2334,7 +2370,8 @@ export type Then = Opa5 & BaseArrangements & {
             });
 
             it.each([
-                ['1.84', '1.120.0'],
+                ['1.84', '1.108.0'],
+                ['1.120', '1.120.0'],
                 ['1.148', '1.148.0'],
                 ['1.148 (1.151.0 resolves below the 1.152 bucket)', '1.151.0']
             ])('%s omits the adaptation-dialog test (JS)', async (_bucket, ui5Version) => {
@@ -2460,7 +2497,8 @@ export type Then = Opa5 & BaseArrangements & {
             });
 
             it.each([
-                ['1.84', '1.120.0'],
+                ['1.84', '1.108.0'],
+                ['1.120', '1.120.0'],
                 ['1.148', '1.148.0'],
                 ['1.148 (1.151.0 resolves below the 1.152 bucket)', '1.151.0']
             ])('%s omits the adaptation-dialog test (TS)', async (_bucket, ui5Version) => {
@@ -2496,38 +2534,27 @@ export type Then = Opa5 & BaseArrangements & {
         });
 
         describe('snapshot per bucket — TS', () => {
-            it('bucket 1.84 generates correct output (TS)', async () => {
+            it.each([
+                ['1.84', '1.108.0'],
+                ['1.120', '1.120.0'],
+                ['1.148', '1.148.0'],
+                ['latest', undefined]
+            ])('bucket %s generates correct output (TS)', async (_bucket, ui5Version) => {
                 const projectDir = prepareTestFiles('FullScreenLROPContextPath');
                 fs = await generateOPAFiles(
                     projectDir,
-                    { ui5Version: '1.120.0', enableTypeScript: true },
+                    ui5Version ? { ui5Version, enableTypeScript: true } : { enableTypeScript: true },
                     metadata,
                     fs
                 );
-                expect(fs.dump(projectDir)).toMatchSnapshot();
-            });
-
-            it('bucket 1.148 generates correct output (TS)', async () => {
-                const projectDir = prepareTestFiles('FullScreenLROPContextPath');
-                fs = await generateOPAFiles(
-                    projectDir,
-                    { ui5Version: '1.148.0', enableTypeScript: true },
-                    metadata,
-                    fs
-                );
-                expect(fs.dump(projectDir)).toMatchSnapshot();
-            });
-
-            it('bucket latest generates correct output (TS)', async () => {
-                const projectDir = prepareTestFiles('FullScreenLROPContextPath');
-                fs = await generateOPAFiles(projectDir, { enableTypeScript: true }, metadata, fs);
                 expect(fs.dump(projectDir)).toMatchSnapshot();
             });
         });
 
         describe('snapshot per bucket — FPM TS', () => {
             it.each([
-                ['1.84', '1.120.0'],
+                ['1.84', '1.108.0'],
+                ['1.120', '1.120.0'],
                 ['1.148', '1.148.0'],
                 ['1.152', '1.152.0'],
                 ['latest', '1.153.0']
