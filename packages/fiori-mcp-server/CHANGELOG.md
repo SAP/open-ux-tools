@@ -1,5 +1,17 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.16.3
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-13
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/fiori-docs-embeddings [[73fdfbf](https://github.com/SAP/open-ux-tools/commit/73fdfbfe2a371d5b9666d2a69b55d1ed977bb69e)]
+
 ## 1.16.2
 
 ### Patch Changes

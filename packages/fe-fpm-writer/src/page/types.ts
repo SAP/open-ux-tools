@@ -81,12 +81,17 @@ export interface FpmPage {
      * UI5 Libraries that should be added to the application.
      */
     libraries?: Libraries;
+
+    /**
+     * If set to true then instead of creation of a new page the existing page with the provided id is relinked to the parent one
+     */
+    reuseExisting?: boolean;
 }
 
 /**
  * Configuration options for adding a list report page.
  */
-export interface ListReport extends FpmPage, WriterConfig {
+export interface ListReport extends Omit<FpmPage, 'reuseExisting'>, WriterConfig {
     /**
      * Optional settings for the ListReport page
      */
@@ -173,6 +178,39 @@ export enum PageType {
     CustomPage = 'CustomPage'
 }
 
+interface OutboundNavigationSettings {
+    /**
+     * Specifies outbound unique key or alias to describe intents that can be triggered from the application to navigate
+     */
+    outboundKey: string;
+    /**
+     * Intent details
+     */
+    crossNavigation?: {
+        /**
+         * Represents a business entity (such as 'Employee')
+         */
+        semanticObject: string;
+        /**
+         * Represents the action to perform on the business entity (such as 'display')
+         */
+        action: string;
+    };
+}
+/**
+ * Configuration options for adding/replacing an outbound navigation of a page.
+ */
+export interface OutboundNavigation extends FpmPage, WriterConfig {
+    /**
+     * Provides app outbound configuration information
+     */
+    settings: OutboundNavigationSettings;
+    /**
+     * Optional incoming navigation configuration. sourcePage and navEntity are used to create or delete outbound navigation links for pages.
+     */
+    navigation?: Navigation;
+}
+
 /**
  * Additional internal configuration options that will be calculated based on the provided input as well as the target application.
  */
@@ -181,3 +219,5 @@ export type InternalCustomPage = CustomPage & InternalFpmPage & InternalCustomEl
 export type InternalListReport = ListReport & InternalFpmPage & { name: PageType.ListReport; navigation?: Navigation };
 
 export type InternalObjectPage = ObjectPage & InternalFpmPage & { name: PageType.ObjectPage };
+
+export type TargetOptionsAddition = { options?: { settings?: { navigation?: { [key: string]: unknown } } } };

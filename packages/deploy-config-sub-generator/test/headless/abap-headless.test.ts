@@ -57,7 +57,7 @@ jest.unstable_mockModule('node:child_process', () => ({
     spawnSync: spawnSyncMock
 }));
 
-jest.unstable_mockModule('hasbin', () => ({
+jest.unstable_mockModule('which', () => ({
     default: { sync: jest.fn().mockReturnValue(true) },
     sync: jest.fn().mockReturnValue(true)
 }));

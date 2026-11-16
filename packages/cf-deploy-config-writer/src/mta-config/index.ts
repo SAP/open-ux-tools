@@ -32,7 +32,7 @@ import {
     RouterModuleType
 } from '../types/index.js';
 import LoggerHelper from '../logger-helper.js';
-import { sync } from 'hasbin';
+import which from 'which';
 import { t } from '../i18n.js';
 import { type Editor } from 'mem-fs-editor';
 import { apiGetInstanceCredentials } from '@sap/cf-tools';
@@ -105,7 +105,7 @@ export function createMTA(config: MTABaseConfig): void {
  */
 export function doesMTABinaryExist(): void {
     // CF Writer is dependent on the mta-lib library, which in turn relies on the mta executable being installed and available in the path
-    if (!sync(MTAExecutable)) {
+    if (!which.sync(MTAExecutable, { nothrow: true })) {
         throw new Error(MTABinNotFound);
     }
 }
@@ -116,7 +116,7 @@ export function doesMTABinaryExist(): void {
  */
 export function doesCDSBinaryExist(): void {
     // CF Writer is dependent on the cds library
-    if (!sync(CDSExecutable)) {
+    if (!which.sync(CDSExecutable, { nothrow: true })) {
         throw new Error(CDSBinNotFound);
     }
 }

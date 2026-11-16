@@ -1,5 +1,21 @@
 # @sap-ux/cf-deploy-config-sub-generator
 
+## 1.0.63
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-13
+
+#### Bug Fixes
+
+- Replace abandoned hasbin (10yr, no releases) with which for binary detection [[73fdfbf](https://github.com/SAP/open-ux-tools/commit/73fdfbfe2a371d5b9666d2a69b55d1ed977bb69e)]
+
+#### Workspace Updates
+
+- @sap-ux/cf-deploy-config-writer 1.1.14 → 1.1.15
+
 ## 1.0.62
 
 ### Patch Changes
