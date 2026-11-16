@@ -8,25 +8,25 @@ sap.ui.define([
         QUnit.module("First journey");
 
         opaTest("Start application", function (Given, When, Then) {
-            Given.iResetMockData({ ServiceUri: <%- JSON.stringify(serviceUri) %> });
+            Given.iResetMockData({ ServiceUri: "/sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001/" });
             Given.iResetTestData();
             Given.iStartMyApp();
-            <% if (startLR) { %>Then.onThe<%- startLR %>Generated.iSeeThisPage();<%} %>
+            Then.onTheTravelListGenerated.iSeeThisPage();
         });
 
-<% if (startLR) { %>
+
         opaTest("Navigate to ObjectPage", function (Given, When, Then) {
             // Note: this test will fail if the ListReport page doesn't show any data
-            <% if (!hideFilterBar) { %>
-            When.onThe<%- startLR %>Generated.onFilterBar().iExecuteSearch();
-            <%} %>
-            Then.onThe<%- startLR %>Generated.onTable().iCheckRows();
-<% if (navigatedOP) { %>
-            When.onThe<%- startLR %>Generated.onTable().iPressRow(0);
-            Then.onThe<%- navigatedOP %>Generated.iSeeThisPage();
-<%} %>
+            
+            When.onTheTravelListGenerated.onFilterBar().iExecuteSearch();
+            
+            Then.onTheTravelListGenerated.onTable().iCheckRows();
+
+            When.onTheTravelListGenerated.onTable().iPressRow(0);
+            Then.onTheTravelObjectPageGenerated.iSeeThisPage();
+
         });
-<%} %>
+
         opaTest("Teardown", function (Given, When, Then) { 
             // Cleanup
             Given.iTearDownMyApp();

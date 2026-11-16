@@ -15,10 +15,12 @@
  * ╚═══════════════════════════════════════════════════════════════════════╝ *
  ******************************************************************************/
 
+<%_ const needsSortOrder = startLR && (defaultSortOrder && defaultSortOrder.length > 0); -%>
 sap.ui.define([
     "sap/ui/test/opaQunit",
-    "./pages/JourneyRunner"
-], function (opaTest, runner) {
+    "./pages/JourneyRunner"<% if (needsSortOrder) { %>,
+    "sap/ui/core/library"<% } %>
+], function (opaTest, runner<% if (needsSortOrder) { %>, coreLibrary<% } %>) {
     "use strict";
 
     function journey() {
@@ -98,6 +100,20 @@ sap.ui.define([
 
 <%_ } -%>
 <%_ }); -%>
+<%_ if (tableColumns && Object.keys(tableColumns).length > 0) { -%>
+        opaTest("Check table columns", function (Given, When, Then) {
+            Then.onThe<%- startLR %>Generated.onTable(defaultTableId).iCheckColumns(undefined, <%- JSON.stringify(tableColumns) %>);
+        });
+
+<%_ } -%>
+<%_ if (startLR && defaultSortOrder && defaultSortOrder.length > 0) { -%>
+        opaTest("Check default sort order from PresentationVariant", function (Given, When, Then) {
+            <%_ defaultSortOrder.forEach(function(sort) { _%>
+            Then.onThe<%- startLR %>Generated.onTable(defaultTableId).iCheckSortOrder({ name: "<%- sort.property %>" }, coreLibrary.SortOrder.<%- sort.descending ? 'Descending' : 'Ascending' %>, true);
+            <%_ }); -%>
+        });
+
+<%_ } -%>
 <%_ if (startLR && defaultFilterValues && defaultFilterValues.length > 0) { -%>
         opaTest("Check default filter values from SelectionVariant", function (Given, When, Then) {
             <%_ defaultFilterValues.forEach(function(filter) { _%>

@@ -240,7 +240,7 @@ const ZOWE_SHIM = `(()=>{const{join:_j}=require("path"),{existsSync:_e}=require(
 
 const bundleFile = path.join(DIST, 'index.js');
 let bundleSource = fs.readFileSync(bundleFile, 'utf8');
-const zowePattern = /\w+\(["']@zowe\/secrets-for-zowe-sdk["']\)/g;
+const zowePattern = /[$\w]+\(["']@zowe\/secrets-for-zowe-sdk["']\)/g;
 const matchCount = (bundleSource.match(zowePattern) || []).length;
 if (matchCount === 0) {
     throw new Error(
