@@ -25,9 +25,7 @@ const testAppPath = join(__dirname, '../test-output/fe-app', `${Date.now()}`);
  * @returns the questions with any `list` type mapped to inquirer 13's `select`
  */
 function toInquirerQuestions(questions: { type?: string }[]): DistinctQuestion[] {
-    const mapped = questions.map((question) =>
-        question.type === 'list' ? { ...question, type: 'select' } : question
-    );
+    const mapped = questions.map((question) => (question.type === 'list' ? { ...question, type: 'select' } : question));
     // The runtime map yields inquirer 13-valid question objects; assert the shape inquirer's prompt accepts.
     return mapped as DistinctQuestion[];
 }
@@ -105,7 +103,9 @@ export async function generateTableBuildingBlock(fs: Editor): Promise<Editor> {
         let fs = await initialize();
         const promptsAPI = await PromptsAPI.init(sampleAppPath, undefined, fs);
         const buildingBlockPrompts = await promptsAPI.getPrompts(PromptsType.BuildingBlocks);
-        const answers: Partial<BuildingBlockTypePromptsAnswer> = await inquirer.prompt(toInquirerQuestions(buildingBlockPrompts.questions));
+        const answers: Partial<BuildingBlockTypePromptsAnswer> = await inquirer.prompt(
+            toInquirerQuestions(buildingBlockPrompts.questions)
+        );
 
         switch (answers.buildingBlockType) {
             case PromptsType.Chart:
