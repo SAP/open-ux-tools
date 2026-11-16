@@ -87,6 +87,7 @@ function externalCodeLists(
  *
  * @param request - the requested service's metadata and identity
  * @returns one descriptor per folder, in declaration order
+ * @throws {MockGenError} `METADATA_INPUT_TOO_LARGE` when the metadata exceeds the accepted input size
  * @throws {MockGenError} `METADATA_INVALID` when the EDMX document cannot be parsed as XML or has no Edmx/DataServices or no Schema
  * @example
  * describeReferencedServices({ metadata, service: { urlPath, odataVersion: '4.0' } });
@@ -95,6 +96,7 @@ function externalCodeLists(
 export function describeReferencedServices(
     request: Pick<MockDataServiceRequest, 'metadata' | 'service'>
 ): ReadonlyArray<MockDataReferencedServiceDescriptor> {
+    assertMetadataInputWithinLimit(request.metadata);
     const byFolder = new Map<string, string[]>();
     for (const { folder, collectionPath } of externalCodeLists(request)) {
         const entitySets = byFolder.get(folder) ?? [];

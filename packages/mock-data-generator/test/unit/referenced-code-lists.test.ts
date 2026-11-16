@@ -6,6 +6,7 @@ import {
 } from '../../src/generation/referenced-code-lists.js';
 import { currencyFractionDigits } from '../../src/generation/coherence.js';
 import { createGenerationFingerprint } from '../../src/index.js';
+import { MAX_METADATA_INPUT_BYTES } from '../../src/limits.js';
 import { generateService } from '../../src/public.js';
 import type {
     MockDataGeneratorDiagnostic,
@@ -286,6 +287,18 @@ describe('describeReferencedServices', () => {
 
     it('describes no code list whose entity set is not an OData identifier', () => {
         expect(describeReferencedServices(request({ ...travel, collection: '../Currencies' }))).toEqual([]);
+    });
+
+    it('rejects metadata over the input limit, as generation does', () => {
+        // Given requested metadata larger than the accepted input
+        const oversized = request(travel);
+        const content = `${oversized.metadata.content}${' '.repeat(MAX_METADATA_INPUT_BYTES)}`;
+
+        // When its referenced services are described
+        // Then the caller gets the same coded error as from generateService
+        expect(() => describeReferencedServices({ ...oversized, metadata: { format: 'edmx', content } })).toThrow(
+            expect.objectContaining({ code: 'METADATA_INPUT_TOO_LARGE' })
+        );
     });
 
     it('describes nothing for CSN metadata', () => {
