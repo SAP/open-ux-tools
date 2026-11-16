@@ -7,11 +7,11 @@ The package ships two learned components, described by `resources/models/manifes
 | `semantic-classifier` | `classifier` | `sentence-transformers/all-MiniLM-L6-v2` | Embeds field context and routes fields to semantic roles       |
 | `row-generator`       | `sft`        | `HuggingFaceTB/SmolLM2-135M-Instruct`    | Proposes values for fields no deterministic provider can serve |
 
-Upstream licenses, revisions and redistribution notes are in [model licenses and provenance](model-licenses.md). The current release bundle is `mockgen-v1`, manifest revision `590bc99dc3429931e878959f0c279fb299a3d1d82ba3fa2faab03eb9fa0445cc`.
+The manifest's `bundleId` and `revision` identify the current bundle; `getMockDataGeneratorInfo()` reports them. Upstream licenses and redistribution notes are in [model licenses and provenance](model-licenses.md).
 
 **The models are English-only.** The tokenizers, the prompt and the training format are English, and field names are split into ASCII/English words before they reach a model. Services with field names, labels or descriptions in other languages still generate (the deterministic tiers do not depend on language), but the classifier and the row generator give them no useful signal.
 
-## What is tracked and what is supplied
+## What is tracked and what is built
 
 All files live under `resources/models/`, at the paths the manifest declares in `components[].files[].path`.
 
@@ -29,13 +29,13 @@ All files live under `resources/models/`, at the paths the manifest declares in 
 
 ### Building the untracked model files
 
-`pnpm build:models` (`scripts/build-models.mjs`) downloads the encoder and vocabulary at Hugging Face revision `751bff37`, builds the row model and its tokenizer with `training/row-model/export.py` (base revision `12fd25f7`, merge the LoRA adapter, ONNX export, int8 dynamic quantization), and fails unless every model file matches the manifest. With the Python versions in `training/requirements.txt` the build is byte-identical to the pinned files. Pass `--python <executable>` to choose the interpreter. Publishing runs this in `.github/workflows/mock-data-generator-release.yml` before `pnpm check:package`.
+`pnpm build:models` (`scripts/build-models.mjs`) downloads the encoder and vocabulary at the revision pinned as `ENCODER_REVISION` in that script. It builds the row model and its tokenizer with `training/row-model/export.py`, which downloads the base model at its `BASE_REVISION`, merges the LoRA adapter, exports to ONNX and applies int8 dynamic quantization. A file that already matches the manifest is not rebuilt. The script fails unless every model file then matches the manifest. With the Python versions in `training/requirements.txt` the build is byte-identical to the pinned files. Pass `--python <executable>` to choose the interpreter.
 
 Without the ONNX files, `deterministic` mode still works, because it never verifies or loads a model. In `auto` or `learned` mode the first request that needs a model fails with `MockGenError` code `RESOURCE_INTEGRITY`, naming the missing artifacts.
 
 ### Tracked model files must stay byte-identical
 
-The manifest pins every file by SHA-256, and the classifier head pins `encoderSha256`, `tokenizerSha256` and `registryFingerprint`. Do not reformat the tracked model files: the root `.prettierignore` and the package `format` script exclude `resources/models/`.
+The manifest pins every file by SHA-256. Do not reformat the tracked model files: the root `.prettierignore` and the package `format` script exclude `resources/models/`.
 
 ## How integrity is verified
 
@@ -48,9 +48,12 @@ The manifest pins every file by SHA-256, and the classifier head pins `encoderSh
 
 At run time:
 
-- When a session is created, `src/standalone.ts` reads and strictly parses the manifest, checks that it declares exactly the bytes of the value-bank store, rule store and role registry the package loaded, and verifies the remaining datasets.
-- Before a learned component is first needed, `verifyPackagedModels` in `src/model/packaged-models.ts` checks the size and SHA-256 of every model file (once per process and manifest revision) and validates the classifier head contract. This never happens in `deterministic` mode.
-- A missing or corrupt artifact raises `MockGenError` with code `RESOURCE_INTEGRITY`. A verified component that still fails to load (for example a missing native runtime) is reported as the warning diagnostic `CLASSIFIER_RUNTIME_UNAVAILABLE` or `SFT_RUNTIME_UNAVAILABLE`, and generation continues on the deterministic tiers.
+1. **At session creation** (`createMockDataGenerator` in `src/standalone.ts`) the manifest below the session's [resource root](../README.md#bundling-the-package) is parsed strictly, and each of the three dataset files below that root is re-hashed and compared with it. Any mismatch raises `RESOURCE_INTEGRITY`.
+2. **On first use** the value-bank store, the semantic rule store and the role registry are read once, hashed in memory from the exact bytes that are parsed, and parsed strictly; the manifest must declare exactly those digests. A parse failure raises `RESOURCE_INTEGRITY`. Importing the package reads no resource file.
+3. **Before the first model load** `verifyPackagedModels` in `src/model/packaged-models.ts` checks the size and SHA-256 of every model file, once per process, models directory and manifest revision, and validates the classifier head contract. This never happens in `deterministic` mode. A missing or corrupt file raises `RESOURCE_INTEGRITY`.
+4. **At model load** the installed `onnxruntime-node` must have the version the manifest's `runtime` names. A verified component that still fails to load (a missing native runtime or another version) is reported as the warning diagnostic `CLASSIFIER_RUNTIME_UNAVAILABLE` or `SFT_RUNTIME_UNAVAILABLE`, and generation continues on the deterministic tiers.
+
+**Cross-pins.** The classifier head pins the canonical fingerprint of the role registry (`registryFingerprint`), the serializer fingerprint, and the digests of the encoder and vocabulary (`encoderSha256`, `tokenizerSha256`), so a head trained against other roles or another encoder is rejected. The routing policy and thresholds are kept in the semantic rule store, outside the registry, so that tuning them does not invalidate a packaged head.
 
 ## The SFT generation config
 
@@ -60,20 +63,27 @@ Changing any of these texts changes the file's digest, so it changes the row-gen
 
 ## Rebuilding and checking the manifest
 
-Run from `packages/mock-data-generator`:
+Regenerate the manifest after changing any model file, value bank, rule or the role registry. Every declared model file must be present; `pnpm build:models` downloads or builds the untracked ones, and exits with an error while the manifest is stale. Run from `packages/mock-data-generator`:
 
-| Command                                                                               | Effect                                                                                                                                                             |
-| ------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `node scripts/build-model-manifest.mjs`                                               | Rewrites `resources/models/manifest.json` from the files on disk                                                                                                   |
-| `node scripts/build-model-manifest.mjs --check`                                       | Prints `{ upToDate, revision }`; exits with 1 when the manifest is stale                                                                                           |
-| `node scripts/build-model-manifest.mjs --review-status approved --review-record FILE` | Rebuilds and records an approval, pinned to the SHA-256 of the review record                                                                                       |
-| `pnpm check:package`                                                                  | Packs the package and verifies the packed manifest, models, datasets and identity                                                                                  |
-| `pnpm check:release`                                                                  | Additionally requires qualified heads, a content-derived manifest, approved provenance and passing realism sweep reports of this build (`MOCKGEN_REALISM_REPORTS`) |
+| Command                                                                               | Effect                                                                                                |
+| ------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| `node scripts/build-model-manifest.mjs`                                               | Rewrites `resources/models/manifest.json` from the files on disk                                      |
+| `node scripts/build-model-manifest.mjs --check`                                       | Prints `{ upToDate, revision }`; exits with 1 when the manifest is stale                              |
+| `node scripts/build-model-manifest.mjs --review-status approved --review-record FILE` | Rebuilds and records an approval, pinned to the SHA-256 of the review record                          |
+| `pnpm check:package`                                                                  | Packs the package and verifies the packed manifest, models, datasets, head contract and identity      |
+| `pnpm check:release`                                                                  | Also requires the release evidence listed under [Releasing](#releasing); a maintainer step, not in CI |
 
 The script treats the existing manifest as a template. Edit `bundleId` and each component's `version` by hand for a new release; everything else is derived: file sizes and digests, component fingerprints, the classifier contract (from `classifier/head.json`, which must use input format `v3` and match the packaged encoder and vocabulary digests), the optional relevance and concept heads, the dataset entries and the revision. Every concept of the concept head must have its bank in the value-bank store. An approved provenance is kept while the revision is unchanged and withdrawn when the content changes.
 
-## Relocating the resources (`resourceRoot`)
+## Releasing
 
-`createMockDataGenerator({ resourceRoot })` and `getMockDataGeneratorInfo({ resourceRoot })` accept an absolute directory that holds `models/`, `banks/` and `rules/`, laid out like the package's own `resources/` directory. A host that copies the resources elsewhere points there. The manifest and the model files are read from it, and its data files are verified against the manifest digests.
+The package is `private` in the workspace, so the shared changesets release skips it. `.github/workflows/mock-data-generator-release.yml` publishes it instead, when `package.json` changes on `main` or on a manual run (manual runs default to a dry run that builds and verifies without publishing). The workflow:
 
-The value-bank store, rule store and role registry are read on first use, never when the package's modules load, from the root of the first session; without a session they come from the package's own `resources/` directory. A host that bundles the package copies the whole `resources/` directory next to its bundle and passes that directory as `resourceRoot`. Before the first parse, every dataset file below the root is verified against the manifest digests. A process uses one set of these three resources: a later session on another root is accepted only when that root's verified manifest declares the same digests, and is rejected with `CONFIGURATION_INVALID` otherwise. In a CommonJS bundle the package cannot locate its own directory, so a session without `resourceRoot` fails with `CONFIGURATION_INVALID` and a message that says to pass it.
+1. skips version `0.0.0`, the placeholder before the first changeset version;
+2. continues only when `npm view` answers `E404` for the version; a published version skips the run, and any other registry error fails it;
+3. runs `pnpm build`, `pnpm lint` and `pnpm test`;
+4. runs `pnpm build:models` and fails unless every model file matches the manifest;
+5. removes the `private` flag (`npm pkg delete private`), so the verified tarball is the published one;
+6. runs `pnpm check:package`, then `pnpm publish --access public`.
+
+Before raising the version, a maintainer runs `pnpm check:release` locally. On top of `pnpm check:package` it requires a qualified classifier head with a complete runtime contract, a qualified relevance head, a content-derived manifest, approved provenance, and, in `MOCKGEN_REALISM_REPORTS` (a path list), a realism sweep report of this exact build for each release profile, made against a baseline with no failed service, no hard-check finding and no check worse than the baseline. These reports are made outside CI with `scripts/realism-sweep.mjs`.

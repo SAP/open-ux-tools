@@ -43,9 +43,9 @@ flowchart TD
 
 Rows you already have are kept exactly as you wrote them, fields left out included, and the requested rows are added after them, so a second run adds rows instead of replacing them. Your rows do not shape the new rows: whether they hold real data, placeholders from the standard mock server or hand-written test values, the new rows are planned and filled as they would be in an empty folder (a placeholder's row number still counts the rows before it). Your rows only decide what the new rows must fit: the keys they hold are taken, the rows you supply for a value list are its whole list, and new rows are linked to new parents, to your rows only when a parent set gains no new rows or a row shares its whole key with its parent. Your rows are still checked and reported, without being changed: a value-help value the value help does not list, or dates out of order. Rows of yours that share a key are kept too and reported with a `SUPPLIED_KEY_DUPLICATED` warning; the mock server returns the first of them for that key. New rows repeat no key, semantic key or alternate key of your rows, and new children are linked to the parents that have none first. The rows you supply for a value list are its whole list, so none are added there, and the set is reported with `ROW_COUNT_REDUCED_AUTHORED_DOMAIN`. A set never grows past 1,000 rows; a set that reaches the limit gets fewer new rows and a `ROW_COUNT_REDUCED_ROW_LIMIT` warning.
 
-An entity type without an entity set that another row contains (OData V4 `ContainsTarget`) gets rows too, and they are written inside the rows that contain them, under the navigation property, as the SAP Fiori elements mock server reads them: a list for a to-many navigation, and a list of one row for a to-one navigation, which is how the mock server stores contained rows itself. Each new row of the requesting entity set holds at least one contained row before any holds two, contained rows hold contained rows of their own at any depth, and a contained row carries the values its container shares with it: the properties its referential constraint copies, or else the keys both declare by name. Rows you supply keep exactly what they contain. The rows of the draft administration navigation are left to the mock server.
+An entity type without an entity set that another row contains (OData V4 `ContainsTarget`) gets rows too, and they are written inside the rows that contain them, under the navigation property, as the SAP Fiori elements mock server reads them: a list for a to-many navigation, and a list of one row for a to-one navigation. The list of one row is how the mock server stores contained rows itself; its read of the navigation, and of what that row contains, fails on a single object when the container shares a key name with it, and it answers `$expand` of such a navigation with the list as stored, not a single row. Each new row of the requesting entity set holds at least one contained row before any holds two, contained rows hold contained rows of their own at any depth, and a contained row carries the values its container shares with it: the properties its referential constraint copies, or else the keys both declare by name. Rows you supply keep exactly what they contain. The rows of the draft administration navigation are left to the mock server.
 
-Keys and foreign keys are generated so that every reference resolves. When nothing knows what a text field holds, it gets the value the standard SAP Fiori elements mock server would write, the property name and the row number (`BankNumber_3`), in upper case in an upper-case field and as a zero-padded number in a digit-sequence field. That is honest: it says plainly that the value is a placeholder, instead of pretending to be real.
+Keys and foreign keys are generated so that every reference resolves. When nothing knows what a text field holds, it gets the value the standard SAP Fiori elements mock server would write, the property name and the row number (`BankNumber_3`), or a code of the name's initials in a column too short for the whole name, in upper case in an upper-case field and as a zero-padded number in a digit-sequence field. That is honest: it says plainly that the value is a placeholder, instead of pretending to be real.
 
 ### The local model and its time budget
 
@@ -102,7 +102,9 @@ await generateProjectData({
 | --------------- | ------------------------------------------------------------------------------------------ |
 | `deterministic` | Metadata, rules and sample lists only. Fast, the same output every time for the same seed. |
 | `learned`       | Adds the field classifier and the local model.                                             |
-| `auto`          | Uses the models when they are available and falls back to deterministic otherwise.         |
+| `auto`          | The default; behaves as `learned`.                                                         |
+
+Missing or corrupt model files fail a `learned` or `auto` request with `RESOURCE_INTEGRITY`. A model that is intact but cannot load (for example without the native runtime) is reported with a warning, and generation continues without it.
 
 ### Common generation options
 
@@ -120,7 +122,7 @@ await generateProjectData({
 
 ### Sessions and execution modes
 
-A session (`createMockDataGenerator()`) accepts `onProgress`, an optional absolute `answerCacheDirectory`, an optional absolute `resourceRoot`, and an execution mode. Execution modes are time-budget presets named after the host's purpose: `api` (default) and `start-mock` apply no preset, and `data-editor` keeps the local model within the limits an interactive editor can wait for (the `DATA_EDITOR_SFT_*` limits in `src/limits.ts`). Options you pass yourself always win over a preset.
+A session (`createMockDataGenerator()`) accepts `onProgress`, an optional absolute `answerCacheDirectory`, an optional absolute [`resourceRoot`](#bundling-the-package), and an execution mode. Execution modes are time-budget presets named after the host's purpose: `api` (default) and `start-mock` apply no preset, and `data-editor` keeps the local model within the limits an interactive editor can wait for (the `DATA_EDITOR_SFT_*` limits in `src/limits.ts`). Options you pass yourself always win over a preset.
 
 ### Command line
 
@@ -204,8 +206,6 @@ These are not detected or fixed, because nothing in the metadata says what is ri
 - Some value banks of place names are not keyed by country (district names), so such a field can name a place in another country than the row's.
 - Meanings outside the role vocabulary get a generic value of their type (a birth date gets a recent date).
 
-A contained row of a to-one navigation is written as a list of one row, as the SAP Fiori elements mockserver stores contained rows itself: its read of the navigation, and of what that row contains, fails on a single object when the container shares a key name with it. The mockserver answers `$expand` of that navigation with the list as stored, not a single row.
-
 The SAP Fiori elements mockserver (`@sap-ux/fe-mockserver-core` 1.7 and 1.8) cannot read a single row of an OData V2 entity set whose key includes an `Edm.DateTime` property: it compares the `datetime'…'` literal of the request with the stored value as text, so they never match. The rows are listed, but opening one finds nothing. The generated rows are correct; the limit is in the mockserver.
 
 ## Errors and diagnostics
@@ -220,32 +220,36 @@ Diagnostics are not errors: they explain how a result was produced. `MockDataGen
 
 ## Bundling the package
 
-`resourceRoot` is for hosts that bundle the package (for example with esbuild, as an ES module or CommonJS bundle) and copy its whole `resources/` directory elsewhere. Everything is read from that directory: the model manifest, the model files, the value banks, the semantic rules and the role registry, and every data file is checked against the manifest's SHA-256 digests before it is read. Importing the package reads no resource file, so a bundle loads even where the package cannot find its own `resources/` directory; a CommonJS bundle must pass `resourceRoot`. A process uses one set of value banks, rules and registry: the first session fixes the root, and a later session on another root is accepted only when that root holds byte-identical files (otherwise `CONFIGURATION_INVALID`). `getMockDataGeneratorInfo({ resourceRoot })` and `generateProjectData({ ..., resourceRoot })` accept the same option.
+`resourceRoot` is an absolute directory laid out like the package's own `resources/` directory (`models/`, `banks/`, `rules/`). It is for hosts that bundle the package (for example with esbuild, as an ES module or CommonJS bundle): copy the whole `resources/` directory next to the bundle and pass that directory. `createMockDataGenerator()`, `getMockDataGeneratorInfo()` and `generateProjectData()` accept it; a relative path is rejected with `CONFIGURATION_INVALID`.
 
-## Resources, models and release checks
+Everything is read from that directory: the model manifest, the model files, the value banks, the semantic rules and the role registry, and every data file is checked against the manifest's SHA-256 digests before it is read. Importing the package reads no resource file, so a bundle loads even where the package cannot find its own `resources/` directory. In a CommonJS bundle it never can, so a session without `resourceRoot` fails with `CONFIGURATION_INVALID` and a message that says to pass it.
+
+A process uses one set of value banks, rules and registry, read on first use from the root of the first session (the package's own `resources/` when no session named one). A later session on another root is accepted only when that root holds byte-identical files, and is rejected with `CONFIGURATION_INVALID` otherwise.
+
+## Resources and models
 
 - The sample value lists live in `resources/banks/value-banks.v2.json`.
 - The semantic rules (lexical rules, ABAP data elements, temporal and consistency vocabulary, model output filters, routing policy and thresholds) live in `resources/rules/semantic-rules.v1.json`, described by `semantic-rules.schema.json`.
 - The role registry is `resources/rules/role-registry.v1.json`.
 - The order of values and rules affects seeded output.
-- After changing resources, regenerate the manifest with `node scripts/build-model-manifest.mjs` from the package directory. An approved provenance is kept while the manifest revision is unchanged and is withdrawn when the content changes.
+- `resources/models/manifest.json` pins all of them and every model file by SHA-256. After changing any of them, regenerate it as described in [model supply](docs/model-supply.md#rebuilding-and-checking-the-manifest).
 
-The model manifest, the classifier heads, the generation config and the row-model LoRA adapter are tracked with the package. The encoder, its vocabulary, the row model and its tokenizer are produced by `pnpm build:models` from pinned public base models, and must match the manifest byte for byte; see [model supply](docs/model-supply.md) and [training](training/README.md). The models are English-only.
+The classifier and the local model are English-only. How the model files are built, verified and released is in [model supply](docs/model-supply.md); how they are trained is in [training](training/README.md).
 
 ```mermaid
 flowchart LR
-    A["Session created"] --> B["Check digests of value banks,<br/>rules and role registry,<br/>and the native runtime version"]
+    A["Session created"] --> B["Check digests of value banks,<br/>rules and role registry"]
     B --> C{"Models needed?<br/>not in deterministic mode"}
     C -- yes --> D["Check model sizes and SHA-256,<br/>once per process"]
-    D --> E{"Loaded?"}
+    D -- mismatch --> X["Fail with RESOURCE_INTEGRITY"]
+    D -- verified --> E{"Loaded with the<br/>manifest's native runtime?"}
     E -- yes --> F["Generate with models"]
     E -- no --> G["Warn with the cause and<br/>generate without models"]
     C -- no --> H["Generate without models"]
 ```
 
-Run `pnpm check:package` to check the packed artifact. `pnpm check:release` also checks model qualification, relevance verification and approved provenance, and that `MOCKGEN_REALISM_REPORTS` lists a passing realism report of this exact build for each release profile (no hard-check finding, nothing worse than the previous release).
-
 ## Further reading
 
+- [Model supply](docs/model-supply.md): which model files are tracked or built, how integrity is verified, how the manifest is regenerated and how the package is released.
 - [Model licenses and provenance](docs/model-licenses.md): redistribution requirements.
-- [Data and heuristics design record](docs/design/data-and-heuristics.md): where each kind of data lives, the specification behind the remaining constants in code, the known limits of each heuristic, the determinism guarantees and the integrity chain.
+- [Data and heuristics design record](docs/design/data-and-heuristics.md): where each kind of data lives, the specification behind the remaining constants in code, the known limits of each heuristic and the determinism guarantees.
