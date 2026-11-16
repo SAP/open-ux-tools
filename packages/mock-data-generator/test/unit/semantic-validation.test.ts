@@ -59,6 +59,42 @@ describe('executable semantic validation', () => {
         ).rejects.toThrow(/semantic/iu);
         expect(generate).not.toHaveBeenCalled();
     });
+    it.each([
+        ['Jan', 'van Dijk', 'jan.van.dijk@example.com'],
+        ['Mary Ann', 'De la Cruz', 'mary.ann.de.la.cruz@example.com']
+    ])('builds a valid email for the host names %s %s', async (firstName, lastName, email) => {
+        // Given a host sample dataset whose names hold spaces, and a field routed to email
+        const contacts = {
+            ...request,
+            metadata: { ...request.metadata, content: metadata.replace('MaxLength="5"', 'MaxLength="80"') }
+        };
+
+        // When the service is generated
+        const result = await generateServiceForTesting(
+            contacts,
+            {
+                rowsPerEntity: 1,
+                syntheticScenario: ibanScenario,
+                sampleDataset: {
+                    id: 'spaced-names',
+                    version: '1',
+                    firstNames: [firstName],
+                    lastNames: [lastName],
+                    organizations: ['Example'],
+                    descriptions: ['Synthetic narrative']
+                }
+            },
+            {
+                classifier: {
+                    fingerprint: 'test',
+                    classify: async () => ({ role: 'email', confidence: 1, source: 'classifier' })
+                }
+            }
+        );
+
+        // Then the address joins the name parts with dots
+        expect(result.resources.Accounts[0].Email).toBe(email);
+    });
     it('does not infer an IBAN jurisdiction from an unrelated address country', async () => {
         const report = await inspectService(request, { rowsPerEntity: 1 });
         expect(report.fieldDecisions.find(({ property }) => property === 'IBAN')?.acceptedRole).toBeUndefined();

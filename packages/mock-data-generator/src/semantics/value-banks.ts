@@ -435,7 +435,11 @@ function contactOrLocationValue(
             if (property.maxLength !== undefined && property.maxLength < 40) {
                 return 'a@b.test';
             }
-            return `${context.givenName.toLowerCase()}.${context.familyName.toLowerCase()}@example.com`;
+            // Names such as "van Dijk" hold spaces, which an address cannot.
+            return `${context.givenName.toLowerCase()}.${context.familyName.toLowerCase()}@example.com`.replaceAll(
+                /\s+/gu,
+                '.'
+            );
         case 'phone':
             return `${context.location.phonePrefix} ${subscriberDigits(hash, context.location.phoneSubscriberDigits)}`;
         case 'mobile_phone':
