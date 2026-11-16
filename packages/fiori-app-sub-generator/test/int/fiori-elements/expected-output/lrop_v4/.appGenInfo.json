@@ -1,7 +1,7 @@
 {
   "generationParameters": {
-    "generationDate": "Tue Jun 24 2025 22:44:43 GMT+0100 (Irish Standard Time)",
-    "generatorPlatform": "CLI",
+    "generationDate": "Mon Nov 16 2026 15:11:11 GMT+0000 (Greenwich Mean Time)",
+    "generatorPlatform": "Visual Studio Code",
     "serviceType": "OData URL",
     "metadataFilename": "",
     "serviceUrl": "https://sap-ux-mock-services-v4-feop.cfapps.us10.hana.ondemand.com/sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001/",
@@ -11,6 +11,8 @@
     "appNamespace": "testnamespace",
     "ui5Theme": "sap_fiori_3",
     "ui5Version": "1.84.0",
+    "enableEslint": false,
+    "enableTypeScript": false,
     "showMockDataInfo": true,
     "generatorVersion": "0.0.0",
     "template": "List Report Page V4",
