@@ -2,7 +2,7 @@ import { createHash, randomBytes } from 'node:crypto';
 import type { Stats } from 'node:fs';
 import { cp, lstat, mkdir, mkdtemp, readFile, readdir, realpath, rename, rm, writeFile } from 'node:fs/promises';
 import { isAbsolute, join, relative, resolve, sep } from 'node:path';
-import { withProjectLock } from './project-lock.js';
+import { RENAME_REFUSED_CODES, withProjectLock } from './project-lock.js';
 import type { MockDataServiceRequest } from './types.js';
 import {
     createMockDataGenerator,
@@ -200,7 +200,7 @@ async function removeTransaction(parent: string, transactionRoot: string): Promi
         await rename(transactionRoot, removed);
     } catch (error) {
         // Windows refuses to rename a directory another process has open; remove it in place instead.
-        if (errnoCode(error) !== 'EPERM') {
+        if (!RENAME_REFUSED_CODES.has(errnoCode(error) ?? '')) {
             throw error;
         }
         await rm(transactionRoot, { recursive: true, force: true });
@@ -561,7 +561,9 @@ async function replaceProjectData(
         throw error;
     } finally {
         if (!rollbackFailed) {
-            await removeTransaction(parent, transactionRoot);
+            // A transaction left behind holds its journal, which the next run's recovery completes, so a failed
+            // cleanup neither turns an installed result into a failure nor hides the error that ended the run.
+            await removeTransaction(parent, transactionRoot).catch(() => undefined);
         }
     }
 }

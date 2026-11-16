@@ -18,7 +18,7 @@ const DEFAULT_TIMEOUT_MS = 30_000;
 const ORPHANED_LOCK_AGE_MS = 10_000;
 // Windows refuses to rename a directory while another process has it or a file in it open, as a caller
 // waiting for the lock briefly does when it reads the owner record.
-const RENAME_REFUSED_CODES = new Set(['EPERM', 'EACCES', 'EBUSY']);
+export const RENAME_REFUSED_CODES: ReadonlySet<string> = new Set(['EPERM', 'EACCES', 'EBUSY']);
 const FIRST_RENAME_RETRY_MS = 10;
 const LONGEST_RENAME_RETRY_MS = 320;
 
