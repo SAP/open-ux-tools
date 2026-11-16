@@ -16,6 +16,11 @@ const DEFAULT_TIMEOUT_MS = 30_000;
 // The owner record is written right after the lock directory; a lock without one for this long was
 // left by a process that ended in between.
 const ORPHANED_LOCK_AGE_MS = 10_000;
+// Windows refuses to rename a directory while another process has it or a file in it open, as a caller
+// waiting for the lock briefly does when it reads the owner record.
+const RENAME_REFUSED_CODES = new Set(['EPERM', 'EACCES', 'EBUSY']);
+const FIRST_RENAME_RETRY_MS = 10;
+const LONGEST_RENAME_RETRY_MS = 320;
 
 interface ProjectLockOptions {
     /** How long to wait for a lock held by a live process before giving up; 30 seconds by default. */
@@ -115,6 +120,27 @@ async function isStale(lockPath: string, owner: LockOwner | undefined): Promise<
 }
 
 /**
+ * Rename a lock directory, retrying with exponential backoff while the file system refuses for a reason
+ * that passes.
+ *
+ * @param from current path
+ * @param to new path
+ */
+async function renameLock(from: string, to: string): Promise<void> {
+    for (let delay = FIRST_RENAME_RETRY_MS; ; delay *= 2) {
+        try {
+            await rename(from, to); // NOSONAR: sequential, retry with backoff
+            return;
+        } catch (error) {
+            if (delay > LONGEST_RENAME_RETRY_MS || !RENAME_REFUSED_CODES.has(errnoCode(error) ?? '')) {
+                throw error;
+            }
+        }
+        await sleep(delay); // NOSONAR: sequential, retry with backoff
+    }
+}
+
+/**
  * Remove a lock directory by moving it aside first, so that a removal that stops half-way never leaves a
  * lock that looks held.
  *
@@ -124,7 +150,7 @@ async function isStale(lockPath: string, owner: LockOwner | undefined): Promise<
 async function removeLock(lockPath: string, expectedToken: string | undefined): Promise<void> {
     const removed = `${lockPath}-removed-${randomBytes(6).toString('hex')}`;
     try {
-        await rename(lockPath, removed);
+        await renameLock(lockPath, removed);
     } catch (error) {
         if (errnoCode(error) === 'ENOENT') {
             return;
@@ -133,7 +159,7 @@ async function removeLock(lockPath: string, expectedToken: string | undefined): 
     }
     if ((await readOwner(removed))?.token !== expectedToken) {
         // Another process took the lock between the decision and the move: hand it back.
-        await rename(removed, lockPath);
+        await renameLock(removed, lockPath);
         return;
     }
     await rm(removed, { recursive: true, force: true });
