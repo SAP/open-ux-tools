@@ -1,6 +1,6 @@
 import type { AbapTarget } from '@sap-ux/system-access';
 import type { AdaptationProjectType, ServiceProvider } from '@sap-ux/axios-extension';
-import type { CommonPromptOptions, YUIQuestion } from '@sap-ux/inquirer-common';
+import type { CommonPromptOptions, WhenQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
 
 export const enum TargetSystemType {
     Url = 'Url'
@@ -318,4 +318,5 @@ export enum TransportChoices {
     CreateDuringDeployChoice = 'CreateDuringDeployChoice'
 }
 
-export type AbapDeployConfigQuestion = YUIQuestion<AbapDeployConfigAnswersInternal>;
+export type AbapDeployConfigQuestion =
+    YUIQuestion<AbapDeployConfigAnswersInternal> | WhenQuestion<AbapDeployConfigAnswersInternal>;

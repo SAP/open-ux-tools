@@ -29,7 +29,7 @@ export function getShowAdvancedPrompt(): UI5ApplicationQuestion {
  */
 export function getUI5ThemePrompt(): UI5ApplicationQuestion {
     return {
-        type: 'select',
+        type: 'list',
         name: promptNames.ui5Theme,
         message: t('prompts.ui5Theme.message'),
         guiOptions: {

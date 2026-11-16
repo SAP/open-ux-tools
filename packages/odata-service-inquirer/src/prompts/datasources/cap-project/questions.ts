@@ -1,9 +1,8 @@
-import type { FileBrowserQuestion, ListQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
+import type { FileBrowserQuestion, ListQuestion, WhenQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
 import { searchableListPrompt } from '@sap-ux/inquirer-common';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import { getCapCustomPaths } from '@sap-ux/project-access';
 import { hostEnvironment } from '@sap-ux/fiori-generator-shared';
-import type { Question } from 'inquirer';
 import { t } from '../../../i18n.js';
 import type { CapServiceChoice, OdataServicePromptOptions } from '../../../types.js';
 import { promptNames } from '../../../types.js';
@@ -58,7 +57,7 @@ function getDefaultCapChoice(
  */
 export function getLocalCapProjectPrompts(
     promptOptions?: OdataServicePromptOptions
-): (YUIQuestion<CapServiceAnswers> | Question)[] {
+): (YUIQuestion<CapServiceAnswers> | WhenQuestion<CapServiceAnswers>)[] {
     let capChoices: Awaited<CapProjectChoice[]> = [];
     const defaultCapPath = promptOptions?.[promptNames.capProject]?.defaultChoice;
     const defaultCapService = promptOptions?.[promptNames.capService]?.defaultChoice;
@@ -68,7 +67,9 @@ export function getLocalCapProjectPrompts(
     let validCapPath: string | boolean = false;
     PromptState.reset();
 
-    const prompts: (YUIQuestion<CapServiceAnswers> | FileBrowserQuestion<CapServiceAnswers> | Question)[] = [
+    const prompts: (
+        YUIQuestion<CapServiceAnswers> | FileBrowserQuestion<CapServiceAnswers> | WhenQuestion<CapServiceAnswers>
+    )[] = [
         searchableListPrompt<CapServiceAnswers>(
             {
                 when: async (): Promise<boolean> => {
@@ -138,7 +139,7 @@ export function getLocalCapProjectPrompts(
                 }
                 return false;
             },
-            type: 'select',
+            type: 'list',
             name: promptNames.capService,
             message: t('prompts.capService.message'),
             choices: () => {
@@ -194,7 +195,7 @@ export function getLocalCapProjectPrompts(
                 return false;
             },
             name: capInternalPromptNames.capCliStateSetter
-        } as Question);
+        });
     }
 
     return prompts;

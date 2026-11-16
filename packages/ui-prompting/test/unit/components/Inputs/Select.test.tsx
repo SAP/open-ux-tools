@@ -20,7 +20,7 @@ const props: SelectProps = {
         { name: 'testText1', value: 'testValue1' }
     ],
     pending: false,
-    type: 'select'
+    type: 'list'
 };
 
 const creatableProps: SelectProps = {

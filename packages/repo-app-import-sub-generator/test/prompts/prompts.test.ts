@@ -120,7 +120,7 @@ describe('getPrompts', () => {
         // app selection prompt
         const appSelectionPrompt = prompts.find((p) => p.name === PromptNames.selectedApp);
         expect(appSelectionPrompt).toBeDefined();
-        expect(appSelectionPrompt).toHaveProperty('type', 'select');
+        expect(appSelectionPrompt).toHaveProperty('type', 'list');
         expect(await (appSelectionPrompt as any)?.when({ [PromptNames.systemSelection]: mockServiceProvider })).toBe(
             true
         );
@@ -178,7 +178,7 @@ describe('getPrompts', () => {
         // app selection prompt
         const appSelectionPrompt = prompts.find((p) => p.name === PromptNames.selectedApp);
         expect(appSelectionPrompt).toBeDefined();
-        expect(appSelectionPrompt).toHaveProperty('type', 'select');
+        expect(appSelectionPrompt).toHaveProperty('type', 'list');
         expect(await (appSelectionPrompt as any)?.when({ [PromptNames.systemSelection]: mockServiceProvider })).toBe(
             true
         );

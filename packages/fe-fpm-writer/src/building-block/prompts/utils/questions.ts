@@ -33,7 +33,7 @@ export function getBooleanPrompt(properties: WithRequired<Partial<ListPromptQues
     const { guiOptions } = properties;
     return {
         ...properties,
-        type: 'select',
+        type: 'list',
         choices: [
             { name: 'False', value: false },
             { name: 'True', value: true }
@@ -42,7 +42,7 @@ export function getBooleanPrompt(properties: WithRequired<Partial<ListPromptQues
             ...guiOptions,
             selectType: 'static'
         }
-    } as unknown as ListPromptQuestion;
+    };
 }
 
 /**
@@ -62,7 +62,7 @@ export function getAnnotationPathQualifierPrompt(
     const { guiOptions } = properties;
     return {
         ...properties,
-        type: 'select',
+        type: 'list',
         name: 'buildingBlockData.metaPath.qualifier',
         choices: project
             ? async (answers: Answers) => {
@@ -93,7 +93,7 @@ export function getAnnotationPathQualifierPrompt(
             ...guiOptions,
             selectType: 'dynamic'
         }
-    } as unknown as ListPromptQuestion;
+    };
 }
 
 /**
@@ -113,7 +113,7 @@ export function getViewOrFragmentPathPrompt(
     const { guiOptions } = properties;
     return {
         ...properties,
-        type: 'select',
+        type: 'list',
         name: 'viewOrFragmentPath',
         choices: project
             ? async () => {
@@ -127,7 +127,7 @@ export function getViewOrFragmentPathPrompt(
             selectType: 'dynamic',
             placeholder: guiOptions?.placeholder ?? (t('viewOrFragmentPath.defaultPlaceholder') as string)
         }
-    } as unknown as ListPromptQuestion;
+    };
 }
 
 /**
@@ -148,7 +148,7 @@ export async function getCAPServicePrompt(
         services.length === 1 ? (services[0] as { name: string; value: string }).value : undefined;
     return {
         ...properties,
-        type: 'select',
+        type: 'list',
         name: 'service',
         choices: project ? getCAPServiceChoices.bind(null, project, appId) : [],
         default: defaultValue,
@@ -157,7 +157,7 @@ export async function getCAPServicePrompt(
             selectType: 'dynamic',
             placeholder: guiOptions?.placeholder ?? (t('service.defaultPlaceholder') as string)
         }
-    } as unknown as ListPromptQuestion;
+    };
 }
 
 /**
@@ -176,7 +176,7 @@ export function getEntityPrompt(
     const { guiOptions } = properties;
     return {
         ...properties,
-        type: 'select',
+        type: 'list',
         name: 'buildingBlockData.metaPath.entitySet',
         choices: project
             ? async (answers?: Answers) => {
@@ -200,7 +200,7 @@ export function getEntityPrompt(
             selectType: 'dynamic',
             placeholder: guiOptions?.placeholder ?? (t('entity.defaultPlaceholder') as string)
         }
-    } as unknown as ListPromptQuestion;
+    };
 }
 
 /**
@@ -219,7 +219,7 @@ export function getTargetPropertiesPrompt(
     const { guiOptions } = properties;
     return {
         ...properties,
-        type: 'select',
+        type: 'list',
         name: 'buildingBlockData.targetProperty',
         choices: project
             ? async (answers?: Answers) => {
@@ -248,7 +248,7 @@ export function getTargetPropertiesPrompt(
             selectType: 'dynamic',
             placeholder: guiOptions?.placeholder ?? (t('targetProperty.defaultPlaceholder') as string)
         }
-    } as unknown as ListPromptQuestion;
+    };
 }
 
 /**
@@ -342,7 +342,7 @@ export function getAggregationPathPrompt(
 
     return {
         ...properties,
-        type: 'select',
+        type: 'list',
         name: 'aggregationPath',
         choices: project
             ? (answers: Answers) => {
@@ -367,7 +367,7 @@ export function getAggregationPathPrompt(
             selectType: 'dynamic',
             placeholder: guiOptions?.placeholder ?? (t('aggregationPath.defaultPlaceholder') as string)
         }
-    } as unknown as ListPromptQuestion;
+    };
 }
 
 /**
@@ -415,7 +415,10 @@ export function getFilterBarIdPrompt(
 ): ListPromptQuestion | InputPromptQuestion {
     const { fs, project, appPath } = context;
     const { guiOptions } = properties;
-    const prompt: InputPromptQuestion = {
+    // `properties` is a List|Input union, so spreading it cannot resolve to a single arm (the
+    // select-only `choices`/`filter`/`theme` fields leak). A single assertion to the input arm is
+    // irreducible here; the object is otherwise input-shaped (type/name/guiOptions set below).
+    const prompt = {
         ...properties,
         type: 'input',
         name: 'buildingBlockData.filterBar',
@@ -423,13 +426,13 @@ export function getFilterBarIdPrompt(
             ...guiOptions,
             placeholder: guiOptions?.placeholder ?? (t('filterBar.defaultPlaceholder') as string)
         }
-    } as unknown as InputPromptQuestion;
+    } as InputPromptQuestion;
     if (properties.type === 'input') {
         return prompt;
     }
     return {
         ...prompt,
-        type: 'select',
+        type: 'list',
         choices: project
             ? async (answers: Answers) => {
                   if (!answers.viewOrFragmentPath) {
@@ -442,7 +445,7 @@ export function getFilterBarIdPrompt(
             ...prompt.guiOptions,
             selectType: 'dynamic'
         }
-    } as unknown as ListPromptQuestion;
+    };
 }
 
 /**
@@ -455,7 +458,7 @@ export function getBindingContextTypePrompt(properties: Partial<ListPromptQuesti
     const { guiOptions } = properties;
     return {
         ...properties,
-        type: 'select',
+        type: 'list',
         name: 'buildingBlockData.metaPath.bindingContextType',
         choices: properties.choices ?? [
             { name: t('bindingContextType.option.absolute') as string, value: 'absolute' },
@@ -465,7 +468,7 @@ export function getBindingContextTypePrompt(properties: Partial<ListPromptQuesti
             ...guiOptions,
             selectType: typeof properties.choices === 'function' ? 'dynamic' : 'static'
         }
-    } as unknown as ListPromptQuestion;
+    };
 }
 
 /**
@@ -504,5 +507,5 @@ export function getBuildingBlockIdPrompt(
             ...guiOptions,
             placeholder: guiOptions?.placeholder ?? (t('id.defaultPlaceholder') as string)
         }
-    } as unknown as InputPromptQuestion;
+    };
 }

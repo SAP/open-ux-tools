@@ -16,6 +16,7 @@ import {
     searchChoices,
     type SearchQuestion,
     type ValidationLink,
+    type WhenQuestion,
     withCondition,
     type YUIQuestion
 } from '@sap-ux/inquirer-common';
@@ -23,7 +24,7 @@ import { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
 import type { Answers } from 'inquirer';
 import { t } from '../../../../i18n.js';
-import type { ServiceSelectionPromptOptions, OdataServicePromptOptions } from '../../../../types.js';
+import type { ServiceSelectionPromptOptions } from '../../../../types.js';
 
 import { promptNames } from '../../../../types.js';
 import {
@@ -63,7 +64,7 @@ export function getSystemServiceQuestion(
     promptNamespace: string,
     promptOptions?: ServiceSelectionPromptOptions,
     hideValueHelpDownloadPrompt = true
-): YUIQuestion<ServiceAnswer>[] {
+): (YUIQuestion<ServiceAnswer> | WhenQuestion<ServiceAnswer>)[] {
     let serviceChoices: ChoiceOptions<ServiceAnswer>[] = [];
     // Prevent re-requesting services repeatedly by only requesting them once and when the system or client is changed
     let previousSystemUrl: string | undefined;
@@ -210,7 +211,7 @@ export function getSystemServiceQuestion(
           } as SearchQuestion<ServiceAnswer>)
         : ({
               ...base,
-              type: 'select',
+              type: 'list',
               choices: async (answers: SystemSelectionAnswers) => loadServiceChoices(answers),
               default: getDefaultServiceValue
           } as ListQuestion<ServiceAnswer>);
@@ -227,7 +228,7 @@ export function getSystemServiceQuestion(
         )[0] as YUIQuestion<ServiceAnswer>;
     }
 
-    const questions: YUIQuestion<ServiceAnswer>[] = [systemServiceQuestion];
+    const questions: (YUIQuestion<ServiceAnswer> | WhenQuestion<ServiceAnswer>)[] = [systemServiceQuestion];
 
     // Only for CLI use as `select` prompt validation does not run on CLI unless autocomplete is used
     if (getPromptHostEnvironment() === hostEnvironment.cli && !promptOptions?.useAutoComplete) {
@@ -253,7 +254,7 @@ export function getSystemServiceQuestion(
                 return false;
             },
             name: `${promptNamespace}:${cliServicePromptName}`
-        } as unknown as YUIQuestion<ServiceAnswer>);
+        });
     }
 
     if (!hideValueHelpDownloadPrompt) {

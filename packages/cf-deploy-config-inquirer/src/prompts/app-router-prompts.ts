@@ -89,7 +89,7 @@ function getMtaVersionPrompt(): CfAppRouterDeployConfigQuestions {
  */
 function getRouterTypePrompt(): CfAppRouterDeployConfigQuestions {
     return {
-        type: 'select',
+        type: 'list',
         name: appRouterPromptNames.routerType,
         guiOptions: {
             mandatory: true,
@@ -163,7 +163,7 @@ function getServiceProvider(): CfAppRouterDeployConfigQuestions {
         when: (previousAnswers: CfAppRouterDeployConfigAnswers): boolean => {
             return !!previousAnswers.addABAPServiceBinding && previousAnswers.routerType === RouterModuleType.Standard;
         },
-        type: 'select',
+        type: 'list',
         name: appRouterPromptNames.abapServiceProvider,
         guiOptions: {
             breadcrumb: t('prompts.abapEnvBindingBreadcrumbMessage')

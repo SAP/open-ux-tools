@@ -44,7 +44,7 @@ export async function getSystemQuestions(
                 }
                 return false;
             },
-            type: 'select',
+            type: 'list',
             name: 'objectType',
             guiOptions: {
                 breadcrumb: true
@@ -58,7 +58,7 @@ export async function getSystemQuestions(
         },
         {
             when: (previousAnswers: any) => previousAnswers.objectType === ObjectType.BUSINESS_OBJECT,
-            type: 'select',
+            type: 'list',
             name: 'businessObjectInterface',
             guiOptions: {
                 breadcrumb: true,
@@ -92,7 +92,7 @@ export async function getSystemQuestions(
         } as ListQuestion,
         {
             when: (previousAnswers: any) => previousAnswers.objectType === ObjectType.CDS_VIEW,
-            type: 'select',
+            type: 'list',
             name: 'abapCDSView',
             guiOptions: {
                 breadcrumb: true,

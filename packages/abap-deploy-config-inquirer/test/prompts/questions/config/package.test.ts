@@ -59,7 +59,7 @@ describe('getPackagePrompts', () => {
                 },
                 "message": "Select How You Want to Enter the Package",
                 "name": "packageInputChoice",
-                "type": "select",
+                "type": "list",
                 "validate": [Function],
                 "when": [Function],
               },

@@ -44,7 +44,7 @@ export function getPackagePrompts(
     const questions: AbapDeployConfigQuestion[] = [
         {
             when: (): boolean => showPackageInputChoiceQuestion(options?.packageAutocomplete?.useAutocomplete),
-            type: 'select',
+            type: 'list',
             name: promptNames.packageInputChoice,
             message: t('prompts.config.package.packageInputChoice.message'),
             guiOptions: {
@@ -77,7 +77,7 @@ export function getPackagePrompts(
             },
             type: 'input',
             name: promptNames.packageCliExecution
-        } as unknown as InputQuestion<AbapDeployConfigAnswersInternal>,
+        },
         {
             when: (previousAnswers: AbapDeployConfigAnswersInternal): boolean =>
                 defaultOrShowManualPackageQuestion(

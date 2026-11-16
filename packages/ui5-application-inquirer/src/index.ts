@@ -92,7 +92,9 @@ function applyPromptOptionDefaults(
                 defaultValue = getDefaultValue(answers, defaultValueOrFunc);
             } else if (promptOpt.advancedOption) {
                 // Apply the original default value if it was not answered
-                const originalDefault = ui5AppPrompts.find((prompt) => prompt.name === promptKey)?.default;
+                const originalPrompt = ui5AppPrompts.find((prompt) => prompt.name === promptKey);
+                const originalDefault =
+                    originalPrompt && 'default' in originalPrompt ? originalPrompt.default : undefined;
                 defaultValue = getDefaultValue(answers, originalDefault);
             }
             Object.assign(defaultAnswers, {

@@ -43,7 +43,7 @@ export function getTransportRequestPrompts(
     const questions: AbapDeployConfigQuestion[] = [
         {
             when: (): boolean => showTransportInputChoice(options.transportInputChoice),
-            type: 'select',
+            type: 'list',
             name: promptNames.transportInputChoice,
             message: t('prompts.config.transport.transportInputChoice.message'),
             guiOptions: {
@@ -97,7 +97,7 @@ export function getTransportRequestPrompts(
             },
             type: 'input',
             name: promptNames.transportCliExecution
-        } as unknown as AbapDeployConfigQuestion,
+        },
         {
             when: (previousAnswers: AbapDeployConfigAnswersInternal): boolean =>
                 defaultOrShowTransportCreatedQuestion(previousAnswers.transportInputChoice),
@@ -109,7 +109,7 @@ export function getTransportRequestPrompts(
         {
             when: (previousAnswers: AbapDeployConfigAnswersInternal): boolean =>
                 defaultOrShowTransportListQuestion(previousAnswers.transportInputChoice, options.transportInputChoice),
-            type: 'select',
+            type: 'list',
             name: promptNames.transportFromList,
             message: t('prompts.config.transport.common.transportRequest'),
             guiOptions: {

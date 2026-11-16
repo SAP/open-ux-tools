@@ -149,6 +149,18 @@ interface YUIValidate<A extends Answers> {
 }
 
 /**
+ * Replaces the inquirer arm's `when` with the YUI form, whose callback receives the full answers
+ * type `A`. inquirer 13 types the callback argument as `Partial<A>` (answers are incomplete while
+ * prompting), so a callback written against the concrete `A` is not assignable to the arm's `when`
+ * (the parameter is contravariant). The YUI call sites pass concretely-typed `(answers: A)` guards,
+ * so — mirroring {@link YUIValidate} — the arm's `when` is omitted and re-declared here to accept
+ * them without a cast.
+ */
+interface YUIWhen<A extends Answers> {
+    when?: boolean | ((answers: A) => boolean | Promise<boolean>);
+}
+
+/**
  * Whether the answer should be persisted by the prompt UI. Modelled on the specific question
  * types that use it since inquirer 13's closed arms reject it as an excess property.
  */
@@ -166,12 +178,32 @@ interface StoreOption {
 type DistributiveOmit<T, K extends PropertyKey> = T extends unknown ? Omit<T, K> : never;
 
 /**
+ * A CLI-only gate/setter prompt. Unlike the renderable inquirer arms it carries no `type` or
+ * `message`: YeomanUI and the App Wizard never render it. It exists so its `when` callback runs
+ * for a CLI side effect (re-validation, throwing to abort generation, seeding an answer). Its
+ * `name` is a synthetic CLI prompt id, so — unlike the renderable arms whose `name` is
+ * `Extract<keyof A, string>` — it is a bare `string` and need not be a key of the answers type.
+ *
+ * inquirer 13's `DistinctQuestion` union has no arm for a typeless `when`-only object, so without
+ * this type every such gate would need an `as unknown as` cast to satisfy
+ * `yeoman-generator`'s `this.prompt(...)`. It is intentionally NOT a member of the base
+ * {@link YUIQuestion} union: adding it there would strip `type`/`message`/`default`/`choices` from
+ * the union's common surface and break consumers that read those fields. Instead, packages that
+ * actually push such gates widen their own local question type with it (e.g.
+ * `YUIQuestion<A> | WhenQuestion<A>`), keeping the gates cast-free without affecting other consumers.
+ */
+export interface WhenQuestion<A extends Answers = Answers> extends YUIQuestionExtensions, YUIValidate<A> {
+    name: string;
+    when?: boolean | ((answers: A) => boolean | Promise<boolean>);
+}
+
+/**
  * Base question type carrying the YUI-specific extensions. Assignable to inquirer's
  * `DistinctQuestion`, which is the per-question type accepted by `yeoman-generator`'s
  * `this.prompt(...)` (via `@yeoman/types` -> `@yeoman/adapter`). This assignability is what
  * allows questions produced by this library to be passed to a generator without casting.
  *
- * `name` is intentionally not re-declared here: inquirer 13 already types it as
+ * `name` is intentionally not re-declared on the arm branch: inquirer 13 already types it as
  * `Extract<keyof A, string>` on `DistinctQuestion` (which is `string` for the default
  * `Answers`). Overriding it to a bare `string` would widen it back and break assignability
  * for questions typed against a concrete answers shape.
@@ -179,19 +211,36 @@ type DistributiveOmit<T, K extends PropertyKey> = T extends unknown ? Omit<T, K>
  * `validate` is re-declared via {@link YUIValidate} so the base agrees with the specific question
  * types: YUI validators receive the answers (the `boolean | string` return keeps the question
  * assignable to `this.prompt`).
+ *
+ * The {@link FileBrowserQuestion} member admits the YUI file/folder-browser input, whose `guiType`
+ * is an excess property inquirer 13's `input` arm would otherwise reject.
+ *
+ * The {@link ListQuestion} member admits list prompts, which emit `type: 'list'` (the inquirer 8
+ * spelling the YUI renderer expects) rather than inquirer 13's `select` discriminant, so they are
+ * not assignable to the `DistinctQuestion`-derived member above.
+ *
+ * CLI-only typeless gates are not part of this union (they would strip `type`/`message`/`default`
+ * from its common surface and break consumers that read those). Packages that push such gates opt in
+ * locally by widening their own question type with {@link WhenQuestion}.
  */
-export type YUIQuestion<A extends Answers = Answers> = DistributiveOmit<DistinctQuestion<A>, 'validate'> &
-    YUIQuestionExtensions &
-    YUIValidate<A>;
+export type YUIQuestion<A extends Answers = Answers> =
+    | (DistributiveOmit<DistinctQuestion<A>, 'validate' | 'when' | 'name'> &
+          YUIQuestionExtensions &
+          YUIValidate<A> &
+          YUIWhen<A> &
+          StoreOption & { name: string })
+    | ListQuestion<A>
+    | FileBrowserQuestion<A>;
 
 /**
  * Extracts the inquirer question arm for a given prompt `type` discriminant.
  */
 type QuestionArm<T extends string, A extends Answers> = Extract<DistinctQuestion<A>, { type?: T }>;
 
-export type PasswordQuestion<A extends Answers = Answers> = Omit<QuestionArm<'password', A>, 'validate'> &
+export type PasswordQuestion<A extends Answers = Answers> = Omit<QuestionArm<'password', A>, 'validate' | 'when'> &
     YUIQuestionExtensions &
     YUIValidate<A> &
+    YUIWhen<A> &
     StoreOption & {
         /**
          * Renders the password prompt as a masked login input in YUI.
@@ -200,44 +249,62 @@ export type PasswordQuestion<A extends Answers = Answers> = Omit<QuestionArm<'pa
     };
 
 export interface FileBrowserQuestion<A extends Answers = Answers>
-    extends Omit<QuestionArm<'input', A>, 'type' | 'validate'>, YUIQuestionExtensions, YUIValidate<A> {
+    extends
+        Omit<QuestionArm<'input', A>, 'type' | 'validate' | 'when'>,
+        YUIQuestionExtensions,
+        YUIValidate<A>,
+        YUIWhen<A> {
     type: 'input';
     guiType: 'file-browser' | 'folder-browser';
 }
-// The list prompt was renamed to `select` in inquirer 13; `ListQuestion` maps to that arm.
-export type ListQuestion<A extends Answers = Answers> = Omit<QuestionArm<'select', A>, 'validate'> &
-    YUIQuestionExtensions &
+// inquirer 13 renamed the `list` prompt to `select`; `ListQuestion` reuses that arm's config but
+// emits `type: 'list'`. YUI/App Wizard renders `list`, and @yeoman/adapter aliases `list`→`select`
+// at runtime, so the object keeps the inquirer 8 spelling while being typed against inquirer 13.
+export type ListQuestion<A extends Answers = Answers> = Omit<
+    QuestionArm<'select', A>,
+    'validate' | 'when' | 'type' | 'name'
+> & {
+    type: 'list';
+    name: string;
+} & YUIQuestionExtensions &
     YUIValidate<A> &
+    YUIWhen<A> &
     StoreOption;
 
 // inquirer 13's `search` arm replaces the former `inquirer-autocomplete-prompt` plugin. It carries a
 // `source` callback instead of static `choices`; the two cannot coexist on one object.
-export type SearchQuestion<A extends Answers = Answers> = Omit<QuestionArm<'search', A>, 'validate'> &
+export type SearchQuestion<A extends Answers = Answers> = Omit<QuestionArm<'search', A>, 'validate' | 'when'> &
     YUIQuestionExtensions &
     YUIValidate<A> &
+    YUIWhen<A> &
     StoreOption;
 
-export type ConfirmQuestion<A extends Answers = Answers> = Omit<QuestionArm<'confirm', A>, 'validate'> &
-    YUIQuestionExtensions &
-    YUIValidate<A>;
-
-export type EditorQuestion<A extends Answers = Answers> = Omit<QuestionArm<'editor', A>, 'validate'> &
+export type ConfirmQuestion<A extends Answers = Answers> = Omit<QuestionArm<'confirm', A>, 'validate' | 'when'> &
     YUIQuestionExtensions &
     YUIValidate<A> &
-    StoreOption;
+    YUIWhen<A>;
 
-export type InputQuestion<A extends Answers = Answers> = Omit<QuestionArm<'input', A>, 'validate'> &
+export type EditorQuestion<A extends Answers = Answers> = Omit<QuestionArm<'editor', A>, 'validate' | 'when'> &
     YUIQuestionExtensions &
     YUIValidate<A> &
+    YUIWhen<A> &
     StoreOption;
 
-export type CheckBoxQuestion<A extends Answers = Answers> = Omit<QuestionArm<'checkbox', A>, 'validate'> &
+export type InputQuestion<A extends Answers = Answers> = Omit<QuestionArm<'input', A>, 'validate' | 'when'> &
     YUIQuestionExtensions &
-    YUIValidate<A>;
+    YUIValidate<A> &
+    YUIWhen<A> &
+    StoreOption;
 
-export type NumberQuestion<A extends Answers = Answers> = Omit<QuestionArm<'number', A>, 'validate'> &
+export type CheckBoxQuestion<A extends Answers = Answers> = Omit<QuestionArm<'checkbox', A>, 'validate' | 'when'> &
     YUIQuestionExtensions &
-    YUIValidate<A>;
+    YUIValidate<A> &
+    YUIWhen<A>;
+
+export type NumberQuestion<A extends Answers = Answers> = Omit<QuestionArm<'number', A>, 'validate' | 'when'> &
+    YUIQuestionExtensions &
+    YUIValidate<A> &
+    YUIWhen<A>;
 /**
  * Defines prompt/question default values and/or whether or not they should be shown.
  */

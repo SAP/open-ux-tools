@@ -234,7 +234,7 @@ describe('Enhanced Prompting Tests', () => {
                 const questions = getQuestions(mockUI5Versions);
                 const ui5VersionQ = questions[3] as any;
 
-                expect(ui5VersionQ.type).toBe('select');
+                expect(ui5VersionQ.type).toBe('list');
                 expect(ui5VersionQ.name).toBe('ui5Version');
                 expect(ui5VersionQ.message).toBe(t('prompts.libraryUi5VersionLabel'));
                 expect(ui5VersionQ.guiOptions).toEqual({

@@ -148,7 +148,7 @@ describe('Test new system prompt', () => {
                 "message": [Function],
                 "name": "someNamespace:serviceSelection",
                 "showOutputTabLink": "validationMessageOverflow",
-                "type": "select",
+                "type": "list",
                 "validate": [Function],
                 "when": [Function],
               },

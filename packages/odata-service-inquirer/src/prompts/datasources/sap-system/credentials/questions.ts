@@ -1,7 +1,7 @@
 import { Severity } from '@sap-devx/yeoman-ui-types';
 import type { ServiceProvider } from '@sap-ux/axios-extension';
 import { isFullUrlDestination, isPartialUrlDestination, isAppStudio, type Destination } from '@sap-ux/btp-utils';
-import type { InputQuestion, PasswordQuestion, ConfirmQuestion } from '@sap-ux/inquirer-common';
+import type { PasswordQuestion, Validator, YUIQuestion } from '@sap-ux/inquirer-common';
 import type { BackendSystem } from '@sap-ux/store';
 import type { Answers } from 'inquirer';
 import { t } from '../../../../i18n.js';
@@ -34,7 +34,7 @@ export function getCredentialsPrompts<T extends Answers>(
     promptNamespace?: string,
     sapClient?: { sapClient: string | undefined; isValid: boolean },
     requiredOdataVersion?: OdataVersion
-): (InputQuestion<T> | PasswordQuestion<T> | ConfirmQuestion<T>)[] {
+): YUIQuestion<T>[] {
     const usernamePromptName = `${promptNamespace ? promptNamespace + ':' : ''}${
         BasicCredentialsPromptNames.systemUsername
     }`;
@@ -47,12 +47,14 @@ export function getCredentialsPrompts<T extends Answers>(
     // Optimization to prevent re-checking of auth
     let authRequired: boolean | undefined;
 
-    const credentialsPrompts: (InputQuestion<T> | PasswordQuestion<T> | ConfirmQuestion<T>)[] = [
+    const credentialsPrompts: (YUIQuestion<T> | PasswordQuestion<T>)[] = [
         {
             when: async () => {
                 authRequired = await connectionValidator.isAuthRequired();
-                return (
-                    connectionValidator.systemAuthType === 'basic' && authRequired && (!sapClient || sapClient.isValid)
+                return !!(
+                    connectionValidator.systemAuthType === 'basic' &&
+                    authRequired &&
+                    (!sapClient || sapClient.isValid)
                 );
             },
             type: 'input',
@@ -63,7 +65,7 @@ export function getCredentialsPrompts<T extends Answers>(
             },
             default: '',
             validate: (user: string) => user?.length > 0
-        } as unknown as InputQuestion<T>,
+        },
         {
             when: () =>
                 !!(connectionValidator.systemAuthType === 'basic' && authRequired && (!sapClient || sapClient.isValid)),
@@ -78,7 +80,10 @@ export function getCredentialsPrompts<T extends Answers>(
             message: t('prompts.systemPassword.message'),
             mask: '*',
             default: '',
-            validate: async (password: string, answers: T): Promise<ValidationResult> => {
+            // `validate` can resolve to a rich `ValidationLink`; cast to `Validator` whose narrow
+            // `boolean | string` return keeps the question assignable to `this.prompt` (the link's
+            // `toString()` serializes for CLI, YUI renders the link itself).
+            validate: (async (password: string, answers: T): Promise<ValidationResult> => {
                 if (!(
                     connectionValidator.validatedUrl &&
                     answers?.[usernamePromptName] &&
@@ -119,8 +124,8 @@ export function getCredentialsPrompts<T extends Answers>(
                     return true;
                 }
                 return valResult;
-            },
-            additionalMessages: (password: unknown, answers: T) => {
+            }) as Validator<T>,
+            additionalMessages: (password: unknown, answers?: Answers) => {
                 // Since the odata service URL prompt has its own credentials prompts its safe to assume
                 // that `ignoreCertError` when true means that the user has set the node setting to ignore cert errors and
                 // not that the user has chosen to ignore the cert error for this specific connection (this is only supported by the odata service URL prompts).
@@ -135,10 +140,12 @@ export function getCredentialsPrompts<T extends Answers>(
                     };
                 }
             }
-        } as unknown as PasswordQuestion<T>
+        }
     ];
 
-    const confirmCredentialStoragePrompt = {
+    // Renderable confirm prompt whose `name` is a synthetic store-credentials id (not a key of `T`),
+    // so it is typed at the base `YUIQuestion` union (bare-string `name`) rather than the confirm arm.
+    const confirmCredentialStoragePrompt: YUIQuestion<T> = {
         when: (answers: T) =>
             !!(
                 connectionValidator.systemAuthType === 'basic' &&
@@ -170,7 +177,7 @@ export function getCredentialsPrompts<T extends Answers>(
                 };
             }
         }
-    } as unknown as ConfirmQuestion<T>;
+    };
 
     if (!isAppStudio()) {
         credentialsPrompts.push(confirmCredentialStoragePrompt);

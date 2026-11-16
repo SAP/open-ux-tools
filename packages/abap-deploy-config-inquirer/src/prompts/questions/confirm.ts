@@ -43,7 +43,7 @@ function getOverwritePrompt(): AbapDeployConfigQuestion {
         },
         default: true,
         validate: (overwrite: boolean): boolean => validateConfirmQuestion(overwrite)
-    } as unknown as ConfirmQuestion<AbapDeployConfigAnswersInternal>;
+    };
 }
 
 /**

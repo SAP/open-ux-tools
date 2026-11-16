@@ -87,7 +87,7 @@ async function promptToSelectSystem(systems: BackendSystem[]): Promise<BackendSy
     });
 
     const answer = await prompts({
-        type: 'select',
+        type: 'list',
         name: 'index',
         message: t('systemLookup.selectSystemPrompt'),
         choices: systems.map((s, index) => {

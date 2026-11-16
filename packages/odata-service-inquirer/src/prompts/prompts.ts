@@ -1,5 +1,5 @@
 import { withCondition, type YUIQuestion } from '@sap-ux/inquirer-common';
-import type { Answers, Question } from 'inquirer';
+import type { Answers } from 'inquirer';
 import { t } from '../i18n.js';
 import {
     DatasourceType,
@@ -44,7 +44,7 @@ export async function getQuestions(
 function getDatasourceTypeQuestion(options?: DatasourceTypePromptOptions): YUIQuestion<OdataServiceAnswers> {
     const choices = getDatasourceTypeChoices(options);
     return {
-        type: 'select',
+        type: 'list',
         name: promptNames.datasourceType,
         guiOptions: {
             breadcrumb: true
@@ -70,28 +70,28 @@ async function getDatasourceTypeConditionalQuestions(
 
     conditionalQuestions.push(
         ...(withCondition(
-            (await getSystemSelectionQuestions(promptOptions, connectedSystem)) as Question[],
+            await getSystemSelectionQuestions(promptOptions, connectedSystem),
             (answers: Answers) => (answers as OdataServiceAnswers).datasourceType === DatasourceType.sapSystem
         ) as OdataServiceQuestion[])
     );
 
     conditionalQuestions.push(
         ...(withCondition(
-            [getMetadataFileQuestion(promptOptions?.metadataFilePath) as Question],
+            [getMetadataFileQuestion(promptOptions?.metadataFilePath)],
             (answers: Answers) => (answers as OdataServiceAnswers).datasourceType === DatasourceType.metadataFile
         ) as OdataServiceQuestion[])
     );
 
     conditionalQuestions.push(
         ...(withCondition(
-            getLocalCapProjectPrompts(promptOptions) as Question[],
+            getLocalCapProjectPrompts(promptOptions),
             (answers: Answers) => (answers as OdataServiceAnswers).datasourceType === DatasourceType.capProject
         ) as OdataServiceQuestion[])
     );
 
     conditionalQuestions.push(
         ...(withCondition(
-            getServiceUrlQuestions(promptOptions?.serviceUrl) as Question[],
+            getServiceUrlQuestions(promptOptions?.serviceUrl),
             (answers: Answers) => (answers as OdataServiceAnswers).datasourceType === DatasourceType.odataServiceUrl
         ) as OdataServiceQuestion[])
     );

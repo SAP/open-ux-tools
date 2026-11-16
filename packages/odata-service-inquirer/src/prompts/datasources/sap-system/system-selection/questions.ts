@@ -4,16 +4,17 @@ import { isAppStudio, isPartialUrlDestination } from '@sap-ux/btp-utils';
 import { hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import {
     type ChoiceOptions,
-    type InputQuestion,
     type ListQuestion,
     type SearchQuestion,
     searchChoices,
+    type Validator,
+    type WhenQuestion,
     withCondition,
     type YUIQuestion
 } from '@sap-ux/inquirer-common';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
 import { BackendSystemKey, type BackendSystem } from '@sap-ux/store';
-import type { Answers, Question } from 'inquirer';
+import type { Answers } from 'inquirer';
 import { t } from '../../../../i18n.js';
 import { type ConnectedSystem, type OdataServicePromptOptions, promptNames } from '../../../../types.js';
 import { getPromptHostEnvironment, PromptState } from '../../../../utils/index.js';
@@ -118,45 +119,50 @@ async function validateSystemSelection(
 export async function getSystemSelectionQuestions(
     promptOptions?: OdataServicePromptOptions,
     connectedSystem?: ConnectedSystem
-): Promise<Question<SystemSelectionAnswers & ServiceAnswer>[]> {
+): Promise<YUIQuestion<SystemSelectionAnswers & ServiceAnswer>[]> {
     PromptState.reset();
     const connectValidator = new ConnectionValidator();
 
-    const questions: Question<SystemSelectionAnswers & ServiceAnswer>[] = await getSystemConnectionQuestions(
+    // `getSystemConnectionQuestions` includes CLI-only `WhenQuestion` gates; bridge to the page's
+    // combined answer-typed array at the common base.
+    const questions = (await getSystemConnectionQuestions(
         connectValidator,
         promptOptions,
         connectedSystem
-    );
+    )) as YUIQuestion<SystemSelectionAnswers & ServiceAnswer>[];
 
     // Existing system (BackendSystem or Destination) selected,
     if (!promptOptions?.serviceSelection?.hide) {
+        // Each sub-prompt set is typed to its own answers shape; `YUIQuestion`'s answer-typed
+        // `when`/`validate` prevent a concrete-answers array from unifying with the combined
+        // `SystemSelectionAnswers & ServiceAnswer` shape, so bridge at the common base.
         questions.push(
-            ...withCondition(
+            ...(withCondition(
                 getSystemServiceQuestion(
                     connectValidator,
                     systemSelectionPromptNamespace,
                     promptOptions?.serviceSelection,
                     promptOptions?.valueHelpDownload?.hide
-                ) as Question[],
+                ),
                 (answers: Answers) => (answers as SystemSelectionAnswers).systemSelection?.type !== 'newSystemChoice'
-            )
+            ) as YUIQuestion<SystemSelectionAnswers & ServiceAnswer>[])
         );
     }
 
     // Create new system connection for storage only supported on non-App Studio environments
     if (!isAppStudio()) {
         questions.push(
-            ...withCondition(
-                getNewSystemQuestions(promptOptions, connectedSystem) as Question[],
+            ...(withCondition(
+                getNewSystemQuestions(promptOptions, connectedSystem),
                 (answers: Answers) => (answers as SystemSelectionAnswers).systemSelection?.type === 'newSystemChoice'
-            )
+            ) as YUIQuestion<SystemSelectionAnswers & ServiceAnswer>[])
         );
     } else {
         questions.push(
-            ...withCondition(
-                getCfAbapBASQuestions(promptOptions) as Question[],
+            ...(withCondition(
+                getCfAbapBASQuestions(promptOptions),
                 (answers: Answers) => (answers as SystemSelectionAnswers).systemSelection?.type === 'cfAbapEnvService'
-            )
+            ) as YUIQuestion<SystemSelectionAnswers & ServiceAnswer>[])
         );
     }
 
@@ -177,7 +183,7 @@ export async function getSystemConnectionQuestions(
     connectionValidator: ConnectionValidator,
     promptOptions?: OdataServicePromptOptions,
     cachedConnectedSystem?: ConnectedSystem
-): Promise<Question<SystemSelectionAnswers>[]> {
+): Promise<(YUIQuestion<SystemSelectionAnswers> | WhenQuestion<SystemSelectionAnswers>)[]> {
     const requiredOdataVersion = promptOptions?.serviceSelection?.requiredOdataVersion;
     const destinationFilters = promptOptions?.systemSelection?.destinationFilters;
     const systemChoices = await createSystemChoices(
@@ -271,15 +277,19 @@ export async function getSystemConnectionQuestions(
           } as SearchQuestion<SystemSelectionAnswers>)
         : ({
               ...systemSelectionBase,
-              type: 'select',
+              type: 'list',
               choices: effectiveSystemChoices
           } as ListQuestion<SystemSelectionAnswers>);
 
-    const questions: Question[] = [systemSelectionQuestion as unknown as Question];
+    const questions: (YUIQuestion<SystemSelectionAnswers> | WhenQuestion<SystemSelectionAnswers>)[] = [
+        systemSelectionQuestion
+    ];
 
     if (isAppStudio()) {
         // Additional service path prompt for partial URL destinations
-        const servicePathPrompt = {
+        // Renderable input prompt whose `name` is a synthetic CLI id (not a key of the answers type),
+        // so it is typed at the base `YUIQuestion` union (bare-string `name`) rather than the input arm.
+        const servicePathPrompt: YUIQuestion<SystemSelectionAnswers> = {
             when: (answers: SystemSelectionAnswers): boolean => {
                 const selectedSystem = answers?.[promptNames.systemSelection];
                 if (selectedSystem?.type === 'destination') {
@@ -297,7 +307,10 @@ export async function getSystemConnectionQuestions(
                 applyDefaultWhenDirty: true
             },
             default: '',
-            validate: async (servicePath: string, answers: SystemSelectionAnswers) => {
+            // `validate` can resolve to a rich `ValidationLink`; cast to `Validator` whose narrow
+            // `boolean | string` return keeps the question assignable to `this.prompt` (the link's
+            // `toString()` serializes for CLI, YUI renders the link itself).
+            validate: (async (servicePath: string, answers: SystemSelectionAnswers) => {
                 // @sap-ux/btp-utils getDestinationUrlForAppStudio() enforces a path length of > 1, even though it could be a valid path
                 // Double slashes are not allowed at the start of the path as they break URL construction
                 if (!servicePath || servicePath.trim().length < 2 || servicePath.startsWith('//')) {
@@ -319,8 +332,8 @@ export async function getSystemConnectionQuestions(
                     servicePath
                 );
                 return connectValResult;
-            }
-        } as unknown as InputQuestion<SystemSelectionAnswers>;
+            }) as Validator<SystemSelectionAnswers>
+        };
         questions.push(servicePathPrompt);
     }
 
@@ -348,7 +361,7 @@ export async function getSystemConnectionQuestions(
                 return false;
             },
             name: `${systemSelectionPromptNames.systemSelectionCli}`
-        } as Question);
+        });
     }
     questions.push(
         ...getCredentialsPrompts(connectionValidator, systemSelectionPromptNamespace, undefined, requiredOdataVersion)

@@ -168,7 +168,7 @@ describe('utils', () => {
         const testCases: Array<{ name: string; type?: 'select'; expected: unknown }> = [
             {
                 name: 'Type => select',
-                type: 'select',
+                type: 'list',
                 expected: {
                     test1: {
                         dummy1: undefined

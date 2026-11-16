@@ -7,7 +7,7 @@ import {
     type AbapDeployConfigPromptOptions,
     type AbapDeployConfigQuestion
 } from '../../types.js';
-import type { InputQuestion, PasswordQuestion } from '@sap-ux/inquirer-common';
+import type { Validator } from '@sap-ux/inquirer-common';
 import type { IValidationLink } from '@sap-devx/yeoman-ui-types';
 
 /**
@@ -25,7 +25,7 @@ function getUsernamePrompt(options: AbapDeployConfigPromptOptions): AbapDeployCo
         guiOptions: {
             mandatory: true
         }
-    } as InputQuestion<AbapDeployConfigAnswersInternal>;
+    };
 }
 
 /**
@@ -35,6 +35,19 @@ function getUsernamePrompt(options: AbapDeployConfigPromptOptions): AbapDeployCo
  * @returns password question for password
  */
 function getPasswordPrompt(options: AbapDeployConfigPromptOptions): AbapDeployConfigQuestion {
+    // `validateCredentials` returns a rich `IValidationLink`, which inquirer 13's password arm
+    // `validate` (mirrored by `Validator`) does not permit — YeomanUI renders the link, the CLI
+    // relies on its `toString()`. Casting only the validator keeps the rest of the prompt checked.
+    const validate = (async (
+        input: string,
+        previousAnswers: Partial<AbapDeployConfigAnswersInternal> = {}
+    ): Promise<boolean | string | IValidationLink> =>
+        await validateCredentials(
+            input,
+            previousAnswers,
+            options.backendTarget,
+            options.adpProjectType
+        )) as Validator<AbapDeployConfigAnswersInternal>;
     return {
         when: (): boolean => showPasswordQuestion(),
         type: 'password',
@@ -47,12 +60,8 @@ function getPasswordPrompt(options: AbapDeployConfigPromptOptions): AbapDeployCo
             applyDefaultWhenDirty: true
         },
         default: '',
-        validate: async (
-            input: string,
-            previousAnswers: AbapDeployConfigAnswersInternal
-        ): Promise<boolean | string | IValidationLink> =>
-            await validateCredentials(input, previousAnswers, options.backendTarget, options.adpProjectType)
-    } as unknown as PasswordQuestion<AbapDeployConfigAnswersInternal>;
+        validate
+    };
 }
 
 /**

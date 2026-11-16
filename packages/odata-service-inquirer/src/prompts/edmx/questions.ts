@@ -329,7 +329,7 @@ function getTableLayoutQuestions(
         let defaultTableType: TableType | undefined;
         tableLayoutQuestions.push({
             when: (prevAnswers: EntitySelectionAnswers) => !!prevAnswers.mainEntity,
-            type: 'select',
+            type: 'list',
             name: EntityPromptNames.tableType,
             message: t('prompts.tableType.message'),
             guiOptions: {

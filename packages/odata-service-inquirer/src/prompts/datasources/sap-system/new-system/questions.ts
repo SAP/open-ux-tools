@@ -1,8 +1,8 @@
 /**
  * New system prompting questions for re-use in multiple sap-system datasource prompt sets.
  */
-import { withCondition, type ListQuestion } from '@sap-ux/inquirer-common';
-import type { Answers, Question } from 'inquirer';
+import { withCondition, type ListQuestion, type YUIQuestion } from '@sap-ux/inquirer-common';
+import type { Answers } from 'inquirer';
 import { t } from '../../../../i18n.js';
 import type { ConnectedSystem, OdataServicePromptOptions, SapSystemType } from '../../../../types.js';
 import { getAbapOnBTPSystemQuestions } from '../abap-on-btp/questions.js';
@@ -19,10 +19,10 @@ import { type NewSystemAnswers, newSystemPromptNames } from './types.js';
 export function getNewSystemQuestions(
     promptOptions?: OdataServicePromptOptions,
     connectedSystem?: ConnectedSystem
-): Question<NewSystemAnswers>[] {
-    const questions: Question<NewSystemAnswers>[] = [
+): YUIQuestion<NewSystemAnswers>[] {
+    const questions: YUIQuestion<NewSystemAnswers>[] = [
         {
-            type: 'select',
+            type: 'list',
             name: newSystemPromptNames.newSystemType,
             choices: [
                 { name: t('prompts.newSystemType.choiceAbapOnBtp'), value: 'abapOnBtp' as SapSystemType },
@@ -32,16 +32,16 @@ export function getNewSystemQuestions(
         } as ListQuestion<NewSystemAnswers>
     ];
     questions.push(
-        ...withCondition(
-            getAbapOnPremQuestions(promptOptions) as Question[],
+        ...(withCondition(
+            getAbapOnPremQuestions(promptOptions),
             (answers: Answers) => (answers as NewSystemAnswers).newSystemType === 'abapOnPrem'
-        )
+        ) as YUIQuestion<NewSystemAnswers>[])
     );
     questions.push(
-        ...withCondition(
-            getAbapOnBTPSystemQuestions(promptOptions, connectedSystem) as Question[],
+        ...(withCondition(
+            getAbapOnBTPSystemQuestions(promptOptions, connectedSystem),
             (answers: Answers) => (answers as NewSystemAnswers).newSystemType === 'abapOnBtp'
-        )
+        ) as YUIQuestion<NewSystemAnswers>[])
     );
     return questions;
 }

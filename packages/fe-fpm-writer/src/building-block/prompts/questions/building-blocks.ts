@@ -30,7 +30,7 @@ export async function getBuildingBlockTypePrompts(): Promise<Prompts<BuildingBlo
     return {
         questions: [
             {
-                type: 'select',
+                type: 'list',
                 name: 'buildingBlockType',
                 message: t('buildingBlockType.message') as string,
                 choices: [

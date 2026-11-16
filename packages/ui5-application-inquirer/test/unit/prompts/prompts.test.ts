@@ -373,7 +373,7 @@ describe('getQuestions', () => {
         let questions = await getQuestions([]);
         let ui5VersionPrompt = questions.find((question) => question.name === promptNames.ui5Version);
         expect((ui5VersionPrompt?.when as Function)()).toEqual(true);
-        expect(ui5VersionPrompt?.type).toEqual('select');
+        expect(ui5VersionPrompt?.type).toEqual('list');
         expect(((ui5VersionPrompt as ListQuestion).choices as Function)()).toMatchInlineSnapshot(`[]`);
 
         const ui5Vers: UI5Version[] = [
@@ -409,7 +409,7 @@ describe('getQuestions', () => {
         questions = await getQuestions(ui5Vers);
         ui5VersionPrompt = questions.find((question) => question.name === promptNames.ui5Version);
         expect((ui5VersionPrompt?.when as Function)()).toEqual(true);
-        expect(ui5VersionPrompt?.type).toEqual('select');
+        expect(ui5VersionPrompt?.type).toEqual('list');
         expect(((ui5VersionPrompt as ListQuestion)?.choices as Function)()).toEqual(expectedUI5VerChoices);
         // The `select` arm has no `source`; filtering is only available via the `search` arm
         expect(ui5VersionPrompt?.source).toBeUndefined();

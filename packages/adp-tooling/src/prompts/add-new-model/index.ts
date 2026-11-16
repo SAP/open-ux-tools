@@ -9,6 +9,7 @@ import type {
     ConfirmQuestion
 } from '@sap-ux/inquirer-common';
 import type { UI5FlexLayer } from '@sap-ux/project-access';
+import type { Answers } from 'inquirer';
 import type { Destination } from '@sap-ux/btp-utils';
 import { listDestinations, isOnPremiseDestination, isAppStudio } from '@sap-ux/btp-utils';
 import { Severity, MessageType, type IMessageSeverity, type AppWizard } from '@sap-devx/yeoman-ui-types';
@@ -306,9 +307,11 @@ export async function getPrompts(
     const buildResultingUrlMessage = (
         i18nKey: string,
         uri: unknown,
-        previousAnswers?: NewModelAnswers
+        previousAnswers?: Answers
     ): IMessageSeverity | undefined => {
-        const destinationUrl = isCFEnv ? previousAnswers?.destination?.Host : abapServiceUrl;
+        const destinationUrl = isCFEnv
+            ? (previousAnswers?.destination as Destination | undefined)?.Host
+            : abapServiceUrl;
         const resultingUrl = buildResultingServiceUrl(destinationUrl, uri as string | undefined);
         if (!resultingUrl) {
             return undefined;
@@ -321,7 +324,7 @@ export async function getPrompts(
 
     return [
         {
-            type: 'select',
+            type: 'list',
             name: 'serviceType',
             message: t('prompts.serviceTypeLabel'),
             choices: isCFEnv ? serviceTypeChoices : serviceTypeChoices.filter((c) => c.value !== ServiceType.HTTP),
@@ -333,7 +336,7 @@ export async function getPrompts(
             }
         } as ListQuestion<NewModelAnswers>,
         {
-            type: 'select',
+            type: 'list',
             name: 'destination',
             message: t('prompts.destinationLabel'),
             choices: (): { name: string; value: Destination }[] => destinationChoices ?? [],
@@ -412,10 +415,9 @@ export async function getPrompts(
                 hint: t('prompts.oDataAnnotationDataSourceUriTooltip')
             },
             when: (answers: NewModelAnswers) => answers.addAnnotationMode,
-            additionalMessages: (uri: unknown, previousAnswers?: NewModelAnswers): IMessageSeverity | undefined =>
+            additionalMessages: (uri: unknown, previousAnswers?: Answers): IMessageSeverity | undefined =>
                 buildResultingUrlMessage('prompts.resultingAnnotationUrl', uri, previousAnswers)
-            // name belongs to the WithAnnotations branch of the discriminated union; keyof the union excludes it
-        } as unknown as InputQuestion<NewModelAnswers>,
+        },
         {
             type: 'editor',
             name: 'annotationSettings',
@@ -426,8 +428,7 @@ export async function getPrompts(
                 hint: t('prompts.oDataAnnotationSettingsTooltip')
             },
             when: (answers: NewModelAnswers) => answers.addAnnotationMode
-            // name belongs to the WithAnnotations branch of the discriminated union; keyof the union excludes it
-        } as unknown as EditorQuestion<NewModelAnswers>
+        }
     ];
 }
 

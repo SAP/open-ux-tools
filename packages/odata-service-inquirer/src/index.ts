@@ -94,9 +94,7 @@ async function getSystemSelectionQuestions(
         LoggerHelper.logger = logger;
     }
     return {
-        prompts: (await getSystemSelectionQuestionsBase(promptOptions)) as unknown as YUIQuestion<
-            SystemSelectionAnswers & ServiceAnswer
-        >[],
+        prompts: await getSystemSelectionQuestionsBase(promptOptions),
         answers: PromptState.odataService
     };
 }

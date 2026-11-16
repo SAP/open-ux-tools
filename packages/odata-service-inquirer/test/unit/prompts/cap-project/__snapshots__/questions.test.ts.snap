@@ -12,7 +12,7 @@ exports[`getLocalCapProjectPrompts getLocalCapProjectPrompts, returns expected p
     },
     "message": "Choose a CAP Project",
     "name": "capProject",
-    "type": "select",
+    "type": "list",
     "when": [Function],
   },
   {
@@ -40,7 +40,7 @@ exports[`getLocalCapProjectPrompts getLocalCapProjectPrompts, returns expected p
     "message": "OData Service",
     "name": "capService",
     "showOutputTabLink": "validationMessageOverflow",
-    "type": "select",
+    "type": "list",
     "validate": [Function],
     "when": [Function],
   },

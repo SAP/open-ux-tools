@@ -57,7 +57,7 @@ export function getQuestions(
  */
 function getTargetProjectFolderPrompt(projectChoices?: ChoiceOptions[]): UI5LibraryReferenceQuestion {
     return {
-        type: 'select',
+        type: 'list',
         guiOptions: {
             breadcrumb: true
         },
@@ -80,7 +80,7 @@ function getTargetProjectFolderPrompt(projectChoices?: ChoiceOptions[]): UI5Libr
  */
 function getSourcePrompt(): UI5LibraryReferenceQuestion {
     return {
-        type: 'select',
+        type: 'list',
         guiOptions: {
             breadcrumb: true
         },

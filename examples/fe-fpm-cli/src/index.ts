@@ -6,6 +6,7 @@ import type {
     BuildingBlockTypePromptsAnswer
 } from '@sap-ux/fe-fpm-writer';
 import inquirer from 'inquirer';
+import type { DistinctQuestion } from 'inquirer';
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
@@ -14,6 +15,22 @@ import { promisify } from 'node:util';
 
 const sampleAppPath = join(__dirname, '../sample/fe-app');
 const testAppPath = join(__dirname, '../test-output/fe-app', `${Date.now()}`);
+
+/**
+ * Adapts prompt questions for vanilla inquirer. The prompting library emits `type: 'list'` (the
+ * spelling the App Wizard renderer expects); `@yeoman/adapter` aliases it to `select` at runtime,
+ * but this demo drives inquirer directly, so the same alias is applied here before prompting.
+ *
+ * @param questions - the questions produced by the prompting API
+ * @returns the questions with any `list` type mapped to inquirer 13's `select`
+ */
+function toInquirerQuestions(questions: { type?: string }[]): DistinctQuestion[] {
+    const mapped = questions.map((question) =>
+        question.type === 'list' ? { ...question, type: 'select' } : question
+    );
+    // The runtime map yields inquirer 13-valid question objects; assert the shape inquirer's prompt accepts.
+    return mapped as DistinctQuestion[];
+}
 
 /**
  * Initializes the memfs and copies over the sample Fiori elements application.
@@ -40,7 +57,7 @@ export async function generateFilterBarBuildingBlock(fs: Editor): Promise<Editor
     const promptsAPI = await PromptsAPI.init(basePath, undefined, fs);
     const prompt = await promptsAPI.getPrompts(PromptsType.FilterBar);
     const answers: FilterBarPromptsAnswer = (await inquirer.prompt(
-        prompt.questions,
+        toInquirerQuestions(prompt.questions),
         prompt.initialAnswers
     )) as FilterBarPromptsAnswer;
     fs = await promptsAPI.submitAnswers(PromptsType.FilterBar, answers);
@@ -58,7 +75,7 @@ export async function generateChartBuildingBlock(fs: Editor): Promise<Editor> {
     const promptsAPI = await PromptsAPI.init(basePath, undefined, fs);
     const prompt = await promptsAPI.getPrompts(PromptsType.Chart);
     const answers: ChartPromptsAnswer = (await inquirer.prompt(
-        prompt.questions,
+        toInquirerQuestions(prompt.questions),
         prompt.initialAnswers
     )) as ChartPromptsAnswer;
     fs = await promptsAPI.submitAnswers(PromptsType.Chart, answers);
@@ -75,7 +92,7 @@ export async function generateTableBuildingBlock(fs: Editor): Promise<Editor> {
     const promptsAPI = await PromptsAPI.init(basePath, undefined, fs);
     const prompt = await promptsAPI.getPrompts(PromptsType.Table);
     const answers: TablePromptsAnswer = (await inquirer.prompt(
-        prompt.questions,
+        toInquirerQuestions(prompt.questions),
         prompt.initialAnswers
     )) as TablePromptsAnswer;
     fs = await promptsAPI.submitAnswers(PromptsType.Table, answers);
@@ -88,7 +105,7 @@ export async function generateTableBuildingBlock(fs: Editor): Promise<Editor> {
         let fs = await initialize();
         const promptsAPI = await PromptsAPI.init(sampleAppPath, undefined, fs);
         const buildingBlockPrompts = await promptsAPI.getPrompts(PromptsType.BuildingBlocks);
-        const answers: Partial<BuildingBlockTypePromptsAnswer> = await inquirer.prompt(buildingBlockPrompts.questions);
+        const answers: Partial<BuildingBlockTypePromptsAnswer> = await inquirer.prompt(toInquirerQuestions(buildingBlockPrompts.questions));
 
         switch (answers.buildingBlockType) {
             case PromptsType.Chart:

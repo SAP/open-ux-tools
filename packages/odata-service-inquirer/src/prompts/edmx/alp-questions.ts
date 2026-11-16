@@ -74,7 +74,7 @@ export function getAnalyticListPageQuestions(
                 }
                 return qualifierChoices.length > 1;
             },
-            type: 'select',
+            type: 'list',
             name: EntityPromptNames.presentationQualifier,
             message: t('prompts.presentationQualifier.message'),
             guiOptions: {
@@ -94,7 +94,7 @@ export function getAnalyticListPageQuestions(
                 when: (prevAnswers: EntitySelectionAnswers) => {
                     return !!prevAnswers.mainEntity;
                 },
-                type: 'select',
+                type: 'list',
                 name: EntityPromptNames.tableSelectionMode,
                 message: t('prompts.tableSelectionMode.message'),
                 guiOptions: {

@@ -25,7 +25,7 @@ export function getPrompts(
     ];
     return [
         {
-            type: 'select',
+            type: 'list',
             name: 'id',
             message: t('prompts.oDataSourceLabel'),
             choices: dataSourceIds,
@@ -37,7 +37,7 @@ export function getPrompts(
             }
         } as ListQuestion<AddAnnotationsAnswers>,
         {
-            type: 'select',
+            type: 'list',
             name: 'fileSelectOption',
             message: t('prompts.fileSelectOptionLabel'),
             choices: annotationFileSelectOptions,

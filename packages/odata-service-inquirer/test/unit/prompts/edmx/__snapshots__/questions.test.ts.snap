@@ -191,7 +191,7 @@ exports[`Test entity prompts getEntityQuestions should return the questions when
     },
     "message": "Main Entity",
     "name": "mainEntity",
-    "type": "select",
+    "type": "list",
     "validate": [Function],
   },
   {
@@ -202,7 +202,7 @@ exports[`Test entity prompts getEntityQuestions should return the questions when
     },
     "message": "Navigation Entity",
     "name": "navigationEntity",
-    "type": "select",
+    "type": "list",
     "when": [Function],
   },
   {
@@ -234,7 +234,7 @@ exports[`Test entity prompts getEntityQuestions should return the questions when
     },
     "message": "Table Type",
     "name": "tableType",
-    "type": "select",
+    "type": "list",
     "validate": [Function],
     "when": [Function],
   },

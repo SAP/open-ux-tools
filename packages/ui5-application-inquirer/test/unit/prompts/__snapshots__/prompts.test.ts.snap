@@ -69,7 +69,7 @@ exports[`getQuestions getQuestions, no options 1`] = `
     },
     "message": "Minimum SAPUI5 Version",
     "name": "ui5Version",
-    "type": "select",
+    "type": "list",
     "when": [Function],
   },
   {
@@ -130,7 +130,7 @@ exports[`getQuestions getQuestions, no options 1`] = `
     },
     "message": "SAPUI5 Theme",
     "name": "ui5Theme",
-    "type": "select",
+    "type": "list",
   },
   {
     "default": true,

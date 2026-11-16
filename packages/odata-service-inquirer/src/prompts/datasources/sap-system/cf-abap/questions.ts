@@ -1,4 +1,4 @@
-import type { Question } from 'inquirer';
+import type { YUIQuestion } from '@sap-ux/inquirer-common';
 import type { OdataServicePromptOptions } from '../../../../types.js';
 import { ConnectionValidator } from '../../../connectionValidator.js';
 import { getCFDiscoverPrompts } from '../abap-on-btp/questions.js';
@@ -13,7 +13,7 @@ import type { ServiceAnswer } from '../service-selection/types.js';
  * @param promptOptions prompt options to control some prompt behavior see {@link OdataServicePromptOptions}
  * @returns the prompt questions
  */
-export function getCfAbapBASQuestions(promptOptions?: OdataServicePromptOptions): Question<ServiceAnswer>[] {
+export function getCfAbapBASQuestions(promptOptions?: OdataServicePromptOptions): YUIQuestion<ServiceAnswer>[] {
     // Using a prompt namespace allows re-use of system service (catalog based) selection prompt
     const cfAbapBasPromptNamespace = 'cfAbapBas';
     const connectionValidator = new ConnectionValidator();
@@ -22,12 +22,12 @@ export function getCfAbapBASQuestions(promptOptions?: OdataServicePromptOptions)
             connectionValidator,
             cfAbapBasPromptNamespace,
             promptOptions?.serviceSelection?.requiredOdataVersion
-        ) as Question<ServiceAnswer>[]),
+        ) as YUIQuestion<ServiceAnswer>[]),
         ...(getSystemServiceQuestion(
             connectionValidator,
             cfAbapBasPromptNamespace,
             promptOptions?.serviceSelection,
             promptOptions?.valueHelpDownload?.hide
-        ) as Question<ServiceAnswer>[])
+        ) as YUIQuestion<ServiceAnswer>[])
     ];
 }

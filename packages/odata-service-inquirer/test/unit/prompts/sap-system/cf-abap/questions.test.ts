@@ -89,7 +89,7 @@ describe('tests cf abap service dicovery prompts for BAS', () => {
                 },
                 "message": "ABAP environment",
                 "name": "cfAbapBas:cloudFoundryAbapSystem",
-                "type": "select",
+                "type": "list",
                 "validate": [Function],
               },
               {
@@ -108,7 +108,7 @@ describe('tests cf abap service dicovery prompts for BAS', () => {
                 "message": [Function],
                 "name": "cfAbapBas:serviceSelection",
                 "showOutputTabLink": "validationMessageOverflow",
-                "type": "select",
+                "type": "list",
                 "validate": [Function],
                 "when": [Function],
               },

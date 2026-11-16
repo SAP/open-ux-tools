@@ -9,8 +9,6 @@ import { t } from '../../utils/i18n.js';
 import type { Credentials } from '../../types.js';
 import { configPromptNames } from '../../app/types.js';
 
-import type { LayeredRepositoryService } from '@sap-ux/axios-extension';
-
 interface ClientCredentials {
     system: string;
     client: string;
@@ -43,7 +41,7 @@ function getUsernamePrompt(): InputQuestion<Credentials> {
         guiOptions: {
             mandatory: true
         }
-    } as unknown as InputQuestion<Credentials>;
+    };
 }
 
 /**
@@ -91,7 +89,7 @@ function getPasswordPrompt(abapTarget: AbapTarget, logger: ToolsLogger): Passwor
                 return e.response ? `Login failed: ${e.response.status} ${e.response.statusText}` : 'Login failed.';
             }
         }
-    } as unknown as PasswordQuestion<Credentials>;
+    };
 }
 
 /**

@@ -450,7 +450,7 @@ async function findBASDestination(
         }
         if (matches.length > 1) {
             const answer = await prompts({
-                type: 'select',
+                type: 'list',
                 name: 'system',
                 message: t('migrate.prompts.selectBASDestination'),
                 choices: matches.map((system) => ({

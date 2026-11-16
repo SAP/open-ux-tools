@@ -141,7 +141,7 @@ export async function getTableBuildingBlockPrompts(context: PromptContext): Prom
             ),
             getFilterBarIdPrompt(context, {
                 message: t('filterBar.message') as string,
-                type: 'select',
+                type: 'list',
                 guiOptions: {
                     groupId: groupIds.commonTableBuildingBlockProperties,
                     placeholder: t('filterBar.placeholder') as string,
@@ -150,7 +150,7 @@ export async function getTableBuildingBlockPrompts(context: PromptContext): Prom
             }),
             //second prompt group
             {
-                type: 'select',
+                type: 'list',
                 name: 'buildingBlockData.type',
                 message: t('tableType.message') as string,
                 choices: [
@@ -164,7 +164,7 @@ export async function getTableBuildingBlockPrompts(context: PromptContext): Prom
                 }
             },
             {
-                type: 'select',
+                type: 'list',
                 name: 'buildingBlockData.selectionMode',
                 message: t('selectionMode.message') as string,
                 choices: [
@@ -213,7 +213,7 @@ export async function getTableBuildingBlockPrompts(context: PromptContext): Prom
                 }
             },
             {
-                type: 'select',
+                type: 'list',
                 name: 'buildingBlockData.variantManagement',
                 message: t('tableVariantManagement') as string,
                 choices: [

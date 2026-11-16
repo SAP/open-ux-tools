@@ -260,7 +260,7 @@ describe('getLocalCapProjectPrompts', () => {
         expect(await prompt.source('no match')).toEqual([]);
     });
 
-    test('prompt: capProject - type is select without useAutoComplete option', async () => {
+    test('prompt: capProject - type is list without useAutoComplete option', async () => {
         mockCapProjectChoices = [
             {
                 name: 'project1',
@@ -278,7 +278,7 @@ describe('getLocalCapProjectPrompts', () => {
 
         const capProjectPrompt = prompts.find((p) => p.name === promptNames.capProject);
         expect(capProjectPrompt).toBeDefined();
-        expect(capProjectPrompt!.type).toBe('select');
+        expect(capProjectPrompt!.type).toBe('list');
     });
 
     test('prompt: capProjectPath', async () => {

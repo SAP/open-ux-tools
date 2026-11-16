@@ -17,7 +17,7 @@ export function getDependantQuestions(
     dependantPromptNames: string[] = []
 ): string[] {
     const question = questions.find((checkQuestion) => checkQuestion.name === name);
-    if (question?.type === 'select') {
+    if (question?.type === 'list') {
         const questionsDependantNames = question?.guiOptions?.dependantPromptNames ?? [];
         questionsDependantNames.forEach((dependantName) => {
             dependantPromptNames.push(dependantName);

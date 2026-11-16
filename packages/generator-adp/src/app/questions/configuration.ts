@@ -28,7 +28,7 @@ import type {
     InputQuestion,
     ListQuestion,
     PasswordQuestion,
-    YUIQuestion,
+    WhenQuestion,
     Answers
 } from '@sap-ux/inquirer-common';
 import type { ToolsLogger } from '@sap-ux/logger';
@@ -303,7 +303,7 @@ export class ConfigPrompter {
      */
     private getSystemListPrompt(_?: SystemPromptOptions): ListQuestion<ConfigAnswers> {
         return {
-            type: 'select',
+            type: 'list',
             name: configPromptNames.system,
             message: t('prompts.systemLabel'),
             choices: async () => {
@@ -324,7 +324,7 @@ export class ConfigPrompter {
                 );
                 return this.systemAdditionalMessage;
             }
-        } as unknown as ListQuestion<ConfigAnswers>;
+        };
     }
 
     /**
@@ -347,7 +347,7 @@ export class ConfigPrompter {
 
                 return false;
             }
-        } as unknown as YUIQuestion<ConfigAnswers>;
+        };
     }
 
     /**
@@ -369,7 +369,7 @@ export class ConfigPrompter {
             filter: (val: string): string => val.trim(),
             validate: (val: string) => validateEmptyString(val),
             when: (answers: ConfigAnswers) => showCredentialQuestion(answers, this.isAuthRequired)
-        } as unknown as InputQuestion<ConfigAnswers>;
+        };
     }
 
     /**
@@ -390,7 +390,8 @@ export class ConfigPrompter {
                 hint: t('prompts.passwordTooltip'),
                 applyDefaultWhenDirty: true
             },
-            validate: async (value: string, answers: ConfigAnswers) => await this.validatePassword(value, answers),
+            validate: async (value: string, answers: Partial<ConfigAnswers> = {}) =>
+                await this.validatePassword(value, answers),
             default: '',
             when: (answers: ConfigAnswers) => showCredentialQuestion(answers, this.isAuthRequired),
             additionalMessages: () => {
@@ -403,7 +404,7 @@ export class ConfigPrompter {
                 }
                 return undefined;
             }
-        } as unknown as PasswordQuestion<ConfigAnswers>;
+        };
     }
 
     /**
@@ -432,7 +433,7 @@ export class ConfigPrompter {
                     };
                 }
             }
-        } as unknown as ConfirmQuestion<ConfigAnswers>;
+        };
     }
 
     /**
@@ -443,7 +444,7 @@ export class ConfigPrompter {
      */
     private getProjectTypeListPrompt(options?: ApplicationPromptOptions): ListQuestion<ConfigAnswers> {
         return {
-            type: 'select',
+            type: 'list',
             name: configPromptNames.projectType,
             message: t('prompts.projectTypeListLabel'),
             guiOptions: {
@@ -454,7 +455,7 @@ export class ConfigPrompter {
             choices: getProjectTypeChoices,
             default: options?.default,
             when: ({ application }: ConfigAnswers) => this.shouldDisplayProjectTypePrompt(application),
-            validate: async (projectType: AdaptationProjectType, { application }: ConfigAnswers) =>
+            validate: async (projectType: AdaptationProjectType, { application }: Partial<ConfigAnswers> = {}) =>
                 this.validateProjectTypePrompt(projectType, application),
             additionalMessages: (_: unknown, answers: Answers | undefined) =>
                 getAppAdditionalMessages(
@@ -467,7 +468,7 @@ export class ConfigPrompter {
                     },
                     this.isApplicationSupported
                 )
-        } as unknown as ListQuestion<ConfigAnswers>;
+        };
     }
 
     /**
@@ -475,9 +476,9 @@ export class ConfigPrompter {
      * This overcomes yeoman limitation for prompts of type `list` for which the validation hook is not
      * triggered by design in a CLI context.
      *
-     * @returns {YUIQuestion} The project type for cli prompt configuration.
+     * @returns {WhenQuestion} The project type for cli prompt configuration.
      */
-    private getProjectTypeListPromptForCli(): YUIQuestion<ConfigAnswers> {
+    private getProjectTypeListPromptForCli(): WhenQuestion<ConfigAnswers> {
         return {
             name: configPromptNames.projectTypeCli,
             when: async ({ application, projectType }: ConfigAnswers): Promise<boolean> => {
@@ -492,18 +493,16 @@ export class ConfigPrompter {
 
                 return false;
             }
-        } as unknown as YUIQuestion<ConfigAnswers>;
+        };
     }
 
     /**
      * Creates a label for the project type `classic`.
      *
      * @param {ProjectTypeClassicLabelPromptOptions} options - The project type `classic` label options.
-     * @returns {InputQuestion<ConfigAnswers>} The project type `classic` label configurations.
+     * @returns {ConfigQuestion} The project type `classic` label configurations.
      */
-    private getProjectTypeClassicLabelPrompt(
-        options?: ProjectTypeClassicLabelPromptOptions
-    ): InputQuestion<ConfigAnswers> {
+    private getProjectTypeClassicLabelPrompt(options?: ProjectTypeClassicLabelPromptOptions): ConfigQuestion {
         return {
             type: 'input',
             name: configPromptNames.projectTypeClassicLabel,
@@ -518,7 +517,7 @@ export class ConfigPrompter {
                 message: t('prompts.projectTypeClassicLabel'),
                 severity: Severity.information
             })
-        } as unknown as InputQuestion<ConfigAnswers>;
+        };
     }
 
     /**
@@ -529,7 +528,7 @@ export class ConfigPrompter {
      */
     private getApplicationListPrompt(options?: ApplicationPromptOptions): ListQuestion<ConfigAnswers> {
         return {
-            type: 'select',
+            type: 'list',
             name: configPromptNames.application,
             message: t('prompts.applicationListLabel'),
             guiOptions: {
@@ -575,7 +574,7 @@ export class ConfigPrompter {
                     this.isApplicationSupported
                 );
             }
-        } as unknown as ListQuestion<ConfigAnswers>;
+        };
     }
 
     /**
@@ -602,7 +601,7 @@ export class ConfigPrompter {
 
                 return false;
             }
-        } as unknown as YUIQuestion<ConfigAnswers>;
+        };
     }
 
     /**
@@ -624,7 +623,7 @@ export class ConfigPrompter {
                 showInternalQuestions(answers, this.isCustomerBase, this.isApplicationSupported),
             default: () => getFioriId(this.appManifest),
             store: false
-        } as unknown as InputQuestion<ConfigAnswers>;
+        };
     }
 
     /**
@@ -648,7 +647,7 @@ export class ConfigPrompter {
             default: () => getAch(this.appManifest),
             validate: (value: string) => validateAch(value, this.isCustomerBase),
             store: false
-        } as unknown as InputQuestion<ConfigAnswers>;
+        };
     }
 
     /**
@@ -689,7 +688,7 @@ export class ConfigPrompter {
                     hasSyncViews: this.containsSyncViews,
                     isExtensibilityExtInstalled: !!options?.isExtensibilityExtInstalled
                 })
-        } as unknown as ConfirmQuestion<ConfigAnswers>;
+        };
     }
 
     /**
@@ -700,7 +699,7 @@ export class ConfigPrompter {
      * @param {SourceApplication} app - The selected application.
      * @returns A promise that resolves to true if valid, or an error message string if validation fails.
      */
-    private async validateAppPrompt(app: SourceApplication): Promise<string | boolean> {
+    private async validateAppPrompt(app?: SourceApplication): Promise<string | boolean> {
         if (!app) {
             return t('error.selectCannotBeEmptyError', { value: 'Application' });
         }
@@ -742,7 +741,7 @@ export class ConfigPrompter {
      * @param {ConfigAnswers} answers - The configuration answers provided by the user.
      * @returns An error message if validation fails, or true if the system selection is valid.
      */
-    private async validatePassword(password: string, answers?: ConfigAnswers): Promise<string | boolean> {
+    private async validatePassword(password: string, answers?: Partial<ConfigAnswers>): Promise<string | boolean> {
         const validationResult = validateEmptyString(password);
         if (typeof validationResult === 'string') {
             return validationResult;
@@ -1004,7 +1003,7 @@ export class ConfigPrompter {
      */
     private async validateProjectTypePrompt(
         projectType: AdaptationProjectType,
-        application: SourceApplication
+        application?: SourceApplication
     ): Promise<boolean | string> {
         this.selectedProjectType = projectType;
 

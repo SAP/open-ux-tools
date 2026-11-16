@@ -47,7 +47,7 @@ function getDestinationPrompt(
     const prompts: (ListQuestion<AbapDeployConfigAnswersInternal> | AbapDeployConfigQuestion)[] = [
         {
             when: (): boolean => isAppStudio(),
-            type: 'select',
+            type: 'list',
             name: promptNames.destination,
             message: t('prompts.target.destination.message'),
             guiOptions: {
@@ -89,7 +89,7 @@ function getDestinationPrompt(
                 return false;
             },
             name: promptNames.destinationCliSetter
-        } as unknown as AbapDeployConfigQuestion);
+        });
     }
     return prompts;
 }
@@ -110,7 +110,7 @@ function getTargetSystemPrompt(
     const prompts: (ListQuestion<AbapDeployConfigAnswersInternal> | AbapDeployConfigQuestion)[] = [
         {
             when: (): boolean => !isAppStudio(),
-            type: 'select',
+            type: 'list',
             name: promptNames.targetSystem,
             message: t('prompts.target.targetSystem.message'),
             guiOptions: {
@@ -133,7 +133,7 @@ function getTargetSystemPrompt(
                 return false;
             },
             name: promptNames.targetSystemCliSetter
-        } as unknown as AbapDeployConfigQuestion);
+        });
     }
     return prompts;
 }
@@ -198,7 +198,7 @@ function getScpPrompt(backendTarget?: BackendTarget): AbapDeployConfigQuestion[]
             return false;
         },
         name: promptNames.scpSetter
-    } as unknown as AbapDeployConfigQuestion);
+    });
     return prompts;
 }
 
@@ -213,7 +213,7 @@ function getClientChoicePrompt(backendTarget?: BackendTarget): AbapDeployConfigQ
         {
             when: (previousAnswers: AbapDeployConfigAnswersInternal): boolean =>
                 showClientChoiceQuestion(previousAnswers, backendTarget?.abapTarget?.client),
-            type: 'select',
+            type: 'list',
             name: promptNames.clientChoice,
             message: t('prompts.target.clientChoice.message'),
             guiOptions: {
@@ -237,7 +237,7 @@ function getClientChoicePrompt(backendTarget?: BackendTarget): AbapDeployConfigQ
                 return false;
             },
             name: promptNames.clientChoiceCliSetter
-        } as unknown as AbapDeployConfigQuestion);
+        });
     }
     return prompts;
 }

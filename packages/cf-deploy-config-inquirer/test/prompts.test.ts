@@ -70,7 +70,7 @@ describe('Prompt Generation Tests', () => {
 
             const questions: CfDeployConfigQuestions[] = await getQuestions(promptOptions);
             const destinationNamePrompt = questions.find((question) => question.name === promptNames.destinationName);
-            expect(destinationNamePrompt?.type).toBe('select');
+            expect(destinationNamePrompt?.type).toBe('list');
             expect(destinationNamePrompt?.default).toBe('defaultDestination');
         });
 
@@ -96,7 +96,7 @@ describe('Prompt Generation Tests', () => {
 
             const questions: CfDeployConfigQuestions[] = await getQuestions(promptOptions);
             const destinationNamePrompt = questions.find((question) => question.name === promptNames.destinationName);
-            expect(destinationNamePrompt?.type).toBe('select');
+            expect(destinationNamePrompt?.type).toBe('list');
             expect(destinationNamePrompt?.default).toBe('defaultDestination');
             // ensure additional choice is added to the BTP destination list
             expect((destinationNamePrompt as ListQuestion)?.choices).toStrictEqual([
@@ -147,7 +147,7 @@ describe('Prompt Generation Tests', () => {
             };
             const questions: CfDeployConfigQuestions[] = await getQuestions(promptOptions);
             const destinationNamePrompt = questions.find((question) => question.name === promptNames.destinationName);
-            expect(destinationNamePrompt?.type).toBe('select');
+            expect(destinationNamePrompt?.type).toBe('list');
             expect((destinationNamePrompt?.message as Function)()).toBe(t('prompts.destinationNameMessage'));
             expect((destinationNamePrompt as ListQuestion)?.choices).toStrictEqual(additionalChoiceList);
         });

@@ -9,13 +9,15 @@ import { hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import {
     type ChoiceOptions,
     type ListQuestion,
+    type WhenQuestion,
+    type YUIQuestion,
     ERROR_TYPE,
     getCFAbapInstanceChoices,
     withCondition
 } from '@sap-ux/inquirer-common';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
 import { type ServiceInstanceInfo, apiGetInstanceCredentials } from '@sap/cf-tools';
-import type { Answers, Question } from 'inquirer';
+import type { Answers } from 'inquirer';
 import { t } from '../../../../i18n.js';
 import type { ConnectedSystem, OdataServiceAnswers, OdataServicePromptOptions } from '../../../../types.js';
 import {
@@ -61,12 +63,12 @@ interface AbapOnBtpAnswers extends Partial<OdataServiceAnswers> {
 export function getAbapOnBTPSystemQuestions(
     promptOptions?: OdataServicePromptOptions,
     cachedConnectedSystem?: ConnectedSystem
-): Question<AbapOnBtpAnswers & ServiceAnswer>[] {
+): YUIQuestion<AbapOnBtpAnswers & ServiceAnswer>[] {
     PromptState.reset();
     const connectValidator = new ConnectionValidator();
-    const questions: Question<AbapOnBtpAnswers & ServiceAnswer>[] = [];
+    const questions: YUIQuestion<AbapOnBtpAnswers & ServiceAnswer>[] = [];
     questions.push({
-        type: 'select',
+        type: 'list',
         name: abapOnBtpPromptNames.abapOnBtpAuthType,
         choices: [
             { name: t('prompts.abapOnBTPType.choiceCloudFoundry'), value: 'cloudFoundry' as AbapOnBTPType },
@@ -79,7 +81,7 @@ export function getAbapOnBTPSystemQuestions(
             PromptState.resetConnectedSystem();
             return true;
         }
-    } as ListQuestion);
+    } as ListQuestion<AbapOnBtpAnswers & ServiceAnswer>);
 
     // Re-entrance ticket system prompt
     questions.push(
@@ -100,10 +102,11 @@ export function getAbapOnBTPSystemQuestions(
                 return false;
             }
         )[0],
-        ...withCondition(
+        // `getCFDiscoverPrompts` includes a CLI-only `WhenQuestion` gate; bridge to the page's answer-typed array
+        ...(withCondition(
             [...getCFDiscoverPrompts(connectValidator, undefined, undefined, cachedConnectedSystem)],
             (answers: AbapOnBtpAnswers) => answers?.abapOnBtpAuthType === 'cloudFoundry'
-        )
+        ) as YUIQuestion<AbapOnBtpAnswers & ServiceAnswer>[])
     );
 
     // New system store name propmt
@@ -127,7 +130,7 @@ export function getAbapOnBTPSystemQuestions(
             abapOnBtpPromptNamespace,
             promptOptions?.serviceSelection,
             promptOptions?.valueHelpDownload?.hide
-        ) as Question<AbapOnBtpAnswers & ServiceAnswer>[])
+        ) as YUIQuestion<AbapOnBtpAnswers & ServiceAnswer>[])
     );
     return questions;
 }
@@ -230,13 +233,13 @@ export function getCFDiscoverPrompts(
     promptNamespace?: string,
     requiredOdataVersion?: OdataVersion,
     cachedConnectedSystem?: ConnectedSystem
-): Question[] {
+): (YUIQuestion | WhenQuestion)[] {
     let choices: ChoiceOptions<ServiceInstanceInfo>[] = [];
     const promptName = `${promptNamespace ? promptNamespace + ':' : ''}${abapOnBtpPromptNames.cloudFoundryAbapSystem}`;
 
-    const questions: Question[] = [
+    const questions: (YUIQuestion | WhenQuestion)[] = [
         {
-            type: 'select',
+            type: 'list',
             name: promptName,
             guiOptions: {
                 breadcrumb: true,
@@ -308,7 +311,7 @@ export function getCFDiscoverPrompts(
                 return false;
             },
             name: cliCfAbapServicePromptName
-        } as Question);
+        });
     }
 
     return questions;

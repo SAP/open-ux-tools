@@ -1,14 +1,8 @@
-import { type InputQuestion, withCondition } from '@sap-ux/inquirer-common';
+import { type YUIQuestion, withCondition } from '@sap-ux/inquirer-common';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
 import { validateClient } from '@sap-ux/project-input-validator';
-import type { Question } from 'inquirer';
 import { t } from '../../../../i18n.js';
-import type {
-    OdataServiceAnswers,
-    OdataServicePromptOptions,
-    SystemNamePromptOptions,
-    ServiceSelectionPromptOptions
-} from '../../../../types.js';
+import type { OdataServiceAnswers, OdataServicePromptOptions, SystemNamePromptOptions } from '../../../../types.js';
 import { isBackendSystemKeyExisting, PromptState } from '../../../../utils/index.js';
 import { ConnectionValidator } from '../../../connectionValidator.js';
 import { BasicCredentialsPromptNames, getCredentialsPrompts } from '../credentials/questions.js';
@@ -42,13 +36,13 @@ export interface AbapOnPremAnswers extends Partial<OdataServiceAnswers>, AbabpOn
  */
 export function getAbapOnPremQuestions(
     promptOptions?: OdataServicePromptOptions
-): Question<AbapOnPremAnswers & ServiceAnswer>[] {
+): YUIQuestion<AbapOnPremAnswers & ServiceAnswer>[] {
     PromptState.reset();
     const connectValidator = new ConnectionValidator();
     // Prompt options
     const requiredOdataVersion = promptOptions?.serviceSelection?.requiredOdataVersion;
 
-    const questions: Question<AbapOnPremAnswers & ServiceAnswer>[] = getAbapOnPremSystemQuestions(
+    const questions: YUIQuestion<AbapOnPremAnswers & ServiceAnswer>[] = getAbapOnPremSystemQuestions(
         promptOptions?.userSystemName,
         connectValidator,
         requiredOdataVersion
@@ -60,7 +54,7 @@ export function getAbapOnPremQuestions(
             abapOnPremPromptNamespace,
             promptOptions?.serviceSelection,
             promptOptions?.valueHelpDownload?.hide
-        ) as Question<AbapOnPremAnswers & ServiceAnswer>[])
+        ) as YUIQuestion<AbapOnPremAnswers & ServiceAnswer>[])
     );
 
     return questions;
@@ -78,13 +72,13 @@ export function getAbapOnPremSystemQuestions(
     systemNamePromptOptions?: SystemNamePromptOptions,
     connectionValidator?: ConnectionValidator,
     requiredOdataVersion?: OdataVersion
-): Question<AbapOnPremAnswers>[] {
+): YUIQuestion<AbapOnPremAnswers>[] {
     const connectValidator = connectionValidator ?? new ConnectionValidator();
     // Object reference to access dynamic sapClient value in prompts where the previous answers are not available.
     // This allows re-usability of the credentials prompts where a client prompt was not used (client was loaded from store).
     const sapClientRef: { sapClient: string | undefined; isValid: boolean } = { sapClient: undefined, isValid: true };
 
-    const questions: Question<AbapOnPremAnswers>[] = [
+    const questions: YUIQuestion<AbapOnPremAnswers>[] = [
         getSystemUrlQuestion<AbapOnPremAnswers>(
             connectValidator,
             abapOnPremPromptNamespace,
@@ -99,7 +93,7 @@ export function getAbapOnPremSystemQuestions(
             guiOptions: {
                 breadcrumb: t('prompts.sapClient.breadcrumb')
             },
-            validate: (client, prevAnswers: AbapOnPremAnswers) => {
+            validate: (client, prevAnswers?: AbapOnPremAnswers) => {
                 const valRes = validateClient(client);
                 if (valRes === true) {
                     sapClientRef.sapClient = client;
@@ -126,7 +120,7 @@ export function getAbapOnPremSystemQuestions(
                 sapClientRef.isValid = false;
                 return valRes;
             }
-        } as InputQuestion<AbapOnPremAnswers>,
+        },
         ...getCredentialsPrompts<AbapOnPremAnswers>(
             connectValidator,
             abapOnPremPromptNamespace,

@@ -68,7 +68,7 @@ describe('Test analytic list page specific prompts', () => {
                 },
                 message: t('prompts.tableSelectionMode.message'),
                 name: 'tableSelectionMode',
-                type: 'select',
+                type: 'list',
                 when: expect.any(Function)
             }
         ]);

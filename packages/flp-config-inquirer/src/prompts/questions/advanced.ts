@@ -23,7 +23,7 @@ export function getInboundIdsPrompt(inbounds: ManifestNamespace.Inbound): FLPCon
         value: data
     }));
     return {
-        type: 'select',
+        type: 'list',
         name: promptNames.inboundId,
         message: t('prompts.inboundIds'),
         choices: choices,

@@ -114,7 +114,7 @@ describe('getPrompts', () => {
         expect(mockValidateProjectFolder).toHaveBeenCalledWith(somePath, 'test.com.test1');
 
         const ui5VersionQ = prompts['ui5Version'];
-        expect(ui5VersionQ.type).toEqual('select');
+        expect(ui5VersionQ.type).toEqual('list');
         expect(ui5VersionQ.when()).toEqual(true);
         expect(ui5VersionQ.message).toEqual(t('prompts.libraryUi5VersionLabel'));
         expect(ui5VersionQ.choices()).toEqual(ui5VersionsGrouped);

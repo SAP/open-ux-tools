@@ -98,7 +98,7 @@ export function searchableListPrompt<A extends Answers = Answers>(
     }
     return {
         ...base,
-        type: 'select',
+        type: 'list',
         choices,
         ...(defaultValue !== undefined ? { default: defaultValue } : {})
     } satisfies ListQuestion<A>;

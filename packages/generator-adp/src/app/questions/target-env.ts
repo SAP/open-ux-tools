@@ -31,7 +31,7 @@ export function getTargetEnvPrompt(
     cfConfig: CfConfig
 ): TargetEnvQuestion {
     return {
-        type: 'select',
+        type: 'list',
         name: 'targetEnv',
         message: t('prompts.targetEnvLabel'),
         choices: () => getEnvironments(appWizard, isCfInstalled),
@@ -72,7 +72,7 @@ export function getEnvironments(appWizard: AppWizard, isCfInstalled: boolean): E
  */
 export function getMtaModePrompt(): YUIQuestion<ProjectLocationAnswers> {
     return {
-        type: 'select',
+        type: 'list',
         name: 'mtaMode',
         message: t('prompts.mtaModeLabel'),
         choices: [

@@ -301,9 +301,9 @@ describe('utility.ts', () => {
         ];
         const base = { name: 'pick', message: 'Pick one' };
 
-        it('builds a select arm when useSearch is false', () => {
+        it('builds a list arm when useSearch is false', () => {
             const question = searchableListPrompt(base, choices, false);
-            expect(question.type).toBe('select');
+            expect(question.type).toBe('list');
             expect('source' in question).toBe(false);
             expect((question as { choices: unknown }).choices).toEqual(choices);
         });
@@ -325,7 +325,7 @@ describe('utility.ts', () => {
             expect(await source('')).toEqual(choices);
         });
 
-        it('maps a default index to the choice value on the select arm', () => {
+        it('maps a default index to the choice value on the list arm', () => {
             const question = searchableListPrompt(base, choices, false, 1);
             expect((question as { default: unknown }).default).toBe('b');
         });

@@ -134,7 +134,7 @@ export async function getPrompts(
                     }
                     return !!systemQuestions.answers.connectedSystem?.serviceProvider;
                 },
-                type: 'select',
+                type: 'list',
                 name: PromptNames.selectedApp,
                 // inquirer 13's `select` default matches a choice value, not an index. When a quick-deployed
                 // appId is supplied, pre-select the first formatted choice's value (the AppInfo).

@@ -140,7 +140,7 @@ function getOverwritePrompt(): CfDeployConfigQuestions {
             return true;
         },
         message: () => t('prompts.overwriteMessage')
-    } as unknown as CfDeployConfigQuestions;
+    };
 }
 
 /**
@@ -149,7 +149,7 @@ function getOverwritePrompt(): CfDeployConfigQuestions {
  */
 function getRouterOptionsPrompt(): CfDeployConfigRouterQuestions {
     return {
-        type: 'select',
+        type: 'list',
         name: promptNames.routerType,
         guiOptions: {
             mandatory: true,

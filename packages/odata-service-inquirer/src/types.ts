@@ -1,4 +1,4 @@
-import type { Annotations, ExternalService, ServiceProvider, ODataServiceInfo } from '@sap-ux/axios-extension';
+import type { Annotations, ExternalService, ServiceProvider } from '@sap-ux/axios-extension';
 
 import type { Destination } from '@sap-ux/btp-utils';
 import type { CapService } from '@sap-ux/cap-config-writer';

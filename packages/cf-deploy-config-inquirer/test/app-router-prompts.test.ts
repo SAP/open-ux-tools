@@ -123,7 +123,7 @@ describe('App Router Prompt Generation Tests', () => {
             const questions: CfAppRouterDeployConfigQuestions[] = await getAppRouterQuestions(promptOptions);
             const routerTypePrompt = questions.find((question) => question.name === appRouterPromptNames.routerType);
             expect(routerTypePrompt?.message).toBe(t('prompts.routerTypeMessage'));
-            expect(routerTypePrompt?.type).toBe('select');
+            expect(routerTypePrompt?.type).toBe('list');
             expect(routerTypePrompt?.guiOptions?.mandatory).toBe(true);
             expect(routerTypePrompt?.guiOptions?.breadcrumb).toBe(true);
             expect(routerTypePrompt?.default).toBe(RouterModuleType.Managed);
@@ -259,7 +259,7 @@ describe('App Router Prompt Generation Tests', () => {
             );
             expect(addServiceProviderPrompt?.guiOptions?.breadcrumb).toBe(t('prompts.abapEnvBindingBreadcrumbMessage'));
             expect(addServiceProviderPrompt?.message).toBe(t('prompts.selectServiceMessage'));
-            expect(addServiceProviderPrompt?.type).toBe('select');
+            expect(addServiceProviderPrompt?.type).toBe('list');
             expect(addServiceProviderPrompt?.default).toBe(t('errors.abapEnvsUnavailable'));
             expect(
                 (addServiceProviderPrompt?.when as Function)({
@@ -306,7 +306,7 @@ describe('App Router Prompt Generation Tests', () => {
             );
             expect(addServiceProviderPrompt?.guiOptions?.breadcrumb).toBe(t('prompts.abapEnvBindingBreadcrumbMessage'));
             expect(addServiceProviderPrompt?.message).toBe(t('prompts.selectServiceMessage'));
-            expect(addServiceProviderPrompt?.type).toBe('select');
+            expect(addServiceProviderPrompt?.type).toBe('list');
             expect(addServiceProviderPrompt?.default).toBe(t('errors.abapEnvsUnavailable'));
             expect(
                 (addServiceProviderPrompt?.when as Function)({

@@ -20,7 +20,7 @@ const questions: PromptQuestion[] = [
     },
     {
         name: 'Dummy3',
-        type: 'select',
+        type: 'list',
         message: 'Dummy3',
         choices: [
             {

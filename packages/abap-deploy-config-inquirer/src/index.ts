@@ -4,7 +4,7 @@ import { PromptState } from './prompts/prompt-state.js';
 import { getAbapDeployConfigQuestions, getPackagePrompts, getTransportRequestPrompts } from './prompts/index.js';
 import { getPackageAnswer, getTransportAnswer, reconcileAnswers } from './utils.js';
 import LoggerHelper from './logger-helper.js';
-import type { InquirerAdapter } from '@sap-ux/inquirer-common';
+import type { InquirerAdapter, YUIQuestion } from '@sap-ux/inquirer-common';
 import {
     promptNames,
     PackageInputChoices,
@@ -64,7 +64,11 @@ async function prompt(
     isYUI = false
 ): Promise<AbapDeployConfigAnswers> {
     const abapDeployConfigPrompts = (await getPrompts(promptOptions, logger, isYUI)).prompts;
-    const answers = await adapter.prompt<AbapDeployConfigAnswersInternal>(abapDeployConfigPrompts);
+    // `AbapDeployConfigQuestion[]` includes CLI-only `WhenQuestion` gates; the adapter accepts them at
+    // runtime (valid inquirer `when` questions), so bridge to the adapter's `YUIQuestion` array type.
+    const answers = await adapter.prompt<AbapDeployConfigAnswersInternal>(
+        abapDeployConfigPrompts as YUIQuestion<AbapDeployConfigAnswersInternal>[]
+    );
 
     return reconcileAnswers(answers, PromptState.abapDeployConfig);
 }

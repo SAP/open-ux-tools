@@ -159,7 +159,7 @@ describe('questions', () => {
                 "message": [Function],
                 "name": "abapOnPrem:serviceSelection",
                 "showOutputTabLink": "validationMessageOverflow",
-                "type": "select",
+                "type": "list",
                 "validate": [Function],
                 "when": [Function],
               },
