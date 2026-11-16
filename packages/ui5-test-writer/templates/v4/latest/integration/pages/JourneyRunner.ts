@@ -23,7 +23,8 @@ const runner = new JourneyRunner({
 '            {\n' +
 '                appId: "' + page.appID + '",\n' +
 '                componentId: "' + page.componentID + '",\n' +
-'                ' + (page.contextPath ? 'contextPath: "' + page.contextPath : 'entitySet: "' + (page.entitySet || '')) + '"\n' +
+'                entitySet: "' + (page.entitySet || '') + '",\n' +
+'                contextPath: "' + (page.contextPath || '') + '"\n' +
 '            },\n' +
 '            Custom' + page.targetKey + 'Generated\n' +
 '        )'

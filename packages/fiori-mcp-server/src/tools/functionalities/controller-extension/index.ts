@@ -1,5 +1,4 @@
-import uxSpec from '@sap/ux-specification';
-const { CustomExtensionType, DirName } = uxSpec;
+import { CustomExtensionType, DirName } from '@sap/ux-specification';
 import type { ControllerExtensionPageType } from '@sap/ux-specification';
 import { SapuxFtfsFileIO } from '../../../page-editor-api/index.js';
 import type {

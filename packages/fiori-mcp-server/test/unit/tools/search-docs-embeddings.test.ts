@@ -23,8 +23,7 @@ function createClient(): MultiServerMCPClient {
             'fiori-mcp-server': {
                 command: 'node',
                 args: [DIST_SERVER],
-                env: { SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY: 'true' },
-                mode: 'legacy'
+                env: { SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY: 'true' }
             }
         }
     });
