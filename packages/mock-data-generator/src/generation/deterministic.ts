@@ -1325,13 +1325,24 @@ function compatibleDomainCandidates(
     return index.get(assignmentSignature(assignment, sharedNames)) ?? [];
 }
 
+/**
+ * The order the relationship search assigns domains in: connected components, each most-constrained first.
+ *
+ * @param domains - The domains of one source entity set.
+ * @returns The domains in search order.
+ */
+function relationshipSearchOrder(
+    domains: ReadonlyArray<IndexedRelationshipDomain>
+): ReadonlyArray<IndexedRelationshipDomain> {
+    return connectedDomainComponents(domains).flatMap((component) => orderConnectedDomains(component));
+}
+
 function findCompatibleRelationshipAssignment(
-    domains: ReadonlyArray<IndexedRelationshipDomain>,
+    ordered: ReadonlyArray<IndexedRelationshipDomain>,
     rowIndex: number,
     budget: RelationshipSearchBudget,
     accept: (assignment: Readonly<Record<string, JsonValue>>) => boolean
 ): Readonly<Record<string, JsonValue>> | undefined {
-    const ordered = connectedDomainComponents(domains).flatMap((component) => orderConnectedDomains(component));
     const assignment: Record<string, JsonValue> = {};
     const visit = (domainIndex: number): boolean => {
         if (domainIndex === ordered.length) {
@@ -1716,8 +1727,9 @@ function assignSourceRelationships(
     const budget: RelationshipSearchBudget = { steps: 0, exhausted: false };
     const keys = sourceEntity.properties.filter(({ isKey }) => isKey);
     const seenKeys = new Set<string>();
+    const searchOrder = relationshipSearchOrder(domains);
     const resolvedRows = baseRows.slice(0, sourceRows.length).flatMap((baseRow, rowIndex) => {
-        const assignment = findCompatibleRelationshipAssignment(domains, rowIndex, budget, (candidate) => {
+        const assignment = findCompatibleRelationshipAssignment(searchOrder, rowIndex, budget, (candidate) => {
             const candidateRow = { ...baseRow, ...candidate };
             const candidateSignature = keySignature(keys, candidateRow);
             return !seenKeys.has(candidateSignature);
