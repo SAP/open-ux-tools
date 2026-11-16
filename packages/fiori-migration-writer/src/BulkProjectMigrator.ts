@@ -4,6 +4,7 @@ import { URI } from 'vscode-uri';
 import { i18nText } from './i18n.js';
 import { createMemFsEditor } from './utils/fs-adapter.js';
 import { commitFileSystemChanges } from './files/file-system.js';
+import { extractErrorCode } from './utils/error-codes.js';
 
 // Telemetry stub - @sap-ux/telemetry is an optional dependency for performance measurement
 // This provides a no-op implementation for open-source usage
@@ -40,7 +41,11 @@ export class BulkProjectMigrator {
                 results.push({
                     ...project,
                     status: 'ERROR',
-                    messages: [{ type: 'ERROR', description: error instanceof Error ? error.message : String(error) }]
+                    messages: [{
+                        type: 'ERROR',
+                        description: error instanceof Error ? error.message : String(error),
+                        code: extractErrorCode(error)
+                    }]
                 });
             }
         }
