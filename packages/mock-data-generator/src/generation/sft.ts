@@ -1588,23 +1588,48 @@ function mergeModelRows(attempt: SftResourceAttempt, candidates: SftCandidates, 
 }
 
 /**
- * Make each linked text a function of its code: every row of a code takes the text of its first row.
+ * The text each code of a linked pair keeps: the first text accepted for it, else the text of its first row.
+ *
+ * @param merged the merged model rows
+ * @param ownerName the code property
+ * @param textName the text property
+ * @returns the text by code
+ */
+function textPerCode(merged: MergedSftRows, ownerName: string, textName: string): Map<string, JsonValue> {
+    const textByCode = new Map<string, JsonValue>();
+    const acceptedCodes = new Set<string>();
+    for (const [rowIndex, row] of merged.generatedRows.entries()) {
+        const code = row[ownerName];
+        if (code === null || code === undefined || acceptedCodes.has(cellText(code))) {
+            continue;
+        }
+        const accepted = Object.hasOwn(merged.acceptedValues[rowIndex] ?? {}, textName);
+        if (accepted || !textByCode.has(cellText(code))) {
+            textByCode.set(cellText(code), row[textName] as JsonValue);
+        }
+        if (accepted) {
+            acceptedCodes.add(cellText(code));
+        }
+    }
+    return textByCode;
+}
+
+/**
+ * Make each linked text a function of its code: every row of a code takes the text {@link textPerCode} keeps.
  *
  * @param attempt the resource attempt
  * @param merged the merged model rows, updated in place
  */
 function keepOneTextPerCode(attempt: SftResourceAttempt, merged: MergedSftRows): void {
     for (const { owner, text } of attempt.linkedTexts) {
-        const textByCode = new Map<string, JsonValue>();
+        const textByCode = textPerCode(merged, owner.name, text.name);
         for (const [rowIndex, row] of merged.generatedRows.entries()) {
             const code = row[owner.name];
             if (code === null || code === undefined) {
                 continue;
             }
             const first = textByCode.get(cellText(code));
-            if (first === undefined) {
-                textByCode.set(cellText(code), row[text.name] as JsonValue);
-            } else if (row[text.name] !== first) {
+            if (first !== undefined && row[text.name] !== first) {
                 merged.generatedRows[rowIndex] = Object.freeze({ ...row, [text.name]: first });
                 const accepted = merged.acceptedValues[rowIndex];
                 if (accepted && Object.hasOwn(accepted, text.name)) {
