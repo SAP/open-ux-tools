@@ -1,5 +1,30 @@
 # @sap-ux/fiori-migration-writer
 
+## 1.2.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-13
+
+#### Bug Fixes
+
+- remove unnecessary path manipulation in launch config generation that caused duplicate project paths in .vscode/launch.json [[a27e1cf](https://github.com/SAP/open-ux-tools/commit/a27e1cfef379ab4d8dbe663525523001124ba96f)]
+
+## 1.2.0
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-11
+
+#### Workspace Updates
+
+- @sap-ux/ui5-application-writer 2.1.7 → 2.1.7
+- @sap-ux/adp-tooling 1.2.1 → 1.2.2
+
 ## 1.1.0
 
 ### Minor Changes

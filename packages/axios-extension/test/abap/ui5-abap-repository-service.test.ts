@@ -482,7 +482,7 @@ describe('Ui5AbapRepositoryService', () => {
             const appName = 'TestApp';
             nock(server).get(`${Ui5AbapRepositoryService.PATH}/Repositories(%27${appName}%27)?$format=json`).reply(401);
             await expect(service.undeploy({ bsp: { name: appName } })).rejects.toThrow();
-            expect(loggerMock.debug).toHaveBeenCalledTimes(1);
+            expect(loggerMock.debug).toHaveBeenCalledTimes(2);
             expect(loggerMock.info).toHaveBeenCalledTimes(0);
             expect(loggerMock.error).toHaveBeenCalledTimes(0);
         });

@@ -549,4 +549,126 @@ describe('CustomPage', () => {
         //check
         expect(fs.readJSON(join(target, 'webapp/manifest.json'))).toMatchSnapshot();
     });
+
+    describe('generateCustomPage reuseExisting', () => {
+        const orphanedPageId = 'OrphanedCustomPage';
+        const reuseInput: CustomPage = {
+            name: orphanedPageId,
+            entity: 'Products',
+            id: orphanedPageId,
+            navigation: { sourcePage: 'TestObjectPage', navEntity: 'Products', navKey: true },
+            reuseExisting: true
+        };
+
+        const manifestWithOrphan = JSON.stringify(
+            {
+                'sap.app': { id: 'my.test.App' },
+                'sap.ui5': {
+                    dependencies: { libs: {} },
+                    routing: {
+                        routes: [{ pattern: ':?query:', name: 'TestObjectPage', target: 'TestObjectPage' }],
+                        targets: {
+                            TestObjectPage: {},
+                            [orphanedPageId]: {}
+                        }
+                    }
+                }
+            },
+            null,
+            2
+        );
+
+        test('throws when id is not provided', async () => {
+            const target = join(testDir, 'reuse-no-id');
+            fs.write(join(target, 'webapp/manifest.json'), manifestWithOrphan);
+
+            await expect(
+                generateCustomPage(target, { name: 'SomePage', entity: 'Products', reuseExisting: true }, fs)
+            ).rejects.toThrow('Invalid data. Navigation target page name is missing!');
+        });
+
+        test('throws when id is not found in manifest targets', async () => {
+            const target = join(testDir, 'reuse-missing-page');
+            fs.write(join(target, 'webapp/manifest.json'), manifestWithOrphan);
+
+            await expect(
+                generateCustomPage(target, { ...reuseInput, id: 'NonExistentPage', reuseExisting: true }, fs)
+            ).rejects.toThrow('Could not find existing target page NonExistentPage!');
+        });
+
+        test('removes existing navigation entry for the entity and returns early', async () => {
+            const manifestWithNav = JSON.parse(manifestWithOrphan);
+            manifestWithNav['sap.ui5'].routing.targets.TestObjectPage = {
+                options: {
+                    settings: {
+                        navigation: {
+                            Products: { detail: { route: 'OldProductsRoute' } }
+                        }
+                    }
+                }
+            };
+            const target = join(testDir, 'reuse-removes-nav');
+            fs.write(join(target, 'webapp/manifest.json'), JSON.stringify(manifestWithNav, null, 2));
+
+            await generateCustomPage(target, reuseInput, fs);
+
+            const manifest = fs.readJSON(join(target, 'webapp/manifest.json')) as any;
+            const navAfter = manifest['sap.ui5'].routing.targets.TestObjectPage.options.settings.navigation;
+            // old entry removed; extendJSON re-adds the new route via template
+            expect(navAfter.Products.detail.route).toBe(orphanedPageId);
+        });
+
+        test('does not write manifest for navigation deletion when no entry exists', async () => {
+            const target = join(testDir, 'reuse-no-nav-entry');
+            fs.write(join(target, 'webapp/manifest.json'), manifestWithOrphan);
+            const writeJSONSpy = jest.spyOn(fs, 'writeJSON');
+
+            await generateCustomPage(target, reuseInput, fs);
+
+            // No extra writeJSON for the navigation deletion guard
+            const guardWrites = writeJSONSpy.mock.calls.filter(
+                ([, content]) => !(content as any)?.['sap.ui5']?.routing?.routes?.length
+            );
+            expect(guardWrites).toHaveLength(0);
+            writeJSONSpy.mockRestore();
+        });
+
+        test('returns early without creating view or controller files', async () => {
+            const target = join(testDir, 'reuse-no-view');
+            fs.write(join(target, 'webapp/manifest.json'), manifestWithOrphan);
+
+            await generateCustomPage(target, reuseInput, fs);
+
+            const viewPath = join(target, `webapp/ext/view/${orphanedPageId}.view.xml`);
+            const controllerPath = join(target, `webapp/ext/view/${orphanedPageId}.controller.js`);
+            expect(fs.exists(viewPath)).toBe(false);
+            expect(fs.exists(controllerPath)).toBe(false);
+        });
+
+        test('returns the mem-fs editor instance', async () => {
+            const target = join(testDir, 'reuse-return');
+            fs.write(join(target, 'webapp/manifest.json'), manifestWithOrphan);
+
+            const result = await generateCustomPage(target, reuseInput, fs);
+
+            expect(result).toBe(fs);
+        });
+
+        test('does not render main target settings when reuseExisting is true', async () => {
+            const manifestWithCustomTarget = JSON.parse(manifestWithOrphan);
+            manifestWithCustomTarget['sap.ui5'].routing.targets[orphanedPageId] = {
+                type: 'Component',
+                id: orphanedPageId,
+                name: 'custom.Special.Page',
+                options: { settings: { contextPath: '/Products' } }
+            };
+            const target = join(testDir, 'reuse-no-target-overwrite');
+            fs.write(join(target, 'webapp/manifest.json'), JSON.stringify(manifestWithCustomTarget, null, 2));
+
+            await generateCustomPage(target, reuseInput, fs);
+
+            const manifest = fs.readJSON(join(target, 'webapp/manifest.json')) as any;
+            expect(manifest['sap.ui5'].routing.targets[orphanedPageId].name).toBe('custom.Special.Page');
+        });
+    });
 });

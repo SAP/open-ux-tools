@@ -1,5 +1,13 @@
 # @sap-ux/control-property-editor
 
+## 1.0.19
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/ui-components and @sap-ux/fe-fpm-writer [[d1377b8](https://github.com/SAP/open-ux-tools/commit/d1377b8d249e4fec9c3a4d48020376adb46383df)]
+
 ## 1.0.18
 
 ### Patch Changes

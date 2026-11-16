@@ -43,7 +43,7 @@ jest.unstable_mockModule('node:fs', () => ({
 
 const mockHasbinSync = jest.fn() as jest.Mock;
 
-jest.unstable_mockModule('hasbin', () => ({
+jest.unstable_mockModule('which', () => ({
     default: { sync: mockHasbinSync },
     sync: mockHasbinSync
 }));
@@ -1053,7 +1053,7 @@ describe('Cloud foundry generator tests', () => {
                 .withPrompts({})
                 .run()
         ).resolves.not.toThrow();
-        expect(mockHasbinSync).toHaveBeenCalledWith('mta');
+        expect(mockHasbinSync).toHaveBeenCalledWith('mta', { nothrow: true });
         expect(mockFindCapProjectRoot).toHaveBeenCalled();
     });
 

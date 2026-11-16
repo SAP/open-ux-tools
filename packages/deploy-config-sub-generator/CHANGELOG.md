@@ -1,5 +1,31 @@
 # @sap-ux/deploy-config-sub-generator
 
+## 1.0.93
+
+### Patch Changes
+
+#### Bug Fixes
+
+- Replace abandoned hasbin (10yr, no releases) with which for binary detection [[73fdfbf](https://github.com/SAP/open-ux-tools/commit/73fdfbfe2a371d5b9666d2a69b55d1ed977bb69e)]
+
+#### Workspace Updates
+
+- @sap-ux/cf-deploy-config-sub-generator 1.0.62 → 1.0.63
+- @sap-ux/odata-service-inquirer 3.2.33 → 3.2.33
+
+## 1.0.92
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.3.0 → 1.4.0
+- @sap-ux/abap-deploy-config-sub-generator 1.0.80 → 1.0.81
+- @sap-ux/cf-deploy-config-sub-generator 1.0.61 → 1.0.62
+- @sap-ux/deploy-config-generator-shared 1.0.50 → 1.0.51
+- @sap-ux/inquirer-common 1.0.54 → 1.0.55
+- @sap-ux/odata-service-inquirer 3.2.32 → 3.2.33
+
 ## 1.0.91
 
 ### Patch Changes
