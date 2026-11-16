@@ -2,13 +2,15 @@ import type { MockDataMetadata, MockDataServiceIdentity } from '../types.js';
 import { parseCsn } from './csn.js';
 import { parseEdmx } from './edmx.js';
 import type { SchemaGraph } from './graph.js';
+import { withDerivedValueHelpLinks } from './value-help-links.js';
 import { MOCKGEN_ERROR_CODE, MockGenError } from '../errors.js';
 
 /** Metadata formats the generator accepts, in the order they are reported to callers. */
 export const METADATA_FORMATS: ReadonlyArray<MockDataMetadata['format']> = ['edmx', 'csn'];
 
 /**
- * Parse service metadata into the schema graph, dispatching on the declared format.
+ * Parse service metadata into the schema graph, dispatching on the declared format, with the value lists the
+ * metadata implies ({@link withDerivedValueHelpLinks}).
  * An unknown format is rejected instead of being handed to a parser that cannot read it.
  *
  * @param metadata the request metadata
@@ -18,9 +20,11 @@ export const METADATA_FORMATS: ReadonlyArray<MockDataMetadata['format']> = ['edm
 export function parseServiceMetadata(metadata: MockDataMetadata, service?: MockDataServiceIdentity): SchemaGraph {
     switch (metadata.format) {
         case 'edmx':
-            return parseEdmx(metadata.content);
+            return withDerivedValueHelpLinks(parseEdmx(metadata.content));
         case 'csn':
-            return parseCsn(metadata.content, { alias: service?.alias, urlPath: service?.urlPath });
+            return withDerivedValueHelpLinks(
+                parseCsn(metadata.content, { alias: service?.alias, urlPath: service?.urlPath })
+            );
         default:
             throw new MockGenError(
                 MOCKGEN_ERROR_CODE.METADATA_INVALID,

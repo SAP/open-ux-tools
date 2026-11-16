@@ -658,6 +658,8 @@ interface ProjectionState {
      * Used to prefer tuples that another value list of the same row can agree with.
      */
     supportCache: Map<string, ReadonlySet<string>>;
+    /** Value-help rows added to hold an owner row's tuple; their values stay as assigned when they are owners themselves. */
+    readonly assignedRows: WeakSet<object>;
 }
 
 /** One owner entity during a projection pass. */
@@ -824,7 +826,8 @@ function projectValueLists(options: ValueListProjectionOptions): Readonly<Record
         projectedBindings: new Map<string, Map<string, ProjectedBinding>>(),
         projectedBy: new Map<string, Map<string, Set<string>>>(),
         pendingConflicts: new Map<string, string>(),
-        supportCache: new Map<string, ReadonlySet<string>>()
+        supportCache: new Map<string, ReadonlySet<string>>(),
+        assignedRows: new WeakSet<object>()
     };
     const maxPasses = Math.max(1, graph.entities.length + 1);
     for (let pass = 0; pass < maxPasses; pass += 1) {
@@ -1158,6 +1161,7 @@ function projectList(state: ProjectionState, owner: OwnerProjection, list: Proje
     if (extensible && context.targetEntity) {
         // The generated owner rows extend the value help: the caller's rows are published as supplied and
         // shape no generated row.
+        const domainBefore = state.generated[collection]?.length ?? 0;
         const extended = extendGeneratedValueListDomain(
             owner.rows.filter((_, index) => owner.generated[index]),
             {
@@ -1182,6 +1186,7 @@ function projectList(state: ProjectionState, owner: OwnerProjection, list: Proje
             }
         );
         if (extended) {
+            state.generated[collection]?.slice(domainBefore).forEach((row) => state.assignedRows.add(row));
             changed = true;
         }
     }
@@ -1331,6 +1336,7 @@ function projectRow(
             preservesRelationships: projection.preservesRelationships
         });
         if (selected) {
+            state.assignedRows.add(selected);
             changed = true;
         }
     }
@@ -1371,15 +1377,15 @@ function rowCandidatePool(
 ): ReadonlyArray<MockDataRow> {
     const { list, inOutProperties, sharing } = projection;
     const generatedBindingIsCurrent =
-        rowBindings !== undefined &&
         inOutProperties.length > 0 &&
-        inOutProperties.every((localProperty) => {
-            const binding = rowBindings.get(localProperty);
-            return binding !== undefined && sameValue(row[localProperty], binding.value);
-        });
-    // A generated scalar that happens to equal one target value is not
-    // evidence of a prior binding. Only a tuple projected during an earlier
-    // fixed-point pass may constrain selection.
+        (state.assignedRows.has(row) ||
+            (rowBindings !== undefined &&
+                inOutProperties.every((localProperty) => {
+                    const binding = rowBindings.get(localProperty);
+                    return binding !== undefined && sameValue(row[localProperty], binding.value);
+                })));
+    // A generated scalar that happens to equal one target value is not evidence of a prior binding. Only a tuple
+    // projected during an earlier fixed-point pass, or a row added to hold an owner's tuple, constrains selection.
     const preferred = generatedBindingIsCurrent
         ? base.filter((candidate) =>
               list.parameters.every(
