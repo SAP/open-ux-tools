@@ -445,6 +445,23 @@ describe('completeReferencedCodeLists', () => {
             expect(diagnostics.map(({ code }) => code)).toEqual(['REFERENCED_CODE_LIST_UNSUPPORTED']);
         }
     });
+
+    it('reports a referenced service whose metadata is not well-formed XML instead of failing', () => {
+        // Given a referenced service whose metadata file was cut off
+        const rows = { Trips: [{ TripID: '1', TotalPrice: 1, CurrencyCode: 'EUR' }] };
+        const truncated = codeListServiceEdmx(currencies).slice(0, 200);
+        const serviceRequest: MockDataServiceRequest = {
+            ...request(travel),
+            referencedServices: [{ folder: CODE_LIST_FOLDER, metadata: { format: 'edmx', content: truncated } }]
+        };
+
+        // When the code lists are completed
+        const { resources, diagnostics } = complete(serviceRequest, rows);
+
+        // Then the code list is left as is and reported, and the requested rows still publish
+        expect(resources).toEqual([]);
+        expect(diagnostics.map(({ code }) => code)).toEqual(['REFERENCED_CODE_LIST_UNSUPPORTED']);
+    });
 });
 
 describe('generateService with referenced services', () => {

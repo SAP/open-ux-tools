@@ -87,7 +87,7 @@ function externalCodeLists(
  *
  * @param request - the requested service's metadata and identity
  * @returns one descriptor per folder, in declaration order
- * @throws {MockGenError} `METADATA_INVALID` when the EDMX document has no Edmx/DataServices or no Schema
+ * @throws {MockGenError} `METADATA_INVALID` when the EDMX document cannot be parsed as XML or has no Edmx/DataServices or no Schema
  * @example
  * describeReferencedServices({ metadata, service: { urlPath, odataVersion: '4.0' } });
  * // [{ folder: 'default/iwbep/common/0001', entitySets: ['Currencies', 'UnitsOfMeasure'] }]

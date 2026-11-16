@@ -15,7 +15,7 @@ import type {
 } from './graph.js';
 import { valueListParameterDirection } from './graph.js';
 import { compareCodePoints } from '../ordering.js';
-import { isRecord } from '../guards.js';
+import { errorMessage, isRecord } from '../guards.js';
 import {
     CSDL_INLINE_EXPRESSION_KINDS,
     EDM_INTEGER_BOUNDS,
@@ -609,10 +609,10 @@ interface NavigationSource {
  *
  * @param content - The EDMX document.
  * @returns The schema nodes in document order.
- * @throws {MockGenError} `METADATA_INVALID` when the document has no Edmx/DataServices or no Schema
+ * @throws {MockGenError} `METADATA_INVALID` when the document cannot be parsed as XML or has no Edmx/DataServices or no Schema
  */
 function readEdmxSchemas(content: string): XmlRecord[] {
-    const parsed: unknown = new XMLParser({
+    const parser = new XMLParser({
         ignoreAttributes: false,
         attributeNamePrefix: '',
         removeNSPrefix: true,
@@ -620,7 +620,17 @@ function readEdmxSchemas(content: string): XmlRecord[] {
         // EDM-typed expressions (Bool, Int, Float, Decimal) are converted explicitly by typedExpressionValue.
         parseAttributeValue: false,
         parseTagValue: false
-    }).parse(content);
+    });
+    let parsed: unknown;
+    try {
+        parsed = parser.parse(content);
+    } catch (error) {
+        throw new MockGenError(
+            MOCKGEN_ERROR_CODE.METADATA_INVALID,
+            `EDMX document cannot be parsed as XML: ${errorMessage(error)}`,
+            { cause: error }
+        );
+    }
     if (!isRecord(parsed) || !isRecord(parsed.Edmx) || !isRecord(parsed.Edmx.DataServices)) {
         throw new MockGenError(MOCKGEN_ERROR_CODE.METADATA_INVALID, 'EDMX document must contain Edmx/DataServices');
     }
