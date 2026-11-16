@@ -8,6 +8,7 @@ import { DirName } from '../project-spec-types.js';
 import { legacyPath, findAllWebIDEProjectFolders, findProjectsByManifest } from './common.js';
 import type { ImportProjectInfo, Message, MigratableFolder, ProjectFolder } from '../types.js';
 import { ODataVersion } from '@sap-ux/axios-extension';
+import { MigrationErrorCode } from './error-codes.js';
 import { MigrationTypes } from './constants.js';
 import { URI } from 'vscode-uri';
 import { processProjectExtension } from '../project/project-extension.js';
@@ -137,7 +138,11 @@ async function resolveManifestForUnknownProject(
     if (!isReuseLib && !isProjectExtension) {
         const adaptationCheck = await checkMigratableAdaptationProject(projectRoot);
         if (adaptationCheck === undefined) {
-            messages.push({ type: 'ERROR', description: i18nText('ERROR_NOT_SUITABLE_FOR_MIGRATION') });
+            messages.push({
+                type: 'ERROR',
+                description: i18nText('ERROR_NOT_SUITABLE_FOR_MIGRATION'),
+                code: MigrationErrorCode.NOT_SUITABLE_FOR_MIGRATION
+            });
         }
     }
 

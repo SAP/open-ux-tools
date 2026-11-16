@@ -18,6 +18,7 @@ import {
     generateToolsId,
     getLibraryTemplatesMap
 } from '../utils/common.js';
+import { extractErrorCode, MigrationErrorCode } from '../utils/error-codes.js';
 import { ui5VersionRequestInfo } from '@sap-ux/ui5-info';
 import { applyTemplates } from '../template/template-helpers.js';
 import type {
@@ -94,7 +95,8 @@ export async function copyAdaptationFiles(
         messages.length = 0; // Reset
         messages.push({
             type: 'ERROR',
-            description: `Error copying adaptation files: ${determineMessage(e)}`
+            description: `Error copying adaptation files: ${determineMessage(e)}`,
+            code: MigrationErrorCode.COPY_FILES_FAILED
         });
         result = false;
     }
@@ -160,7 +162,8 @@ export async function copyLibraryFiles(
         // Error details are captured in the message below - no need to log to console in production
         messages.push({
             type: 'ERROR',
-            description: `Error copying library files: ${errorDetail}`
+            description: `Error copying library files: ${errorDetail}`,
+            code: MigrationErrorCode.COPY_FILES_FAILED
         });
         result = false;
     }
