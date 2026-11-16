@@ -578,6 +578,31 @@ function csnEntity(context: CsnEntityContext, entitySetName: string, definition:
 }
 
 /**
+ * An undeclared foreign key: typed like its target element, without that element's links, and key and nullable as the
+ * association is.
+ *
+ * @param context the parsed CSN and the entity being read
+ * @param name the foreign key's name
+ * @param targetElement the target element it references
+ * @param association the association element
+ * @returns the foreign key property
+ */
+function foreignKeyProperty(
+    context: CsnEntityContext,
+    name: string,
+    targetElement: CsnRecord,
+    association: CsnRecord
+): SchemaProperty {
+    const { links: _targetLinks, ...inherited } = property(
+        name,
+        {},
+        resolveElement(targetElement, context.definitions)
+    );
+    const isKey = association.key === true;
+    return { ...inherited, nullable: !isKey && association.notNull !== true, isKey };
+}
+
+/**
  * The foreign-key mappings of a managed association. A foreign key the entity does not declare is added to its
  * scalar properties, typed like the target element it refers to.
  *
@@ -616,8 +641,7 @@ function associationMappings(
             continue;
         }
         if (!scalarProperties.some((candidateProperty) => candidateProperty.name === sourceProperty)) {
-            const inherited = property(sourceProperty, {}, resolveElement(targetElement, context.definitions));
-            scalarProperties.push({ ...inherited, nullable: association.element.notNull !== true, isKey: false });
+            scalarProperties.push(foreignKeyProperty(context, sourceProperty, targetElement, association.element));
         }
         mappings.push({ sourceProperty, targetProperty });
     }
