@@ -66,7 +66,8 @@
         "directoryChanged": "MockGen project data directory changed during generation",
         "changedDuringGeneration": "MockGen project data changed during generation",
         "changedBeforeReplacement": "MockGen project data changed before replacement",
-        "rollbackFailed": "MockGen rollback failed; originals are retained at {{backup}}"
+        "rollbackFailed": "MockGen rollback failed; originals are retained at {{backup}}",
+        "fileNameCollision": "MockGen did not write the data file of {{target}}: on this file system its name is the same as another target's file, which it would overwrite"
     },
     "recovery": {
         "journalMissing": "MockGen found an interrupted project transaction without a journal: {{transactionRoot}}. Its backup directory holds the original project data: if the data directory is missing or incomplete, move {{backup}} back in its place, then delete {{transactionRoot}} and retry.",

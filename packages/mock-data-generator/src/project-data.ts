@@ -1,7 +1,7 @@
 import { createHash, randomBytes } from 'node:crypto';
 import type { Stats } from 'node:fs';
 import { cp, lstat, mkdir, mkdtemp, readFile, readdir, realpath, rename, rm, writeFile } from 'node:fs/promises';
-import { isAbsolute, join, relative, resolve, sep } from 'node:path';
+import { basename, isAbsolute, join, relative, resolve, sep } from 'node:path';
 import { RENAME_REFUSED_CODES, withProjectLock } from './project-lock.js';
 import type { MockDataServiceRequest } from './types.js';
 import {
@@ -446,6 +446,29 @@ async function projectDataChanged(
     );
 }
 
+/** The files written for the targets, and the targets whose file name another target's file already took. */
+interface StagedFiles {
+    files: string[];
+    collisions: string[];
+}
+
+/**
+ * Whether a target's file is one this run already wrote under another name, as on a case-insensitive file system.
+ *
+ * @param path the target's file in the staging directory
+ * @param written the file identities this run wrote, by lower-case file name
+ * @returns true when writing it would overwrite another target's file
+ */
+async function takenByAnotherTarget(path: string, written: ReadonlyMap<string, number>): Promise<boolean> {
+    const earlier = written.get(basename(path).toLowerCase());
+    if (earlier === undefined) {
+        return false;
+    }
+    const existing = await lstat(path).catch(() => undefined);
+    // A file system without file identities reports 0; names that differ only in case are then taken as one file.
+    return existing !== undefined && (existing.ino === earlier || existing.ino === 0);
+}
+
 /**
  * Write one JSON file per generated target into the staging directory; a skipped target keeps its existing file.
  *
@@ -453,7 +476,8 @@ async function projectDataChanged(
  * @param targetNames the requested resources, in request order
  * @param generation the validated generation result
  * @param parts the data directory's path segments below the project
- * @returns the project-relative paths of the files written, in request order
+ * @returns the project-relative paths of the files written, in request order, and the targets not written because
+ * their file name differs only in case from an earlier target's on a file system that ignores case
  * @throws {TypeError} when a target that was not skipped has no rows
  */
 async function stageGeneratedFiles(
@@ -461,8 +485,10 @@ async function stageGeneratedFiles(
     targetNames: ReadonlyArray<string>,
     generation: StandaloneGenerationResult,
     parts: ReadonlyArray<string>
-): Promise<string[]> {
+): Promise<StagedFiles> {
     const files: string[] = [];
+    const collisions: string[] = [];
+    const written = new Map<string, number>();
     for (const name of targetNames) {
         const rows = generation.resources[name];
         if (!rows) {
@@ -476,11 +502,47 @@ async function stageGeneratedFiles(
             throw new TypeError(`MockGen did not generate resource ${name}`);
         }
         const filename = `${name}.json`;
+        const path = join(staged, filename);
         // Sequential: ordered file-system transaction.
-        await writeFile(join(staged, filename), `${JSON.stringify(rows, null, 2)}\n`, { flag: 'w' }); // NOSONAR
+        const taken = await takenByAnotherTarget(path, written); // NOSONAR
+        if (taken) {
+            collisions.push(name);
+            continue;
+        }
+        await writeFile(path, `${JSON.stringify(rows, null, 2)}\n`, { flag: 'w' }); // NOSONAR
+        written.set(filename.toLowerCase(), (await lstat(path)).ino); // NOSONAR
         files.push(`${parts.join('/')}/${filename}`);
     }
-    return files;
+    return { files, collisions };
+}
+
+/**
+ * Add a warning for each target whose file was not written because another target's file has the same name but for
+ * case.
+ *
+ * @param generation the validated generation result
+ * @param collisions the targets not written
+ * @returns the result with those warnings
+ */
+function withCollisionDiagnostics(
+    generation: StandaloneGenerationResult,
+    collisions: ReadonlyArray<string>
+): StandaloneGenerationResult {
+    if (collisions.length === 0) {
+        return generation;
+    }
+    return {
+        ...generation,
+        diagnostics: [
+            ...generation.diagnostics,
+            ...collisions.map((target) => ({
+                code: 'PROJECT_FILE_NAME_COLLISION' as const,
+                severity: 'warning' as const,
+                message: t('projectData.fileNameCollision', { target }),
+                target
+            }))
+        ]
+    };
 }
 
 /**
@@ -514,7 +576,7 @@ async function replaceProjectData(
         } else {
             await mkdir(staged);
         }
-        const files = await stageGeneratedFiles(staged, targetNames, generation, parts);
+        const { files, collisions } = await stageGeneratedFiles(staged, targetNames, generation, parts);
         input.request.signal?.throwIfAborted();
         const journal: ProjectJournal = {
             formatVersion: 1,
@@ -538,7 +600,7 @@ async function replaceProjectData(
         journal.phase = 'installed';
         await writeProjectJournal(journalPath, journal);
         input.request.signal?.throwIfAborted();
-        return { generation, files: Object.freeze(files) };
+        return { generation: withCollisionDiagnostics(generation, collisions), files: Object.freeze(files) };
     } catch (error) {
         try {
             if (installed) {

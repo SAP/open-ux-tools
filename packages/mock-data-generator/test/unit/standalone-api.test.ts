@@ -408,6 +408,56 @@ describe('standalone MockGen API', () => {
         }
     });
 
+    test('writes one file per target name on a case-insensitive file system and reports the other', async () => {
+        const root = await mkdtemp(join(tmpdir(), 'mockgen-project-'));
+        try {
+            // Given two declared entity sets whose names differ only in case
+            const twoCases = `<?xml version="1.0" encoding="utf-8"?><edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx"><edmx:DataServices><Schema Namespace="Demo" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+<EntityType Name="Record"><Key><PropertyRef Name="ID"/></Key><Property Name="ID" Type="Edm.Int32" Nullable="false"/></EntityType>
+<EntityContainer Name="Container"><EntitySet Name="Records" EntityType="Demo.Record"/><EntitySet Name="records" EntityType="Demo.Record"/></EntityContainer></Schema></edmx:DataServices></edmx:Edmx>`;
+            await writeFile(join(root, 'Probe'), '');
+            const caseInsensitive = await readFile(join(root, 'probe'), 'utf8').then(
+                () => true,
+                () => false
+            );
+            await rm(join(root, 'Probe'));
+
+            // When project data is generated for both
+            const outcome = await generateProjectData({
+                projectRoot: root,
+                dataDirectory: 'mockdata',
+                request: {
+                    metadata: { format: 'edmx', content: twoCases },
+                    service: { urlPath: '/records', odataVersion: '4.0' },
+                    targets: [
+                        { name: 'Records', kind: 'entity-set' },
+                        { name: 'records', kind: 'entity-set' }
+                    ],
+                    existingData: {}
+                },
+                options: { mode: 'deterministic', rowsPerEntity: 2 }
+            });
+
+            // Then the first target's file holds its rows, and the second is written only where the file system
+            // tells the names apart; otherwise it is reported instead of overwriting the first
+            const written = outcome.files.map((file) => file.split('/').at(-1));
+            const records = JSON.parse(await readFile(join(root, 'mockdata', 'Records.json'), 'utf8')) as unknown;
+            expect(records).toEqual(outcome.generation.resources.Records);
+            const collisions = outcome.generation.diagnostics.filter(
+                ({ code }) => code === 'PROJECT_FILE_NAME_COLLISION'
+            );
+            if (caseInsensitive) {
+                expect(written).toEqual(['Records.json']);
+                expect(collisions.map(({ target, severity }) => [target, severity])).toEqual([['records', 'warning']]);
+            } else {
+                expect(written).toEqual(['Records.json', 'records.json']);
+                expect(collisions).toEqual([]);
+            }
+        } finally {
+            await rm(root, { recursive: true, force: true });
+        }
+    });
+
     test('requires the manifest to vouch for the value-bank store that was loaded', () => {
         const manifest = modelResources.manifest;
         expect(() => assertValueBankStoreDeclared(manifest)).not.toThrow();
