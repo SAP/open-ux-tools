@@ -18,7 +18,7 @@ import {
     generateToolsId,
     getLibraryTemplatesMap
 } from '../utils/common.js';
-import { extractErrorCode, MigrationErrorCode } from '../utils/error-codes.js';
+import { MigrationErrorCode } from '../utils/error-codes.js';
 import { ui5VersionRequestInfo } from '@sap-ux/ui5-info';
 import { applyTemplates } from '../template/template-helpers.js';
 import type {
