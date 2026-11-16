@@ -12,6 +12,7 @@ const mockHttpTransport = {
     disconnectSite: jest.fn<FrontendActionTransport['disconnectSite']>(),
     stopBrowser: jest.fn<FrontendActionTransport['stopBrowser']>(),
     reloadPage: jest.fn<(site: string) => Promise<void>>(),
+    requestEditorClose: jest.fn<(site: string) => Promise<boolean>>(),
     stopEditor: jest.fn<(site: string) => Promise<boolean>>()
 };
 const mockDefaultTransport = {
@@ -71,6 +72,7 @@ describe('runRtaWorkflowStep HTTP dispatcher', () => {
         mockHttpTransport.disconnectSite.mockResolvedValue(undefined);
         mockHttpTransport.reloadPage.mockResolvedValue(undefined);
         mockHttpTransport.stopEditor.mockResolvedValue(true);
+        mockHttpTransport.requestEditorClose.mockResolvedValue(true);
         mockStartRta.mockResolvedValue({ rtaStarted: true });
         mockIsRegistryEmpty.mockReturnValue(true);
         mockRequireEditorSession.mockImplementation((site) => {
@@ -144,18 +146,49 @@ describe('runRtaWorkflowStep HTTP dispatcher', () => {
         mockHttpTransport.stopEditor.mockResolvedValueOnce(stopped);
         await expect(runRtaWorkflowStep({ step: 'stop', site: SITE })).resolves.toEqual({
             stopped: true,
-            editorServerStopped: stopped
+            editorServerStopped: stopped,
+            browserCloseRequested: true,
+            message: expect.stringContaining('close it manually')
         });
         expect(mockRequireEditorSession).toHaveBeenCalledWith(SITE);
         expect(mockHttpTransport.disconnectSite).toHaveBeenCalledWith(SITE);
         expect(mockHttpTransport.stopEditor).toHaveBeenCalledTimes(1);
         expect(mockHttpTransport.stopEditor).toHaveBeenCalledWith(SITE);
+        expect(mockHttpTransport.requestEditorClose).toHaveBeenCalledWith(SITE);
+        expect(mockHttpTransport.requestEditorClose.mock.invocationCallOrder[0]).toBeLessThan(
+            mockHttpTransport.stopEditor.mock.invocationCallOrder[0]
+        );
         expect(mockHttpTransport.disconnectSite.mock.invocationCallOrder[0]).toBeLessThan(
             mockHttpTransport.stopEditor.mock.invocationCallOrder[0]
         );
         expect(mockHttpTransport.stopBrowser).not.toHaveBeenCalled();
         expect(mockDefaultTransport.stopBrowser).not.toHaveBeenCalled();
         expect(mockIsRegistryEmpty).not.toHaveBeenCalled();
+    });
+
+    test('stops the server even when the browser does not acknowledge closure', async () => {
+        mockHttpTransport.requestEditorClose.mockResolvedValue(false);
+        await expect(runRtaWorkflowStep({ step: 'stop', site: SITE })).resolves.toMatchObject({
+            editorServerStopped: true,
+            browserCloseRequested: false
+        });
+        expect(mockHttpTransport.stopEditor).toHaveBeenCalledWith(SITE);
+    });
+
+    test('keeps the server running until the bounded browser close attempt finishes', async () => {
+        let finishClose: (acknowledged: boolean) => void = () => {};
+        mockHttpTransport.requestEditorClose.mockImplementation(
+            () =>
+                new Promise((resolve) => {
+                    finishClose = resolve;
+                })
+        );
+        const pending = runRtaWorkflowStep({ step: 'stop', site: SITE });
+        await Promise.resolve();
+        expect(mockHttpTransport.requestEditorClose).toHaveBeenCalledWith(SITE);
+        expect(mockHttpTransport.stopEditor).not.toHaveBeenCalled();
+        finishClose(true);
+        await expect(pending).resolves.toMatchObject({ editorServerStopped: true, browserCloseRequested: true });
     });
 
     test('restart waits for reload before starting RTA', async () => {

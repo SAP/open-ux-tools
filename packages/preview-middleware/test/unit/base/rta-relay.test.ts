@@ -295,8 +295,9 @@ describe('relay browser client', () => {
         {
             rta = editorRta(),
             fastClock = false,
-            topLevel = false
-        }: { rta?: unknown; fastClock?: boolean; topLevel?: boolean } = {}
+            topLevel = false,
+            topWindow
+        }: { rta?: unknown; fastClock?: boolean; topLevel?: boolean; topWindow?: Record<string, unknown> } = {}
     ) => {
         const ui5Require = jest.fn(requireWith(api, rta));
         // A virtual clock lets deadline paths run without real waiting.
@@ -313,6 +314,7 @@ describe('relay browser client', () => {
               }
             : { setTimeout, clearTimeout };
         const reload = jest.fn();
+        const close = jest.fn();
         const parentPostMessage = jest.fn();
         const log = jest.fn();
         const fetch = jest.fn(async (url: URL | string, options: { body?: string } = {}) => {
@@ -332,9 +334,13 @@ describe('relay browser client', () => {
             }
             return { ok: true, json: async () => actions.shift() };
         });
-        const win: Record<string, unknown> = { sap: { ui: { require: ui5Require } } };
+        const win: Record<string, unknown> = {
+            sap: { ui: { require: ui5Require } },
+            close,
+            location: { origin: 'https://preview.test' }
+        };
         win.self = win;
-        win.top = topLevel ? win : {};
+        win.top = topWindow ?? (topLevel ? win : {});
         win.parent = topLevel ? win : { postMessage: parentPostMessage };
         const messageHandlers: Array<(event: { origin: string; data: unknown }) => void> = [];
         win.addEventListener = (type: string, handler: (event: { origin: string; data: unknown }) => void) => {
@@ -366,7 +372,7 @@ describe('relay browser client', () => {
                 handler(event);
             }
         };
-        return { fetch, reload, parentPostMessage, log, ui5Require, dispatchMessage };
+        return { fetch, reload, close, parentPostMessage, log, ui5Require, dispatchMessage };
     };
 
     const waitForResult = async (client: { fetch: jest.Mock }) => {
@@ -492,6 +498,69 @@ describe('relay browser client', () => {
             );
         }
     );
+
+    test('__stop__ acknowledges before attempting to close an external tab and ends polling', async () => {
+        const client = await runClient(
+            [{ id: '1', actionName: '__stop__', payload: { closeWindow: true } }],
+            {},
+            undefined,
+            false,
+            { topLevel: true }
+        );
+        expect(client.close).toHaveBeenCalledTimes(1);
+        expect(client.fetch).toHaveBeenCalledTimes(2);
+        expect(client.fetch.mock.invocationCallOrder[1]).toBeLessThan(client.close.mock.invocationCallOrder[0]);
+        expect((await waitForResult(client)).result).toEqual({ stopped: true, closeRequested: true });
+        expect(client.ui5Require).not.toHaveBeenCalled();
+    });
+
+    test('__stop__ closes the same-origin editor shell when the relay is inside its preview frame', async () => {
+        const close = jest.fn();
+        const client = await runClient(
+            [{ id: '1', actionName: '__stop__', payload: { closeWindow: true } }],
+            {},
+            undefined,
+            false,
+            { topWindow: { close, location: { origin: 'https://preview.test' } } }
+        );
+        expect(close).toHaveBeenCalledTimes(1);
+        expect(client.close).not.toHaveBeenCalled();
+    });
+
+    test('__stop__ never closes a cross-origin BAS host', async () => {
+        const close = jest.fn();
+        const topWindow = Object.defineProperty({ close }, 'location', {
+            get() {
+                throw new Error('Cross-origin access denied');
+            }
+        });
+        const client = await runClient(
+            [{ id: '1', actionName: '__stop__', payload: { closeWindow: true } }],
+            {},
+            undefined,
+            false,
+            { topWindow }
+        );
+        expect(close).not.toHaveBeenCalled();
+        expect((await waitForResult(client)).result).toEqual({ stopped: true, closeRequested: false });
+    });
+
+    test('__stop__ still attempts closure if the acknowledgement response is lost', async () => {
+        const client = await runClient(
+            [{ id: '1', actionName: '__stop__', payload: { closeWindow: true } }],
+            {},
+            undefined,
+            true,
+            { topLevel: true }
+        );
+        expect(client.close).toHaveBeenCalledTimes(1);
+        expect(client.fetch).toHaveBeenCalledTimes(2);
+    });
+
+    test('__stop__ without a close request leaves the window open', async () => {
+        const client = await runClient([{ id: '1', actionName: '__stop__' }], {}, undefined, false, { topLevel: true });
+        expect(client.close).not.toHaveBeenCalled();
+    });
 
     test('__reload__ reloads via CPE reloadApplication posted to the editor shell', async () => {
         const client = await runClient([{ id: '1', actionName: '__reload__' }]);

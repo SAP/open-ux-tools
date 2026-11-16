@@ -396,6 +396,36 @@ describe('browser/http-bridge', () => {
         });
     });
 
+    describe('requestEditorClose', () => {
+        test('requests closure with a short deadline before server shutdown', async () => {
+            const timeout = jest.spyOn(AbortSignal, 'timeout');
+            respondWith({ result: { stopped: true, closeRequested: true }, clientId: CLIENT_ID });
+            await expect(httpTransport.requestEditorClose?.(SITE)).resolves.toBe(true);
+            expect(timeout).toHaveBeenCalledWith(3000);
+            expect(JSON.parse(String(fetchMock.mock.calls[0][1]?.body))).toEqual({
+                actionName: '__stop__',
+                payload: { closeWindow: true }
+            });
+            expect(stopEditorSessionMock).not.toHaveBeenCalled();
+        });
+
+        test.each([
+            { result: { stopped: true }, clientId: CLIENT_ID },
+            { result: { stopped: true, closeRequested: false }, clientId: CLIENT_ID },
+            { error: 'Relay busy' }
+        ])('does not claim closure without acknowledgement: %p', async (body) => {
+            respondWith(body);
+            await expect(httpTransport.requestEditorClose?.(SITE)).resolves.toBe(false);
+        });
+
+        test('allows shutdown to continue when the page is unresponsive', async () => {
+            fetchMock.mockRejectedValueOnce(new DOMException('Timed out', 'TimeoutError'));
+            await expect(httpTransport.requestEditorClose?.(SITE)).resolves.toBe(false);
+            expect(fetchMock).toHaveBeenCalledTimes(1);
+            expect(jest.getTimerCount()).toBe(0);
+        });
+    });
+
     test.each([true, false])(
         'stopEditor delegates to the owned session and returns %s without browser network wait',
         async (stopped) => {

@@ -24,7 +24,7 @@ The application-modeler launcher from the matching tools-suite branch automatica
 
 The extension is optional for manual opening: call `open_adaptation_editor`, open its exact `editorUrl` in your browser, then run `run_rta_workflow_step` with `start` and that URL. The project must use preview-middleware with the relay implementation. Keep one tab per editor session. If login takes longer than the start wait budget, finish login and retry `start` on the same session.
 
-The relay script runs in the editor page and polls the preview server; MCP commands go to the owned local server using its per-session token. The extension only launches the tab and does not carry agent commands or browser cookies. `stop` terminates the owned editor server; the user closes the external tab.
+The relay script runs in the editor page and polls the preview server; MCP commands go to the owned local server using its per-session token. The extension only launches the tab and does not carry agent commands or browser cookies. After saving and validating changes, call `stop`: it requests tab closure through the relay, then terminates the owned editor server even if the browser is unresponsive. Browsers may block automatic closure, especially for manually opened tabs; close any remaining editor tab manually. The result's `browserCloseRequested` reports acknowledgement of the request, not verified tab closure.
 
 ## [Setup](#setup)
 

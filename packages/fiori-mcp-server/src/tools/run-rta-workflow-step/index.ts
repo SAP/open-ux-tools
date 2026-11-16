@@ -103,8 +103,15 @@ async function dispatchStep(input: RunRtaWorkflowStepInput): Promise<RunRtaWorkf
             await activeTransport.disconnectSite(site);
             // The relay session owns both the automatic tab signal and server handle.
             if (activeTransport.stopEditor) {
+                const browserCloseRequested = await activeTransport.requestEditorClose?.(site);
                 const editorServerStopped = await activeTransport.stopEditor(site);
-                return { stopped: true, editorServerStopped };
+                return {
+                    stopped: true,
+                    editorServerStopped,
+                    browserCloseRequested,
+                    message:
+                        'If the editor tab remains open, close it manually; your browser may block automatic tab closure.'
+                };
             }
             // Transports that own the browser close it directly.
             if (isRegistryEmpty()) {

@@ -207,6 +207,15 @@
         return await api[method](action.payload);
     }
 
+    function externalEditorWindow() {
+        try {
+            // An embedded editor must never close its cross-origin BAS/IDE host.
+            return window.top.location.origin === location.origin ? window.top : undefined;
+        } catch {
+            return undefined;
+        }
+    }
+
     async function pollLoop() {
         while (true) {
             let action;
@@ -225,11 +234,21 @@
             }
             if (action.actionName === '__reload__' || action.actionName === '__stop__') {
                 const result = action.actionName === '__reload__' ? { reloaded: true } : { stopped: true };
+                const closeTarget =
+                    action.actionName === '__stop__' && action.payload?.closeWindow === true
+                        ? externalEditorWindow()
+                        : undefined;
+                if (action.payload?.closeWindow === true) {
+                    result.closeRequested = !!closeTarget;
+                }
                 try {
                     await request('result', { id: action.id, clientId, result });
                 } catch (error) {
                     console.error('[rta-relay] lifecycle result POST failed:', error);
                 }
+                // Acknowledge before closing so MCP can finish stopping the owned server.
+                // Browsers may refuse window.close(), especially for manually opened tabs.
+                closeTarget?.close();
                 if (action.actionName === '__reload__') {
                     const shell = window.parent && window.parent !== window ? window.parent : undefined;
                     if (shell) {

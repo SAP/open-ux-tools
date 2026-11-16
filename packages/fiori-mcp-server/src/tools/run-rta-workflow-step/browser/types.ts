@@ -50,6 +50,8 @@ export interface FrontendActionTransport {
      * (the `restart` step). When absent, `restart` falls back to re-invoking `startRTA`.
      */
     reloadPage?(site: string): Promise<void>;
+    /** Request closure of the external editor tab. Acknowledgement does not guarantee the browser permits it. */
+    requestEditorClose?(site: string): Promise<boolean>;
     /** Close the owned tab/server and report server termination, without process discovery. */
     stopEditor?(site: string): Promise<boolean>;
 }

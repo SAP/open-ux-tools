@@ -5,6 +5,7 @@ import { logger } from '../../../utils/logger.js';
 
 // Kept above the relay's 60s action deadline so its own 504 arrives before the fetch aborts.
 const REQUEST_TIMEOUT_MS = 70000;
+const CLOSE_REQUEST_TIMEOUT_MS = 3000;
 
 const START_RTA_ACTION = 'com.sap.ui.flex.startRTA.v1';
 const START_RETRY_DELAY_MS = 2000;
@@ -47,13 +48,15 @@ interface RelayResponse {
  * @param actionName Frontend action or lifecycle command.
  * @param payload Action parameters.
  * @param frameId Optional target frame.
+ * @param timeoutMs Maximum wait for this request.
  * @returns Validated relay response.
  */
 async function requestRelay(
     site: string,
     actionName: string,
     payload: Record<string, unknown> = {},
-    frameId?: string
+    frameId?: string,
+    timeoutMs = REQUEST_TIMEOUT_MS
 ): Promise<RelayResponse> {
     const session = requireEditorSession(site);
     if (!session.relayToken) {
@@ -67,7 +70,7 @@ async function requestRelay(
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'X-Relay-Token': session.relayToken },
         body: JSON.stringify({ actionName, payload, frameId }),
-        signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
+        signal: AbortSignal.timeout(timeoutMs),
         redirect: 'error'
     });
     // 504 means the browser client never answered (likely on the backend login screen). Handle it
@@ -262,6 +265,36 @@ async function fetchViaContextHttp(site: string, url: string): Promise<FetchViaC
     return result.payload as FetchViaContextResult;
 }
 
+/**
+ * Requests closure through the connected editor before its server is stopped.
+ * Missing or unresponsive pages must not prevent server shutdown.
+ *
+ * @param site Registered editor URL.
+ * @returns Whether a browser client acknowledged the close request.
+ */
+async function requestEditorCloseHttp(site: string): Promise<boolean> {
+    try {
+        const response = await requestRelay(
+            site,
+            '__stop__',
+            { closeWindow: true },
+            undefined,
+            CLOSE_REQUEST_TIMEOUT_MS
+        );
+        return (
+            !response.error &&
+            !!response.clientId &&
+            typeof response.result === 'object' &&
+            response.result !== null &&
+            'closeRequested' in response.result &&
+            response.result.closeRequested === true
+        );
+    } catch {
+        logger.debug('HTTP relay: editor close was not acknowledged; continuing with server shutdown');
+        return false;
+    }
+}
+
 /** HTTP relay for the editor in a user browser tab, opened automatically or manually. */
 export const httpTransport: FrontendActionTransport = {
     callFrontendAction: callFrontendActionHttp,
@@ -269,6 +302,7 @@ export const httpTransport: FrontendActionTransport = {
     disconnectSite: async () => {},
     stopBrowser: async () => {},
     reloadPage: reloadPageHttp,
-    // Stop the owned server without requiring a responsive browser; the user closes the external tab.
+    requestEditorClose: requestEditorCloseHttp,
+    // Server shutdown remains independent of whether the browser accepts the close request.
     stopEditor: stopEditorSession
 };

@@ -95,6 +95,10 @@ export interface StopStepResult {
      * Omitted for transports that own the browser/process lifecycle directly.
      */
     editorServerStopped?: boolean;
+    /** Acknowledgement of the close request; actual tab closure is controlled by the browser. */
+    browserCloseRequested?: boolean;
+    /** Guidance when the external browser requires manual tab closure. */
+    message?: string;
 }
 
 export interface RestartStepResult {
