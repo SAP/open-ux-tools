@@ -64,6 +64,7 @@ import { assertSemanticValues, compileSemanticPlan, demoteBoundSemanticRoles } f
 import { applyApplicationDomains, applySyntheticScenario } from './generation/scenario.js';
 import { adoptCompatibleTuples, validateTupleDomains, valueListedProperties } from './generation/tuple-domain.js';
 import { applyCurrencyMetadata, assertCurrencyMetadata } from './generation/currency-metadata.js';
+import { completeReferencedCodeLists } from './generation/referenced-code-lists.js';
 import { applyCapCodeListMetadata } from './generation/code-list-metadata.js';
 import { applyCountryMetadata } from './generation/country-metadata.js';
 import { datePairs } from './generation/coherence.js';
@@ -122,7 +123,7 @@ function fingerprint(value: unknown): string {
     return sha256(canonicalJson(value));
 }
 
-const GENERATOR_LOGIC_VERSION = 53;
+const GENERATOR_LOGIC_VERSION = 54;
 
 /**
  * Marks every cell of a resource the caller supplied as authored, because `preserveAuthoredRows`
@@ -285,7 +286,9 @@ export function createGenerationFingerprint(
             metadata: request.metadata,
             service: request.service,
             targets: request.targets,
-            existingData: request.existingData
+            existingData: request.existingData,
+            // Present only when given, so fingerprints of requests without referenced services keep their value.
+            ...(request.referencedServices ? { referencedServices: request.referencedServices } : {})
         },
         options: { ...options, pipeline: 'semantic-v2' },
         learnedComponents
@@ -1406,6 +1409,26 @@ function hardRealism(
 }
 
 /**
+ * The rows of every entity set: the final rows, and the supplied rows of entity sets that were not generated.
+ *
+ * @param resources the final rows
+ * @param existingData the rows the caller supplied, by entity set
+ * @returns rows by entity set
+ */
+function rowsWithSupplied(
+    resources: GeneratedResources,
+    existingData: MockDataServiceRequest['existingData']
+): Readonly<Record<string, ReadonlyArray<MockDataRow>>> {
+    const rows: Record<string, ReadonlyArray<MockDataRow>> = {};
+    for (const [entitySet, { initialRows }] of Object.entries(existingData)) {
+        if ('rows' in initialRows) {
+            rows[entitySet] = initialRows.rows;
+        }
+    }
+    return { ...rows, ...resources };
+}
+
+/**
  * Assemble the frozen result from what the tiers produced.
  *
  * @param context the generation
@@ -1431,6 +1454,15 @@ function assembleGenerationResult(
     if (world.graph) {
         diagnostics.push(...childlessParentDiagnostics(world.graph, world.resources, request.existingData));
     }
+    const referencedResources = world.graph
+        ? completeReferencedCodeLists(
+              request,
+              world.graph,
+              rowsWithSupplied(world.resources, request.existingData),
+              diagnostics,
+              options.locale
+          )
+        : [];
     // Contained rows move into the rows that contain them last, after every check of the generated rows.
     const resources = world.graph
         ? nestContainedRows(world.graph, world.resources, request.existingData, diagnostics)
@@ -1459,7 +1491,8 @@ function assembleGenerationResult(
             realismGuard: context.withheld.cells,
             standardFallback: context.withheld.fallback
         }),
-        realism: hardRealism(world, request.existingData)
+        realism: hardRealism(world, request.existingData),
+        ...(referencedResources.length > 0 ? { referencedResources } : {})
     });
     return { result, fieldTiers: tierStatistics.fieldTiers };
 }

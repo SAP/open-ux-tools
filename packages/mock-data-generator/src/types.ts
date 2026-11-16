@@ -29,11 +29,39 @@ export interface ExistingMockData {
     initialRows: ExistingInitialRows;
 }
 
+/**
+ * A service the requested service references, such as the service that holds its currency and unit code lists,
+ * as the host stores it locally. `describeReferencedServices` names the folders to read.
+ */
+export interface MockDataReferencedService {
+    /** Folder of the referenced service, relative to the folder of the requested service's metadata. */
+    folder: string;
+    metadata: MockDataMetadata;
+    /** Rows already in the referenced service's data files, by entity set. They are kept as written. */
+    existingRows?: Readonly<Record<string, ReadonlyArray<MockDataRow>>>;
+}
+
+/** A referenced service the host should read: its folder and the entity sets whose data files matter. */
+export interface MockDataReferencedServiceDescriptor {
+    /** Folder of the referenced service, relative to the folder of the requested service's metadata. */
+    folder: string;
+    entitySets: ReadonlyArray<string>;
+}
+
+/** The complete rows of one data file of a referenced service: existing rows first, then the added ones. */
+export interface MockDataReferencedResource {
+    folder: string;
+    entitySet: string;
+    rows: ReadonlyArray<MockDataRow>;
+}
+
 export interface MockDataServiceRequest {
     metadata: MockDataMetadata;
     service: MockDataServiceIdentity;
     targets: ReadonlyArray<MockDataTarget>;
     existingData: Readonly<Record<string, ExistingMockData>>;
+    /** Locally stored services the requested service references; their data is completed to match the rows. */
+    referencedServices?: ReadonlyArray<MockDataReferencedService>;
     signal?: AbortSignal;
 }
 
@@ -321,6 +349,8 @@ export type MockDataGeneratorDiagnosticCode =
     | 'ROW_COUNT_REDUCED_UNSATISFIABLE_REFERENCE_DOMAIN'
     | 'ROW_COUNT_REDUCED_UNSATISFIABLE_RELATIONSHIP_CONSTRAINTS'
     | 'REALISM_VALUE_WITHHELD'
+    | 'REFERENCED_CODE_LIST_UNSUPPORTED'
+    | 'REFERENCED_SERVICE_UNAVAILABLE'
     | 'SCHEMA_ENTITY_SET_SKIPPED'
     | 'SCHEMA_PROPERTY_OMITTED'
     | 'SEMANTIC_DERIVATION_UNAVAILABLE'
@@ -498,6 +528,11 @@ export interface MockDataGeneratorResult {
      * none does. Unlike `MockDataGeneratorInfo.realismReady`, this says whether this run's values passed.
      */
     realism?: Readonly<{ checksVersion: number; failingFields: number; passed: boolean }>;
+    /**
+     * Data files of referenced services that changed, such as a currency code list completed with the codes the
+     * rows use. Each holds the existing rows first, unchanged, then the added ones.
+     */
+    referencedResources?: ReadonlyArray<MockDataReferencedResource>;
 }
 
 export interface MockDataGeneratorInspectionOptions {

@@ -924,6 +924,72 @@ function entityTypeHierarchy(
     return typeof base === 'string' ? base : [...base, resolved];
 }
 
+/** A currency or unit-of-measure code list an entity container declares (`CodeList.CurrencyCodes`, `UnitsOfMeasure`). */
+export interface EdmxCodeListReference {
+    kind: 'currency' | 'unit';
+    /** The `Url` of the service that holds the code list, relative to the declaring service; undefined for itself. */
+    url?: string;
+    /** The code-list entity set. */
+    collectionPath: string;
+}
+
+/**
+ * Whether a code-list `Url` names the declaring service itself.
+ *
+ * @param url - The annotation's `Url`.
+ * @returns true for no url or the service's own `$metadata`
+ */
+function isOwnServiceUrl(url: string | undefined): boolean {
+    return url === undefined || url === './$metadata' || url === '$metadata';
+}
+
+/**
+ * The code lists a container declares, in this service or in another one.
+ *
+ * @param schemas - Schema nodes in document order.
+ * @param schema - The schema that declares the container.
+ * @param container - The entity container node.
+ * @returns The declared code lists, in annotation order.
+ */
+function containerCodeListReferences(
+    schemas: ReadonlyArray<XmlRecord>,
+    schema: XmlRecord,
+    container: XmlRecord
+): EdmxCodeListReference[] {
+    const containerName = requiredString(container.Name, 'container name');
+    // An annotation group may target the container through the schema namespace or its alias.
+    const containerTargets = new Set(
+        [requiredString(schema.Namespace, 'schema namespace'), schemaAlias(schema)].flatMap((prefix) =>
+            prefix ? [`${prefix}.${containerName}`] : []
+        )
+    );
+    const containerAnnotations = [
+        ...asArray(container.Annotation),
+        ...schemas.flatMap((candidate) =>
+            asArray(candidate.Annotations)
+                .filter((group) => typeof group.Target === 'string' && containerTargets.has(group.Target))
+                .flatMap((group) => asArray(group.Annotation))
+        )
+    ];
+    const references: EdmxCodeListReference[] = [];
+    for (const annotation of containerAnnotations) {
+        const term = String(annotation.Term).toLowerCase();
+        let kind: 'currency' | 'unit' | undefined;
+        if (term.endsWith(VOCABULARY_TERM_SUFFIX.currencyCodes)) {
+            kind = 'currency';
+        } else if (term.endsWith(VOCABULARY_TERM_SUFFIX.unitsOfMeasure)) {
+            kind = 'unit';
+        }
+        const values = asArray(asArray(annotation.Record)[0]?.PropertyValue);
+        const url = values.find((value) => value.Property === 'Url')?.String;
+        const collectionPath = values.find((value) => value.Property === 'CollectionPath')?.String;
+        if (kind && typeof collectionPath === 'string' && collectionPath.length > 0) {
+            references.push({ kind, ...(typeof url === 'string' ? { url } : {}), collectionPath });
+        }
+    }
+    return references;
+}
+
 /**
  * The entity sets a container declares as currency or unit-of-measure code lists of this service.
  *
@@ -937,39 +1003,28 @@ function containerCodeLists(
     schema: XmlRecord,
     container: XmlRecord
 ): Map<string, 'currency' | 'unit'> {
-    const containerName = `${requiredString(schema.Namespace, 'schema namespace')}.${requiredString(
-        container.Name,
-        'container name'
-    )}`;
-    const containerAnnotations = [
-        ...asArray(container.Annotation),
-        ...schemas.flatMap((candidate) =>
-            asArray(candidate.Annotations)
-                .filter((group) => group.Target === containerName)
-                .flatMap((group) => asArray(group.Annotation))
+    return new Map(
+        containerCodeListReferences(schemas, schema, container)
+            .filter(({ url }) => isOwnServiceUrl(url))
+            .map(({ collectionPath, kind }) => [collectionPath, kind])
+    );
+}
+
+/**
+ * The code lists an EDMX service declares in other services, such as SAP Gateway's common
+ * `Currencies` and `UnitsOfMeasure`. UI5 formats an amount or quantity only when its code is in that list.
+ *
+ * @param content - The EDMX document.
+ * @returns The code lists that live in another service, in document order.
+ * @throws {MockGenError} `METADATA_INVALID` when the document has no Edmx/DataServices or no Schema
+ */
+export function edmxExternalCodeLists(content: string): ReadonlyArray<EdmxCodeListReference> {
+    const schemas = readEdmxSchemas(content);
+    return schemas.flatMap((schema) =>
+        asArray(schema.EntityContainer).flatMap((container) =>
+            containerCodeListReferences(schemas, schema, container).filter(({ url }) => !isOwnServiceUrl(url))
         )
-    ];
-    const codeLists = new Map<string, 'currency' | 'unit'>();
-    for (const annotation of containerAnnotations) {
-        const term = String(annotation.Term).toLowerCase();
-        let kind: 'currency' | 'unit' | undefined;
-        if (term.endsWith(VOCABULARY_TERM_SUFFIX.currencyCodes)) {
-            kind = 'currency';
-        } else if (term.endsWith(VOCABULARY_TERM_SUFFIX.unitsOfMeasure)) {
-            kind = 'unit';
-        }
-        const values = asArray(asArray(annotation.Record)[0]?.PropertyValue);
-        const url = values.find((value) => value.Property === 'Url')?.String;
-        const collection = values.find((value) => value.Property === 'CollectionPath')?.String;
-        if (
-            kind &&
-            typeof collection === 'string' &&
-            (url === undefined || url === './$metadata' || url === '$metadata')
-        ) {
-            codeLists.set(collection, kind);
-        }
-    }
-    return codeLists;
+    );
 }
 
 /**

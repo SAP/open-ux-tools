@@ -11,6 +11,7 @@ import {
 
 export { createMockDataGenerator, getMockDataGeneratorInfo } from './standalone.js';
 export { generateProjectData } from './project-data.js';
+export { describeReferencedServices } from './generation/referenced-code-lists.js';
 export { MockGenError, MOCKGEN_ERROR_CODE } from './errors.js';
 export type { MockGenErrorCode } from './errors.js';
 export type {
@@ -43,6 +44,9 @@ export type {
     MockDataGeneratorTierStatistics,
     MockDataGeneratorTypedFloorCauses,
     MockDataMetadata,
+    MockDataReferencedResource,
+    MockDataReferencedService,
+    MockDataReferencedServiceDescriptor,
     MockDataRow,
     MockDataServiceIdentity,
     MockDataServiceRequest,

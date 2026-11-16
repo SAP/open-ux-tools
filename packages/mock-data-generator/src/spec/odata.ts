@@ -71,6 +71,8 @@ export const VOCABULARY_TERM_SUFFIX = Object.freeze({
     isCountry: '.iscountry',
     /** `Common.Text`. */
     text: '.text',
+    /** `CodeList.ExternalCode`. */
+    externalCode: '.externalcode',
     /** `Common.SemanticKey`. */
     semanticKey: '.semantickey',
     /** `Core.AlternateKeys`. */

@@ -171,6 +171,25 @@ The rows of one entity also agree with the rows they refer to and with the metad
 
 Your own data, enumerations, value helps and explicit relationships always win over synthetic samples. A generated code list with texts is accepted only after an independent relevance check, and a model value for a field whose role is only a best guess is kept only when that role accepts it.
 
+### Code lists in other services
+
+An SAP Gateway service often declares its currency and unit code lists (`CodeList.CurrencyCodes`, `CodeList.UnitsOfMeasure`) in another service, such as `../../../../default/iwbep/common/0001/$metadata`. UI5 shows no amount or quantity whose code is missing from that list, and the mockserver serves the list only from local data files. To keep generated amounts visible, pass the referenced services:
+
+```typescript
+import { describeReferencedServices, generateService } from '@sap-ux/mock-data-generator';
+
+// Folders are relative to the folder of the requested service's metadata, as the mockserver reads them.
+const referencedServices = describeReferencedServices(request).map(({ folder, entitySets }) => ({
+    folder,
+    metadata: { format: 'edmx', content: readFileSync(join(metadataFolder, folder, 'metadata.xml'), 'utf8') },
+    existingRows: readRows(join(metadataFolder, folder), entitySets) // your own reader of `<entitySet>.json`
+}));
+const result = await generateService({ ...request, referencedServices });
+// result.referencedResources: [{ folder, entitySet, rows }], to write as `<folder>/<entitySet>.json`
+```
+
+Each changed code list comes back complete: its existing rows as written, then one row for each code the rows use that it lacks, with the name, fraction digits, standard code and external code its key annotations name. A code list that is declared but not passed is reported with `REFERENCED_SERVICE_UNAVAILABLE`; a code list that cannot be completed is reported with `REFERENCED_CODE_LIST_UNSUPPORTED`. `generateProjectData()` and the command line do not read referenced services yet, so they report the first diagnostic.
+
 ### Known limits
 
 These are not detected or fixed, because nothing in the metadata says what is right:
