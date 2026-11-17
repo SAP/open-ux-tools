@@ -49,6 +49,21 @@ function requireSite(site: string | undefined): string {
 }
 
 /**
+ * Explains unconfirmed server shutdown separately from browser tab closure.
+ *
+ * @param editorServerStopped Whether server shutdown was confirmed.
+ * @returns Manual closure guidance and, on failure, bounded retry instructions.
+ */
+function getStopMessage(editorServerStopped: boolean): string {
+    const failure = editorServerStopped
+        ? ''
+        : 'Editor server shutdown was not confirmed. Retry step "stop" once with the same site. ' +
+          'If the session is no longer registered or the retry fails, inspect the MCP logs and ' +
+          'report cleanup as incomplete. ';
+    return failure + 'If the editor tab remains open, close it manually; your browser may block automatic tab closure.';
+}
+
+/**
  * Dispatches one RTA step to the active transport. No error handling — the caller owns that.
  *
  * @param input Step + site + frameId + step-specific payload.
@@ -106,11 +121,10 @@ async function dispatchStep(input: RunRtaWorkflowStepInput): Promise<RunRtaWorkf
                 const browserCloseRequested = await activeTransport.requestEditorClose?.(site);
                 const editorServerStopped = await activeTransport.stopEditor(site);
                 return {
-                    stopped: true,
+                    stopped: editorServerStopped,
                     editorServerStopped,
                     browserCloseRequested,
-                    message:
-                        'If the editor tab remains open, close it manually; your browser may block automatic tab closure.'
+                    message: getStopMessage(editorServerStopped)
                 };
             }
             // Transports that own the browser close it directly.

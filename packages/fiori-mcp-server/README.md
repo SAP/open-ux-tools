@@ -30,6 +30,8 @@ The relay script runs in the editor page and polls the preview server; MCP comma
 
 Editor processes are tracked throughout startup, before their URLs are available. MCP shutdown includes pending spawns and prevents late launches or session registration. On macOS/Linux, a CLI parent's exit also triggers cleanup of its remaining owned process group. Each cleanup attempt allows two seconds for graceful termination and another two seconds after forced termination; success requires both the parent and its group to be gone. Failed cleanup is logged and ownership is retained for retry while MCP remains running.
 
+For relay stop results, stopped and editorServerStopped are true only when server shutdown is confirmed. If they are false, retry the stop step once with the same site. If the session is no longer registered or the retry fails, inspect the MCP logs and report cleanup as incomplete. Closing the browser tab does not establish that the server stopped.
+
 ## [Setup](#setup)
 
 The server uses `stdio` transport and is launched via `npx` — no global installation required. Pick the section for your MCP client below.

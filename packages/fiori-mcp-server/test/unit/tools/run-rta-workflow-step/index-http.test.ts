@@ -142,28 +142,74 @@ describe('runRtaWorkflowStep HTTP dispatcher', () => {
         }
     );
 
-    test.each([true, false])('stop reports editorServerStopped=%s from the HTTP transport', async (stopped) => {
-        mockHttpTransport.stopEditor.mockResolvedValueOnce(stopped);
-        await expect(runRtaWorkflowStep({ step: 'stop', site: SITE })).resolves.toEqual({
-            stopped: true,
-            editorServerStopped: stopped,
-            browserCloseRequested: true,
-            message: expect.stringContaining('close it manually')
+    test.each([
+        [true, true],
+        [true, false],
+        [false, true],
+        [false, false]
+    ])(
+        'stop reports server shutdown=%s independently of browser acknowledgement=%s',
+        async (stopped, browserCloseRequested) => {
+            mockHttpTransport.stopEditor.mockResolvedValueOnce(stopped);
+            mockHttpTransport.requestEditorClose.mockResolvedValueOnce(browserCloseRequested);
+            const result = await runRtaWorkflowStep({ step: 'stop', site: SITE });
+            expect(result).toEqual({
+                stopped,
+                editorServerStopped: stopped,
+                browserCloseRequested,
+                message: expect.stringContaining('close it manually')
+            });
+            if (!stopped) {
+                expect(result).toHaveProperty('message', expect.stringContaining('shutdown was not confirmed'));
+                expect(result).toHaveProperty(
+                    'message',
+                    expect.stringContaining('Retry step "stop" once with the same site')
+                );
+            }
+            expect(mockRequireEditorSession).toHaveBeenCalledWith(SITE);
+            expect(mockHttpTransport.disconnectSite).toHaveBeenCalledWith(SITE);
+            expect(mockHttpTransport.stopEditor).toHaveBeenCalledTimes(1);
+            expect(mockHttpTransport.stopEditor).toHaveBeenCalledWith(SITE);
+            expect(mockHttpTransport.requestEditorClose).toHaveBeenCalledWith(SITE);
+            expect(mockHttpTransport.requestEditorClose.mock.invocationCallOrder[0]).toBeLessThan(
+                mockHttpTransport.stopEditor.mock.invocationCallOrder[0]
+            );
+            expect(mockHttpTransport.disconnectSite.mock.invocationCallOrder[0]).toBeLessThan(
+                mockHttpTransport.stopEditor.mock.invocationCallOrder[0]
+            );
+            expect(mockHttpTransport.stopBrowser).not.toHaveBeenCalled();
+            expect(mockDefaultTransport.stopBrowser).not.toHaveBeenCalled();
+            expect(mockIsRegistryEmpty).not.toHaveBeenCalled();
+        }
+    );
+
+    test('a failed stop can be retried explicitly on the same registered session', async () => {
+        mockHttpTransport.stopEditor.mockResolvedValueOnce(false);
+        await expect(runRtaWorkflowStep({ step: 'stop', site: SITE })).resolves.toMatchObject({
+            stopped: false,
+            editorServerStopped: false
         });
-        expect(mockRequireEditorSession).toHaveBeenCalledWith(SITE);
-        expect(mockHttpTransport.disconnectSite).toHaveBeenCalledWith(SITE);
         expect(mockHttpTransport.stopEditor).toHaveBeenCalledTimes(1);
-        expect(mockHttpTransport.stopEditor).toHaveBeenCalledWith(SITE);
-        expect(mockHttpTransport.requestEditorClose).toHaveBeenCalledWith(SITE);
-        expect(mockHttpTransport.requestEditorClose.mock.invocationCallOrder[0]).toBeLessThan(
-            mockHttpTransport.stopEditor.mock.invocationCallOrder[0]
-        );
-        expect(mockHttpTransport.disconnectSite.mock.invocationCallOrder[0]).toBeLessThan(
-            mockHttpTransport.stopEditor.mock.invocationCallOrder[0]
-        );
-        expect(mockHttpTransport.stopBrowser).not.toHaveBeenCalled();
-        expect(mockDefaultTransport.stopBrowser).not.toHaveBeenCalled();
-        expect(mockIsRegistryEmpty).not.toHaveBeenCalled();
+        await expect(runRtaWorkflowStep({ step: 'stop', site: SITE })).resolves.toMatchObject({
+            stopped: true,
+            editorServerStopped: true
+        });
+        expect(mockHttpTransport.stopEditor).toHaveBeenCalledTimes(2);
+    });
+
+    test('failure guidance covers a session that disappears before a stop retry', async () => {
+        mockHttpTransport.stopEditor.mockImplementationOnce(async () => {
+            mockRequireEditorSession.mockImplementation(() => {
+                throw new Error('Unknown editor session');
+            });
+            return false;
+        });
+        const result = await runRtaWorkflowStep({ step: 'stop', site: SITE });
+        expect(result).toMatchObject({ stopped: false, editorServerStopped: false });
+        expect(result).toHaveProperty('message', expect.stringContaining('session is no longer registered'));
+        expect(result).toHaveProperty('message', expect.stringContaining('report cleanup as incomplete'));
+        await expect(runRtaWorkflowStep({ step: 'stop', site: SITE })).rejects.toThrow('Unknown editor session');
+        expect(mockHttpTransport.stopEditor).toHaveBeenCalledTimes(1);
     });
 
     test('stops the server even when the browser does not acknowledge closure', async () => {
