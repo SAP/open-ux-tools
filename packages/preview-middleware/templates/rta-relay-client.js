@@ -7,6 +7,10 @@
     const API_POLL_INTERVAL_MS = 200;
     const RTA_POLL_INTERVAL_MS = 250;
     const RETRY_DELAY_MS = 1000;
+    const MAX_RETRY_DELAY_MS = 5000;
+    const POLL_RECOVERY_MS = 90000;
+    const RESULT_RECOVERY_MS = 30000;
+    const STOP_RESULT_RECOVERY_MS = 2000;
     const APP_LOADED_POLL_INTERVAL_MS = 200;
     const POST_MESSAGE_ACTION_ENVELOPE_TYPE = 'post-message-action';
     const APP_LOADED_ACTION_TYPE = '[ext] app-loaded';
@@ -47,28 +51,38 @@
         return new Promise((resolve) => setTimeout(resolve, ms));
     }
 
-    async function request(endpoint, body) {
+    async function request(endpoint, body, timeoutMs = REQUEST_TIMEOUT_MS) {
         const controller = new AbortController();
-        const timer = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+        const timer = setTimeout(() => controller.abort(), timeoutMs);
         try {
             const response = await fetch(new URL(endpoint, base), {
                 method: body === undefined ? 'GET' : 'POST',
                 headers: { 'X-Relay-Token': token, 'Content-Type': 'application/json' },
-                body: body === undefined ? undefined : JSON.stringify(body),
+                body,
                 cache: 'no-store',
                 signal: controller.signal
             });
             if (!response.ok) {
                 const error = new Error('Relay HTTP ' + response.status);
                 error.status = response.status;
+                let rejection;
+                try {
+                    rejection = await response.json();
+                } catch {
+                    // Proxies may return HTML errors; retain the HTTP status in that case.
+                }
+                if (typeof rejection?.code === 'string' && rejection.code.length <= 64) {
+                    error.code = rejection.code;
+                }
                 if (response.status === 413) {
-                    const rejection = await response.json().catch(() => undefined);
                     error.message =
                         rejection?.code === 'RELAY_RESULT_TOO_LARGE' &&
                         typeof rejection.error === 'string' &&
                         rejection.error.length <= 256
                             ? rejection.error
                             : 'The editor result exceeds the relay or proxy size limit (HTTP 413).';
+                } else if (typeof rejection?.error === 'string' && rejection.error.length <= 512) {
+                    error.message = rejection.error;
                 }
                 throw error;
             }
@@ -78,17 +92,42 @@
         }
     }
 
-    async function submitResult(id, response) {
-        try {
-            await request('result', { id, clientId, ...response });
-        } catch (error) {
-            if (error.status !== 413) {
-                throw error;
+    function isTransientTransportError(error) {
+        return error.status === undefined || error.status === 408 || error.status === 429 || error.status >= 500;
+    }
+
+    async function submitResult(id, response, recoveryMs = RESULT_RECOVERY_MS) {
+        // Freeze the exact result once. Retries deliver it again, never execute the frontend action again.
+        let body = JSON.stringify({ id, clientId, ...response });
+        let compact = false;
+        let retryDelay = RETRY_DELAY_MS;
+        const deadline = Date.now() + recoveryMs;
+        while (Date.now() < deadline) {
+            try {
+                const acknowledgement = await request(
+                    'result', body, Math.min(REQUEST_TIMEOUT_MS, deadline - Date.now())
+                );
+                if (acknowledgement?.ok !== true) {
+                    throw new Error('Invalid relay result acknowledgement');
+                }
+                return;
+            } catch (error) {
+                if (error.status === 413 && !compact) {
+                    body = JSON.stringify({ id, clientId, error: error.message });
+                    compact = true;
+                    continue;
+                }
+                if (!isTransientTransportError(error)) {
+                    throw error;
+                }
+                await delay(Math.max(0, Math.min(retryDelay, deadline - Date.now())));
+                retryDelay = Math.min(retryDelay * 2, MAX_RETRY_DELAY_MS);
             }
-            // Complete the same action with a compact error; never replay the frontend action or the oversized result.
-            // Await acknowledgement so the pending slot is released before polling for the next command.
-            await request('result', { id, clientId, error: error.message });
         }
+        throw new Error(
+            'Could not confirm delivery of the editor result within ' + recoveryMs / 1000 +
+            ' seconds. Inspect the editor before retrying the action.'
+        );
     }
 
     async function requireModule(targetWindow, moduleId, deadline) {
@@ -279,18 +318,39 @@
     }
 
     async function pollLoop() {
+        let recoveryDeadline;
+        let retryDelay = RETRY_DELAY_MS;
         while (true) {
+            if (recoveryDeadline !== undefined && Date.now() >= recoveryDeadline) {
+                console.error(
+                    '[rta-relay] Connection recovery timed out. Keep one editor tab open and refresh it to reconnect.'
+                );
+                return;
+            }
             let action;
             try {
-                action = await request('poll?clientId=' + encodeURIComponent(clientId));
+                action = await request(
+                    'poll?clientId=' + encodeURIComponent(clientId),
+                    undefined,
+                    recoveryDeadline === undefined
+                        ? REQUEST_TIMEOUT_MS
+                        : Math.min(REQUEST_TIMEOUT_MS, recoveryDeadline - Date.now())
+                );
             } catch (error) {
-                if (error.status === 401 || error.status === 409) {
+                const temporaryConflict =
+                    error.status === 409 &&
+                    ['RELAY_OWNER_ACTIVE', 'RELAY_POLL_PENDING', 'RELAY_RESULT_PENDING'].includes(error.code);
+                if (!temporaryConflict && !isTransientTransportError(error)) {
+                    console.error('[rta-relay] Polling stopped:', error);
                     return;
                 }
-                // Only the read-only poll is retried; actions and result submissions are never replayed.
-                await delay(RETRY_DELAY_MS);
+                recoveryDeadline ??= Date.now() + POLL_RECOVERY_MS;
+                await delay(Math.max(0, Math.min(retryDelay, recoveryDeadline - Date.now())));
+                retryDelay = Math.min(retryDelay * 2, MAX_RETRY_DELAY_MS);
                 continue;
             }
+            recoveryDeadline = undefined;
+            retryDelay = RETRY_DELAY_MS;
             if (!action) {
                 continue;
             }
@@ -304,7 +364,10 @@
                     result.closeRequested = !!closeTarget;
                 }
                 try {
-                    await request('result', { id: action.id, clientId, result });
+                    await submitResult(
+                        action.id, { result },
+                        action.actionName === '__stop__' ? STOP_RESULT_RECOVERY_MS : RESULT_RECOVERY_MS
+                    );
                 } catch (error) {
                     console.error('[rta-relay] lifecycle result POST failed:', error);
                 }
@@ -336,7 +399,9 @@
             try {
                 await submitResult(action.id, response);
             } catch (error) {
-                console.error('[rta-relay] result POST failed, continuing poll loop:', error);
+                console.error(
+                    '[rta-relay] Result delivery was not confirmed. Inspect the editor before retrying the action:', error
+                );
             }
         }
     }

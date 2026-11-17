@@ -233,6 +233,18 @@ describe('browser/http-bridge', () => {
     );
 
     describe('login wait (startRTA)', () => {
+        test('does not replay start when the relay reports an unconfirmed delivered action', async () => {
+            const message = 'The action outcome is unknown; inspect the editor before retrying.';
+            respondWith({ code: 'RELAY_ACTION_OUTCOME_UNKNOWN', error: message }, 500);
+            await expect(httpTransport.callFrontendAction(SITE, START)).resolves.toEqual({
+                isSuccess: false,
+                payload: null,
+                error: { code: 'RELAY_ERROR', message }
+            });
+            expect(fetchMock).toHaveBeenCalledTimes(1);
+            expect(jest.getTimerCount()).toBe(0);
+        });
+
         const loginSentinel = {
             isSuccess: true,
             payload: {

@@ -1,4 +1,4 @@
-import { randomBytes } from 'node:crypto';
+import { createHash, randomBytes } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { escapeXML } from 'ejs';
 import { json, type NextFunction, type Request, type Response, type Router } from 'express';
@@ -10,6 +10,8 @@ const FETCH_DELIVERY_TIMEOUT_MS = 5000;
 const OWNER_LEASE_MS = 30000;
 const COMMAND_LIMIT_BYTES = 100 * 1024;
 const DEFAULT_RESULT_LIMIT_BYTES = 10 * 1024 * 1024;
+const RESULT_ACK_TTL_MS = 120000;
+const MAX_RESULT_ACKS = 64;
 
 /** Relay client script, read once at module load and served verbatim — no per-request file access. */
 const RELAY_CLIENT_JS = readFileSync(new URL('../../templates/rta-relay-client.js', import.meta.url), 'utf8');
@@ -57,6 +59,18 @@ interface ResultBody {
     clientId: string;
     error?: string;
     result?: unknown;
+}
+
+/**
+ * Fingerprint results without retaining their potentially large payloads.
+ *
+ * @param body Validated result submission.
+ * @returns Digest used to identify an identical retransmission.
+ */
+function resultDigest(body: ResultBody): string {
+    return createHash('sha256')
+        .update(JSON.stringify({ result: body.result, error: body.error }))
+        .digest('hex');
 }
 
 /**
@@ -129,7 +143,40 @@ export function addRtaRelayApis(
     let pending: PendingAction | undefined;
     let poll: PollWaiter | undefined;
     let owner: { clientId: string; lastSeen: number } | undefined;
-    let releasedClientId: string | undefined;
+    // Keep retired documents fenced out for the lifetime of this editor session.
+    const retiredClients = new Set<string>();
+    const waitingClients = new Set<string>();
+    const resultAcks = new Map<string, { clientId: string; digest: string; expiresAt: number }>();
+
+    const retireWaitingClients = (): void => {
+        for (const clientId of waitingClients) {
+            retiredClients.add(clientId);
+        }
+        waitingClients.clear();
+    };
+
+    const pruneResultAcks = (): void => {
+        for (const [id, ack] of resultAcks) {
+            if (ack.expiresAt <= Date.now()) {
+                resultAcks.delete(id);
+            }
+        }
+    };
+
+    const rememberResult = (body: ResultBody): void => {
+        pruneResultAcks();
+        if (resultAcks.size >= MAX_RESULT_ACKS) {
+            const oldest = resultAcks.keys().next().value;
+            if (oldest !== undefined) {
+                resultAcks.delete(oldest);
+            }
+        }
+        resultAcks.set(body.id, {
+            clientId: body.clientId,
+            digest: resultDigest(body),
+            expiresAt: Date.now() + RESULT_ACK_TTL_MS
+        });
+    };
 
     const deliver = (): void => {
         if (!poll || !pending || pending.delivered) {
@@ -149,12 +196,21 @@ export function addRtaRelayApis(
         });
     };
 
-    // Rejects a poll that is not the current owner, collides with an existing one, or was retired.
-    const isPollRejected = (clientId: string): boolean =>
-        clientId === releasedClientId ||
-        poll !== undefined ||
-        pending?.delivered === true ||
-        (owner !== undefined && owner.clientId !== clientId && Date.now() - owner.lastSeen < OWNER_LEASE_MS);
+    const pollRejection = (clientId: string): { code: string; error: string } | undefined => {
+        if (retiredClients.has(clientId)) {
+            return { code: 'RELAY_CLIENT_RETIRED', error: 'This editor document has been retired.' };
+        }
+        if (pending?.delivered) {
+            return { code: 'RELAY_RESULT_PENDING', error: 'The relay is waiting for the current action result.' };
+        }
+        if (poll) {
+            return { code: 'RELAY_POLL_PENDING', error: 'The relay already has an active poll.' };
+        }
+        if (owner && owner.clientId !== clientId && Date.now() - owner.lastSeen < OWNER_LEASE_MS) {
+            return { code: 'RELAY_OWNER_ACTIVE', error: 'Another editor document still owns the relay.' };
+        }
+        return undefined;
+    };
 
     router.get(`${API}/client.js`, (_req, res) => {
         res.set('Cache-Control', 'no-store');
@@ -176,9 +232,21 @@ export function addRtaRelayApis(
             res.status(400).json({ error: 'clientId is required' });
             return;
         }
-        if (isPollRejected(clientId)) {
-            res.status(409).json({ error: 'Relay owned by another poll or document' });
+        const rejection = pollRejection(clientId);
+        if (rejection) {
+            if (owner?.clientId === clientId) {
+                // An owner recovering a lost poll/result is still active while the current action is pending.
+                owner.lastSeen = Date.now();
+            } else if (rejection.code !== 'RELAY_CLIENT_RETIRED') {
+                waitingClients.add(clientId);
+            }
+            res.status(409).json(rejection);
             return;
+        }
+        waitingClients.delete(clientId);
+        if (owner && owner.clientId !== clientId) {
+            retiredClients.add(owner.clientId);
+            retireWaitingClients();
         }
         owner = { clientId, lastSeen: Date.now() };
         const timer = setTimeout(() => {
@@ -209,15 +277,24 @@ export function addRtaRelayApis(
             return;
         }
         const timer = setTimeout(() => {
+            const delivered = pending?.delivered;
             pending = undefined;
-            res.status(504).json(
-                body.actionName === '__fetch__'
-                    ? {
-                          code: 'RELAY_FETCH_RESULT_TIMEOUT',
-                          error: 'The editor tab picked up the metadata request but did not return a result within 60 seconds.'
-                      }
-                    : { error: 'Timeout: browser client did not respond within 60 s' }
-            );
+            if (body.actionName === '__fetch__') {
+                res.status(504).json({
+                    code: 'RELAY_FETCH_RESULT_TIMEOUT',
+                    error: 'The editor tab picked up the metadata request but did not return a result within 60 seconds.'
+                });
+            } else if (delivered) {
+                // A 504 triggers the MCP start/login retry. Do not replay a delivered action with an unknown outcome.
+                res.status(500).json({
+                    code: 'RELAY_ACTION_OUTCOME_UNKNOWN',
+                    error:
+                        'The action was delivered to the editor, but no result was confirmed within 60 seconds. ' +
+                        'Its outcome is unknown; inspect the editor before retrying.'
+                });
+            } else {
+                res.status(504).json({ error: 'Timeout: browser client did not respond within 60 s' });
+            }
         }, ACTION_TIMEOUT_MS);
         // Metadata needs an already logged-in editor. Allow normal gaps between polls, but do not
         // wait a full action timeout when the editor is closed, on login, or no longer polling.
@@ -260,15 +337,36 @@ export function addRtaRelayApis(
             res.status(400).json({ error: 'Invalid result' });
             return;
         }
+        pruneResultAcks();
+        const acknowledged = resultAcks.get(body.id);
+        if (acknowledged) {
+            if (acknowledged.clientId !== body.clientId || acknowledged.digest !== resultDigest(body)) {
+                res.status(409).json({
+                    code: 'RELAY_RESULT_CONFLICT',
+                    error: 'A different result was already accepted for this action.'
+                });
+            } else {
+                // Acknowledgement recovery must not change ownership or consume a newer pending action.
+                res.json({ ok: true });
+            }
+            return;
+        }
         if (pending?.id !== body.id) {
-            res.status(404).json({ error: 'Unknown action id' });
+            res.status(404).json({
+                code: 'RELAY_ACTION_UNKNOWN',
+                error: 'The action is no longer pending; its result cannot be confirmed.'
+            });
             return;
         }
         if (!pending.delivered || pending.clientId !== body.clientId || owner?.clientId !== body.clientId) {
-            res.status(409).json({ error: 'Result must come from the owning document' });
+            res.status(409).json({
+                code: 'RELAY_RESULT_OWNER_MISMATCH',
+                error: 'Result must come from the owning document'
+            });
             return;
         }
         const action = pending;
+        rememberResult(body);
         pending = undefined;
         clearTimeout(action.timer);
         owner.lastSeen = Date.now();
@@ -276,7 +374,9 @@ export function addRtaRelayApis(
             action.res.status(500).json({ error: body.error });
         } else {
             if (action.actionName === '__reload__' || action.actionName === '__stop__') {
-                releasedClientId = body.clientId;
+                retiredClients.add(body.clientId);
+                // Tabs already waiting before reload are not the newly loaded document.
+                retireWaitingClients();
                 owner = undefined;
             }
             action.res.json({ result: body.result, clientId: body.clientId });

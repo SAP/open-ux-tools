@@ -98,7 +98,7 @@ describe('preview RTA relay', () => {
         await poll('second').expect(409);
         await result(delivery.body.id).expect(200, { ok: true });
         expect((await command.response).body).toEqual({ result: { isSuccess: true }, clientId: 'first' });
-        await result(delivery.body.id).expect(404);
+        await result(delivery.body.id).expect(200, { ok: true });
     });
 
     test('does not evict an active poll, even for the same document', async () => {
@@ -109,6 +109,134 @@ describe('preview RTA relay', () => {
         const delivery = await waiting.response;
         await result(delivery.body.id).expect(200);
         expect((await command.response).status).toBe(200);
+    });
+
+    test('distinguishes temporary poll conflicts and fences out an expired owner after takeover', async () => {
+        const waiting = await begin(poll());
+        const activePoll = await poll('second').expect(409);
+        jest.advanceTimersByTime(25000);
+        await waiting.response;
+        const ownerActive = await poll('second').expect(409);
+        const command = await begin(action());
+        const delivery = await poll().expect(200);
+        const resultPending = await poll('second').expect(409);
+        await result(delivery.body.id).expect(200);
+        await command.response;
+        jest.advanceTimersByTime(30000);
+        const newOwner = await begin(poll('second'));
+        const retired = await poll().expect(409);
+        jest.advanceTimersByTime(25000);
+        await newOwner.response;
+        expect(activePoll.body).toHaveProperty('code', 'RELAY_POLL_PENDING');
+        expect(ownerActive.body).toHaveProperty('code', 'RELAY_OWNER_ACTIVE');
+        expect(resultPending.body).toHaveProperty('code', 'RELAY_RESULT_PENDING');
+        expect(retired.body).toHaveProperty('code', 'RELAY_CLIENT_RETIRED');
+    });
+
+    test('duplicate acknowledgements do not consume a newer action or extend the owner lease', async () => {
+        const first = await begin(action());
+        const delivered = await poll().expect(200);
+        await result(delivered.body.id).expect(200);
+        await first.response;
+        jest.advanceTimersByTime(29000);
+        const second = await begin(action());
+        await result(delivered.body.id).expect(200, { ok: true });
+        await result(delivered.body.id, 'wrong-owner').expect(409);
+        await result(delivered.body.id, 'first', { changed: true }).expect(409);
+        jest.advanceTimersByTime(1000);
+        const nextDelivery = await poll('second').expect(200);
+        expect(nextDelivery.body.id).not.toBe(delivered.body.id);
+        await result(nextDelivery.body.id, 'second').expect(200);
+        expect((await second.response).body).toHaveProperty('clientId', 'second');
+        expect(jest.getTimerCount()).toBe(0);
+    });
+
+    test('acknowledges duplicate error results without changing the completed outcome', async () => {
+        const command = await begin(action());
+        const delivery = await poll().expect(200);
+        const body = { id: String(delivery.body.id), clientId: 'first', error: 'UI5 failure' };
+        await server.post(`${API}/result`).set('X-Relay-Token', TOKEN).send(body).expect(200);
+        expect((await command.response).body).toEqual({ error: 'UI5 failure' });
+        await server.post(`${API}/result`).set('X-Relay-Token', TOKEN).send(body).expect(200, { ok: true });
+    });
+
+    test('expires result acknowledgements without retaining timers', async () => {
+        const command = await begin(action());
+        const delivery = await poll().expect(200);
+        await result(delivery.body.id).expect(200);
+        await command.response;
+        jest.advanceTimersByTime(119999);
+        await result(delivery.body.id).expect(200);
+        jest.advanceTimersByTime(1);
+        const expired = await result(delivery.body.id).expect(404);
+        expect(expired.body).toHaveProperty('code', 'RELAY_ACTION_UNKNOWN');
+        expect(jest.getTimerCount()).toBe(0);
+    });
+
+    test('bounds the acknowledgement cache while retaining recent results', async () => {
+        const ids: string[] = [];
+        for (let i = 0; i < 65; i++) {
+            const command = await begin(action());
+            const delivery = await poll().expect(200);
+            ids.push(delivery.body.id);
+            await result(delivery.body.id).expect(200);
+            await command.response;
+        }
+        await result(ids[0]).expect(404);
+        await result(ids[1]).expect(200);
+        await result(ids[64]).expect(200);
+    });
+
+    test('keeps every lifecycle document retired and accepts repeated acknowledgements', async () => {
+        for (const clientId of ['first', 'second']) {
+            const command = await begin(action('__reload__'));
+            const delivery = await poll(clientId).expect(200);
+            await result(delivery.body.id, clientId, { reloaded: true }).expect(200);
+            await command.response;
+            await result(delivery.body.id, clientId, { reloaded: true }).expect(200);
+        }
+        jest.advanceTimersByTime(120000);
+        for (const clientId of ['first', 'second']) {
+            const rejected = await poll(clientId).expect(409);
+            expect(rejected.body).toHaveProperty('code', 'RELAY_CLIENT_RETIRED');
+        }
+    });
+
+    test('reload retires waiting duplicate tabs so they cannot claim the fresh document handshake', async () => {
+        const command = await begin(action('__reload__'));
+        const delivery = await poll('owner').expect(200);
+        await poll('duplicate').expect(409);
+        await result(delivery.body.id, 'owner', { reloaded: true }).expect(200);
+        await command.response;
+        const duplicate = await poll('duplicate').expect(409);
+        expect(duplicate.body).toHaveProperty('code', 'RELAY_CLIENT_RETIRED');
+        const ready = await begin(action('__ready__'));
+        const fresh = await poll('fresh').expect(200);
+        await result(fresh.body.id, 'fresh').expect(200);
+        expect((await ready.response).body).toHaveProperty('clientId', 'fresh');
+    });
+
+    test('preserves the login timeout for an action that was never delivered', async () => {
+        const command = await begin(action('com.sap.ui.flex.startRTA.v1'));
+        jest.advanceTimersByTime(60000);
+        expect((await command.response).status).toBe(504);
+    });
+
+    test('keeps an owner that is actively recovering while a delivered action expires', async () => {
+        const command = await begin(action());
+        await poll().expect(200);
+        jest.advanceTimersByTime(29000);
+        await poll().expect(409);
+        jest.advanceTimersByTime(29000);
+        await poll().expect(409);
+        jest.advanceTimersByTime(2000);
+        expect((await command.response).status).toBe(500);
+        const duplicate = await poll('duplicate').expect(409);
+        expect(duplicate.body).toHaveProperty('code', 'RELAY_OWNER_ACTIVE');
+        const next = await begin(action());
+        const delivery = await poll().expect(200);
+        await result(delivery.body.id).expect(200);
+        expect((await next.response).body).toHaveProperty('clientId', 'first');
     });
 
     test('forwards payload and frame unchanged', async () => {
@@ -189,7 +317,9 @@ describe('preview RTA relay', () => {
         const command = await begin(action());
         const delivery = await poll().expect(200);
         jest.advanceTimersByTime(60000);
-        expect((await command.response).status).toBe(504);
+        const response = await command.response;
+        expect(response.status).toBe(500);
+        expect(response.body).toHaveProperty('code', 'RELAY_ACTION_OUTCOME_UNKNOWN');
         await result(delivery.body.id).expect(404);
         const next = await begin(poll('second'));
         jest.advanceTimersByTime(25000);
@@ -730,10 +860,13 @@ describe('relay browser client', () => {
             {},
             undefined,
             true,
-            { topLevel: true }
+            { topLevel: true, fastClock: true }
         );
+        for (let i = 0; i < 2000 && client.close.mock.calls.length === 0; i++) {
+            await new Promise(setImmediate);
+        }
         expect(client.close).toHaveBeenCalledTimes(1);
-        expect(client.fetch).toHaveBeenCalledTimes(2);
+        expect(client.fetch).toHaveBeenCalledTimes(3);
     });
 
     test('__stop__ without a close request leaves the window open', async () => {
@@ -799,21 +932,29 @@ describe('relay browser client', () => {
     });
 
     test('reloads even when the __reload__ result POST fails', async () => {
-        const client = await runClient([{ id: '1', actionName: '__reload__' }], {}, undefined, true);
+        const client = await runClient([{ id: '1', actionName: '__reload__' }], {}, undefined, true, {
+            fastClock: true
+        });
+        for (let i = 0; i < 2000 && client.parentPostMessage.mock.calls.length === 0; i++) {
+            await new Promise(setImmediate);
+        }
         expect(client.parentPostMessage).toHaveBeenCalledTimes(1);
         expect(client.log).toHaveBeenCalled();
     });
 
-    test('keeps the poll loop alive after a failed result submission without retrying it', async () => {
+    test('bounds result retries without repeating the action, then resumes polling', async () => {
         const getOverlays = jest.fn().mockResolvedValue({ overlays: [] });
-        const client = await runClient([{ id: '1', actionName: ACTION }], { getOverlays }, undefined, true);
-        for (let i = 0; i < 2000 && client.fetch.mock.calls.length < 3; i++) {
+        const client = await runClient([{ id: '1', actionName: ACTION }], { getOverlays }, undefined, true, {
+            fastClock: true
+        });
+        for (let i = 0; i < 2000 && client.log.mock.calls.length === 0; i++) {
             await new Promise(setImmediate);
         }
         expect(getOverlays).toHaveBeenCalledTimes(1);
-        // poll, the failed result POST (not retried), then the loop polls again and ends on 409
-        expect(client.fetch).toHaveBeenCalledTimes(3);
-        expect(client.fetch.mock.calls[2][1].body).toBeUndefined();
+        const posts = client.fetch.mock.calls.filter(([, options]) => options.body).map(([, options]) => options.body);
+        expect(posts.length).toBeGreaterThan(1);
+        expect(new Set(posts).size).toBe(1);
+        expect(client.fetch.mock.calls.at(-1)?.[1].body).toBeUndefined();
         expect(client.log).toHaveBeenCalled();
     });
 
