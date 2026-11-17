@@ -129,23 +129,49 @@ function matchKnownPatterns(lowerMessage: string): string | null {
 
 /**
  * Extract a telemetry-safe error code from an error object or message string.
- * This function extracts standard codes (file system errors, known patterns) without
- * including any PII, paths, or sensitive data.
+ * Priority order for extraction:
+ * 1. Error.name for custom error types (UnsupportedProjectError, MigrationError, etc.)
+ * 2. Error.code for Node.js filesystem errors (ENOENT, EACCES, etc.)
+ * 3. Pattern matching in error message (fallback for external library errors)
  *
  * @param error - Error object, string, or unknown error
- * @returns A safe error code string for telemetry
+ * @returns A safe error code string for telemetry (no PII, paths, or sensitive data)
  * @example
- * extractErrorCode(new Error('ENOENT: no such file or directory'))
+ * extractErrorCode(new UnsupportedProjectError('...'))
+ * // Returns: 'NOT_SUITABLE_FOR_MIGRATION'
+ *
+ * extractErrorCode(Object.assign(new Error('file not found'), { code: 'ENOENT' }))
  * // Returns: 'ENOENT'
  *
- * extractErrorCode('The V2_ANALYTICAL floorplan is not supported')
- * // Returns: 'UNSUPPORTED_FLOORPLAN'
+ * extractErrorCode(new Error('Failed to parse manifest.json'))
+ * // Returns: 'MANIFEST_PARSE_ERROR'
  */
 export function extractErrorCode(error: unknown): string {
+    // Priority 1: Check error.name for custom error types (most explicit)
+    if (error instanceof Error) {
+        switch (error.name) {
+            case 'UnsupportedProjectError':
+                return MigrationErrorCode.NOT_SUITABLE_FOR_MIGRATION;
+            case 'MigrationError':
+                return MigrationErrorCode.MIGRATION_FAILED;
+            case 'SyntaxError':
+                return MigrationErrorCode.JSON_PARSE_ERROR;
+        }
+
+        // Priority 2: Check error.code for Node.js filesystem errors (explicit property)
+        if ('code' in error && typeof error.code === 'string') {
+            const nodeCode = error.code;
+            if (nodeCode in MigrationErrorCode) {
+                return nodeCode;
+            }
+        }
+    }
+
+    // Priority 3: Extract from error message (fallback for external library errors)
     const errorMessage = error instanceof Error ? error.message : String(error);
     const lowerMessage = errorMessage.toLowerCase();
 
-    // Try Node.js error codes first (highest priority)
+    // Try Node.js error codes in message (e.g., "ENOENT: no such file")
     const nodeCode = extractNodeErrorCode(errorMessage);
     if (nodeCode) {
         return nodeCode;

@@ -31,7 +31,50 @@ describe('error-codes', () => {
     });
 
     describe('extractErrorCode', () => {
-        describe('Node.js file system errors', () => {
+        describe('Priority 1: Custom error types (error.name)', () => {
+            it('should extract NOT_SUITABLE_FOR_MIGRATION from UnsupportedProjectError', () => {
+                const error = new Error('Project is not suitable');
+                error.name = 'UnsupportedProjectError';
+                expect(extractErrorCode(error)).toBe('NOT_SUITABLE_FOR_MIGRATION');
+            });
+
+            it('should extract MIGRATION_FAILED from MigrationError', () => {
+                const error = new Error('Migration failed');
+                error.name = 'MigrationError';
+                expect(extractErrorCode(error)).toBe('MIGRATION_FAILED');
+            });
+
+            it('should extract JSON_PARSE_ERROR from SyntaxError', () => {
+                const error = new SyntaxError('Unexpected token in JSON');
+                expect(extractErrorCode(error)).toBe('JSON_PARSE_ERROR');
+            });
+        });
+
+        describe('Priority 2: Node.js error codes (error.code property)', () => {
+            it('should extract ENOENT from error.code property', () => {
+                const error = Object.assign(new Error('file not found'), { code: 'ENOENT' });
+                expect(extractErrorCode(error)).toBe('ENOENT');
+            });
+
+            it('should extract EACCES from error.code property', () => {
+                const error = Object.assign(new Error('permission denied'), { code: 'EACCES' });
+                expect(extractErrorCode(error)).toBe('EACCES');
+            });
+
+            it('should extract EEXIST from error.code property', () => {
+                const error = Object.assign(new Error('file already exists'), { code: 'EEXIST' });
+                expect(extractErrorCode(error)).toBe('EEXIST');
+            });
+
+            it('should prioritize error.code over message patterns', () => {
+                // Error has both code property and "manifest" in message
+                const error = Object.assign(new Error('Failed to read manifest.json'), { code: 'ENOENT' });
+                // Should return ENOENT (from code), not MANIFEST_PARSE_ERROR (from message)
+                expect(extractErrorCode(error)).toBe('ENOENT');
+            });
+        });
+
+        describe('Priority 3: Pattern matching (fallback for library errors)', () => {
             it('should extract ENOENT from file not found error', () => {
                 const error = new Error("ENOENT: no such file or directory, open '/path/to/file.json'");
                 expect(extractErrorCode(error)).toBe('ENOENT');
