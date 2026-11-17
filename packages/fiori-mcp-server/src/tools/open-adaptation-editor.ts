@@ -42,26 +42,35 @@ interface LaunchConfig {
  * @param editorUrl - The localhost editor URL (origin + editor path).
  * @param port - The local port the editor server listens on.
  * @returns The externally reachable editor URL in BAS, otherwise `editorUrl`.
+ * @throws {Error} When BAS cannot provide an HTTPS URL for the editor port.
  */
 async function resolveExternalEditorUrl(editorUrl: string, port: number | undefined): Promise<string> {
-    if (!isAppStudio() || !port) {
+    if (!isAppStudio()) {
         return editorUrl;
+    }
+    if (!port) {
+        throw new Error(
+            'Could not determine the adaptation editor port in BAS. ' +
+                'Check the editor startup output before retrying open_adaptation_editor.'
+        );
     }
     try {
         const externalBase = await exposePort(port);
-        if (!externalBase) {
-            return editorUrl;
+        const external = new URL(externalBase);
+        if (external.protocol !== 'https:') {
+            throw new Error('BAS did not return an HTTPS URL.');
         }
         // exposePort returns an origin (e.g. https://port<N>-...cloud.sap/);
         // keep the editor's path + search from the original URL.
         const original = new URL(editorUrl);
-        const external = new URL(externalBase);
         external.pathname = original.pathname;
         external.search = original.search;
         return external.toString();
     } catch {
-        logger.warn(`Could not resolve BAS external URL for port ${port}`);
-        return editorUrl;
+        throw new Error(
+            `Could not obtain a BAS browser URL for editor port ${port}. ` +
+                'Check BAS port exposure in your dev space before retrying open_adaptation_editor.'
+        );
     }
 }
 
@@ -359,10 +368,11 @@ ${killCommandsSection}`;
             ...(port && { port })
         };
     } catch (error) {
-        if (childProcess) {
-            await terminateEditorProcess(childProcess);
+        const cleanupConfirmed = !childProcess || (await terminateEditorProcess(childProcess));
+        let detail = redact(error instanceof Error ? error.message : String(error));
+        if (!cleanupConfirmed) {
+            detail += ' Editor server shutdown was not confirmed. Inspect the MCP logs before starting another editor.';
         }
-        const detail = redact(error instanceof Error ? error.message : String(error));
         logger.error(`Error opening adaptation editor: ${detail}`);
         return {
             status: 'Error',

@@ -455,6 +455,7 @@ describe('openAdaptationEditor', () => {
 
     test('BAS opens the editor for a built CF project', async () => {
         mockIsAppStudio.mockReturnValue(true);
+        mockExposePort.mockResolvedValue('https://port8080.example.cloud.sap/');
         mockIsCFEnvironment.mockResolvedValueOnce(true);
         mockExistsSync.mockImplementation((path: string) => path.endsWith('dist'));
         const result = await startEditor();
@@ -462,24 +463,73 @@ describe('openAdaptationEditor', () => {
         expect(mockSignalEditor).toHaveBeenCalledWith('open', result.editorUrl);
     });
 
-    test.each(['empty', 'error'])('preserves BAS local URL fallback on %s exposure response', async (response) => {
+    test.each([
+        { label: 'empty', response: '' },
+        { label: 'missing', response: undefined },
+        { label: 'malformed', response: 'undefined' },
+        { label: 'non-HTTPS', response: 'http://localhost:8080' },
+        { label: 'rejected', response: new Error('exposure unavailable') }
+    ])('BAS fails and cleans up on a $label exposure response', async ({ response }) => {
         mockIsAppStudio.mockReturnValue(true);
-        if (response === 'error') {
-            mockExposePort.mockRejectedValue(new Error('exposure unavailable'));
+        if (response instanceof Error) {
+            mockExposePort.mockRejectedValue(response);
+        } else {
+            mockExposePort.mockResolvedValue(response);
         }
+        const child = new FakeChildProcess();
+        const result = await startEditor(child);
+        expect(result.status).toBe('Error');
+        expect(result.message).toContain('Could not obtain a BAS browser URL for editor port 8080');
+        expect(result.message).toContain('port exposure');
+        expect(result.message).toContain('open_adaptation_editor');
+        expect(result).not.toHaveProperty('editorUrl');
+        expect(result).not.toHaveProperty('processId');
+        expect(mockRegisterSession).not.toHaveBeenCalled();
+        expect(mockSignalEditor).not.toHaveBeenCalled();
+        expect(mockTerminate).toHaveBeenCalledTimes(1);
+        expect(mockTerminate).toHaveBeenCalledWith(child);
+        expect(child.unref).not.toHaveBeenCalled();
+    });
+
+    test.each(['http://[::1]:notaport', 'http://localhost:0'])(
+        'BAS fails and cleans up when the editor URL has no usable listening port: %s',
+        async (url) => {
+            mockIsAppStudio.mockReturnValue(true);
+            const child = new FakeChildProcess();
+            const result = await startEditor(child, [`URL: ${url}`]);
+            expect(result.status).toBe('Error');
+            expect(result.message).toContain('Could not determine the adaptation editor port in BAS');
+            expect(result).not.toHaveProperty('editorUrl');
+            expect(mockExposePort).not.toHaveBeenCalled();
+            expect(mockRegisterSession).not.toHaveBeenCalled();
+            expect(mockSignalEditor).not.toHaveBeenCalled();
+            expect(mockTerminate).toHaveBeenCalledWith(child);
+        }
+    );
+
+    test('reports unconfirmed cleanup after BAS exposure failure', async () => {
+        mockIsAppStudio.mockReturnValue(true);
+        mockExposePort.mockResolvedValue('');
+        mockTerminate.mockResolvedValueOnce(false);
+        const child = new FakeChildProcess();
+        const result = await startEditor(child);
+        expect(result.status).toBe('Error');
+        expect(result.message).toContain('Could not obtain a BAS browser URL');
+        expect(result.message).toContain('Editor server shutdown was not confirmed');
+        expect(result.message).toContain('Inspect the MCP logs before starting another editor');
+        expect(mockTerminate).toHaveBeenCalledWith(child);
+        expect(mockRegisterSession).not.toHaveBeenCalled();
+        expect(mockSignalEditor).not.toHaveBeenCalled();
+    });
+
+    test('local forced-relay launch still opens the localhost URL without BAS port exposure', async () => {
+        process.env.SAP_FIORI_MCP_ADP_FORCE_AUTOOPEN = 'true';
         const result = await startEditor();
         expect(result.status).toBe('Success');
         expect(result.editorUrl).toBe('http://localhost:8080/test/adaptation-editor.html');
-        expect(mockSignalEditor).toHaveBeenCalledWith('open', result.editorUrl);
-        expect(mockTerminate).not.toHaveBeenCalled();
-    });
-
-    test('BAS still signals open when no listening port can be parsed', async () => {
-        mockIsAppStudio.mockReturnValue(true);
-        const result = await startEditor(new FakeChildProcess(), ['URL: http://[::1]:notaport']);
-        expect(result.status).toBe('Success');
         expect(mockExposePort).not.toHaveBeenCalled();
         expect(mockSignalEditor).toHaveBeenCalledWith('open', result.editorUrl);
+        expect(mockTerminate).not.toHaveBeenCalled();
     });
 
     test('Windows does not create or claim a POSIX group and only recommends the owned PID tree', async () => {
