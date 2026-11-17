@@ -34,8 +34,10 @@ jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
 const mockRegisterSession = jest.fn<(session: EditorSession) => void>();
 const mockSignalEditor = jest.fn<(command: 'open' | 'close', url: string, projectType?: 'abap' | 'cf') => void>();
 const mockTerminate = jest.fn<(child: ChildProcess) => Promise<boolean>>();
-const mockTrackProcess = jest.fn<(child: ChildProcess, detached: boolean) => void>();
+const mockTrackProcess = jest.fn<(child: Promise<ChildProcess>, detached: boolean) => Promise<ChildProcess>>();
+const mockAssertCanStart = jest.fn<() => void>();
 jest.unstable_mockModule('../../../src/adaptation-editor/editor-session.js', () => ({
+    assertEditorCanStart: mockAssertCanStart,
     registerEditorSession: mockRegisterSession,
     signalEditor: mockSignalEditor,
     terminateEditorProcess: mockTerminate,
@@ -91,6 +93,8 @@ describe('openAdaptationEditor', () => {
         mockIsAppStudio.mockReturnValue(false);
         mockExposePort.mockReset();
         mockRegisterSession.mockReset();
+        mockAssertCanStart.mockReset();
+        mockTrackProcess.mockReset().mockImplementation(async (child) => child);
         mockTerminate.mockResolvedValue(true);
         delete process.env.SAP_FIORI_MCP_ADP_FORCE_AUTOOPEN;
         delete process.env.SAP_FIORI_MCP_ADP_RELAY_TOKEN;
@@ -133,6 +137,36 @@ describe('openAdaptationEditor', () => {
         expect(result.status).toEqual('Success');
         expect(result.editorUrl).toContain('http://localhost:8080');
         expect(result.processId).toEqual(9999);
+    });
+
+    test.each([1, 2])('does not spawn when shutdown is detected at startup check %s', async (check) => {
+        if (check === 2) {
+            mockAssertCanStart.mockImplementationOnce(() => {});
+        }
+        mockAssertCanStart.mockImplementationOnce(() => {
+            throw new Error('The MCP server is shutting down');
+        });
+        const result = await openAdaptationEditor({ appPath: '/tmp/myapp' });
+        expect(result.status).toBe('Error');
+        expect(result.message).toContain('shutting down');
+        expect(mockSpawn).not.toHaveBeenCalled();
+        expect(mockSignalEditor).not.toHaveBeenCalled();
+    });
+
+    test('does not open or report success when shutdown blocks registration after BAS URL resolution', async () => {
+        mockIsAppStudio.mockReturnValue(true);
+        mockExposePort.mockImplementation(async () => {
+            mockRegisterSession.mockImplementationOnce(() => {
+                throw new Error('The MCP server is shutting down');
+            });
+            return 'https://port8080.example.cloud.sap/';
+        });
+        const child = new FakeChildProcess();
+        const result = await startEditor(child);
+        expect(result.status).toBe('Error');
+        expect(result.message).toContain('shutting down');
+        expect(mockTerminate).toHaveBeenCalledWith(child);
+        expect(mockSignalEditor).not.toHaveBeenCalled();
     });
 
     test('returns Error with Timeout message when no URL emitted within timeout', async () => {
@@ -354,7 +388,8 @@ describe('openAdaptationEditor', () => {
             env: { SAP_FIORI_MCP_ADP_RELAY_TOKEN: undefined }
         });
         expect(process.env.SAP_FIORI_MCP_ADP_RELAY_TOKEN).toBe('inherited-secret');
-        expect(mockTrackProcess).toHaveBeenCalledWith(child, process.platform !== 'win32');
+        expect(mockTrackProcess).toHaveBeenCalledWith(expect.any(Promise), process.platform !== 'win32');
+        expect(await mockTrackProcess.mock.calls[0][0]).toBe(child);
         expect(mockRegisterSession).toHaveBeenCalledWith({
             localUrl: result.editorUrl,
             browserUrl: result.editorUrl,

@@ -10,6 +10,7 @@ import { isAppStudio, exposePort } from '@sap-ux/btp-utils';
 import { isCFEnvironment } from '@sap-ux/adp-tooling';
 import { logger } from '../utils/index.js';
 import {
+    assertEditorCanStart,
     registerEditorSession,
     signalEditor,
     terminateEditorProcess,
@@ -276,6 +277,7 @@ export async function openAdaptationEditor(params: OpenAdaptationEditorInput): P
     };
 
     try {
+        assertEditorCanStart();
         const isWindows = process.platform === 'win32';
         const useHttpRelay = isHttpRelayEnabled();
         relayToken = useHttpRelay ? randomBytes(32).toString('hex') : undefined;
@@ -284,6 +286,7 @@ export async function openAdaptationEditor(params: OpenAdaptationEditorInput): P
             return { status: 'Error', message: launch.reason };
         }
         const { command, args, timeoutMs } = launch;
+        assertEditorCanStart();
 
         logger.info(redact(`Spawning editor process: ${command} ${args.join(' ')} in ${appPath}`));
 
@@ -296,8 +299,7 @@ export async function openAdaptationEditor(params: OpenAdaptationEditorInput): P
         });
         // nano-spawn also returns a completion promise: termination must not cause an unhandled rejection.
         subprocess.catch(() => {});
-        childProcess = await subprocess.nodeChildProcess;
-        trackEditorProcess(childProcess, !isWindows);
+        childProcess = await trackEditorProcess(subprocess.nodeChildProcess, !isWindows);
 
         const { serverUrl, editorPath, stderrOutput } = await waitForEditorUrl(childProcess, timeoutMs, redact);
 

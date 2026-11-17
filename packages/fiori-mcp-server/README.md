@@ -28,6 +28,8 @@ For CF projects, `get_odata_metadata` fetches services sequentially through the 
 
 The relay script runs in the editor page and polls the preview server; MCP commands go to the owned local server using its per-session token. The extension only launches the tab and does not carry agent commands or browser cookies. After saving and validating changes, call `stop`: it requests tab closure through the relay, then terminates the owned editor server even if the browser is unresponsive. Browsers may block automatic closure, especially for manually opened tabs; close any remaining editor tab manually. The result's `browserCloseRequested` reports acknowledgement of the request, not verified tab closure.
 
+Editor processes are tracked throughout startup, before their URLs are available. MCP shutdown includes pending spawns and prevents late launches or session registration. On macOS/Linux, a CLI parent's exit also triggers cleanup of its remaining owned process group. Each cleanup attempt allows two seconds for graceful termination and another two seconds after forced termination; success requires both the parent and its group to be gone. Failed cleanup is logged and ownership is retained for retry while MCP remains running.
+
 ## [Setup](#setup)
 
 The server uses `stdio` transport and is launched via `npx` — no global installation required. Pick the section for your MCP client below.

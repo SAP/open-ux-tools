@@ -19,7 +19,8 @@ jest.unstable_mockModule('node:fs', () => ({
     unlinkSync: mockUnlink
 }));
 
-const {
+let {
+    assertEditorCanStart,
     registerEditorSession,
     requireEditorSession,
     stopEditorSession,
@@ -58,8 +59,20 @@ describe('editor session lifecycle', () => {
     const signalFile = join(tmpdir(), 'sap-ux-adp-editor.json');
     const platformDescriptor = Object.getOwnPropertyDescriptor(process, 'platform');
 
-    beforeEach(() => {
+    beforeEach(async () => {
         jest.resetAllMocks();
+        jest.resetModules();
+        ({
+            assertEditorCanStart,
+            registerEditorSession,
+            requireEditorSession,
+            stopEditorSession,
+            stopEditorSessions,
+            signalEditor,
+            trackEditorProcess,
+            terminateEditorProcess
+        } = await import('../../../src/adaptation-editor/editor-session.js'));
+        jest.useFakeTimers();
         Object.defineProperty(process, 'platform', { value: 'linux', configurable: true });
         killSpy = jest.spyOn(process, 'kill').mockImplementation(() => {
             throw Object.assign(new Error('No such process'), { code: 'ESRCH' });
@@ -75,8 +88,12 @@ describe('editor session lifecycle', () => {
         };
     });
 
-    afterEach(() => {
+    afterEach(async () => {
         child.exit();
+        killSpy.mockImplementation(() => {
+            throw Object.assign(new Error('gone'), { code: 'ESRCH' });
+        });
+        await jest.advanceTimersByTimeAsync(4000);
         jest.useRealTimers();
         jest.restoreAllMocks();
         if (platformDescriptor) {
@@ -106,6 +123,7 @@ describe('editor session lifecycle', () => {
     });
 
     test('does not normalize query order, fragments, trailing slashes, or hostname case', () => {
+        const requireSession = requireEditorSession;
         session.browserUrl = 'https://EDITOR.example/test/editor.html?a=1&b=2#preview';
         registerEditorSession(session);
         for (const site of [
@@ -114,7 +132,7 @@ describe('editor session lifecycle', () => {
             'https://EDITOR.example/test/editor.html?a=1&b=2',
             `${session.browserUrl}/`
         ]) {
-            expect(() => requireEditorSession(site)).toThrow('Unknown editor session');
+            expect(() => requireSession(site)).toThrow('Unknown editor session');
         }
     });
 
@@ -228,6 +246,8 @@ describe('editor session lifecycle', () => {
             childProcess: otherChild.asChild(),
             autoOpen: false
         };
+        await trackEditorProcess(child.asChild(), false);
+        await trackEditorProcess(otherChild.asChild(), false);
         registerEditorSession(session);
         registerEditorSession(otherSession);
         await stopEditorSessions();
@@ -238,6 +258,86 @@ describe('editor session lifecycle', () => {
         expect(mockWrite).toHaveBeenCalledTimes(1);
         await stopEditorSessions();
         expect(child.kill).toHaveBeenCalledTimes(1);
+    });
+
+    test('shutdown also stops a tracked process whose URL is not registered yet', async () => {
+        await trackEditorProcess(child.asChild(), false);
+        await stopEditorSessions();
+        expect(child.kill).toHaveBeenCalledWith('SIGTERM');
+        expect(mockWrite).not.toHaveBeenCalled();
+    });
+
+    test('shutdown waits for a pending spawn and prevents late registration', async () => {
+        let spawned: (child: ChildProcess) => void = () => {};
+        const childHandle = new Promise<ChildProcess>((resolve) => {
+            spawned = resolve;
+        });
+        const tracked = trackEditorProcess(childHandle, false);
+        const rejected = expect(tracked).rejects.toThrow('shutting down');
+        let finished = false;
+        const shutdown = stopEditorSessions().then(() => {
+            finished = true;
+        });
+        await Promise.resolve();
+        expect(finished).toBe(false);
+        expect(assertEditorCanStart).toThrow('shutting down');
+        expect(() => registerEditorSession(session)).toThrow('shutting down');
+        spawned(child.asChild());
+        await shutdown;
+        await rejected;
+        expect(child.kill).toHaveBeenCalledTimes(1);
+        expect(() => requireEditorSession(session.browserUrl)).toThrow('Unknown editor session');
+        expect(mockWrite).not.toHaveBeenCalled();
+    });
+
+    test('a failed pending spawn does not prevent shutdown', async () => {
+        const tracked = trackEditorProcess(Promise.reject(new Error('spawn failed')), true);
+        const rejected = expect(tracked).rejects.toThrow('spawn failed');
+        await stopEditorSessions();
+        await rejected;
+        expect(killSpy).not.toHaveBeenCalled();
+    });
+
+    test('cleans up an owned group when its parent exited before termination began', async () => {
+        jest.useFakeTimers();
+        await trackEditorProcess(child.asChild(), true);
+        let groupAlive = true;
+        killSpy.mockImplementation((_pid, signal) => {
+            if (signal === 'SIGKILL') {
+                groupAlive = false;
+            }
+            if (!groupAlive) {
+                throw Object.assign(new Error('gone'), { code: 'ESRCH' });
+            }
+            return true;
+        });
+        child.exit();
+        const stopped = terminateEditorProcess(child.asChild());
+        await jest.advanceTimersByTimeAsync(4000);
+        expect(await stopped).toBe(true);
+        expect(killSpy).toHaveBeenCalledWith(-1234, 'SIGTERM');
+        expect(killSpy).toHaveBeenCalledWith(-1234, 'SIGKILL');
+    });
+
+    test('tracking an already-exited parent still starts cleanup of its remaining group', async () => {
+        child.exit();
+        let groupAlive = true;
+        killSpy.mockImplementation((_pid, signal) => {
+            if (signal === 'SIGTERM') {
+                groupAlive = false;
+            }
+            if (signal === 0 && !groupAlive) {
+                throw Object.assign(new Error('gone'), { code: 'ESRCH' });
+            }
+            return true;
+        });
+        await trackEditorProcess(child.asChild(), true);
+        await jest.advanceTimersByTimeAsync(0);
+        expect(killSpy).toHaveBeenCalledWith(-1234, 'SIGTERM');
+        expect(child.listenerCount('exit')).toBe(0);
+        killSpy.mockClear();
+        await stopEditorSessions();
+        expect(killSpy).not.toHaveBeenCalled();
     });
 
     test('simultaneous stops through either alias terminate once and signal close once', async () => {
@@ -278,7 +378,7 @@ describe('editor session lifecycle', () => {
     });
 
     test('only explicitly owned detached POSIX children are signalled as a group', async () => {
-        trackEditorProcess(child.asChild(), true);
+        await trackEditorProcess(child.asChild(), true);
         killSpy.mockImplementation((pid, signal) => {
             expect(pid).toBe(-1234);
             if (signal === 0) {
@@ -297,7 +397,7 @@ describe('editor session lifecycle', () => {
     });
 
     test('detached=false never confers process-group ownership', async () => {
-        trackEditorProcess(child.asChild(), false);
+        await trackEditorProcess(child.asChild(), false);
         expect(await terminateEditorProcess(child.asChild())).toBe(true);
         expect(child.kill).toHaveBeenCalledWith('SIGTERM');
         expect(killSpy).not.toHaveBeenCalled();
@@ -305,7 +405,7 @@ describe('editor session lifecycle', () => {
 
     test('Windows uses the owned ChildProcess fallback even if detached is requested', async () => {
         Object.defineProperty(process, 'platform', { value: 'win32', configurable: true });
-        trackEditorProcess(child.asChild(), true);
+        await trackEditorProcess(child.asChild(), true);
         expect(await terminateEditorProcess(child.asChild())).toBe(true);
         expect(child.kill).toHaveBeenCalledWith('SIGTERM');
         expect(killSpy).not.toHaveBeenCalled();
@@ -331,10 +431,13 @@ describe('editor session lifecycle', () => {
 
     test('escalates the same owned process group, including surviving descendants', async () => {
         jest.useFakeTimers();
-        trackEditorProcess(child.asChild(), true);
+        await trackEditorProcess(child.asChild(), true);
         killSpy.mockImplementation((_pid, signal) => {
             if (signal === 'SIGKILL') {
                 child.exit();
+            }
+            if (signal === 0 && child.exitCode !== null) {
+                throw Object.assign(new Error('gone'), { code: 'ESRCH' });
             }
             return true;
         });
@@ -343,27 +446,62 @@ describe('editor session lifecycle', () => {
         expect(await stopped).toBe(true);
         expect(killSpy.mock.calls).toEqual([
             [-1234, 'SIGTERM'],
-            [-1234, 0],
-            [-1234, 'SIGKILL']
+            [-1234, 'SIGKILL'],
+            [-1234, 0]
         ]);
         expect(child.kill).not.toHaveBeenCalled();
     });
 
     test('still cleans up descendants when the CLI parent exits first', async () => {
-        trackEditorProcess(child.asChild(), true);
+        await trackEditorProcess(child.asChild(), true);
+        let groupAlive = true;
         killSpy.mockImplementation((_pid, signal) => {
             if (signal === 'SIGTERM') {
                 child.exit();
             }
+            if (signal === 'SIGKILL') {
+                groupAlive = false;
+            }
+            if (signal === 0 && !groupAlive) {
+                throw Object.assign(new Error('gone'), { code: 'ESRCH' });
+            }
             return true;
         });
-        expect(await terminateEditorProcess(child.asChild())).toBe(true);
-        expect(killSpy.mock.calls).toEqual([
+        const stopped = terminateEditorProcess(child.asChild());
+        await jest.advanceTimersByTimeAsync(2000);
+        expect(await stopped).toBe(true);
+        expect(killSpy.mock.calls.filter(([, signal]) => signal !== 0)).toEqual([
             [-1234, 'SIGTERM'],
-            [-1234, 0],
             [-1234, 'SIGKILL']
         ]);
     });
+
+    test.each(['alive', 'EPERM'])(
+        'does not report success while the group is %s and retains it for shutdown retry',
+        async (state) => {
+            await trackEditorProcess(child.asChild(), true);
+            killSpy.mockImplementation(() => {
+                if (state === 'EPERM') {
+                    throw Object.assign(new Error('sensitive detail'), { code: 'EPERM' });
+                }
+                return true;
+            });
+            child.exit();
+            const stopped = terminateEditorProcess(child.asChild());
+            await jest.advanceTimersByTimeAsync(4000);
+            expect(await stopped).toBe(false);
+            killSpy.mockReset().mockImplementation(() => {
+                throw Object.assign(new Error('gone'), { code: 'ESRCH' });
+            });
+            await stopEditorSessions();
+            expect(killSpy).toHaveBeenCalledWith(-1234, 0);
+            killSpy.mockClear();
+            await stopEditorSessions();
+            expect(await terminateEditorProcess(child.asChild())).toBe(true);
+            expect(killSpy).not.toHaveBeenCalled();
+            expect(JSON.stringify(mockWarn.mock.calls)).not.toContain('sensitive detail');
+        }
+    );
 
     test('failed termination is bounded, retains ownership for retry, and closes only once', async () => {
         jest.useFakeTimers();
