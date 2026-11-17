@@ -33,7 +33,6 @@ interface LaunchConfig {
     command: string;
     args: string[];
     timeoutMs: number;
-    projectType: 'abap' | 'cf';
 }
 
 /**
@@ -120,7 +119,7 @@ async function resolveLaunch(appPath: string): Promise<LaunchConfig | { reason: 
     const launchArgs = command === 'npm' ? args : [...args, '--port', String(await findFreePort())];
     const isCf = await isCFEnvironment(appPath);
     if (!isCf) {
-        return { command, args: launchArgs, timeoutMs: ABAP_TIMEOUT_MS, projectType: 'abap' };
+        return { command, args: launchArgs, timeoutMs: ABAP_TIMEOUT_MS };
     }
 
     if (!existsSync(join(appPath, 'dist'))) {
@@ -131,7 +130,7 @@ async function resolveLaunch(appPath: string): Promise<LaunchConfig | { reason: 
         };
     }
 
-    return { command, args: launchArgs, timeoutMs: CF_TIMEOUT_MS, projectType: 'cf' };
+    return { command, args: launchArgs, timeoutMs: CF_TIMEOUT_MS };
 }
 
 /**
@@ -327,14 +326,14 @@ export async function openAdaptationEditor(params: OpenAdaptationEditorInput): P
         const finalEditorPath = editorPath || EDITOR_PATH;
         const localEditorUrl = `${serverUrl}${finalEditorPath}`;
         const editorUrl = await resolveExternalEditorUrl(localEditorUrl, port);
-        const autoOpen = isAppStudio() || process.env.SAP_FIORI_MCP_ADP_FORCE_AUTOOPEN === 'true';
+        const autoOpen = useHttpRelay;
 
         // Keep draining stdout so its pipe buffer never fills and blocks the child.
         childProcess.stdout?.resume();
         childProcess.unref();
         registerEditorSession({ localUrl: localEditorUrl, browserUrl: editorUrl, relayToken, childProcess, autoOpen });
         if (autoOpen) {
-            signalEditor('open', editorUrl, launch.projectType);
+            signalEditor('open', editorUrl);
         }
 
         const browserInstructions = useHttpRelay
