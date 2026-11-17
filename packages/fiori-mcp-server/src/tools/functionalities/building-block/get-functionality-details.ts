@@ -249,9 +249,14 @@ export async function getFunctionalityDetails(
     const fileXPathMap = fs ? buildFileXPathMap(viewFiles, appPath, fs) : [];
     const insertionPointsNote = formatInsertionPointsNote(fileXPathMap, viewFiles, appPath);
 
+    const parameters = convertToSchema(buildBuildingBlockSchema());
+    logger.debug(
+        `[add_building_block] get_functionality_details parameters schema:\n${JSON.stringify(parameters, null, 2)}`
+    );
+
     return {
         ...ADD_BUILDING_BLOCK_FUNCTIONALITY,
         description: ADD_BUILDING_BLOCK_FUNCTIONALITY.description + '\n\n' + insertionPointsNote,
-        parameters: convertToSchema(buildBuildingBlockSchema())
+        parameters
     };
 }

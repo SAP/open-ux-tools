@@ -2,6 +2,7 @@ import {
     buildBuildingBlockSchema,
     buildBuildingBlockMembers
 } from '../../../../../src/tools/functionalities/building-block/schema.js';
+import { convertToSchema } from '../../../../../src/utils/schema-utils.js';
 
 const schema = buildBuildingBlockSchema();
 
@@ -98,5 +99,11 @@ describe('buildBuildingBlockSchema', () => {
 
     test('requires the two routing fields', () => {
         expect(() => schema.parse({ buildingBlockData: { buildingBlockType: 'table' } })).toThrow();
+    });
+});
+
+describe('generated JSON schema (visibility)', () => {
+    test('add-building-block parameters JSON schema matches snapshot', () => {
+        expect(convertToSchema(buildBuildingBlockSchema())).toMatchSnapshot();
     });
 });

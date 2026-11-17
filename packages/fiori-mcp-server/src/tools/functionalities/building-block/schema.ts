@@ -57,16 +57,17 @@ export function buildBuildingBlockMembers(): Record<BuildingBlockType, BuildingB
 
 /**
  * Builds the Zod schema for the add-building-block functionality input: the routing fields
- * (viewOrFragmentPath, aggregationPath) plus a discriminated union over buildingBlockType. Property
- * semantics are documented in bb_macro_api.md and fetched via `search_docs` rather than declared here.
+ * (viewOrFragmentPath, aggregationPath) plus the building block data. `buildingBlockData` is a single
+ * lean object whose `buildingBlockType` is an enum of all BuildingBlockType values — the members map
+ * from `buildBuildingBlockMembers()` is kept only as the compile-time exhaustiveness guard (its
+ * `satisfies Record<BuildingBlockType, …>` fails tsc if a new type is added upstream without wiring it
+ * here) and the enum is derived from its keys so the two can never drift. `looseObject` lets every
+ * other property pass through; semantics are documented in bb_macro_api.md and fetched via `search_docs`.
  *
  * @returns The composed zod object schema.
  */
 export function buildBuildingBlockSchema() {
-    const bbTypeSchemas = Object.values(buildBuildingBlockMembers()) as unknown as [
-        BuildingBlockMemberSchema,
-        ...BuildingBlockMemberSchema[]
-    ];
+    const buildingBlockTypes = Object.keys(buildBuildingBlockMembers()) as [BuildingBlockType, ...BuildingBlockType[]];
 
     return zod.object({
         viewOrFragmentPath: zod
@@ -80,7 +81,10 @@ export function buildBuildingBlockSchema() {
                     `For aggregation children (${aggregationParentMacroMappingNote}) use the parent macro element.`
             ),
         buildingBlockData: zod
-            .discriminatedUnion('buildingBlockType', bbTypeSchemas)
+            .looseObject({
+                buildingBlockType: zod.enum(buildingBlockTypes).describe('The building block type.'),
+                id: idField
+            })
             .describe(
                 'Building block configuration. Use search_docs with the buildingBlockType name to get full ' +
                     'property documentation from bb_macro_api.md before populating this object.'

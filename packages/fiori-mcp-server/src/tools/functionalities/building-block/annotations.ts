@@ -97,7 +97,7 @@ function resolveAnnotationTarget(
         ? convertedSchema.entitySets.filter((es) => es.name === contextEntitySetName)
         : convertedSchema.entitySets;
     const navMatches = searchEntities
-        .flatMap((es) => es.entityType.navigationProperties)
+        .flatMap((es) => es.entityType?.navigationProperties ?? [])
         .filter((nav) => nav.name === entitySetName);
     // Distinct target type FQNs the nav name resolves to. Without a contextPath to scope the search, the
     // same nav name (e.g. "to_Items") can exist on several entity types pointing at different targets —
@@ -109,7 +109,7 @@ function resolveAnnotationTarget(
     // The target is the navigation's target entity type FQN. Use targetType.fullyQualifiedName directly rather than
     // looking it up via a top-level entity set — a contained (composition) target type has no own entity set, and the
     // lookup would then wrongly fall back to the bare nav name.
-    return distinctTargets[0] ?? entitySetName;
+    return distinctTargets[0];
 }
 
 /**

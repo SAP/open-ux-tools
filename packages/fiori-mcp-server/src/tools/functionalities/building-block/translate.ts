@@ -12,7 +12,7 @@ import { AGGREGATION_CHILD_TYPES } from './utils.js';
  * @returns A safe, non-empty filename segment matching `[A-Za-z][A-Za-z0-9_-]*`
  */
 function sanitizeFileName(name: string): string {
-    const sanitized = name.replaceAll('..', '').replaceAll(/[^A-Za-z0-9_-]/g, '');
+    const sanitized = name.replaceAll(/[^A-Za-z0-9_-]/g, '');
     return /^[A-Za-z][A-Za-z0-9_-]*$/.test(sanitized) ? sanitized : `Fragment${sanitized || '1'}`;
 }
 
