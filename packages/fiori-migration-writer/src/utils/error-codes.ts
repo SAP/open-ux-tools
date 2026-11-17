@@ -128,6 +128,44 @@ function matchKnownPatterns(lowerMessage: string): string | null {
 }
 
 /**
+ * Extract error code from MigrationError, checking wrapped cause for more specific code.
+ *
+ * @param error - MigrationError instance
+ * @returns Error code from wrapped error if available, otherwise MIGRATION_FAILED
+ */
+function extractFromMigrationError(error: Error): string {
+    // Check if MigrationError wraps another error - extract code from the wrapped error
+    // for more specific telemetry (e.g., ENOENT instead of generic MIGRATION_FAILED)
+    if ('cause' in error && error.cause) {
+        const wrappedCode = extractErrorCode(error.cause);
+        // Only use wrapped error code if it's more specific than MIGRATION_FAILED
+        if (wrappedCode !== MigrationErrorCode.UNKNOWN_ERROR) {
+            return wrappedCode;
+        }
+    }
+    return MigrationErrorCode.MIGRATION_FAILED;
+}
+
+/**
+ * Classify SyntaxError by inspecting the error message context.
+ * Distinguishes between JSON parsing errors and template rendering errors.
+ *
+ * @param message - Error message string
+ * @returns Appropriate error code based on context
+ */
+function classifySyntaxError(message: string): string {
+    const lowerMessage = message.toLowerCase();
+
+    // Check for template/EJS-specific patterns
+    if (lowerMessage.includes('template') || lowerMessage.includes('ejs') || lowerMessage.includes('render')) {
+        return MigrationErrorCode.TEMPLATE_GENERATION_FAILED;
+    }
+
+    // Default to JSON_PARSE_ERROR (most common case in migration workflows)
+    return MigrationErrorCode.JSON_PARSE_ERROR;
+}
+
+/**
  * Extract a telemetry-safe error code from an error object or message string.
  * Priority order for extraction:
  * 1. Error.name for custom error types (UnsupportedProjectError, MigrationError, etc.)
@@ -153,29 +191,9 @@ export function extractErrorCode(error: unknown): string {
             case 'UnsupportedProjectError':
                 return MigrationErrorCode.NOT_SUITABLE_FOR_MIGRATION;
             case 'MigrationError':
-                // Check if MigrationError wraps another error - extract code from the wrapped error
-                // for more specific telemetry (e.g., ENOENT instead of generic MIGRATION_FAILED)
-                if ('cause' in error && error.cause) {
-                    const wrappedCode = extractErrorCode(error.cause);
-                    // Only use wrapped error code if it's more specific than MIGRATION_FAILED
-                    if (wrappedCode !== MigrationErrorCode.UNKNOWN_ERROR) {
-                        return wrappedCode;
-                    }
-                }
-                return MigrationErrorCode.MIGRATION_FAILED;
+                return extractFromMigrationError(error);
             case 'SyntaxError':
-                // Distinguish between JSON parsing errors and template rendering errors
-                // by inspecting the error message for context-specific patterns
-                const message = error.message.toLowerCase();
-
-                // Check for template/EJS-specific patterns
-                if (message.includes('template') || message.includes('ejs') || message.includes('render')) {
-                    return MigrationErrorCode.TEMPLATE_GENERATION_FAILED;
-                }
-
-                // Default to JSON_PARSE_ERROR (most common case in migration workflows)
-                // Patterns: "unexpected token", "json", "position", etc.
-                return MigrationErrorCode.JSON_PARSE_ERROR;
+                return classifySyntaxError(error.message);
         }
 
         // Priority 2: Check error.code for Node.js filesystem errors (explicit property)
