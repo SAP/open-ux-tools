@@ -108,7 +108,7 @@ function matchKnownPatterns(lowerMessage: string): string | null {
         return MigrationErrorCode.PROJECT_INFO_FAILED;
     }
 
-    if (lowerMessage.includes('committing')) {
+    if (/\bcommit(?:ting)?\b/.test(lowerMessage)) {
         return MigrationErrorCode.COMMIT_FAILED;
     }
 

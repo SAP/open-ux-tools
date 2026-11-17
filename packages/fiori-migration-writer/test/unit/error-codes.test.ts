@@ -171,6 +171,11 @@ describe('error-codes', () => {
                 expect(extractErrorCode(error)).toBe('COMMIT_FAILED');
             });
 
+            it('should extract COMMIT_FAILED from bulk migrator wording', () => {
+                const error = new Error('Failed to commit migration changes: underlying error details');
+                expect(extractErrorCode(error)).toBe('COMMIT_FAILED');
+            });
+
             it('should extract TYPESCRIPT_SETUP_FAILED for TypeScript setup errors', () => {
                 const error = new Error('Failed to setup TypeScript configuration');
                 expect(extractErrorCode(error)).toBe('TYPESCRIPT_SETUP_FAILED');
