@@ -31,6 +31,7 @@ import {
 } from './semantics/role-registry.js';
 import { VALUE_BANK_STORE_ID, VALUE_BANK_STORE_PATH, packagedBanks } from './semantics/bank-store.js';
 import { SEMANTIC_RULE_STORE_ID, SEMANTIC_RULE_STORE_PATH, packagedSemanticRules } from './semantics/rule-store.js';
+import { containedTargets } from './generation/containment.js';
 import { authoredDomainValues } from './generation/value-list-context.js';
 import {
     DATA_EDITOR_SFT_BUDGET_MS,
@@ -362,7 +363,8 @@ function semanticCoverage(
     parsedGraph: SchemaGraph | undefined
 ): StandaloneGenerationResult['semanticCoverage'] {
     const graph = parsedGraph ?? parseServiceMetadata(request.metadata, request.service);
-    const targets = new Set(request.targets.map(({ name }) => name));
+    // Routing counts the fields of contained entities too, so coverage does.
+    const targets = new Set([...request.targets, ...containedTargets(graph, request.targets)].map(({ name }) => name));
     const context: CoverageContext = {
         request,
         result,

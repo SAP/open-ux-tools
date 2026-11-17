@@ -48,6 +48,14 @@ describe('routing and semantic coverage invariants', () => {
             'synthetic finance metadata',
             async () =>
                 request(await readFile(new URL('./synthetic-finance.metadata.xml', import.meta.url), 'utf8'), '4.0')
+        ],
+        [
+            'contained entities',
+            async () =>
+                request(
+                    await readFile(new URL('./fixtures/contained-children.metadata.xml', import.meta.url), 'utf8'),
+                    '4.0'
+                )
         ]
     ])('keeps unsupported coverage equal to unbound routing for %s', async (_name, build) => {
         const generator = await createMockDataGenerator({ executionMode: 'api' });
