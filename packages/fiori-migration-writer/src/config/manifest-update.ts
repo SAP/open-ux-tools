@@ -13,6 +13,7 @@ import type { TemplateData, Message } from '../types.js';
 import { i18nText } from '../i18n.js';
 import { processDataSource } from './manifest-update-helpers.js';
 import { getMessageType } from '../utils/validation-severity.js';
+import { MigrationErrorCode } from '../utils/error-codes.js';
 
 /**
  * Update manifest.json file with migration-specific changes
@@ -79,7 +80,8 @@ export async function updateManifestForMigration(options: UpdateManifestForMigra
     } else {
         messages.push({
             type: getMessageType('WARNING', strict, true),
-            description: i18nText('MISSING_MANIFEST_UI5_SECTION')
+            description: i18nText('MISSING_MANIFEST_UI5_SECTION'),
+            code: MigrationErrorCode.INVALID_PROJECT_STRUCTURE
         });
     }
 
