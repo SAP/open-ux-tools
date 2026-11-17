@@ -2768,6 +2768,9 @@ importers:
       '@sap-ux/edmx-parser':
         specifier: 0.10.0
         version: 0.10.0
+      '@sap-ux/fe-fpm-writer':
+        specifier: workspace:*
+        version: link:../fe-fpm-writer
       '@sap-ux/feature-toggle':
         specifier: workspace:*
         version: link:../feature-toggle
