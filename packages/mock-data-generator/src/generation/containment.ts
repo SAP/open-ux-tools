@@ -252,7 +252,8 @@ function placeContainedRows(
  * @param resources - Published rows by entity set.
  * @param existingData - The caller's existing rows.
  * @returns The rows by entity set, contained entities as entities of their own.
- * @throws {TypeError} when a generated container row holds something other than rows under a containment navigation
+ * @throws {TypeError} when a generated container row holds something other than rows under a containment navigation,
+ * or two rows with one key
  */
 export function flattenContainedRows(
     graph: SchemaGraph,
@@ -275,13 +276,29 @@ export function flattenContainedRows(
         for (const [index, row] of containers.entries()) {
             if (generated[index] && Object.hasOwn(row, containment.navigation)) {
                 const { [containment.navigation]: held, ...rest } = row;
-                rows.push(...heldRows(container.entitySetName, containment, held));
+                const children = heldRows(container.entitySetName, containment, held);
+                assertKeysUniqueInContainer(entity, children);
+                rows.push(...children);
                 containers[index] = rest;
             }
         }
         flat[entity.entitySetName] = rows;
     }
     return flat;
+}
+
+/**
+ * Check that the rows one container holds have distinct keys; a contained key identifies a row within its container only.
+ *
+ * @param entity - The contained entity.
+ * @param children - The rows one container holds.
+ * @throws {TypeError} when two of them share a key
+ */
+function assertKeysUniqueInContainer(entity: SchemaEntity, children: ReadonlyArray<MockDataRow>): void {
+    const keys = entity.properties.filter(({ isKey }) => isKey);
+    if (keys.length > 0 && new Set(children.map((child) => keySignature(keys, child))).size < children.length) {
+        throw new TypeError(`Generated resource ${entity.entitySetName} contains a duplicate key`);
+    }
 }
 
 /**

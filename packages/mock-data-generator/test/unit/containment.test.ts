@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import { generateServiceForTesting, validateGeneratedResult } from '../../src/index.js';
 import { MAX_CONTAINED_ENTITIES } from '../../src/limits.js';
 import { parseEdmx } from '../../src/schema/edmx.js';
@@ -153,6 +155,66 @@ describe('contained entities', () => {
         // When the result is validated
         // Then the shape is rejected
         expect(() => validateGeneratedResult(input, tampered)).toThrow(/invalid contained rows under Ybn/u);
+    });
+});
+
+describe('keys of contained rows', () => {
+    const containedChildren: MockDataServiceRequest = {
+        metadata: {
+            format: 'edmx',
+            content: readFileSync(
+                fileURLToPath(new URL('./fixtures/contained-children.metadata.xml', import.meta.url)),
+                'utf8'
+            )
+        },
+        service: { urlPath: '/contained-children', odataVersion: '4.0' },
+        targets: [{ name: 'Zas', kind: 'entity-set' }],
+        existingData: {}
+    };
+
+    /**
+     * Generate the containers, then give every one of them, and the rows they contain, the first one's value of the
+     * property their contained row copies as its key.
+     *
+     * @returns the result
+     */
+    async function containersSharingTheContainedKey(): Promise<{
+        result: Awaited<ReturnType<typeof generateServiceForTesting>>;
+    }> {
+        const result = await generateServiceForTesting(containedChildren, { seed: 1, rowsPerEntity: 4 });
+        const shared = result.resources.Zas[0].Zi;
+        const Zas = result.resources.Zas.map((row) => ({
+            ...row,
+            Zi: shared,
+            Zcn: held(row, 'Zcn').map((child) => ({
+                ...child,
+                Zi: shared,
+                Zgn: held(child, 'Zgn').map((grandchild) => ({ ...grandchild, Zi: shared }))
+            }))
+        }));
+        return { result: { ...result, resources: { ...result.resources, Zas } } };
+    }
+
+    it('accepts the same key in different containers', async () => {
+        // Given containers whose to-one contained rows copy the same key from them
+        const { result } = await containersSharingTheContainedKey();
+        // When the result is validated
+        // Then it is accepted, since a contained key only identifies a row within its container
+        expect(() => validateGeneratedResult(containedChildren, result)).not.toThrow();
+    });
+
+    it('rejects the same key twice in one container', async () => {
+        // Given a container holding two contained rows with one key
+        const { result } = await containersSharingTheContainedKey();
+        const [first, ...rest] = result.resources.Zas;
+        const children = held(first, 'Zbn');
+        const tampered = {
+            ...result,
+            resources: { ...result.resources, Zas: [{ ...first, Zbn: [children[0], children[0]] }, ...rest] }
+        };
+        // When the result is validated
+        // Then the duplicate key is rejected
+        expect(() => validateGeneratedResult(containedChildren, tampered)).toThrow(/duplicate key/u);
     });
 });
 

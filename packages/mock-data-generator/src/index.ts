@@ -358,7 +358,8 @@ function assertGeneratedTarget(
     };
     for (const [rowIndex, row] of rows.entries()) {
         assertGeneratedRow(check, rowIndex, row);
-        if (keyProperties.length > 0) {
+        // Contained keys are checked per container when the rows are read out of their containers.
+        if (keyProperties.length > 0 && !entity.containedBy) {
             const key = canonicalJson(keyProperties.map((property) => row[property.name]));
             // Supplied rows may share a key (SUPPLIED_KEY_DUPLICATED); a generated row may not.
             if (keys.has(key) && rowIndex >= supplied.length) {
