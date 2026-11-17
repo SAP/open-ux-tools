@@ -29,8 +29,6 @@ export type MigrationEventName = (typeof MigrationEventName)[keyof typeof Migrat
 export const TELEMETRY_SOURCE = 'CLI';
 
 const CONSUMER_MODULE_NAME = '@sap-ux/create';
-// Replaced with the real key when the module is built for release
-const RESOURCE_ID = 'ApplicationInsightsInstrumentationKeyPLACEH0LDER';
 // Upper bound for sending an event, so an unreachable backend never blocks the CLI for long
 const SEND_TIMEOUT_MS = 3000;
 
@@ -73,8 +71,8 @@ export async function initCliTelemetry(version: string): Promise<void> {
         await initTelemetrySettings({
             consumerModule: { name: CONSUMER_MODULE_NAME, version },
             internalFeature: isInternalFeaturesSettingEnabled(),
-            watchTelemetrySettingStore: false,
-            resourceId: RESOURCE_ID
+            watchTelemetrySettingStore: false
+            // resourceId is omitted so the default key from @sap-ux/telemetry is used (same as IDE extension)
         });
         // Events are sent in blocking mode (the process may exit right after), which does not check the opt-out
         // setting itself, so it is resolved once here.

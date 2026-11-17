@@ -151,8 +151,8 @@ describe('migrate telemetry', () => {
             expect(mockInitTelemetrySettings).toHaveBeenCalledWith({
                 consumerModule: { name: '@sap-ux/create', version: '1.2.3' },
                 internalFeature: true,
-                watchTelemetrySettingStore: false,
-                resourceId: expect.any(String)
+                watchTelemetrySettingStore: false
+                // resourceId is omitted so the default key from @sap-ux/telemetry is used (same as IDE extension)
             });
         });
 
