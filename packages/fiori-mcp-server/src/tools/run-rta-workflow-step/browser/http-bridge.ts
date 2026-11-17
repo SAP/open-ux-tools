@@ -73,10 +73,22 @@ async function requestRelay(
         signal: AbortSignal.timeout(timeoutMs),
         redirect: 'error'
     });
-    // 504 means the browser client never answered (likely on the backend login screen). Handle it
-    // on status alone, before response.json() — an ingress/proxy may return a non-JSON 504 page —
-    // so isClientAbsent sees it and the login-wait path can engage.
+    // Preserve metadata-specific diagnostics. Other 504s retain the existing start/login handling,
+    // including ingress/proxy failures that return HTML rather than JSON.
     if (response.status === 504) {
+        if (actionName === '__fetch__') {
+            const diagnostic: unknown = await response.json().catch(() => undefined);
+            if (
+                typeof diagnostic === 'object' &&
+                diagnostic !== null &&
+                'code' in diagnostic &&
+                (diagnostic.code === 'RELAY_CLIENT_UNAVAILABLE' || diagnostic.code === 'RELAY_FETCH_RESULT_TIMEOUT') &&
+                'error' in diagnostic &&
+                typeof diagnostic.error === 'string'
+            ) {
+                return { error: diagnostic.error };
+            }
+        }
         throw new Error('Editor relay HTTP 504');
     }
     const body: unknown = await response.json();

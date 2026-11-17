@@ -2,6 +2,7 @@
     'use strict';
 
     const REQUEST_TIMEOUT_MS = 30000;
+    const FETCH_TIMEOUT_MS = 30000;
     const ACTION_DEADLINE_MS = 55000;
     const API_POLL_INTERVAL_MS = 200;
     const RTA_POLL_INTERVAL_MS = 250;
@@ -60,11 +61,33 @@
             if (!response.ok) {
                 const error = new Error('Relay HTTP ' + response.status);
                 error.status = response.status;
+                if (response.status === 413) {
+                    const rejection = await response.json().catch(() => undefined);
+                    error.message =
+                        rejection?.code === 'RELAY_RESULT_TOO_LARGE' &&
+                        typeof rejection.error === 'string' &&
+                        rejection.error.length <= 256
+                            ? rejection.error
+                            : 'The editor result exceeds the relay or proxy size limit (HTTP 413).';
+                }
                 throw error;
             }
             return await response.json();
         } finally {
             clearTimeout(timer);
+        }
+    }
+
+    async function submitResult(id, response) {
+        try {
+            await request('result', { id, clientId, ...response });
+        } catch (error) {
+            if (error.status !== 413) {
+                throw error;
+            }
+            // Complete the same action with a compact error; never replay the frontend action or the oversized result.
+            // Await acknowledgement so the pending slot is released before polling for the next command.
+            await request('result', { id, clientId, error: error.message });
         }
     }
 
@@ -167,16 +190,33 @@
                 error: { code: 'FETCH_CROSS_ORIGIN', message: 'Refusing cross-origin fetch: ' + target.origin }
             };
         }
-        const response = await fetch(target.toString(), {
-            credentials: 'include',
-            redirect: 'follow',
-            cache: 'no-store'
-        });
-        const body = await response.text();
-        return {
-            isSuccess: true,
-            payload: { status: response.status, contentType: response.headers.get('content-type') ?? '', body }
-        };
+        // Abort both the request and body read, leaving time to report failure before the relay expires.
+        const controller = new AbortController();
+        const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+        try {
+            const response = await fetch(target.toString(), {
+                credentials: 'include',
+                redirect: 'follow',
+                cache: 'no-store',
+                signal: controller.signal
+            });
+            const body = await response.text();
+            return {
+                isSuccess: true,
+                payload: { status: response.status, contentType: response.headers.get('content-type') ?? '', body }
+            };
+        } catch (error) {
+            if (controller.signal.aborted) {
+                return {
+                    isSuccess: false,
+                    payload: null,
+                    error: { code: 'FETCH_TIMEOUT', message: 'The metadata fetch timed out after 30 seconds.' }
+                };
+            }
+            throw error;
+        } finally {
+            clearTimeout(timer);
+        }
     }
 
     function resolveTargetWindow(frameId) {
@@ -294,7 +334,7 @@
                 response = { error: error.message ?? String(error) };
             }
             try {
-                await request('result', { id: action.id, clientId, ...response });
+                await submitResult(action.id, response);
             } catch (error) {
                 console.error('[rta-relay] result POST failed, continuing poll loop:', error);
             }

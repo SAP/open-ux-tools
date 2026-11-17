@@ -394,6 +394,28 @@ describe('browser/http-bridge', () => {
                 'Editor relay fetch failed: Browser client disconnected'
             );
         });
+
+        test.each(['RELAY_CLIENT_UNAVAILABLE', 'RELAY_FETCH_RESULT_TIMEOUT'])(
+            'preserves the metadata diagnostic for %s without retrying',
+            async (code) => {
+                respondWith({ code, error: 'Specific metadata timeout diagnostic' }, 504);
+                await expect(httpTransport.fetchViaContext(SITE, URL_TO_FETCH)).rejects.toThrow(
+                    'Specific metadata timeout diagnostic'
+                );
+                expect(fetchMock).toHaveBeenCalledTimes(1);
+            }
+        );
+
+        test.each(['<html>Gateway Timeout</html>', 'null', '{"error":"Legacy timeout"}'])(
+            'handles an unrecognized 504 body without a JSON parse error: %s',
+            async (body) => {
+                fetchMock.mockResolvedValueOnce(new Response(body, { status: 504 }));
+                await expect(httpTransport.fetchViaContext(SITE, URL_TO_FETCH)).rejects.toThrow(
+                    'Editor relay HTTP 504'
+                );
+                expect(fetchMock).toHaveBeenCalledTimes(1);
+            }
+        );
     });
 
     describe('requestEditorClose', () => {

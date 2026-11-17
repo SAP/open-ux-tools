@@ -196,8 +196,64 @@ describe('preview RTA relay', () => {
         expect((await next.response).body).toBeNull();
     });
 
-    test.each(['poll', 'action'])('disconnect clears the %s timer and slot', async (route) => {
-        const request = route === 'poll' ? poll() : action();
+    test.each([5000, 60000])('rejects undelivered metadata and clears both deadlines after %s ms', async (elapsed) => {
+        const command = await begin(action('__fetch__'));
+        jest.advanceTimersByTime(elapsed);
+        const response = await command.response;
+        expect(response.status).toBe(504);
+        expect(response.body).toHaveProperty('code', 'RELAY_CLIENT_UNAVAILABLE');
+        expect(response.body).toHaveProperty(
+            'error',
+            expect.stringContaining('No editor tab picked up the metadata request')
+        );
+        expect(jest.getTimerCount()).toBe(0);
+        const next = await begin(action('__fetch__'));
+        const delivery = await poll().expect(200);
+        await result(delivery.body.id).expect(200);
+        expect((await next.response).status).toBe(200);
+        expect(jest.getTimerCount()).toBe(0);
+    });
+
+    test.each([false, true])(
+        'cancels the metadata delivery deadline when picked up (poll first: %s)',
+        async (pollFirst) => {
+            const waiting = pollFirst ? await begin(poll()) : undefined;
+            const command = await begin(action('__fetch__'));
+            jest.advanceTimersByTime(4000);
+            const delivery = waiting ? await waiting.response : await poll().expect(200);
+            jest.advanceTimersByTime(2000);
+            await result(delivery.body.id).expect(200);
+            expect((await command.response).status).toBe(200);
+            expect(jest.getTimerCount()).toBe(0);
+        }
+    );
+
+    test('distinguishes delivered metadata without a result from an absent client', async () => {
+        const command = await begin(action('__fetch__'));
+        const delivery = await poll().expect(200);
+        jest.advanceTimersByTime(60000);
+        const response = await command.response;
+        expect(response.status).toBe(504);
+        expect(response.body).toHaveProperty('code', 'RELAY_FETCH_RESULT_TIMEOUT');
+        expect(response.body).toHaveProperty(
+            'error',
+            expect.stringContaining('picked up the metadata request but did not return a result')
+        );
+        await result(delivery.body.id).expect(404);
+        expect(jest.getTimerCount()).toBe(0);
+    });
+
+    test('keeps the existing start login wait when no browser has connected', async () => {
+        const command = await begin(action('com.sap.ui.flex.startRTA.v1'));
+        jest.advanceTimersByTime(5000);
+        expect(jest.getTimerCount()).toBe(1);
+        const delivery = await poll().expect(200);
+        await result(delivery.body.id).expect(200);
+        expect((await command.response).status).toBe(200);
+    });
+
+    test.each(['poll', 'action', '__fetch__'])('disconnect clears the %s timer and slot', async (route) => {
+        const request = route === 'poll' ? poll() : action(route === '__fetch__' ? route : ACTION);
         const started = await begin(request);
         // Aborted supertest requests reject; no relay request is retried.
         const rejected = started.response.catch(() => undefined);

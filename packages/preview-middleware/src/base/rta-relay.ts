@@ -1,12 +1,15 @@
 import { randomBytes } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { escapeXML } from 'ejs';
-import { json, type Response, type Router } from 'express';
+import { json, type NextFunction, type Request, type Response, type Router } from 'express';
 
 const API = '/adp/api/rta';
 const POLL_TIMEOUT_MS = 25000;
 const ACTION_TIMEOUT_MS = 60000;
+const FETCH_DELIVERY_TIMEOUT_MS = 5000;
 const OWNER_LEASE_MS = 30000;
+const COMMAND_LIMIT_BYTES = 100 * 1024;
+const DEFAULT_RESULT_LIMIT_BYTES = 10 * 1024 * 1024;
 
 /** Relay client script, read once at module load and served verbatim — no per-request file access. */
 const RELAY_CLIENT_JS = readFileSync(new URL('../../templates/rta-relay-client.js', import.meta.url), 'utf8');
@@ -18,6 +21,7 @@ interface PendingAction {
     frameId?: string;
     delivered: boolean;
     clientId?: string;
+    deliveryTimer?: ReturnType<typeof setTimeout>;
     res: Response;
     timer: ReturnType<typeof setTimeout>;
 }
@@ -117,6 +121,10 @@ export function addRtaRelayApis(
     if (token.length !== 64 || !/^[\da-f]{64}$/i.test(token)) {
         return undefined;
     }
+    const configuredLimit = Number(process.env.SAP_FIORI_MCP_ADP_RELAY_RESULT_LIMIT_BYTES);
+    // Reserve enough space for a compact error envelope even when the configured result limit is small.
+    const resultLimitBytes =
+        Number.isSafeInteger(configuredLimit) && configuredLimit >= 1024 ? configuredLimit : DEFAULT_RESULT_LIMIT_BYTES;
 
     let pending: PendingAction | undefined;
     let poll: PollWaiter | undefined;
@@ -130,6 +138,7 @@ export function addRtaRelayApis(
         const waiter = poll;
         poll = undefined;
         clearTimeout(waiter.timer);
+        clearTimeout(pending.deliveryTimer);
         pending.delivered = true;
         pending.clientId = waiter.clientId;
         waiter.res.json({
@@ -160,7 +169,6 @@ export function addRtaRelayApis(
         }
         next();
     });
-    router.use(API, json());
 
     router.get(`${API}/poll`, (req, res) => {
         const clientId = req.query.clientId;
@@ -190,7 +198,7 @@ export function addRtaRelayApis(
         deliver();
     });
 
-    router.post(`${API}/action`, (req, res) => {
+    router.post(`${API}/action`, json({ limit: COMMAND_LIMIT_BYTES }), (req, res) => {
         const body: unknown = req.body;
         if (!isValidActionBody(body)) {
             res.status(400).json({ error: 'Invalid actionName, payload or frameId' });
@@ -202,19 +210,43 @@ export function addRtaRelayApis(
         }
         const timer = setTimeout(() => {
             pending = undefined;
-            res.status(504).json({ error: 'Timeout: browser client did not respond within 60 s' });
+            res.status(504).json(
+                body.actionName === '__fetch__'
+                    ? {
+                          code: 'RELAY_FETCH_RESULT_TIMEOUT',
+                          error: 'The editor tab picked up the metadata request but did not return a result within 60 seconds.'
+                      }
+                    : { error: 'Timeout: browser client did not respond within 60 s' }
+            );
         }, ACTION_TIMEOUT_MS);
+        // Metadata needs an already logged-in editor. Allow normal gaps between polls, but do not
+        // wait a full action timeout when the editor is closed, on login, or no longer polling.
+        const deliveryTimer =
+            body.actionName === '__fetch__'
+                ? setTimeout(() => {
+                      clearTimeout(timer);
+                      pending = undefined;
+                      res.status(504).json({
+                          code: 'RELAY_CLIENT_UNAVAILABLE',
+                          error:
+                              'No editor tab picked up the metadata request within 5 seconds. ' +
+                              'Open or refresh the Editor URL returned by open_adaptation_editor, complete any login, and retry.'
+                      });
+                  }, FETCH_DELIVERY_TIMEOUT_MS)
+                : undefined;
         pending = {
             id: randomBytes(16).toString('hex'),
             actionName: body.actionName,
             payload: body.payload ?? {},
             frameId: body.frameId,
             delivered: false,
+            deliveryTimer,
             res,
             timer
         };
         res.once('close', () => {
             clearTimeout(timer);
+            clearTimeout(deliveryTimer);
             if (pending?.res === res) {
                 pending = undefined;
             }
@@ -222,7 +254,7 @@ export function addRtaRelayApis(
         deliver();
     });
 
-    router.post(`${API}/result`, (req, res) => {
+    router.post(`${API}/result`, json({ limit: resultLimitBytes }), (req, res) => {
         const body: unknown = req.body;
         if (!isValidResultBody(body)) {
             res.status(400).json({ error: 'Invalid result' });
@@ -250,6 +282,17 @@ export function addRtaRelayApis(
             action.res.json({ result: body.result, clientId: body.clientId });
         }
         res.json({ ok: true });
+    });
+    router.use(`${API}/result`, (error: unknown, _req: Request, res: Response, next: NextFunction) => {
+        if (isObject(error) && error.type === 'entity.too.large') {
+            // Keep the pending action until its owning document submits a compact error with matching IDs.
+            res.status(413).json({
+                code: 'RELAY_RESULT_TOO_LARGE',
+                error: `The editor result exceeds the configured relay limit (${resultLimitBytes} bytes).`
+            });
+            return;
+        }
+        next(error);
     });
 
     return {

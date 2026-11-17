@@ -343,6 +343,32 @@ describe('rta/commands', () => {
         const APP = '/tmp/app';
         const xmlResp = { status: 200, contentType: 'application/xml', body: '<edmx:Edmx><a/></edmx:Edmx>' };
 
+        test.each([false, true])('waits for each service before fetching the next (first fails: %s)', async (fails) => {
+            let finishFirst: () => void = () => {};
+            transport.fetchViaContext
+                .mockImplementationOnce(
+                    () =>
+                        new Promise((resolve, reject) => {
+                            finishFirst = () =>
+                                fails ? reject(new Error('Metadata fetch timed out')) : resolve(xmlResp);
+                        })
+                )
+                .mockResolvedValueOnce(xmlResp);
+            const pending = getODataMetadata(transport, SITE, ['api/first/', 'api/second/'], APP);
+            // A single-slot transport would reject the second call while the first is pending.
+            expect(transport.fetchViaContext).toHaveBeenCalledTimes(1);
+            finishFirst();
+            const out = await pending;
+            expect(transport.fetchViaContext).toHaveBeenCalledTimes(2);
+            expect(out.entries.map((entry) => entry.url)).toEqual(['api/first/', 'api/second/']);
+            if (fails) {
+                expect(out.entries[0]).toHaveProperty('error', 'Metadata fetch timed out');
+            } else {
+                expect(out.entries[0]).toHaveProperty('metadata', expect.stringContaining('edmx:Edmx'));
+            }
+            expect(out.entries[1]).toHaveProperty('metadata', expect.stringContaining('edmx:Edmx'));
+        });
+
         test('joins a relative trailing-slash URI to <origin>/<uri>$metadata', async () => {
             transport.fetchViaContext.mockResolvedValue(xmlResp);
             await getODataMetadata(transport, SITE, ['api/recommendation/v1/RecommendationService/'], APP);

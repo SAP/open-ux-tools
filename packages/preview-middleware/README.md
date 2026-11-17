@@ -20,6 +20,14 @@ When the MCP relay is enabled, the BAS editor launcher can open an editor URL in
 
 This requires compatible versions of preview-middleware and the BAS launcher running as the same user with the same temporary directory. Browser cookie policy still determines whether the authenticated session is available to the embedded editor. Desktop VS Code retains its embedded login flow.
 
+## Adaptation editor relay result size
+
+When the MCP relay is enabled, command request bodies are limited to 100 KiB and result request bodies to 10 MiB. The result limit includes the complete JSON envelope encoded as UTF-8, including metadata or overlay data.
+
+Set `SAP_FIORI_MCP_ADP_RELAY_RESULT_LIMIT_BYTES` in the preview server environment to override the result limit. The MCP-launched preview server inherits this variable from the MCP process. Values must be safe integers of at least 1024 bytes; missing or invalid values use the 10 MiB default. Restart the editor server after changing the value.
+
+If the relay or an upstream proxy rejects a result with HTTP 413, the browser submits a compact error for the same action. Once that error is acknowledged, the session can process the next command. The frontend action is not executed again. A proxy may impose a lower limit than the preview server.
+
 ## [Configuration Options](#configuration-options)
 | Option                       | Value Type | Requirement Type                               | Default Value                   | Description                                                                                                                                                                                                                                                                                                                                                                   |
 |------------------------------|------------|------------------------------------------------|---------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|

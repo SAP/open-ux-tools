@@ -360,30 +360,29 @@ export async function getODataMetadata(
     uris: string[],
     appPath: string
 ): Promise<GetODataMetadataResult> {
-    const entries: ODataMetadataEntry[] = await Promise.all(
-        uris.map(async (uri): Promise<ODataMetadataEntry> => {
-            try {
-                const { status, contentType, body } = await transport.fetchViaContext(
-                    site,
-                    buildMetadataUrl(site, uri)
-                );
-                if (status < 200 || status >= 300) {
-                    return { url: uri, error: `Failed to fetch OData metadata (status ${status}).` };
-                }
-                const isXml = contentType.toLowerCase().includes('xml');
-                const looksEdmx = looksLikeEdmx(body);
-                if (!isXml || !looksEdmx) {
-                    return {
-                        url: uri,
-                        error: `Expected EDMX but received "${contentType}" (status ${status}) — the editor session may have lost authentication; re-run the "start" step.`
-                    };
-                }
-                const formatted = formatXml(body);
-                return { url: uri, ...persistMetadata(appPath, uri, formatted) };
-            } catch (error) {
-                return { url: uri, error: error instanceof Error ? error.message : String(error) };
+    const entries: ODataMetadataEntry[] = [];
+    // The HTTP relay has one pending slot. Finish each service before submitting the next.
+    for (const uri of uris) {
+        try {
+            const { status, contentType, body } = await transport.fetchViaContext(site, buildMetadataUrl(site, uri));
+            if (status < 200 || status >= 300) {
+                entries.push({ url: uri, error: `Failed to fetch OData metadata (status ${status}).` });
+                continue;
             }
-        })
-    );
+            const isXml = contentType.toLowerCase().includes('xml');
+            const looksEdmx = looksLikeEdmx(body);
+            if (!isXml || !looksEdmx) {
+                entries.push({
+                    url: uri,
+                    error: `Expected EDMX but received "${contentType}" (status ${status}) — the editor session may have lost authentication; re-run the "start" step.`
+                });
+                continue;
+            }
+            const formatted = formatXml(body);
+            entries.push({ url: uri, ...persistMetadata(appPath, uri, formatted) });
+        } catch (error) {
+            entries.push({ url: uri, error: error instanceof Error ? error.message : String(error) });
+        }
+    }
     return { entries };
 }
