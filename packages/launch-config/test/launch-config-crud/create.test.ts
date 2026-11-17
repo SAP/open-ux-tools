@@ -546,7 +546,7 @@ describe('create', () => {
             writeRaw(launchJSONPath, '{ "version": "0.2.0", "configurations": "oops" }');
 
             await expect(createLaunchConfig(TestPaths.tmpDir, nonDefaultOptions, memFs)).rejects.toThrow(
-                `The property 'configurations' in ${launchJSONPath} must be an array.`
+                `The property \`configurations\` in ${launchJSONPath} must be an array.`
             );
             expect(memFs.read(launchJSONPath)).toBe('{ "version": "0.2.0", "configurations": "oops" }');
         });
