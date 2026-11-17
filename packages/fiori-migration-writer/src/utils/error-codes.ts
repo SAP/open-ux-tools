@@ -164,9 +164,17 @@ export function extractErrorCode(error: unknown): string {
                 }
                 return MigrationErrorCode.MIGRATION_FAILED;
             case 'SyntaxError':
-                // Note: SyntaxError can be thrown by JSON.parse, EJS template rendering, or other expression evaluation.
-                // This mapping assumes JSON parsing is the most common case in migration workflows.
-                // EJS template errors would also map to JSON_PARSE_ERROR - a known limitation.
+                // Distinguish between JSON parsing errors and template rendering errors
+                // by inspecting the error message for context-specific patterns
+                const message = error.message.toLowerCase();
+
+                // Check for template/EJS-specific patterns
+                if (message.includes('template') || message.includes('ejs') || message.includes('render')) {
+                    return MigrationErrorCode.TEMPLATE_GENERATION_FAILED;
+                }
+
+                // Default to JSON_PARSE_ERROR (most common case in migration workflows)
+                // Patterns: "unexpected token", "json", "position", etc.
                 return MigrationErrorCode.JSON_PARSE_ERROR;
         }
 
