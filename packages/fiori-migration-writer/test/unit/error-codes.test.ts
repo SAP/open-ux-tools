@@ -44,6 +44,35 @@ describe('error-codes', () => {
                 expect(extractErrorCode(error)).toBe('MIGRATION_FAILED');
             });
 
+            it('should extract more specific code from MigrationError with cause', () => {
+                // MigrationError wrapping an ENOENT error
+                const causeError = Object.assign(new Error('file not found'), { code: 'ENOENT' });
+                const error = Object.assign(new Error('Migration failed'), {
+                    name: 'MigrationError',
+                    cause: causeError
+                });
+                expect(extractErrorCode(error)).toBe('ENOENT');
+            });
+
+            it('should extract specific code from MigrationError wrapping UnsupportedProjectError', () => {
+                const causeError = new Error('Project not suitable');
+                causeError.name = 'UnsupportedProjectError';
+                const error = Object.assign(new Error('Migration failed'), {
+                    name: 'MigrationError',
+                    cause: causeError
+                });
+                expect(extractErrorCode(error)).toBe('NOT_SUITABLE_FOR_MIGRATION');
+            });
+
+            it('should fall back to MIGRATION_FAILED when cause has UNKNOWN_ERROR', () => {
+                const causeError = new Error('Some unknown error');
+                const error = Object.assign(new Error('Migration failed'), {
+                    name: 'MigrationError',
+                    cause: causeError
+                });
+                expect(extractErrorCode(error)).toBe('MIGRATION_FAILED');
+            });
+
             it('should extract JSON_PARSE_ERROR from SyntaxError', () => {
                 const error = new SyntaxError('Unexpected token in JSON');
                 expect(extractErrorCode(error)).toBe('JSON_PARSE_ERROR');
