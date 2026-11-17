@@ -26,6 +26,8 @@
     const token = script.dataset.token;
     const base = new URL('.', script.src);
     const clientId = crypto.randomUUID();
+    let activeAction;
+    let stopped = false;
 
     let appLoadedSeen = false;
     let appLoadedListening = false;
@@ -96,7 +98,7 @@
         return error.status === undefined || error.status === 408 || error.status === 429 || error.status >= 500;
     }
 
-    async function submitResult(id, response, recoveryMs = RESULT_RECOVERY_MS) {
+    async function submitAcknowledged(endpoint, id, response, recoveryMs = RESULT_RECOVERY_MS) {
         // Freeze the exact result once. Retries deliver it again, never execute the frontend action again.
         let body = JSON.stringify({ id, clientId, ...response });
         let compact = false;
@@ -105,14 +107,14 @@
         while (Date.now() < deadline) {
             try {
                 const acknowledgement = await request(
-                    'result', body, Math.min(REQUEST_TIMEOUT_MS, deadline - Date.now())
+                    endpoint, body, Math.min(REQUEST_TIMEOUT_MS, deadline - Date.now())
                 );
                 if (acknowledgement?.ok !== true) {
                     throw new Error('Invalid relay result acknowledgement');
                 }
                 return;
             } catch (error) {
-                if (error.status === 413 && !compact) {
+                if (endpoint === 'result' && error.status === 413 && !compact) {
                     body = JSON.stringify({ id, clientId, error: error.message });
                     compact = true;
                     continue;
@@ -270,13 +272,32 @@
         throw new Error("[rta-relay] editor frame '" + frameId + "' not found in the top document");
     }
 
-    async function callAction(action) {
+    async function invokeFrontendAction(action, execution, invoke) {
+        if (stopped || Date.now() >= execution.deadline) {
+            throw new Error('The action deadline expired before the UI5 method was invoked.');
+        }
+        execution.timer = setTimeout(() => {
+            execution.timedOut = true;
+            // UI5 does not expose cancellation here. Keep observing the original promise and report
+            // only progress; posting a final error would incorrectly release the server's execution lock.
+            submitAcknowledged('timeout', action.id, {}).catch((error) =>
+                console.error('[rta-relay] Could not report the action timeout:', error)
+            );
+        }, execution.deadline - Date.now());
+        try {
+            return await invoke();
+        } finally {
+            clearTimeout(execution.timer);
+        }
+    }
+
+    async function callAction(action, execution) {
         // Authenticated same-origin fetch through the editor page; needs no UI5/RTA, so handle it first.
         if (action.actionName === '__fetch__') {
             return await fetchViaContext(action.payload);
         }
         const targetWindow = resolveTargetWindow(action.frameId);
-        const deadline = Date.now() + ACTION_DEADLINE_MS;
+        const deadline = execution.deadline;
         // UFA navigation (describe_ui / execute_page_action) needs no RuntimeAuthoring, so handle it first.
         if (action.actionName.startsWith(UFA_PREFIX)) {
             const method = action.actionName.slice(UFA_PREFIX.length);
@@ -284,7 +305,7 @@
             if (typeof helpers?.[method] !== 'function') {
                 throw new Error('Frontend action not available: ' + action.actionName);
             }
-            return normalizeUfa(await helpers[method](action.payload));
+            return normalizeUfa(await invokeFrontendAction(action, execution, () => helpers[method](action.payload)));
         }
         const api = await requireModule(targetWindow, FLEX_ACTIONS_MODULE, deadline);
         if (action.actionName === '__ready__' || action.actionName === 'com.sap.ui.flex.startRTA.v1') {
@@ -305,7 +326,38 @@
         if (!method || typeof api?.[method] !== 'function') {
             throw new Error('Frontend action not available: ' + action.actionName);
         }
-        return await api[method](action.payload);
+        return await invokeFrontendAction(action, execution, () => api[method](action.payload));
+    }
+
+    async function processAction(action) {
+        if (activeAction) {
+            // The server normally prevents this. Never execute overlapping UI5 methods even if a
+            // malformed/stale delivery reaches this document. The stop command is handled separately.
+            if (activeAction.id !== action.id) {
+                await submitAcknowledged('result', action.id, { error: 'A previous editor action is still running.' });
+            }
+            return;
+        }
+        const budgetMs = Number.isFinite(action.budgetMs)
+            ? Math.max(0, Math.min(action.budgetMs, ACTION_DEADLINE_MS))
+            : ACTION_DEADLINE_MS;
+        const execution = { id: action.id, deadline: Date.now() + budgetMs };
+        activeAction = execution;
+        let response;
+        try {
+            response = { result: (await callAction(action, execution)) ?? null };
+        } catch (error) {
+            response = { error: error?.message ?? String(error) };
+        } finally {
+            activeAction = undefined;
+        }
+        if (stopped) {
+            return;
+        }
+        if (execution.timedOut) {
+            console.info('[rta-relay] Previously timed-out action settled; inspect the editor before retrying:', action.id);
+        }
+        await submitAcknowledged('result', action.id, response);
     }
 
     function externalEditorWindow() {
@@ -355,6 +407,12 @@
                 continue;
             }
             if (action.actionName === '__reload__' || action.actionName === '__stop__') {
+                if (activeAction && action.actionName === '__reload__') {
+                    await submitAcknowledged('result', action.id, { error: 'Cannot reload while an editor action is running.' });
+                    continue;
+                }
+                stopped = true;
+                clearTimeout(activeAction?.timer);
                 const result = action.actionName === '__reload__' ? { reloaded: true } : { stopped: true };
                 const closeTarget =
                     action.actionName === '__stop__' && action.payload?.closeWindow === true
@@ -364,8 +422,8 @@
                     result.closeRequested = !!closeTarget;
                 }
                 try {
-                    await submitResult(
-                        action.id, { result },
+                    await submitAcknowledged(
+                        'result', action.id, { result },
                         action.actionName === '__stop__' ? STOP_RESULT_RECOVERY_MS : RESULT_RECOVERY_MS
                     );
                 } catch (error) {
@@ -390,18 +448,15 @@
                 }
                 return;
             }
-            let response;
-            try {
-                response = { result: (await callAction(action)) ?? null };
-            } catch (error) {
-                response = { error: error.message ?? String(error) };
-            }
-            try {
-                await submitResult(action.id, response);
-            } catch (error) {
+            // Keep polling for shutdown while UI5 is running. The server accepts no other editor
+            // commands until the actual result arrives, including after a timeout or disconnect.
+            const processing = processAction(action).catch((error) => {
                 console.error(
                     '[rta-relay] Result delivery was not confirmed. Inspect the editor before retrying the action:', error
                 );
+            });
+            if (!action.actionName.startsWith('com.sap.ui.')) {
+                await processing;
             }
         }
     }

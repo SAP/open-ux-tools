@@ -41,6 +41,8 @@ describe('preview RTA relay', () => {
         server.post(`${API}/action`).set('X-Relay-Token', TOKEN).send({ actionName });
     const result = (id: string, clientId = 'first', value: unknown = { isSuccess: true }) =>
         server.post(`${API}/result`).set('X-Relay-Token', TOKEN).send({ id, clientId, result: value });
+    const timedOut = (id: string, clientId = 'first') =>
+        server.post(`${API}/timeout`).set('X-Relay-Token', TOKEN).send({ id, clientId });
 
     // Synchronize on route registration rather than timing sleeps or retried mutations.
     const begin = async (request: supertest.Test) => {
@@ -81,7 +83,8 @@ describe('preview RTA relay', () => {
     test.each([
         ['get', 'poll'],
         ['post', 'action'],
-        ['post', 'result']
+        ['post', 'result'],
+        ['post', 'timeout']
     ] as const)('%s %s requires the exact relay token header', async (method, route) => {
         for (const header of ['', 'b'.repeat(64), `Bearer ${TOKEN}`, TOKEN.toUpperCase()]) {
             await server[method](`${API}/${route}`).set('X-Relay-Token', header).expect(401);
@@ -93,8 +96,7 @@ describe('preview RTA relay', () => {
         const command = await begin(action());
         await action().expect(409, { error: 'Relay busy' });
         const delivery = await poll().expect(200);
-        expect(delivery.body).toEqual({ id: expect.any(String), actionName: ACTION, payload: {} });
-        await poll().expect(409);
+        expect(delivery.body).toEqual({ id: expect.any(String), actionName: ACTION, payload: {}, budgetMs: 55000 });
         await poll('second').expect(409);
         await result(delivery.body.id).expect(200, { ok: true });
         expect((await command.response).body).toEqual({ result: { isSuccess: true }, clientId: 'first' });
@@ -222,20 +224,59 @@ describe('preview RTA relay', () => {
         expect((await command.response).status).toBe(504);
     });
 
+    test('a timeout notification retains the execution until a late result arrives', async () => {
+        const command = await begin(action());
+        const delivery = await poll().expect(200);
+        await timedOut(delivery.body.id, 'second').expect(409);
+        await timedOut(delivery.body.id).expect(200, { ok: true });
+        expect((await command.response).body).toHaveProperty('code', 'RELAY_ACTION_OUTCOME_UNKNOWN');
+        await timedOut(delivery.body.id).expect(200, { ok: true });
+        jest.advanceTimersByTime(180000);
+        for (const name of [ACTION, '__reload__', '__fetch__', '__ready__']) {
+            expect((await action(name).expect(409)).body).toHaveProperty('code', 'RELAY_ACTION_IN_PROGRESS');
+        }
+        await poll('second').expect(409);
+        await result(delivery.body.id, 'second').expect(409);
+        await result(delivery.body.id).expect(200, { ok: true });
+        await timedOut(delivery.body.id).expect(200, { ok: true });
+        const next = await begin(action());
+        const nextDelivery = await poll().expect(200);
+        await result(delivery.body.id).expect(200, { ok: true });
+        await result(nextDelivery.body.id).expect(200);
+        expect((await next.response).status).toBe(200);
+    });
+
+    test('shutdown remains deliverable while a UI5 action is unresolved', async () => {
+        const command = await begin(action());
+        const delivery = await poll().expect(200);
+        const waiting = await begin(poll());
+        const stop = await begin(action('__stop__'));
+        expect((await command.response).body).toHaveProperty('code', 'RELAY_ACTION_OUTCOME_UNKNOWN');
+        const stopDelivery = await waiting.response;
+        expect(stopDelivery.body.actionName).toBe('__stop__');
+        await result(stopDelivery.body.id).expect(200);
+        expect((await stop.response).status).toBe(200);
+        await result(delivery.body.id).expect(200);
+        expect((await action().expect(409)).body).toHaveProperty('code', 'RELAY_SESSION_STOPPING');
+        await poll('new-document').expect(409);
+    });
+
     test('keeps an owner that is actively recovering while a delivered action expires', async () => {
         const command = await begin(action());
-        await poll().expect(200);
+        const delivery = await poll().expect(200);
         jest.advanceTimersByTime(29000);
-        await poll().expect(409);
+        const keepalive = await begin(poll());
         jest.advanceTimersByTime(29000);
-        await poll().expect(409);
+        expect((await keepalive.response).body).toBeNull();
         jest.advanceTimersByTime(2000);
         expect((await command.response).status).toBe(500);
         const duplicate = await poll('duplicate').expect(409);
-        expect(duplicate.body).toHaveProperty('code', 'RELAY_OWNER_ACTIVE');
-        const next = await begin(action());
-        const delivery = await poll().expect(200);
+        expect(duplicate.body).toHaveProperty('code', 'RELAY_RESULT_PENDING');
+        await action().expect(409);
         await result(delivery.body.id).expect(200);
+        const next = await begin(action());
+        const nextDelivery = await poll().expect(200);
+        await result(nextDelivery.body.id).expect(200);
         expect((await next.response).body).toHaveProperty('clientId', 'first');
     });
 
@@ -320,8 +361,10 @@ describe('preview RTA relay', () => {
         const response = await command.response;
         expect(response.status).toBe(500);
         expect(response.body).toHaveProperty('code', 'RELAY_ACTION_OUTCOME_UNKNOWN');
-        await result(delivery.body.id).expect(404);
-        const next = await begin(poll('second'));
+        await action().expect(409);
+        await poll('second').expect(409);
+        await result(delivery.body.id).expect(200);
+        const next = await begin(poll());
         jest.advanceTimersByTime(25000);
         expect((await next.response).body).toBeNull();
     });
@@ -396,6 +439,57 @@ describe('preview RTA relay', () => {
         const delivery = await poll().expect(200);
         await result(delivery.body.id).expect(200);
         expect((await command.response).status).toBe(200);
+    });
+
+    test('a disconnected caller does not release a delivered UI5 operation', async () => {
+        const request = action();
+        const started = await begin(request);
+        const rejected = started.response.catch(() => undefined);
+        const delivery = await poll().expect(200);
+        const closed = once(app, 'relay-close');
+        request.abort();
+        await closed;
+        await rejected;
+        expect(jest.getTimerCount()).toBe(0);
+        jest.advanceTimersByTime(180000);
+        await action().expect(409);
+        await poll('second').expect(409);
+        await timedOut(delivery.body.id).expect(200);
+        await result(delivery.body.id).expect(200);
+        const next = await begin(action());
+        const nextDelivery = await poll().expect(200);
+        await result(nextDelivery.body.id).expect(200);
+        expect((await next.response).status).toBe(200);
+    });
+
+    test.each([{}, { id: 'id' }, { id: [], clientId: 'first' }, { id: 'id', clientId: 'invalid client' }])(
+        'rejects malformed timeout notifications: %j',
+        async (body) => {
+            await server.post(`${API}/timeout`).set('X-Relay-Token', TOKEN).send(body).expect(400);
+        }
+    );
+
+    test('rejects unknown timeout notifications and ignores late ones for another pending action', async () => {
+        await timedOut('unknown').expect(404);
+        const command = await begin(action());
+        const delivery = await poll().expect(200);
+        await result(delivery.body.id).expect(200);
+        await command.response;
+        const next = await begin(action());
+        const nextDelivery = await poll().expect(200);
+        await timedOut(delivery.body.id, 'second').expect(409);
+        await timedOut(delivery.body.id).expect(200);
+        await result(nextDelivery.body.id).expect(200);
+        expect((await next.response).status).toBe(200);
+    });
+
+    test('subtracts time spent waiting for delivery from the browser execution budget', async () => {
+        const command = await begin(action());
+        jest.advanceTimersByTime(40000);
+        const delivery = await poll().expect(200);
+        expect(delivery.body.budgetMs).toBe(15000);
+        await result(delivery.body.id).expect(200);
+        await command.response;
     });
 
     test('relay state is isolated between preview routers', async () => {
@@ -506,6 +600,8 @@ describe('relay browser client', () => {
         const close = jest.fn();
         const parentPostMessage = jest.fn();
         const log = jest.fn();
+        let previousResult = Promise.resolve();
+        let finishResult = () => {};
         const fetch = jest.fn(async (url: URL | string, options: { body?: string } = {}) => {
             const href = url.toString();
             if (!href.includes(`${API}/`)) {
@@ -516,11 +612,19 @@ describe('relay browser client', () => {
                 if (failResult) {
                     throw new Error('Result network failure');
                 }
+                finishResult();
                 return { ok: true, json: async () => ({ ok: true }) };
+            }
+            // Like the server, do not deliver the next ordinary action until the previous result.
+            if (!failResult) {
+                await previousResult;
             }
             if (!actions.length) {
                 return { ok: false, status: 409 };
             }
+            previousResult = new Promise<void>((resolve) => {
+                finishResult = resolve;
+            });
             return { ok: true, json: async () => actions.shift() };
         });
         const win: Record<string, unknown> = {
@@ -549,7 +653,7 @@ describe('relay browser client', () => {
                 href: 'https://preview.test/prefix/test/adaptation-editor.html',
                 origin: 'https://preview.test'
             },
-            console: { error: log },
+            console: { error: log, info: log },
             URL,
             AbortController,
             ...clock,
@@ -564,11 +668,16 @@ describe('relay browser client', () => {
         return { fetch, reload, close, parentPostMessage, log, ui5Require, dispatchMessage };
     };
 
+    const resultPosts = (client: { fetch: jest.Mock }) =>
+        client.fetch.mock.calls
+            .filter(([url]) => String(url).endsWith('/result'))
+            .map(([, options]) => JSON.parse(options.body));
+
     const waitForResult = async (client: { fetch: jest.Mock }) => {
-        for (let i = 0; i < 2000 && client.fetch.mock.calls.length < 2; i++) {
+        for (let i = 0; i < 2000 && resultPosts(client).length === 0; i++) {
             await new Promise(setImmediate);
         }
-        return JSON.parse(client.fetch.mock.calls[1][1].body ?? '');
+        return resultPosts(client)[0];
     };
 
     test('uses authenticated prefixed endpoints and the inner-frame fallback', async () => {
@@ -580,7 +689,7 @@ describe('relay browser client', () => {
         const [url, options] = client.fetch.mock.calls[0];
         expect(url.toString()).toBe(`https://preview.test/prefix${API}/poll?clientId=document-id`);
         expect(options).toMatchObject({ headers: { 'X-Relay-Token': TOKEN }, cache: 'no-store' });
-        expect(JSON.parse(client.fetch.mock.calls[1][1].body ?? '')).toEqual({
+        expect(await waitForResult(client)).toEqual({
             id: '1',
             clientId: 'document-id',
             result: { overlays: [] }
@@ -615,7 +724,7 @@ describe('relay browser client', () => {
                 fastClock: true
             });
             await new Promise(setImmediate);
-            expect(client.fetch).toHaveBeenCalledTimes(1);
+            expect(resultPosts(client)).toHaveLength(0);
             expect(startRTA).not.toHaveBeenCalled();
             editor.instance = readyRtaInstance();
             const body = await waitForResult(client);
@@ -686,7 +795,7 @@ describe('relay browser client', () => {
                 false,
                 { rta: editorRta({ getService }) }
             );
-            expect(client.fetch).toHaveBeenCalledTimes(1);
+            expect(resultPosts(client)).toHaveLength(0);
             expect(startRTA).not.toHaveBeenCalled();
             expect(getOverlaysInformation).not.toHaveBeenCalled();
             expect(getService).toHaveBeenCalledWith('outline');
@@ -694,7 +803,7 @@ describe('relay browser client', () => {
             finishStart({ get });
             await new Promise(setImmediate);
             expect(get).toHaveBeenCalledTimes(1);
-            expect(client.fetch).toHaveBeenCalledTimes(1);
+            expect(resultPosts(client)).toHaveLength(0);
             expect(startRTA).not.toHaveBeenCalled();
             expect(getOverlaysInformation).not.toHaveBeenCalled();
 
@@ -774,7 +883,7 @@ describe('relay browser client', () => {
         );
         expect(startRTA).toHaveBeenCalledTimes(1);
         expect(getOverlaysInformation).toHaveBeenCalledTimes(1);
-        expect(JSON.parse(client.fetch.mock.calls[3][1].body ?? '').result).toEqual({
+        expect(resultPosts(client)[1].result).toEqual({
             isSuccess: true,
             payload: { overlays: [] }
         });
@@ -888,7 +997,7 @@ describe('relay browser client', () => {
 
     test('reports an unavailable action without replaying it', async () => {
         const client = await runClient([{ id: '1', actionName: ACTION }]);
-        expect(JSON.parse(client.fetch.mock.calls[1][1].body ?? '').error).toContain('Frontend action not available');
+        expect((await waitForResult(client)).error).toContain('Frontend action not available');
         expect(client.ui5Require).toHaveBeenCalledTimes(1);
     });
 
@@ -907,6 +1016,45 @@ describe('relay browser client', () => {
         );
         expect(describeUI).toHaveBeenCalledWith({ includedProperties: ['id'] });
         expect((await waitForResult(client)).result).toEqual({ isSuccess: true, payload: forest, error: null });
+    });
+
+    test.each([ACTION, 'com.sap.ui.unified.frontend.actions.executeAction'])(
+        'does not invoke %s if the shared action budget is exhausted',
+        async (actionName) => {
+            const execute = jest.fn();
+            const client = await runClient([{ id: '1', actionName, budgetMs: 0 }], {
+                getOverlays: execute,
+                executeAction: execute
+            });
+            expect((await waitForResult(client)).error).toContain('before the UI5 method was invoked');
+            expect(execute).not.toHaveBeenCalled();
+            expect(client.fetch.mock.calls.some(([url]) => String(url).endsWith('/timeout'))).toBe(false);
+        }
+    );
+
+    test('a module that loads after the action budget expires cannot invoke the method later', async () => {
+        let loaded: (api: unknown) => void = () => {};
+        const execute = jest.fn();
+        const client = await runClient(
+            [{ id: '1', actionName: ACTION, budgetMs: 500 }],
+            {},
+            {
+                sap: {
+                    ui: {
+                        require: (_modules: string[], resolve: (api: unknown) => void) => {
+                            loaded = resolve;
+                        }
+                    }
+                }
+            },
+            false,
+            { fastClock: true }
+        );
+        expect((await waitForResult(client)).error).toContain('Timed out loading');
+        loaded({ getOverlays: execute });
+        await new Promise(setImmediate);
+        expect(execute).not.toHaveBeenCalled();
+        expect(resultPosts(client)).toHaveLength(1);
     });
 
     test('normalizes a bare UFA success into a null payload', async () => {
@@ -942,19 +1090,24 @@ describe('relay browser client', () => {
         expect(client.log).toHaveBeenCalled();
     });
 
-    test('bounds result retries without repeating the action, then resumes polling', async () => {
+    test('bounds result retries without repeating the action while polling stays responsive', async () => {
         const getOverlays = jest.fn().mockResolvedValue({ overlays: [] });
         const client = await runClient([{ id: '1', actionName: ACTION }], { getOverlays }, undefined, true, {
             fastClock: true
         });
-        for (let i = 0; i < 2000 && client.log.mock.calls.length === 0; i++) {
+        for (
+            let i = 0;
+            i < 2000 &&
+            !client.log.mock.calls.some(([message]) => String(message).includes('Result delivery was not confirmed'));
+            i++
+        ) {
             await new Promise(setImmediate);
         }
         expect(getOverlays).toHaveBeenCalledTimes(1);
         const posts = client.fetch.mock.calls.filter(([, options]) => options.body).map(([, options]) => options.body);
         expect(posts.length).toBeGreaterThan(1);
         expect(new Set(posts).size).toBe(1);
-        expect(client.fetch.mock.calls.at(-1)?.[1].body).toBeUndefined();
+        expect(client.fetch.mock.calls.filter(([, options]) => !options.body)).toHaveLength(2);
         expect(client.log).toHaveBeenCalled();
     });
 

@@ -233,13 +233,28 @@ describe('browser/http-bridge', () => {
     );
 
     describe('login wait (startRTA)', () => {
+        test.each(['RELAY_ACTION_IN_PROGRESS', 'RELAY_SESSION_STOPPING'])(
+            'preserves %s without retrying start or prompting for login',
+            async (code) => {
+                const message = 'Further editor actions are blocked.';
+                respondWith({ code, error: message }, 409);
+                await expect(httpTransport.callFrontendAction(SITE, START)).resolves.toEqual({
+                    isSuccess: false,
+                    payload: null,
+                    error: { code, message }
+                });
+                expect(fetchMock).toHaveBeenCalledTimes(1);
+                expect(jest.getTimerCount()).toBe(0);
+            }
+        );
+
         test('does not replay start when the relay reports an unconfirmed delivered action', async () => {
             const message = 'The action outcome is unknown; inspect the editor before retrying.';
             respondWith({ code: 'RELAY_ACTION_OUTCOME_UNKNOWN', error: message }, 500);
             await expect(httpTransport.callFrontendAction(SITE, START)).resolves.toEqual({
                 isSuccess: false,
                 payload: null,
-                error: { code: 'RELAY_ERROR', message }
+                error: { code: 'RELAY_ACTION_OUTCOME_UNKNOWN', message }
             });
             expect(fetchMock).toHaveBeenCalledTimes(1);
             expect(jest.getTimerCount()).toBe(0);

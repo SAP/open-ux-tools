@@ -14,6 +14,9 @@ const realNow = Date.now.bind(Date);
 type Intercept = (send: () => Promise<Response>, attempt: number) => Promise<Response>;
 interface TestClient {
     posts: string[];
+    timeouts: string[];
+    resultStatuses: number[];
+    expireAction: () => void;
     polls: number[];
     effects: jest.Mock<() => Promise<unknown>>;
     log: jest.Mock;
@@ -54,10 +57,18 @@ describe('relay recovery with the real server and browser client', () => {
         jest.restoreAllMocks();
     });
 
-    function startClient(id: string, resultIntercept?: Intercept, pollIntercept?: Intercept): TestClient {
+    function startClient(
+        id: string,
+        resultIntercept?: Intercept,
+        pollIntercept?: Intercept,
+        timeoutIntercept?: Intercept
+    ): TestClient {
         const controller = new AbortController();
         const timers = new Set<ReturnType<typeof setTimeout>>();
         const posts: string[] = [];
+        const timeouts: string[] = [];
+        const resultStatuses: number[] = [];
+        const actionDeadlines = new Map<ReturnType<typeof setTimeout>, { callback: () => void; ms: number }>();
         const polls: number[] = [];
         const effects = jest.fn<() => Promise<unknown>>(async () => ({ isSuccess: true, payload: { id } }));
         const log = jest.fn();
@@ -66,8 +77,11 @@ describe('relay recovery with the real server and browser client', () => {
         let pollAttempts = 0;
         const browserFetch: typeof fetch = async (url, options) => {
             const result = new URL(String(url)).pathname.endsWith('/result');
+            const timeout = new URL(String(url)).pathname.endsWith('/timeout');
             if (result) {
                 posts.push(String(options?.body));
+            } else if (timeout) {
+                timeouts.push(String(options?.body));
             }
             const send = () =>
                 fetch(url, {
@@ -78,10 +92,17 @@ describe('relay recovery with the real server and browser client', () => {
                 if (controller.signal.aborted) {
                     throw new Error('Test document closed');
                 }
-                const response = result
-                    ? await (resultIntercept ? resultIntercept(send, posts.length) : send())
-                    : await (pollIntercept ? pollIntercept(send, ++pollAttempts) : send());
-                if (!result) {
+                let response: Response;
+                if (result) {
+                    response = await (resultIntercept ? resultIntercept(send, posts.length) : send());
+                } else if (timeout) {
+                    response = await (timeoutIntercept ? timeoutIntercept(send, timeouts.length) : send());
+                } else {
+                    response = await (pollIntercept ? pollIntercept(send, ++pollAttempts) : send());
+                }
+                if (result) {
+                    resultStatuses.push(response.status);
+                } else if (!timeout) {
                     polls.push(response.status);
                 }
                 return response;
@@ -95,7 +116,8 @@ describe('relay recovery with the real server and browser client', () => {
         const win: Record<string, unknown> = {
             sap: {
                 ui: {
-                    require: (_modules: string[], resolve: (api: unknown) => void) => resolve({ getOverlays: effects })
+                    require: (_modules: string[], resolve: (api: unknown) => void) =>
+                        resolve({ getOverlays: effects, executeAction: effects })
                 }
             },
             close,
@@ -128,17 +150,33 @@ describe('relay recovery with the real server and browser client', () => {
                     ms <= 5000 ? 10 : ms
                 );
                 timers.add(timer);
+                if (ms > 30000 && ms <= 55000) {
+                    actionDeadlines.set(timer, { callback, ms });
+                }
                 return timer;
             },
             clearTimeout: (timer: ReturnType<typeof setTimeout>) => {
                 timers.delete(timer);
+                actionDeadlines.delete(timer);
                 clearTimeout(timer);
             },
             fetch: browserFetch,
-            console: { error: log }
+            console: { error: log, info: log }
         });
         const client = {
             posts,
+            timeouts,
+            resultStatuses,
+            expireAction: () => {
+                expect(actionDeadlines.size).toBe(1);
+                for (const [timer, { callback, ms }] of actionDeadlines) {
+                    clearTimeout(timer);
+                    timers.delete(timer);
+                    now += ms;
+                    callback();
+                }
+                actionDeadlines.clear();
+            },
             polls,
             effects,
             log,
@@ -171,6 +209,116 @@ describe('relay recovery with the real server and browser client', () => {
         expect(predicate()).toBe(true);
     }
 
+    test.each([ACTION, 'com.sap.ui.unified.frontend.actions.executeAction'])(
+        'a stuck %s reports its deadline, blocks other actions and still allows shutdown',
+        async (actionName) => {
+            const client = startClient('owner');
+            client.effects.mockImplementation(() => new Promise(() => {}));
+            const pending = command(actionName);
+            await until(() => client.effects.mock.calls.length === 1);
+            client.expireAction();
+            const response = await pending;
+            expect(response.status).toBe(500);
+            expect(await response.json()).toHaveProperty('code', 'RELAY_ACTION_OUTCOME_UNKNOWN');
+            expect(client.posts).toHaveLength(0);
+            expect((await command()).status).toBe(409);
+            expect((await command('__reload__')).status).toBe(409);
+            const duplicate = startClient('duplicate');
+            await until(() => duplicate.polls.length > 0);
+            expect(duplicate.polls[0]).toBe(409);
+            expect(duplicate.effects).not.toHaveBeenCalled();
+            expect((await command('__stop__')).status).toBe(200);
+            await until(() => client.close.mock.calls.length === 1);
+            expect(client.effects).toHaveBeenCalledTimes(1);
+        }
+    );
+
+    test.each(['success', 'failure', 'non-error rejection'])(
+        'a late %s releases the execution without replaying it, including a lost result acknowledgement',
+        async (outcome) => {
+            let finish: (value: unknown) => void = () => {};
+            let fail: (reason: unknown) => void = () => {};
+            const operation = new Promise((resolve, reject) => {
+                finish = resolve;
+                fail = reject;
+            });
+            const client = startClient('owner', async (send, attempt) => {
+                const response = await send();
+                if (attempt === 1) {
+                    await response.text();
+                    throw new TypeError('Late result acknowledgement lost');
+                }
+                return response;
+            });
+            client.effects.mockReturnValueOnce(operation);
+            const pending = command();
+            await until(() => client.effects.mock.calls.length === 1);
+            client.expireAction();
+            expect((await pending).status).toBe(500);
+            expect((await command()).status).toBe(409);
+            if (outcome === 'success') {
+                finish({ isSuccess: true, payload: { saved: true } });
+            } else {
+                fail(outcome === 'non-error rejection' ? null : new Error('UI5 failed after its deadline'));
+            }
+            await until(() => client.resultStatuses.length === 1);
+            expect(client.posts).toHaveLength(2);
+            expect(client.posts[0]).toBe(client.posts[1]);
+            expect(JSON.parse(client.posts[0])).toMatchObject(
+                outcome === 'success'
+                    ? { result: { isSuccess: true, payload: { saved: true } } }
+                    : { error: outcome === 'non-error rejection' ? 'null' : 'UI5 failed after its deadline' }
+            );
+            expect((await command()).status).toBe(200);
+            expect(client.effects).toHaveBeenCalledTimes(2);
+        }
+    );
+
+    test('a lost timeout acknowledgement cannot consume a late result or a newer action', async () => {
+        let finish: (value: unknown) => void = () => {};
+        const operation = new Promise((resolve) => {
+            finish = resolve;
+        });
+        const client = startClient('owner', undefined, undefined, async (send, attempt) => {
+            const response = await send();
+            if (attempt === 1) {
+                await response.text();
+                finish({ isSuccess: true, payload: null });
+                throw new TypeError('Timeout acknowledgement lost');
+            }
+            return response;
+        });
+        client.effects.mockReturnValueOnce(operation);
+        const pending = command();
+        await until(() => client.effects.mock.calls.length === 1);
+        client.expireAction();
+        expect((await pending).status).toBe(500);
+        await until(() => client.resultStatuses.length === 1);
+        expect((await command()).status).toBe(200);
+        await until(() => client.timeouts.length === 2);
+        expect(client.timeouts[0]).toBe(client.timeouts[1]);
+        expect(client.effects).toHaveBeenCalledTimes(2);
+    });
+
+    test('shutdown closes the tab before a running method finishes or reaches its deadline', async () => {
+        let finish: (value: unknown) => void = () => {};
+        const operation = new Promise((resolve) => {
+            finish = resolve;
+        });
+        const client = startClient('owner');
+        client.effects.mockReturnValueOnce(operation);
+        const pending = command();
+        await until(() => client.effects.mock.calls.length === 1);
+        expect((await command('__stop__')).status).toBe(200);
+        expect((await pending).status).toBe(500);
+        await until(() => client.close.mock.calls.length === 1);
+        finish({ isSuccess: true });
+        await new Promise(setImmediate);
+        expect(client.timeouts).toHaveLength(0);
+        expect(client.posts).toHaveLength(1);
+        expect((await command()).status).toBe(409);
+    });
+
     test('a refreshed document reconnects after the old owner lease expires', async () => {
         const old = startClient('old');
         expect((await command()).status).toBe(200);
@@ -201,9 +349,12 @@ describe('relay recovery with the real server and browser client', () => {
             // For a lost acknowledgement, the second command can arrive before the first result retry.
             expect((await command()).status).toBe(200);
             expect(client.effects).toHaveBeenCalledTimes(2);
+            await until(() => client.posts.length === 3);
             expect(client.posts).toHaveLength(3);
-            expect(client.posts[0]).toBe(client.posts[1]);
-            expect(JSON.parse(client.posts[2]).id).not.toBe(JSON.parse(client.posts[0]).id);
+            const firstId = String(JSON.parse(client.posts[0]).id);
+            const retries = client.posts.filter((post) => JSON.parse(post).id === firstId);
+            expect(retries).toEqual([client.posts[0], client.posts[0]]);
+            expect(client.posts.filter((post) => JSON.parse(post).id !== firstId)).toHaveLength(1);
         }
     );
 
@@ -223,7 +374,9 @@ describe('relay recovery with the real server and browser client', () => {
         expect(await first.json()).toHaveProperty('error', expect.stringContaining('HTTP 413'));
         expect((await command()).status).toBe(200);
         expect(client.effects).toHaveBeenCalledTimes(2);
-        expect(client.posts[1]).toBe(client.posts[2]);
+        await until(() => client.posts.length === 4);
+        const compact = client.posts.filter((post) => JSON.parse(post).error);
+        expect(compact).toEqual([client.posts[1], client.posts[1]]);
         expect(client.posts).toHaveLength(4);
     });
 
@@ -257,7 +410,9 @@ describe('relay recovery with the real server and browser client', () => {
         const first = await command();
         expect(await first.json()).toHaveProperty('result.payload.label', 'original');
         expect((await command()).status).toBe(200);
-        expect(client.posts[0]).toBe(client.posts[1]);
+        await until(() => client.posts.length === 3);
+        const retries = client.posts.filter((post) => JSON.parse(post).id === JSON.parse(client.posts[0]).id);
+        expect(retries).toEqual([client.posts[0], client.posts[0]]);
         expect(client.effects).toHaveBeenCalledTimes(2);
     });
 
@@ -293,16 +448,24 @@ describe('relay recovery with the real server and browser client', () => {
     );
 
     test('recovers a transient poll failure and resets the recovery budget after success', async () => {
+        let releaseOutage: () => void = () => {};
+        const nextOutage = new Promise<void>((resolve) => {
+            releaseOutage = resolve;
+        });
         const client = startClient('owner', undefined, async (send, attempt) => {
             if (attempt === 1 || attempt === 3) {
                 if (attempt === 3) {
-                    now += 100000;
+                    await nextOutage;
                 }
                 return new Response('Gateway unavailable', { status: 503 });
             }
             return send();
         });
         expect((await command()).status).toBe(200);
+        await until(() => client.resultStatuses.length === 1);
+        now += 100000;
+        releaseOutage();
+        await until(() => client.polls.filter((status) => status === 503).length === 2);
         expect((await command()).status).toBe(200);
         expect(client.effects).toHaveBeenCalledTimes(2);
         expect(client.polls.filter((status) => status === 503)).toHaveLength(2);

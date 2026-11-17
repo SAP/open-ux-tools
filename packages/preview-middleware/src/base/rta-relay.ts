@@ -6,6 +6,7 @@ import { json, type NextFunction, type Request, type Response, type Router } fro
 const API = '/adp/api/rta';
 const POLL_TIMEOUT_MS = 25000;
 const ACTION_TIMEOUT_MS = 60000;
+const RESULT_DELIVERY_BUDGET_MS = 5000;
 const FETCH_DELIVERY_TIMEOUT_MS = 5000;
 const OWNER_LEASE_MS = 30000;
 const COMMAND_LIMIT_BYTES = 100 * 1024;
@@ -22,6 +23,7 @@ interface PendingAction {
     payload: Record<string, unknown>;
     frameId?: string;
     delivered: boolean;
+    expiresAt: number;
     clientId?: string;
     deliveryTimer?: ReturnType<typeof setTimeout>;
     res: Response;
@@ -141,6 +143,9 @@ export function addRtaRelayApis(
         Number.isSafeInteger(configuredLimit) && configuredLimit >= 1024 ? configuredLimit : DEFAULT_RESULT_LIMIT_BYTES;
 
     let pending: PendingAction | undefined;
+    // A delivered UI5 operation can outlive its HTTP caller. Retain only its identity until it settles.
+    let executing: { id: string; clientId: string } | undefined;
+    let closing = false;
     let poll: PollWaiter | undefined;
     let owner: { clientId: string; lastSeen: number } | undefined;
     // Keep retired documents fenced out for the lifetime of this editor session.
@@ -178,6 +183,58 @@ export function addRtaRelayApis(
         });
     };
 
+    const releaseRequest = (action: PendingAction): void => {
+        clearTimeout(action.timer);
+        clearTimeout(action.deliveryTimer);
+        if (pending === action) {
+            pending = undefined;
+        }
+    };
+
+    const reportUnknownOutcome = (): void => {
+        if (pending && pending.id === executing?.id) {
+            const action = pending;
+            releaseRequest(action);
+            action.res.status(500).json({
+                code: 'RELAY_ACTION_OUTCOME_UNKNOWN',
+                error:
+                    'The editor action has no confirmed outcome and may still be running. ' +
+                    'Further editor actions are blocked until it finishes. Inspect the editor before retrying; ' +
+                    'stop the session if it does not recover.'
+            });
+        }
+    };
+
+    const ownsResult = (body: ResultBody): boolean => {
+        if (executing?.id === body.id) {
+            return executing.clientId === body.clientId;
+        }
+        return (
+            pending?.id === body.id &&
+            pending.delivered &&
+            pending.clientId === body.clientId &&
+            owner?.clientId === body.clientId
+        );
+    };
+
+    const acknowledgeDuplicate = (body: ResultBody, res: Response): boolean => {
+        pruneResultAcks();
+        const acknowledged = resultAcks.get(body.id);
+        if (!acknowledged) {
+            return false;
+        }
+        if (acknowledged.clientId !== body.clientId || acknowledged.digest !== resultDigest(body)) {
+            res.status(409).json({
+                code: 'RELAY_RESULT_CONFLICT',
+                error: 'A different result was already accepted for this action.'
+            });
+        } else {
+            // Acknowledgement recovery must not change ownership or consume a newer pending action.
+            res.json({ ok: true });
+        }
+        return true;
+    };
+
     const deliver = (): void => {
         if (!poll || !pending || pending.delivered) {
             return;
@@ -188,11 +245,16 @@ export function addRtaRelayApis(
         clearTimeout(pending.deliveryTimer);
         pending.delivered = true;
         pending.clientId = waiter.clientId;
+        if (pending.actionName.startsWith('com.sap.ui.')) {
+            executing = { id: pending.id, clientId: waiter.clientId };
+        }
         waiter.res.json({
             id: pending.id,
             actionName: pending.actionName,
             payload: pending.payload,
-            frameId: pending.frameId
+            frameId: pending.frameId,
+            // Send a duration, not a server timestamp: browser and server clocks may differ.
+            budgetMs: Math.max(0, pending.expiresAt - Date.now() - RESULT_DELIVERY_BUDGET_MS)
         });
     };
 
@@ -200,7 +262,10 @@ export function addRtaRelayApis(
         if (retiredClients.has(clientId)) {
             return { code: 'RELAY_CLIENT_RETIRED', error: 'This editor document has been retired.' };
         }
-        if (pending?.delivered) {
+        if (closing && owner?.clientId !== clientId) {
+            return { code: 'RELAY_SESSION_STOPPING', error: 'The editor session is stopping.' };
+        }
+        if ((executing && executing.clientId !== clientId) || (pending?.delivered && pending.id !== executing?.id)) {
             return { code: 'RELAY_RESULT_PENDING', error: 'The relay is waiting for the current action result.' };
         }
         if (poll) {
@@ -272,11 +337,33 @@ export function addRtaRelayApis(
             res.status(400).json({ error: 'Invalid actionName, payload or frameId' });
             return;
         }
+        if (closing) {
+            res.status(409).json({ code: 'RELAY_SESSION_STOPPING', error: 'The editor session is stopping.' });
+            return;
+        }
+        if (executing) {
+            if (body.actionName !== '__stop__') {
+                res.status(409).json({
+                    code: 'RELAY_ACTION_IN_PROGRESS',
+                    error:
+                        'A previous editor action has not finished. Further editor actions are blocked. ' +
+                        'Do not replay it; inspect the editor or stop the session if it does not recover.'
+                });
+                return;
+            }
+            // Shutdown is the only command allowed alongside an unresolved UI5 operation.
+            closing = true;
+            reportUnknownOutcome();
+        }
         if (pending) {
             res.status(409).json({ error: 'Relay busy' });
             return;
         }
         const timer = setTimeout(() => {
+            if (executing && pending?.id === executing.id) {
+                reportUnknownOutcome();
+                return;
+            }
             const delivered = pending?.delivered;
             pending = undefined;
             if (body.actionName === '__fetch__') {
@@ -317,18 +404,41 @@ export function addRtaRelayApis(
             payload: body.payload ?? {},
             frameId: body.frameId,
             delivered: false,
+            expiresAt: Date.now() + ACTION_TIMEOUT_MS,
             deliveryTimer,
             res,
             timer
         };
-        res.once('close', () => {
-            clearTimeout(timer);
-            clearTimeout(deliveryTimer);
-            if (pending?.res === res) {
-                pending = undefined;
-            }
-        });
+        const action = pending;
+        // A disconnected caller releases its response, never a possibly running UI5 operation.
+        res.once('close', () => releaseRequest(action));
         deliver();
+    });
+
+    // This is a progress notification, not a final result. It must not enter the result-ack cache.
+    router.post(`${API}/timeout`, json({ limit: COMMAND_LIMIT_BYTES }), (req, res) => {
+        const body: unknown = req.body;
+        if (!isObject(body) || !isValidClientId(body.id) || !isValidClientId(body.clientId)) {
+            res.status(400).json({ error: 'id and clientId are required' });
+            return;
+        }
+        pruneResultAcks();
+        const clientId = executing?.id === body.id ? executing.clientId : resultAcks.get(body.id)?.clientId;
+        if (!clientId) {
+            res.status(404).json({ code: 'RELAY_ACTION_UNKNOWN', error: 'The action is no longer tracked.' });
+            return;
+        }
+        if (clientId !== body.clientId) {
+            res.status(409).json({
+                code: 'RELAY_RESULT_OWNER_MISMATCH',
+                error: 'Only the owning document can report a timeout.'
+            });
+            return;
+        }
+        if (executing?.id === body.id) {
+            reportUnknownOutcome();
+        }
+        res.json({ ok: true });
     });
 
     router.post(`${API}/result`, json({ limit: resultLimitBytes }), (req, res) => {
@@ -337,39 +447,38 @@ export function addRtaRelayApis(
             res.status(400).json({ error: 'Invalid result' });
             return;
         }
-        pruneResultAcks();
-        const acknowledged = resultAcks.get(body.id);
-        if (acknowledged) {
-            if (acknowledged.clientId !== body.clientId || acknowledged.digest !== resultDigest(body)) {
-                res.status(409).json({
-                    code: 'RELAY_RESULT_CONFLICT',
-                    error: 'A different result was already accepted for this action.'
-                });
-            } else {
-                // Acknowledgement recovery must not change ownership or consume a newer pending action.
-                res.json({ ok: true });
-            }
+        if (acknowledgeDuplicate(body, res)) {
             return;
         }
-        if (pending?.id !== body.id) {
+        const action = pending?.id === body.id ? pending : undefined;
+        const execution = executing?.id === body.id ? executing : undefined;
+        if (!action && !execution) {
             res.status(404).json({
                 code: 'RELAY_ACTION_UNKNOWN',
                 error: 'The action is no longer pending; its result cannot be confirmed.'
             });
             return;
         }
-        if (!pending.delivered || pending.clientId !== body.clientId || owner?.clientId !== body.clientId) {
+        if (!ownsResult(body)) {
             res.status(409).json({
                 code: 'RELAY_RESULT_OWNER_MISMATCH',
                 error: 'Result must come from the owning document'
             });
             return;
         }
-        const action = pending;
         rememberResult(body);
-        pending = undefined;
-        clearTimeout(action.timer);
-        owner.lastSeen = Date.now();
+        if (execution) {
+            executing = undefined;
+        }
+        if (owner?.clientId === body.clientId) {
+            owner.lastSeen = Date.now();
+        }
+        if (!action) {
+            // Late completion releases execution without replying to a closed caller or another action.
+            res.json({ ok: true });
+            return;
+        }
+        releaseRequest(action);
         if (body.error !== undefined) {
             action.res.status(500).json({ error: body.error });
         } else {

@@ -38,6 +38,17 @@ interface RelayResponse {
     result?: unknown;
     clientId?: string;
     error?: string;
+    code?: string;
+}
+
+/**
+ * Preserve relay diagnostics so unresolved operations stay distinguishable from login failures.
+ *
+ * @param body Validated relay response object.
+ * @returns The optional relay error code.
+ */
+function getRelayErrorCode(body: object): string | undefined {
+    return 'code' in body && typeof body.code === 'string' ? body.code : undefined;
 }
 
 /**
@@ -96,7 +107,10 @@ async function requestRelay(
         throw new Error('Invalid editor relay response');
     }
     if ('error' in body && typeof body.error === 'string') {
-        return { error: body.error };
+        return {
+            error: body.error,
+            code: getRelayErrorCode(body)
+        };
     }
     if (!response.ok) {
         throw new Error(`Editor relay HTTP ${response.status}`);
@@ -131,7 +145,11 @@ function isFrontendResult(value: unknown): value is FrontendActionResult {
  */
 function toFrontendResult<TReturn>(response: RelayResponse): FrontendActionResult<TReturn> {
     if (response.error) {
-        return { isSuccess: false, payload: null, error: { code: 'RELAY_ERROR', message: response.error } };
+        return {
+            isSuccess: false,
+            payload: null,
+            error: { code: response.code ?? 'RELAY_ERROR', message: response.error }
+        };
     }
     if (!isFrontendResult(response.result)) {
         throw new Error('Editor relay returned an invalid frontend result');
