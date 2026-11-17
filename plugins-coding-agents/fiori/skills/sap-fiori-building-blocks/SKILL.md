@@ -35,11 +35,14 @@ is a separate developer task in `@sap-ux/fe-fpm-writer` (new macro, templates, p
 - ✅ An existing **FPM application** with a custom page or custom fragment to insert into. This tool inserts a
   building block into an existing view/fragment; it does not scaffold a page. If there is no FPM custom page yet,
   create one first (e.g. via the app-generation / page-modification tools).
-- ✅ **Scope: OData/non-CAP apps.** For **Table, FilterBar, Form, and Chart** the tool **auto-writes the required UI
-  annotation shell** (`@UI.LineItem`, `@UI.SelectionFields`, `@UI.FieldGroup`, `@UI.Chart`) into the app's annotation file when
-  it does not already exist — you do not need to create it first. For other standard building blocks, and for **CAP
-  (CDS) projects** (out of scope — the tool does not write `.cds`), the required UI annotation must already exist in
-  the model before you call the tool. If unsure, check the annotation file first.
+- ✅ **Annotation shell — auto-written for Table, FilterBar, Form, and Chart.** The tool **auto-writes the required UI
+  annotation shell** (`@UI.LineItem`, `@UI.SelectionFields`, `@UI.FieldGroup`, `@UI.Chart`) into a writable annotation
+  file when it does not already exist — you do not need to create it first. This works on both **OData** apps (XML
+  annotations) and **CAP (CDS)** projects (it writes into a writable `.cds` file via the annotation service, as long as
+  `@sap/ux-cds-compiler-facade` is installed — standard in a CAP dev environment). If there is no writable annotation
+  file (e.g. the facade is missing), the shell write is skipped with a warning and the building block is still added —
+  in that case the required UI annotation must already exist. For other standard building block types, the UI
+  annotation must already exist in the model. If unsure, check the annotation file first.
 
 ---
 
@@ -139,8 +142,9 @@ Add to the main custom page view (webapp/ext/main/Main.view.xml, aggregation /mv
 
 - Guessing the `aggregationPath` (or `viewOrFragmentPath`) instead of using the options returned by
   `get_functionality_details`.
-- Expecting the tool to create annotations for types other than Table/FilterBar/Form/Chart, or on CAP apps — there the UI
-  annotation must already exist.
+- Expecting the tool to create annotations for types other than Table/FilterBar/Form/Chart — there the UI annotation
+  must already exist. (For Table/FilterBar/Form/Chart the shell is auto-written on both OData and CAP, provided a
+  writable annotation file exists.)
 - Hand-editing the view XML instead of using the tool.
 - Calling the tool in parallel for several building blocks on the same view.
 
