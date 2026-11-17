@@ -153,10 +153,15 @@ export function extractErrorCode(error: unknown): string {
             case 'UnsupportedProjectError':
                 return MigrationErrorCode.NOT_SUITABLE_FOR_MIGRATION;
             case 'MigrationError':
-                // Note: MigrationError wrapping masks the root cause - always returns MIGRATION_FAILED
-                // regardless of the wrapped error. When MigrationError wraps an UnsupportedProjectError
-                // or ENOENT, the telemetry code is less specific than it could be.
-                // Consider inspecting error.cause (if set) as a fallback before returning this code.
+                // Check if MigrationError wraps another error - extract code from the wrapped error
+                // for more specific telemetry (e.g., ENOENT instead of generic MIGRATION_FAILED)
+                if ('cause' in error && error.cause) {
+                    const wrappedCode = extractErrorCode(error.cause);
+                    // Only use wrapped error code if it's more specific than MIGRATION_FAILED
+                    if (wrappedCode !== MigrationErrorCode.UNKNOWN_ERROR) {
+                        return wrappedCode;
+                    }
+                }
                 return MigrationErrorCode.MIGRATION_FAILED;
             case 'SyntaxError':
                 // Note: SyntaxError can be thrown by JSON.parse, EJS template rendering, or other expression evaluation.
