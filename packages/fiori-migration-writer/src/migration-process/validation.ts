@@ -5,6 +5,7 @@ import { MigrationTypes, postMigrationAction } from '../utils/constants.js';
 import { updateExtConfigJson } from '../components/extension.js';
 import { i18nText } from '../i18n.js';
 import { getMessageType } from '../utils/validation-severity.js';
+import { MigrationErrorCode } from '../utils/error-codes.js';
 
 /**
  * Validates metadata configuration and adds warning/error message if missing
@@ -39,7 +40,8 @@ export function validateAndReportMetadata(
         messages.push({
             type: getMessageType('WARNING', strict, true),
             description: i18nText('MISSING_METADATA_CONFIG'),
-            action: postMigrationAction.serviceManager
+            action: postMigrationAction.serviceManager,
+            code: MigrationErrorCode.MISSING_ODATA_SERVICE
         });
     }
 }
