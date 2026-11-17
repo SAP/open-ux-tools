@@ -153,8 +153,15 @@ export function extractErrorCode(error: unknown): string {
             case 'UnsupportedProjectError':
                 return MigrationErrorCode.NOT_SUITABLE_FOR_MIGRATION;
             case 'MigrationError':
+                // Note: MigrationError wrapping masks the root cause - always returns MIGRATION_FAILED
+                // regardless of the wrapped error. When MigrationError wraps an UnsupportedProjectError
+                // or ENOENT, the telemetry code is less specific than it could be.
+                // Consider inspecting error.cause (if set) as a fallback before returning this code.
                 return MigrationErrorCode.MIGRATION_FAILED;
             case 'SyntaxError':
+                // Note: SyntaxError can be thrown by JSON.parse, EJS template rendering, or other expression evaluation.
+                // This mapping assumes JSON parsing is the most common case in migration workflows.
+                // EJS template errors would also map to JSON_PARSE_ERROR - a known limitation.
                 return MigrationErrorCode.JSON_PARSE_ERROR;
         }
 
