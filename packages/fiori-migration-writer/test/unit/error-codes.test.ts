@@ -73,8 +73,23 @@ describe('error-codes', () => {
                 expect(extractErrorCode(error)).toBe('MIGRATION_FAILED');
             });
 
-            it('should extract JSON_PARSE_ERROR from SyntaxError', () => {
+            it('should extract JSON_PARSE_ERROR from SyntaxError with JSON context', () => {
                 const error = new SyntaxError('Unexpected token in JSON');
+                expect(extractErrorCode(error)).toBe('JSON_PARSE_ERROR');
+            });
+
+            it('should extract TEMPLATE_GENERATION_FAILED from SyntaxError with template context', () => {
+                const error = new SyntaxError('Error rendering EJS template');
+                expect(extractErrorCode(error)).toBe('TEMPLATE_GENERATION_FAILED');
+            });
+
+            it('should extract TEMPLATE_GENERATION_FAILED from SyntaxError mentioning template', () => {
+                const error = new SyntaxError('Template compilation failed: unexpected token');
+                expect(extractErrorCode(error)).toBe('TEMPLATE_GENERATION_FAILED');
+            });
+
+            it('should default to JSON_PARSE_ERROR for generic SyntaxError', () => {
+                const error = new SyntaxError('Unexpected token }');
                 expect(extractErrorCode(error)).toBe('JSON_PARSE_ERROR');
             });
         });
