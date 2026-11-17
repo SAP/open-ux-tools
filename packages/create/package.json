@@ -49,6 +49,7 @@
         "@sap-ux/project-input-validator": "workspace:*",
         "@sap-ux/system-access": "workspace:*",
         "@sap-ux/store": "workspace:*",
+        "@sap-ux/telemetry": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
         "@sap-ux/ui5-test-writer": "workspace:*",
         "@sap-ux/fiori-migration-writer": "workspace:*",
