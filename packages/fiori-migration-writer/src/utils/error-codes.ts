@@ -94,12 +94,15 @@ function matchParsingError(lowerMessage: string): string | null {
  * @returns Error code if pattern matches, null otherwise
  */
 function matchKnownPatterns(lowerMessage: string): string | null {
-    if (lowerMessage.includes('not supported') || lowerMessage.includes('unsupported')) {
-        if (/\bfloorplan\b/.test(lowerMessage)) {
-            return MigrationErrorCode.UNSUPPORTED_FLOORPLAN;
-        }
+    // Check unsupported patterns
+    if (
+        (lowerMessage.includes('not supported') || lowerMessage.includes('unsupported')) &&
+        /\bfloorplan\b/.test(lowerMessage)
+    ) {
+        return MigrationErrorCode.UNSUPPORTED_FLOORPLAN;
     }
 
+    // Simple substring checks (early returns for better readability)
     if (lowerMessage.includes('not suitable for migration')) {
         return MigrationErrorCode.NOT_SUITABLE_FOR_MIGRATION;
     }
