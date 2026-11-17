@@ -36,7 +36,7 @@ import { MigrationTypes } from './utils/constants.js';
 import type { Editor } from 'mem-fs-editor';
 import { hasStore } from './types/mem-fs-types.js';
 import { i18nText, initI18n } from './i18n.js';
-import { extractErrorCode } from './utils/error-codes.js';
+import { extractErrorCode, MigrationErrorCode } from './utils/error-codes.js';
 
 /**
  * Configuration options for the migrate method
@@ -208,7 +208,7 @@ export class ProjectMigrator {
             messages: messages.concat({
                 type: 'ERROR',
                 description: i18nText('ERROR_FAILED_TO_GET_PROJECT_INFO'),
-                code: 'PROJECT_INFO_FAILED'
+                code: MigrationErrorCode.PROJECT_INFO_FAILED
             })
         };
     }

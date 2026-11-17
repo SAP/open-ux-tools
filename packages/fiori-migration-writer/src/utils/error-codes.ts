@@ -95,7 +95,7 @@ function matchParsingError(lowerMessage: string): string | null {
  */
 function matchKnownPatterns(lowerMessage: string): string | null {
     if (lowerMessage.includes('not supported') || lowerMessage.includes('unsupported')) {
-        if (lowerMessage.includes('floorplan')) {
+        if (/\bfloorplan\b/.test(lowerMessage)) {
             return MigrationErrorCode.UNSUPPORTED_FLOORPLAN;
         }
     }
@@ -191,15 +191,4 @@ export function extractErrorCode(error: unknown): string {
 
     // Default to unknown if no pattern matches
     return MigrationErrorCode.UNKNOWN_ERROR;
-}
-
-/**
- * Create an error code from an i18n key. I18n keys are safe to report in telemetry
- * as they don't contain user data.
- *
- * @param i18nKey - i18n key like 'ERROR_NOT_SUITABLE_FOR_MIGRATION'
- * @returns The i18n key as the error code
- */
-export function errorCodeFromI18nKey(i18nKey: string): string {
-    return i18nKey;
 }
