@@ -1,4 +1,4 @@
-import { isAxiosError, type AbapServiceProvider, type App } from '@sap-ux/axios-extension';
+import type { AbapServiceProvider, App } from '@sap-ux/axios-extension';
 import type { ToolsLogger } from '@sap-ux/logger';
 
 import { t } from '../i18n.js';
@@ -146,9 +146,6 @@ export async function loadApps(
 
         return appIndex.map(toSourceApplication).sort(compareByTitleOrId);
     } catch (error) {
-        if (isAxiosError(error) && error.config) {
-            logger?.error(`Failed for request URL: ${error.config.url}`);
-        }
         throw new Error(`Could not load applications: ${error.message}`);
     }
 }

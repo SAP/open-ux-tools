@@ -278,7 +278,6 @@ export class LayeredRepositoryService extends Axios implements Service {
      * @returns the response
      */
     public async getCsrfToken() {
-        this.log.debug(`Fetching CSRF token.`);
         try {
             return await this.get('/actions/getcsrftoken/');
         } catch (error) {
@@ -434,7 +433,7 @@ export class LayeredRepositoryService extends Axios implements Service {
      * @returns {Promise<AdaptationsResponse>} Adaptations sorted by priority.
      */
     public async listAdaptations(appId: string, version?: string): Promise<AdaptationsResponse> {
-         try {
+        try {
             const response = await this.get<AdaptationsResponse>(
                 `/flex/apps/${encodeURIComponent(appId)}/adaptations/?version=${encodeURIComponent(version)}`,
                 {
@@ -445,9 +444,6 @@ export class LayeredRepositoryService extends Axios implements Service {
             return response.data;
         } catch (error) {
             if (isAxiosError(error)) {
-                if (error.config) {
-                    this.log.error(`Failed for request URL: ${error.config.url}`);
-                }
                 this.tryLogResponse(error.response);
             }
             throw error;
@@ -477,9 +473,6 @@ export class LayeredRepositoryService extends Axios implements Service {
             return response.data;
         } catch (error) {
             if (isAxiosError(error)) {
-                if (error.config) {
-                    this.log.error(`Fail for request URL: ${error.config.url}`);
-                }
                 this.tryLogResponse(error.response);
             }
             throw error;
@@ -511,9 +504,6 @@ export class LayeredRepositoryService extends Axios implements Service {
             return response.data;
         } catch (error) {
             if (isAxiosError(error)) {
-                if (error.config) {
-                    this.log.error(`Failed for request URL: ${error.config.url}`);
-                }
                 this.tryLogResponse(error.response);
             }
             throw error;
@@ -548,9 +538,7 @@ export class LayeredRepositoryService extends Axios implements Service {
             return JSON.parse(response.data) as SystemInfo;
         } catch (error) {
             this.log.error('Getting system data failed.');
-            if (isAxiosError(error) && error.config) {
-                this.log.error(`Failed for request URL: ${error.config.url}`);
-            }
+            this.log.debug(error);
 
             throw error;
         }
@@ -572,9 +560,6 @@ export class LayeredRepositoryService extends Axios implements Service {
                 this.logMessage(message);
             });
         } catch (error) {
-            if (isAxiosError(error) && error.config) {
-                this.log.error(`Failed for request URL: ${error.config.url}`);
-            }
             if (alternativeMessage) {
                 this.log.info(alternativeMessage);
             }

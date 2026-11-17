@@ -1,6 +1,6 @@
 import type { ToolsLogger } from '@sap-ux/logger';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
-import type { AbapServiceProvider } from '@sap-ux/axios-extension';
+import { isAxiosError, type AbapServiceProvider } from '@sap-ux/axios-extension';
 
 import { type RequestOptions, getProviderConfig } from './config.js';
 
@@ -37,7 +37,26 @@ export async function getConfiguredProvider(
             requestOptions.auth = { username, password };
         }
 
-        return await createAbapServiceProvider(config, requestOptions, false, logger);
+        const provider = await createAbapServiceProvider(config, requestOptions, false, logger);
+
+        provider.interceptors.response.use(
+            (response) => {
+                if (response.config?.url && response.config?.url !== "/") {
+                    logger.debug(`Request URL: ${response.config.url}`);
+                }
+                return response;
+            },
+            (error) => {
+                if (isAxiosError(error)) {
+                    logger.error(`Request failed: ${error.config?.method?.toUpperCase()} ${error.config?.url}`);
+                    logger.error(`Error message: ${error.message}`);
+                }
+
+                return Promise.reject(error);
+            }
+        );
+
+        return provider;
     } catch (error) {
         logger?.error(`Failed to instantiate provider for system: ${system}. Reason: ${error.message}`);
         throw error;

@@ -837,9 +837,6 @@ export class ConfigPrompter {
 
             return true;
         } catch (e) {
-            if (isAxiosError(e) && e.config) {
-                this.logger?.error(`Failed for request URL: ${e.config.url}`);
-            }
             return e.message;
         }
     }

@@ -106,7 +106,7 @@ export class SystemLookup {
      *
      * @returns {Promise<Endpoint[]>} An array of system systems.
      */
-    public async getSystems(): Promise<Endpoint[]> {
+    public async getSystems(): Promise<Endpoint[]> {        
         if (!this.systems) {
             this.systems = await this.loadSystems();
         }
@@ -121,7 +121,6 @@ export class SystemLookup {
      */
     private async loadSystems(): Promise<Endpoint[]> {
         try {
-            this.logger?.debug('Try to list systems...');
             let endpoints: Endpoint[] = [];
             if (isAppStudio()) {
                 const destinations = await listDestinations({
@@ -138,9 +137,6 @@ export class SystemLookup {
             return endpoints;
         } catch (e) {
             this.logger?.error(`Failed to fetch systems list. Reason: ${e.message}`);
-            if (isAxiosError(e) && e.config) {
-                this.logger?.error(`Failed for request URL: ${e.config.url}`);
-            }
             throw new Error(e.message);
         }
     }

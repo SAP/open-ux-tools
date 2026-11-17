@@ -32,7 +32,6 @@ export class UI5VersionService extends Axios implements Service {
      * @returns The UI5 version on the ABAP system.
      */
     public async getUI5Version(): Promise<string> {
-        this.log.debug(`Fetching UI5 version from bootstrap info.`);
         try {
             const response = await this.get<UI5VersionInfo>('/bootstrap_info.json', {
                 transformResponse: (data) => JSON.parse(data)
@@ -44,6 +43,7 @@ export class UI5VersionService extends Axios implements Service {
             return version;
         } catch (error) {
             this.log.error('Could not get UI5 Version.');
+            this.log.debug(error);
             throw error;
         }
     }

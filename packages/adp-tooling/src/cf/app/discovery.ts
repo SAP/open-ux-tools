@@ -143,7 +143,7 @@ export function getOAuthPathsFromXsApp(zipEntries: AdmZip.IZipEntry[]): string[]
  * @returns {Promise<CFApp[]>} The discovered apps
  */
 export async function getCfApps(serviceKeys: ServiceKeys[], cfConfig: CfConfig, logger: ToolsLogger): Promise<CFApp[]> {
-    let appHostIds = getAppHostIds(serviceKeys);
+    const appHostIds = getAppHostIds(serviceKeys);
 
     logger?.log(`App Host Ids: ${JSON.stringify(appHostIds)}`);
 
