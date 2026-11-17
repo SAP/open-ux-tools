@@ -1,4 +1,4 @@
-import { MigrationErrorCode, extractErrorCode, errorCodeFromI18nKey } from '../../src/utils/error-codes';
+import { MigrationErrorCode, extractErrorCode } from '../../src/utils/error-codes';
 
 describe('error-codes', () => {
     describe('MigrationErrorCode', () => {
@@ -254,7 +254,7 @@ describe('error-codes', () => {
 
             it('should not match partial words', () => {
                 // "floorplanning" should not match "floorplan"
-                const error = new Error('Error during project planning phase');
+                const error = new Error('Error during project floorplanning phase');
                 expect(extractErrorCode(error)).toBe('UNKNOWN_ERROR');
             });
         });
@@ -285,22 +285,6 @@ describe('error-codes', () => {
                 );
                 expect(extractErrorCode(error)).toBe('MANIFEST_PARSE_ERROR');
             });
-        });
-    });
-
-    describe('errorCodeFromI18nKey', () => {
-        it('should return the i18n key as the error code', () => {
-            expect(errorCodeFromI18nKey('ERROR_NOT_SUITABLE_FOR_MIGRATION')).toBe('ERROR_NOT_SUITABLE_FOR_MIGRATION');
-        });
-
-        it('should handle various i18n key formats', () => {
-            expect(errorCodeFromI18nKey('ERROR_MANIFEST_PARSE')).toBe('ERROR_MANIFEST_PARSE');
-            expect(errorCodeFromI18nKey('MIGRATION_FAILED_MSG')).toBe('MIGRATION_FAILED_MSG');
-            expect(errorCodeFromI18nKey('UNSUPPORTED_FLOORPLAN_TYPE')).toBe('UNSUPPORTED_FLOORPLAN_TYPE');
-        });
-
-        it('should return empty string for empty i18n key', () => {
-            expect(errorCodeFromI18nKey('')).toBe('');
         });
     });
 });
