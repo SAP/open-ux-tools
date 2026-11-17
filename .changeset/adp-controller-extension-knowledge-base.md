@@ -1,5 +1,0 @@
----
-"@sap-ux/fiori-mcp-server": patch
----
-
-FEAT: Split adp-controller-extension skill into workflow core and reference files (hitl-gating, rta-actions, example-session) add enhancement to knowledge base
