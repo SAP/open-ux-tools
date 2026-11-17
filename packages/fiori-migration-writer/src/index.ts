@@ -131,6 +131,5 @@ export type { Options as ReadOptions } from 'read-package-up';
 export {
     MigrationErrorCode,
     extractErrorCode,
-    errorCodeFromI18nKey,
     type MigrationErrorCode as MigrationErrorCodeType
 } from './utils/error-codes.js';
