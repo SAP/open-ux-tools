@@ -179,19 +179,29 @@ async function createCAPMTAAppFrontend(config: CAPConfig, fs: Editor): Promise<v
 /**
  * Add standalone app router to the target folder.
  *
+ * If the mta.yaml already declares an `approuter.nodejs` module (for example the `.deploy/app-router`
+ * module scaffolded by newer `@sap/cds-dk` versions), no router module is appended and no router
+ * project files are scaffolded, avoiding a duplicate router project. Any explicitly requested
+ * connectivity or ABAP service is still wired to the existing router so those options are not silently
+ * dropped. Projects without an existing approuter continue to get a standalone router scaffolded as before.
+ *
  * @param cfConfig Writer configuration
  * @param mtaInstance MTA configuration instance
  * @param fs Reference to a mem-fs editor
  * @throws {Error} If service key retrieval fails for ABAP service binding
  */
 async function addStandaloneRouter(cfConfig: CFBaseConfig, mtaInstance: MtaConfig, fs: Editor): Promise<void> {
-    await mtaInstance.addStandaloneRouter(true);
+    const routerAdded = await mtaInstance.addStandaloneRouter(true);
     if (cfConfig.addConnectivityService) {
         await mtaInstance.addConnectivityResource();
     }
     const { abapServiceName, abapService } = cfConfig.abapServiceProvider ?? {};
     if (abapServiceName && abapService) {
         await mtaInstance.addAbapService(abapServiceName, abapService);
+    }
+    // An approuter already existed (e.g. CDS `.deploy/app-router`); skip scaffolding a duplicate router project
+    if (!routerAdded) {
+        return;
     }
 
     fs.copyTpl(getTemplatePath(`router/package.json`), join(cfConfig.mtaPath, `${RouterModule}/${FileName.Package}`));
