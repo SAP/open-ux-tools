@@ -335,28 +335,13 @@ describe('migrate telemetry', () => {
                 [{ type: 'ERROR', description: 'Permission denied', code: 'EPERM' }, 'permissionError'],
                 [{ type: 'ERROR', description: 'Invalid JSON', code: 'JSON_PARSE_ERROR' }, 'syntaxError'],
                 [{ type: 'ERROR', description: 'Invalid manifest', code: 'MANIFEST_PARSE_ERROR' }, 'syntaxError'],
-                [
-                    { type: 'ERROR', description: 'Unsupported floorplan', code: 'UNSUPPORTED_FLOORPLAN' },
-                    'floorPlanNotSupported'
-                ],
-                [
-                    { type: 'ERROR', description: 'Project not suitable', code: 'NOT_SUITABLE_FOR_MIGRATION' },
-                    'projectTypeNotSupported'
-                ],
-                [
-                    { type: 'ERROR', description: 'Failed to get info', code: 'PROJECT_INFO_FAILED' },
-                    'projectInfoUnavailable'
-                ],
+                [{ type: 'ERROR', description: 'Unsupported floorplan', code: 'UNSUPPORTED_FLOORPLAN' }, 'floorPlanNotSupported'],
+                [{ type: 'ERROR', description: 'Project not suitable', code: 'NOT_SUITABLE_FOR_MIGRATION' }, 'projectTypeNotSupported'],
+                [{ type: 'ERROR', description: 'Failed to get info', code: 'PROJECT_INFO_FAILED' }, 'projectInfoUnavailable'],
                 [{ type: 'ERROR', description: 'Commit failed', code: 'COMMIT_FAILED' }, 'commitFailed'],
-                [
-                    { type: 'ERROR', description: 'TypeScript setup failed', code: 'TYPESCRIPT_SETUP_FAILED' },
-                    'typeScriptEnablementFailed'
-                ],
+                [{ type: 'ERROR', description: 'TypeScript setup failed', code: 'TYPESCRIPT_SETUP_FAILED' }, 'typeScriptEnablementFailed'],
                 [{ type: 'ERROR', description: 'Copy failed', code: 'COPY_FILES_FAILED' }, 'libraryCopyFailed'],
-                [
-                    { type: 'ERROR', description: 'Template error', code: 'TEMPLATE_GENERATION_FAILED' },
-                    'templateGenerationFailed'
-                ],
+                [{ type: 'ERROR', description: 'Template error', code: 'TEMPLATE_GENERATION_FAILED' }, 'templateGenerationFailed'],
                 [{ type: 'ERROR', description: 'Unknown error', code: 'UNKNOWN_ERROR' }, 'other']
             ])('%j -> %s', (message, category) => {
                 expect(getErrorCategory(message)).toBe(category);
