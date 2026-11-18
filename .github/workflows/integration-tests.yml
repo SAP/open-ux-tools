@@ -94,10 +94,10 @@ jobs:
               with:
                 path: |
                     ~/.cache/ms-playwright
-                key: playwright-browsers-chromium-os-ubuntu-latest-node-version-22.x
+                key: playwright-browsers-chromium-${{ hashFiles('packages/playwright/package.json') }}-ubuntu-latest-node-version-22.x
             - name: Install playwright chromium browsers
               if: steps.cache-playwright-browsers.outputs.cache-hit != 'true'
-              run: npx playwright install chromium
+              run: cd tests/integration/adaptation-editor && pnpm exec playwright install chromium
             - name: Read UI5 versions from cache
               uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
               with:
@@ -152,7 +152,7 @@ jobs:
                   merge-multiple: true
 
             - name: Merge into HTML Report
-              run: cd tests/integration/adaptation-editor && npx playwright merge-reports --reporter html ./all-blob-reports
+              run: cd tests/integration/adaptation-editor && pnpm exec playwright merge-reports --reporter html ./all-blob-reports
 
             - name: Upload HTML report
               uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
