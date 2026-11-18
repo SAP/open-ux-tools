@@ -58,13 +58,20 @@ const getReportingTelemetryClient = (): appInsights.TelemetryClient => {
 };
 
 /**
- * Check if telemetry is disabled.
- * Checks in order: environment variables (DO_NOT_TRACK, SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY),
- * then the persisted telemetry setting.
+ * Check if telemetry is disabled via environment variables.
+ * Honors both DO_NOT_TRACK (cross-tool convention) and SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY.
  *
- * @returns true if telemetry is disabled
+ * NOTE: This function intentionally checks ONLY environment variables, not the persisted
+ * telemetry setting from TelemetrySettings.telemetryEnabled. This is by design:
+ * - reportRuntimeError is called when initTelemetrySettings fails, before the saved
+ *   setting has been loaded
+ * - Making it async would be a breaking API change
+ * - Init-failure diagnostics are critical for debugging and intentionally bypass
+ *   the saved opt-out (users can still opt out via environment variables)
+ *
+ * @returns true if telemetry is disabled by environment
  */
-const isTelemetryDisabled = (): boolean => {
+const isTelemetryDisabledByEnv = (): boolean => {
     // Check DO_NOT_TRACK (cross-tool convention)
     if (['1', 'true'].includes(process.env.DO_NOT_TRACK?.toLowerCase() ?? '')) {
         return true;
@@ -73,13 +80,21 @@ const isTelemetryDisabled = (): boolean => {
     if (process.env.SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY === 'true') {
         return true;
     }
-    // Check persisted setting (already loaded by initTelemetrySettings or defaults to true)
-    if (!TelemetrySettings.telemetryEnabled) {
-        return true;
-    }
     return false;
 };
 
+/**
+ * Report a runtime error during telemetry initialization.
+ *
+ * NOTE: This function is gated ONLY by environment variables (DO_NOT_TRACK,
+ * SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY), not by the persisted enableTelemetry setting.
+ * This is intentional: since this function is called when initTelemetrySettings fails,
+ * the saved setting hasn't been loaded yet. Init-failure diagnostics are critical for
+ * debugging library issues and intentionally bypass the saved opt-out. Users who want
+ * to disable all telemetry (including init-failure reports) can set an environment variable.
+ *
+ * @param error - The error that occurred during initialization
+ */
 export const reportRuntimeError = (error: Error): void => {
     const properties: { [key: string]: string } = { message: error.message };
     if (error.stack) {
@@ -93,11 +108,17 @@ export const reportRuntimeError = (error: Error): void => {
         properties,
         measurements: {}
     };
-    if (!isTelemetryDisabled()) {
+    if (!isTelemetryDisabledByEnv()) {
         getReportingTelemetryClient().trackEvent(telemetryEvent);
     }
 };
 
+/**
+ * Report when a user toggles telemetry on or off.
+ *
+ * @param enableTelemetry - Whether telemetry is being enabled
+ * @param commonProperties - Common telemetry properties to include
+ */
 export const reportEnableTelemetryOnOff = (
     enableTelemetry: boolean,
     commonProperties: Record<string, string>
@@ -110,7 +131,7 @@ export const reportEnableTelemetryOnOff = (
         },
         measurements: {}
     };
-    if (!isTelemetryDisabled()) {
+    if (!isTelemetryDisabledByEnv()) {
         getReportingTelemetryClient().trackEvent(telemetryEvent);
     }
 };

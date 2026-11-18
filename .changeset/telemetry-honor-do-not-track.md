@@ -2,4 +2,4 @@
 '@sap-ux/telemetry': patch
 ---
 
-FIX: reporting functions now respect the persisted `enableTelemetry` setting in addition to environment variables (`DO_NOT_TRACK`, `SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY`). Previously, `reportRuntimeError` (called when `initTelemetrySettings` fails) and `reportEnableTelemetryOnOff` only checked environment variables, potentially transmitting events even when a user had run `telemetry disable`.
+FIX: document that init-failure diagnostics (`reportRuntimeError`) intentionally bypass the persisted `enableTelemetry` setting. This is by design: the error is reported when `initTelemetrySettings` fails, before the saved setting has been loaded. Users who want to disable all telemetry including init-failure reports can set the `DO_NOT_TRACK` or `SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY` environment variable.
