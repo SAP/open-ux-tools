@@ -58,18 +58,23 @@ const getReportingTelemetryClient = (): appInsights.TelemetryClient => {
 };
 
 /**
- * Check if telemetry is disabled via environment variables.
- * Honors both DO_NOT_TRACK (cross-tool convention) and SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY.
+ * Check if telemetry is disabled.
+ * Checks in order: environment variables (DO_NOT_TRACK, SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY),
+ * then the persisted telemetry setting.
  *
- * @returns true if telemetry is disabled by environment
+ * @returns true if telemetry is disabled
  */
-const isTelemetryDisabledByEnv = (): boolean => {
+const isTelemetryDisabled = (): boolean => {
     // Check DO_NOT_TRACK (cross-tool convention)
     if (['1', 'true'].includes(process.env.DO_NOT_TRACK?.toLowerCase() ?? '')) {
         return true;
     }
     // Check SAP-specific environment variable
     if (process.env.SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY === 'true') {
+        return true;
+    }
+    // Check persisted setting (already loaded by initTelemetrySettings or defaults to true)
+    if (!TelemetrySettings.telemetryEnabled) {
         return true;
     }
     return false;
@@ -88,7 +93,7 @@ export const reportRuntimeError = (error: Error): void => {
         properties,
         measurements: {}
     };
-    if (!isTelemetryDisabledByEnv()) {
+    if (!isTelemetryDisabled()) {
         getReportingTelemetryClient().trackEvent(telemetryEvent);
     }
 };
@@ -105,7 +110,7 @@ export const reportEnableTelemetryOnOff = (
         },
         measurements: {}
     };
-    if (!isTelemetryDisabledByEnv()) {
+    if (!isTelemetryDisabled()) {
         getReportingTelemetryClient().trackEvent(telemetryEvent);
     }
 };
