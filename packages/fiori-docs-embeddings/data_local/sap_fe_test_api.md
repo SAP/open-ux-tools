@@ -1169,6 +1169,27 @@ Parameters:
 
 Returns: `{object}` The result of the {@link sap.ui.test.Opa5#waitFor} function, to be used for chained statements
 
+**STEP**: iOpenMenuAction(vActionIdentifier)
+
+**DESCRIPTION**: Opens the drop-down menu of an action button configured with a default action in Split mode.
+Use this instead of {@link #iExecuteAction} when the button has a <code>defaultAction</code> set and the
+intent is to open the popup menu so that subsequent {@link #iCheckMenuAction} or {@link #iExecuteMenuAction}
+calls can find the menu items.
+
+Parameters:
+- `vActionIdentifier` `{string|sap.fe.test.api.ActionIdentifier}` — The identifier of the action or its label
+
+Returns: `{object}` The result of the {@link sap.ui.test.Opa5#waitFor} function, to be used for chained statements
+
+**STEP**: iExecuteMenuAction(vAction)
+
+**DESCRIPTION**: Executes an action in the drop-down menu that is currently open.
+
+Parameters:
+- `vAction` `{string|object}` — The label of the action or its state
+
+Returns: `{object}` The result of the {@link sap.ui.test.Opa5#waitFor} function, to be used for chained statements
+
 **STEP**: iExecuteShowMore()
 
 **DESCRIPTION**: Executes the Show More action of a form in a subsection.
@@ -1319,6 +1340,18 @@ Parameters:
 
 Returns: `{object}` The result of the {@link sap.ui.test.Opa5#waitFor} function, to be used for chained statements
 
+**STEP**: iOpenMenuAction(vActionIdentifier)
+
+**DESCRIPTION**: Opens the drop-down menu of an action button configured with a default action in Split mode.
+Use this instead of {@link #iExecuteAction} when the button has a <code>defaultAction</code> set and the
+intent is to open the popup menu so that subsequent {@link #iCheckMenuAction} or {@link #iExecuteMenuAction}
+calls can find the menu items.
+
+Parameters:
+- `vActionIdentifier` `{string|sap.fe.test.api.ActionIdentifier}` — The identifier of the action
+
+Returns: `{object}` The result of the {@link sap.ui.test.Opa5#waitFor} function, to be used for chained statements
+
 **STEP**: iExecuteEdit()
 
 **DESCRIPTION**: Executes the Edit action in the header toolbar of an object page.
@@ -1393,7 +1426,7 @@ Returns: `{object}` The result of the {@link sap.ui.test.Opa5#waitFor} function,
 
 **STEP**: iExecuteSendEmail()
 
-**DESCRIPTION**: Executes the <code>Send E-Mail</code> action.
+**DESCRIPTION**: Executes the <code>Send Email</code> action.
 
 Returns: `{object}` The result of the {@link sap.ui.test.Opa5#waitFor} function, to be used for chained statements
 
@@ -1420,6 +1453,18 @@ Returns: `{object}` The result of the {@link sap.ui.test.Opa5#waitFor} function,
 
 Parameters:
 - `vActionIdentifier` `{string|sap.fe.test.api.ActionIdentifier}` *(optional)* — The identifier of the action
+
+Returns: `{object}` The result of the {@link sap.ui.test.Opa5#waitFor} function, to be used for chained statements
+
+**STEP**: iOpenMenuAction(vActionIdentifier)
+
+**DESCRIPTION**: Opens the drop-down menu of an action button configured with a default action in Split mode.
+Use this instead of {@link #iExecuteAction} when the button has a <code>defaultAction</code> set and the
+intent is to open the popup menu so that subsequent {@link #iCheckMenuAction} or {@link #iExecuteMenuAction}
+calls can find the menu items.
+
+Parameters:
+- `vActionIdentifier` `{string|sap.fe.test.api.ActionIdentifier}` — The identifier of the action
 
 Returns: `{object}` The result of the {@link sap.ui.test.Opa5#waitFor} function, to be used for chained statements
 
@@ -1769,6 +1814,18 @@ Returns: `{object}` The result of the {@link sap.ui.test.Opa5#waitFor} function,
 
 Parameters:
 - `vActionIdentifier` `{string|sap.fe.test.api.ActionIdentifier}` *(optional)* — The identifier of the action, or its label
+
+Returns: `{object}` The result of the {@link sap.ui.test.Opa5#waitFor} function, to be used for chained statements
+
+**STEP**: iOpenMenuAction(vActionIdentifier)
+
+**DESCRIPTION**: Opens the drop-down menu of an action button configured with a default action in Split mode.
+Use this instead of {@link #iExecuteAction} when the button has a <code>defaultAction</code> set and the
+intent is to open the popup menu so that subsequent {@link #iCheckMenuAction} or {@link #iExecuteMenuAction}
+calls can find the menu items.
+
+Parameters:
+- `vActionIdentifier` `{string|sap.fe.test.api.ActionIdentifier}` — The identifier of the action, or its label
 
 Returns: `{object}` The result of the {@link sap.ui.test.Opa5#waitFor} function, to be used for chained statements
 
