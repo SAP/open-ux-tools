@@ -9,7 +9,8 @@ import { getSystemConfig } from '../../../utils.js';
 import { getPackageChoices, getPackageInputChoices, shouldRunValidation } from '../../helpers.js';
 import { defaultPackage, defaultPackageChoice } from '../../defaults.js';
 import { validatePackageChoiceInput, validatePackageChoiceInputForCli, validatePackage } from '../../validators.js';
-import {
+import type {
+    AutoCompleteQuestion,
     promptNames,
     type PackageInputChoices,
     type AbapDeployConfigAnswersInternal,
@@ -17,7 +18,6 @@ import {
     type AbapDeployConfigQuestion
 } from '../../../types.js';
 import type { ChoiceOptions, InputQuestion, ListQuestion, SearchQuestion } from '@sap-ux/inquirer-common';
-import type { AutoCompleteQuestion } from '../../../types.js';
 import type { IValidationLink, IMessageSeverity } from '@sap-devx/yeoman-ui-types';
 import { Severity } from '@sap-devx/yeoman-ui-types';
 import { DEFAULT_PACKAGE_ABAP } from '../../../constants.js';
