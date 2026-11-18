@@ -33,8 +33,15 @@ jest.unstable_mockModule('../../src/mta-config/wait-for-mta', () => ({
 
 const fs = await import('node:fs');
 const { NullTransport, ToolsLogger } = await import('@sap-ux/logger');
-const { isMTAFound, useAbapDirectServiceBinding, MtaConfig, getMtaConfig } = await import('../../src//index.js');
+const { isMTAFound, useAbapDirectServiceBinding, MtaConfig, getMtaConfig, addRoutingConfig } =
+    await import('../../src//index.js');
+const { RouterModuleType } = await import('../../src/types/index.js');
+const { create: createEditor } = await import('mem-fs-editor');
+const { create: createStore } = await import('mem-fs');
+const jsYaml = (await import('js-yaml')).default;
 const { deployMode, SRV_API } = await import('../../src/constants.js');
+
+import type { CFBaseConfig } from '../../src/index.js';
 
 describe('Validate common functionality', () => {
     const nullLogger = new ToolsLogger({ transports: [new NullTransport()] });
@@ -241,6 +248,14 @@ describe('Validate common flows', () => {
         'utf-8'
     );
     const standaloneMTA = fs.readFileSync(join(__dirname, 'fixtures/mta-types/standalone/mta.yaml'), 'utf-8');
+    const standaloneCdsApprouterMTA = fs.readFileSync(
+        join(__dirname, 'fixtures/mta-types/standalone-cds-approuter/mta.yaml'),
+        'utf-8'
+    );
+    const standaloneCdsApprouterNoDestMTA = fs.readFileSync(
+        join(__dirname, 'fixtures/mta-types/standalone-cds-approuter-no-dest-require/mta.yaml'),
+        'utf-8'
+    );
     const capBasicMTA = fs.readFileSync(join(__dirname, 'fixtures/mta-types/managed-cap/mta.yaml'), 'utf-8');
     const managedMissingDestinationMTA = fs.readFileSync(
         join(__dirname, 'fixtures/mta-types/managed-missing-dest/mta.yaml'),
@@ -320,6 +335,138 @@ describe('Validate common flows', () => {
         `);
         const expectAfterYaml = fs.readFileSync(`${OUTPUT_DIR_PREFIX}/app3/mta.yaml`, 'utf-8');
         expect(expectAfterYaml).toMatchSnapshot();
+    });
+
+    it('Does not add a second standalone approuter when the CDS .deploy/app-router module already exists', async () => {
+        // Given: an mta.yaml that already contains a cds-generated standalone approuter at .deploy/app-router
+        memfs.vol.fromNestedJSON(
+            {
+                [`.${OUTPUT_DIR_PREFIX}/appcds/mta.yaml`]: standaloneCdsApprouterMTA
+            },
+            '/'
+        );
+        const mtaConfig = await MtaConfig.newInstance(`${OUTPUT_DIR_PREFIX}/appcds`, nullLogger);
+        // When: a standalone router is requested
+        const wasAdded = await mtaConfig.addStandaloneRouter(true);
+        await mtaConfig.save();
+        // Then: the existing approuter is reported as not added and left untouched
+        expect(wasAdded).toBe(false);
+        expect(mtaConfig.standaloneRouterPath).toEqual('.deploy/app-router');
+        // And: no second approuter.nodejs module was appended
+        const savedYaml = fs.readFileSync(`${OUTPUT_DIR_PREFIX}/appcds/mta.yaml`, 'utf-8');
+        expect(savedYaml.match(/type: approuter\.nodejs/g) ?? []).toHaveLength(1);
+    });
+
+    it('Reports the standalone approuter as added when no approuter exists yet (backward compatible)', async () => {
+        // Given: an mta.yaml without any approuter module (pre-.deploy CDS behaviour)
+        memfs.vol.fromNestedJSON(
+            {
+                [`.${OUTPUT_DIR_PREFIX}/appnorouter/mta.yaml`]: standaloneBasicMTA
+            },
+            '/'
+        );
+        const mtaConfig = await MtaConfig.newInstance(`${OUTPUT_DIR_PREFIX}/appnorouter`, nullLogger);
+        // When: a standalone router is requested
+        const wasAdded = await mtaConfig.addStandaloneRouter(true);
+        await mtaConfig.save();
+        // Then: the router is added at the default `router` path
+        expect(wasAdded).toBe(true);
+        expect(mtaConfig.standaloneRouterPath).toEqual('router');
+        const savedYaml = fs.readFileSync(`${OUTPUT_DIR_PREFIX}/appnorouter/mta.yaml`, 'utf-8');
+        expect(savedYaml.match(/type: approuter\.nodejs/g) ?? []).toHaveLength(1);
+    });
+
+    it('Reports the standalone approuter as not added when a required resource cannot be resolved', async () => {
+        // Given: an mta.yaml without any approuter or resources
+        memfs.vol.fromNestedJSON(
+            {
+                [`.${OUTPUT_DIR_PREFIX}/appmissingres/mta.yaml`]: standaloneBasicMTA
+            },
+            '/'
+        );
+        const mtaConfig = await MtaConfig.newInstance(`${OUTPUT_DIR_PREFIX}/appmissingres`, nullLogger);
+        // And: the destination resource fails to be provisioned, so a required module name stays unresolved
+        jest.spyOn(
+            mtaConfig as unknown as { addDestinationResource: () => Promise<void> },
+            'addDestinationResource'
+        ).mockResolvedValue();
+        // When: a standalone router is requested
+        const wasAdded = await mtaConfig.addStandaloneRouter(true);
+        // Then: no router module is added because the required resources are incomplete
+        expect(wasAdded).toBe(false);
+        const savedYaml = fs.readFileSync(`${OUTPUT_DIR_PREFIX}/appmissingres/mta.yaml`, 'utf-8');
+        expect(savedYaml.match(/type: approuter\.nodejs/g) ?? []).toHaveLength(0);
+    });
+
+    it('addRouterType Standard reuses an existing approuter and still wires missing destination via cleanup', async () => {
+        // Given: a project with a CDS approuter whose requires do not yet include the destination service
+        const appDir = `${OUTPUT_DIR_PREFIX}/appcdsroutertype`;
+        memfs.vol.fromNestedJSON({ [`.${appDir}/mta.yaml`]: standaloneCdsApprouterNoDestMTA }, '/');
+        const mtaConfig = await MtaConfig.newInstance(appDir, nullLogger);
+        // When: the public addRouterType API is called for a standalone router
+        await mtaConfig.addRouterType({ routerType: RouterModuleType.Standard });
+        await mtaConfig.save();
+        // Then: no second approuter is added (the existing one is reused, not duplicated)
+        const savedYaml = fs.readFileSync(`${appDir}/mta.yaml`, 'utf-8');
+        expect(savedYaml.match(/type: approuter\.nodejs/g) ?? []).toHaveLength(1);
+        // And: cleanup still runs, wiring the missing destination service onto the reused approuter
+        const doc = jsYaml.load(savedYaml) as { modules: { type: string; requires?: { name: string }[] }[] };
+        const router = doc.modules.find((module) => module.type === 'approuter.nodejs');
+        expect(router?.requires?.some((require) => require.name.endsWith('-destination'))).toBe(true);
+    });
+
+    it('addRoutingConfig does not scaffold a router project when a CDS approuter already exists', async () => {
+        // Given: a project whose mta.yaml already declares the CDS .deploy/app-router module
+        const appDir = `${OUTPUT_DIR_PREFIX}/addroutingcds`;
+        memfs.vol.fromNestedJSON({ [`.${appDir}/mta.yaml`]: standaloneCdsApprouterMTA }, '/');
+        const editor = createEditor(createStore());
+        const config: CFBaseConfig = { mtaId: 'addroutingcds', mtaPath: appDir, routerType: RouterModuleType.Standard };
+        // When: standalone routing config is applied
+        await addRoutingConfig(config, editor);
+        // Then: no router project files are written
+        expect(editor.exists(`${appDir}/router/package.json`)).toBe(false);
+        expect(editor.exists(`${appDir}/router/xs-app.json`)).toBe(false);
+        // And: the existing approuter is still the only one
+        const savedYaml = fs.readFileSync(`${appDir}/mta.yaml`, 'utf-8');
+        expect(savedYaml.match(/type: approuter\.nodejs/g) ?? []).toHaveLength(1);
+    });
+
+    it('addRoutingConfig still wires a requested connectivity service when reusing an existing approuter', async () => {
+        // Given: a project with a CDS approuter and a requested connectivity service
+        const appDir = `${OUTPUT_DIR_PREFIX}/addroutingcdsconn`;
+        memfs.vol.fromNestedJSON({ [`.${appDir}/mta.yaml`]: standaloneCdsApprouterMTA }, '/');
+        const editor = createEditor(createStore());
+        const config: CFBaseConfig = {
+            mtaId: 'addroutingcdsconn',
+            mtaPath: appDir,
+            routerType: RouterModuleType.Standard,
+            addConnectivityService: true
+        };
+        // When: standalone routing config is applied
+        await addRoutingConfig(config, editor);
+        // Then: no duplicate router project is scaffolded
+        expect(editor.exists(`${appDir}/router/package.json`)).toBe(false);
+        const savedYaml = fs.readFileSync(`${appDir}/mta.yaml`, 'utf-8');
+        expect(savedYaml.match(/type: approuter\.nodejs/g) ?? []).toHaveLength(1);
+        // But: the requested connectivity service is still added rather than silently dropped
+        expect(savedYaml).toMatch(/service: connectivity/);
+    });
+
+    it('addRoutingConfig scaffolds a router project when no approuter exists (backward compatible)', async () => {
+        // Given: a project whose mta.yaml has no approuter module (pre-.deploy CDS behaviour)
+        const appDir = `${OUTPUT_DIR_PREFIX}/addroutingnorouter`;
+        memfs.vol.fromNestedJSON({ [`.${appDir}/mta.yaml`]: standaloneBasicMTA }, '/');
+        const editor = createEditor(createStore());
+        const config: CFBaseConfig = {
+            mtaId: 'addroutingnorouter',
+            mtaPath: appDir,
+            routerType: RouterModuleType.Standard
+        };
+        // When: standalone routing config is applied
+        await addRoutingConfig(config, editor);
+        // Then: the router project is scaffolded
+        expect(editor.exists(`${appDir}/router/package.json`)).toBe(true);
+        expect(editor.exists(`${appDir}/router/xs-app.json`)).toBe(true);
     });
 
     it('Validate adding standalone approuter with missing module destination', async () => {
