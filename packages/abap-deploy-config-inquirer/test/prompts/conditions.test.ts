@@ -199,11 +199,12 @@ describe('Test abap deploy config inquirer conditions', () => {
     });
 
     test('should not show ui5 app deploy config questions', () => {
+        expect(showUi5AppDeployConfigQuestion({ hideIfOnPremise: true })).toBe(false);
+        PromptState.transportAnswers.transportConfigNeedsCreds = true;
         const promptOptions = {
+            hide: true,
             hideIfOnPremise: true
         };
-        PromptState.abapDeployConfig.scp = false;
-        expect(showUi5AppDeployConfigQuestion(promptOptions)).toBe(false);
         expect(showUi5AppDeployConfigQuestion(promptOptions)).toBe(false);
     });
 

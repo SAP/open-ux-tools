@@ -143,7 +143,7 @@ export function showPasswordQuestion(): boolean {
  * @returns boolean
  */
 export function showUi5AppDeployConfigQuestion(ui5AbapPromptOptions?: UI5AbapRepoPromptOptions): boolean {
-    if (!ui5AbapPromptOptions?.hide && ui5AbapPromptOptions?.hideIfOnPremise && !PromptState.abapDeployConfig?.scp) {
+    if (!ui5AbapPromptOptions?.hide && ui5AbapPromptOptions?.hideIfOnPremise) {
         return false;
     }
     return !PromptState.transportAnswers.transportConfigNeedsCreds;
