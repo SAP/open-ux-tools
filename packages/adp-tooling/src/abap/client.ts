@@ -1,7 +1,6 @@
 import {
     AdtCatalogService,
     UI5RtVersionService,
-    isAxiosError,
     type AbapServiceProvider,
     type Inbound
 } from '@sap-ux/axios-extension';
