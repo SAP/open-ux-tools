@@ -90,7 +90,7 @@ export abstract class AppIndexService extends Axios implements Service {
             const response = await this.get('/ui5_app_info_json', { params: { id: appId } });
             return JSON.parse(response.data);
         } catch (error) {
-            if (isAxiosError(error) && error.config) {
+            if (isAxiosError(error)) {
                 this.log.error(`Failed fetching ui5_app_info_json for app with id ${appId}.`);
             } else {
                 this.log.error(`Parsing error: ui5_app_info_json is not in expected format for app with id ${appId}.`);
