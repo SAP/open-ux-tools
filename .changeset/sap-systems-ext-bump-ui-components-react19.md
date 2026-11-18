@@ -2,4 +2,4 @@
 "sap-ux-sap-systems-ext": patch
 ---
 
-BUMP: Rebuild bundle with updated @sap-ux/ui-components (React 19 fix)
+FIX: Replace ReactDOM.render with createRoot for React 19 compatibility
