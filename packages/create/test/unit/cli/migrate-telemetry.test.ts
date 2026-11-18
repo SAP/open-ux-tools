@@ -328,28 +328,78 @@ describe('migrate telemetry', () => {
     });
 
     describe('getErrorCategory', () => {
-        test.each([
-            ['The V2_ANALYTICAL floorplan is not supported for migration.', 'floorPlanNotSupported'],
-            ['This project type is not supported for migration.', 'projectTypeNotSupported'],
-            ['Cannot determine the project info for the selected project.', 'projectInfoUnavailable'],
-            ['A permission error occurred in /Users/jane/app/manifest.json.', 'permissionError'],
-            ["EACCES: permission denied, open '/Users/jane/app/file'", 'permissionError'],
-            ['A syntax error occurred in manifest.json. Ensure the file is valid.', 'syntaxError'],
-            ["ENOENT: no such file or directory, open '/Users/jane/app/x'", 'fileNotFound'],
-            ['An error occurred reading the webapp/manifest.json file.', 'readError'],
-            ['connect ECONNREFUSED 10.0.0.1:443', 'networkError'],
-            ['Error during migration: self-signed certificate', 'networkError'],
-            ['Error committing migration: disk full', 'commitFailed'],
-            ['Error enabling TypeScript: failed', 'typeScriptEnablementFailed'],
-            ['Error copying library files: failed', 'libraryCopyFailed'],
-            ['The npm command failed with the 1 error code.', 'commandFailed'],
-            ['Something customer specific happened at https://host.example.com', 'other']
-        ])('%s -> %s', (message, category) => {
-            expect(getErrorCategory(message)).toBe(category);
+        describe('with error code (preferred)', () => {
+            test.each([
+                [{ type: 'ERROR', description: 'File not found', code: 'ENOENT' }, 'fileNotFound'],
+                [{ type: 'ERROR', description: 'Permission denied', code: 'EACCES' }, 'permissionError'],
+                [{ type: 'ERROR', description: 'Permission denied', code: 'EPERM' }, 'permissionError'],
+                [{ type: 'ERROR', description: 'Invalid JSON', code: 'JSON_PARSE_ERROR' }, 'syntaxError'],
+                [{ type: 'ERROR', description: 'Invalid manifest', code: 'MANIFEST_PARSE_ERROR' }, 'syntaxError'],
+                [{ type: 'ERROR', description: 'Unsupported floorplan', code: 'UNSUPPORTED_FLOORPLAN' }, 'floorPlanNotSupported'],
+                [{ type: 'ERROR', description: 'Project not suitable', code: 'NOT_SUITABLE_FOR_MIGRATION' }, 'projectTypeNotSupported'],
+                [{ type: 'ERROR', description: 'Failed to get info', code: 'PROJECT_INFO_FAILED' }, 'projectInfoUnavailable'],
+                [{ type: 'ERROR', description: 'Commit failed', code: 'COMMIT_FAILED' }, 'commitFailed'],
+                [{ type: 'ERROR', description: 'TypeScript setup failed', code: 'TYPESCRIPT_SETUP_FAILED' }, 'typeScriptEnablementFailed'],
+                [{ type: 'ERROR', description: 'Copy failed', code: 'COPY_FILES_FAILED' }, 'libraryCopyFailed'],
+                [{ type: 'ERROR', description: 'Template error', code: 'TEMPLATE_GENERATION_FAILED' }, 'templateGenerationFailed'],
+                [{ type: 'ERROR', description: 'Unknown error', code: 'UNKNOWN_ERROR' }, 'other']
+            ])('%j -> %s', (message, category) => {
+                expect(getErrorCategory(message)).toBe(category);
+            });
+        });
+
+        describe('with string message (fallback to regex)', () => {
+            test.each([
+                ['The V2_ANALYTICAL floorplan is not supported for migration.', 'floorPlanNotSupported'],
+                ['This project type is not supported for migration.', 'projectTypeNotSupported'],
+                ['Cannot determine the project info for the selected project.', 'projectInfoUnavailable'],
+                ['A permission error occurred in /Users/jane/app/manifest.json.', 'permissionError'],
+                ["EACCES: permission denied, open '/Users/jane/app/file'", 'permissionError'],
+                ['A syntax error occurred in manifest.json. Ensure the file is valid.', 'syntaxError'],
+                ["ENOENT: no such file or directory, open '/Users/jane/app/x'", 'fileNotFound'],
+                ['An error occurred reading the webapp/manifest.json file.', 'readError'],
+                ['connect ECONNREFUSED 10.0.0.1:443', 'networkError'],
+                ['Error during migration: self-signed certificate', 'networkError'],
+                ['Error committing migration: disk full', 'commitFailed'],
+                ['Error enabling TypeScript: failed', 'typeScriptEnablementFailed'],
+                ['Error copying library files: failed', 'libraryCopyFailed'],
+                ['The npm command failed with the 1 error code.', 'commandFailed'],
+                ['Something customer specific happened at https://host.example.com', 'other']
+            ])('%s -> %s', (message, category) => {
+                expect(getErrorCategory(message)).toBe(category);
+            });
+        });
+
+        describe('with message object without code (fallback to regex)', () => {
+            test('falls back to description matching when code is not present', () => {
+                const message = { type: 'ERROR', description: 'ENOENT: no such file' };
+                expect(getErrorCategory(message)).toBe('fileNotFound');
+            });
         });
     });
 
     describe('getErrorCategoriesForTelemetry', () => {
+        test('prefers error codes when available', () => {
+            const categories = getErrorCategoriesForTelemetry([
+                { type: 'ERROR', description: 'File not found at /secret/path', code: 'ENOENT' },
+                { type: 'ERROR', description: 'Permission denied for /jane/file', code: 'EACCES' },
+                { type: 'ERROR', description: 'Unsupported floorplan V2_ANALYTICAL', code: 'UNSUPPORTED_FLOORPLAN' }
+            ]);
+
+            expect(categories).toBe('fileNotFound,permissionError,floorPlanNotSupported');
+            expect(categories).not.toMatch(/secret|jane|V2_ANALYTICAL/);
+        });
+
+        test('falls back to regex when code is not available', () => {
+            const categories = getErrorCategoriesForTelemetry([
+                { type: 'ERROR', description: 'A syntax error occurred in /Users/jane/secret/manifest.json.' },
+                { type: 'ERROR', description: 'The V2_ANALYTICAL floorplan is not supported for migration.' }
+            ]);
+
+            expect(categories).toBe('syntaxError,floorPlanNotSupported');
+            expect(categories).not.toMatch(/jane|secret/);
+        });
+
         test('reports only distinct categories of errors and never the message text', () => {
             const categories = getErrorCategoriesForTelemetry([
                 { type: 'WARNING', description: 'A syntax error occurred.' },

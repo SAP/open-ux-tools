@@ -182,9 +182,50 @@ export function getProjectTelemetryProperties(
     };
 }
 
+const UNKNOWN_ERROR_CATEGORY = 'other';
+
+/**
+ * Map error codes from fiori-migration-writer to telemetry category names.
+ * This provides a direct mapping when message.code is available.
+ */
+const ERROR_CODE_TO_CATEGORY: Record<string, string> = {
+    // File system errors
+    ENOENT: 'fileNotFound',
+    EACCES: 'permissionError',
+    EEXIST: 'fileExists',
+    EBUSY: 'fileInUse',
+    EISDIR: 'invalidPath',
+    ENOTDIR: 'invalidPath',
+    EPERM: 'permissionError',
+    // Parsing errors
+    MANIFEST_PARSE_ERROR: 'syntaxError',
+    JSON_PARSE_ERROR: 'syntaxError',
+    YAML_PARSE_ERROR: 'syntaxError',
+    XML_PARSE_ERROR: 'syntaxError',
+    // Configuration errors
+    UNSUPPORTED_FLOORPLAN: 'floorPlanNotSupported',
+    MISSING_MANIFEST: 'fileNotFound',
+    MISSING_COMPONENT: 'fileNotFound',
+    MISSING_ODATA_SERVICE: 'serviceUnavailable',
+    INVALID_PROJECT_STRUCTURE: 'invalidProjectStructure',
+    // Migration process errors
+    MIGRATION_FAILED: 'migrationFailed',
+    COMMIT_FAILED: 'commitFailed',
+    TYPESCRIPT_SETUP_FAILED: 'typeScriptEnablementFailed',
+    COPY_FILES_FAILED: 'libraryCopyFailed',
+    TEMPLATE_GENERATION_FAILED: 'templateGenerationFailed',
+    // Validation errors
+    NOT_SUITABLE_FOR_MIGRATION: 'projectTypeNotSupported',
+    PROJECT_INFO_FAILED: 'projectInfoUnavailable',
+    // Unknown/generic
+    UNKNOWN_ERROR: UNKNOWN_ERROR_CATEGORY
+};
+
 /**
  * Known error types and the patterns identifying them in migrator messages. Messages are free text that can contain
  * paths, hostnames or file names, so only the matched category is reported, never the message itself.
+ *
+ * Note: This is a fallback for when message.code is not available. Prefer using message.code when present.
  */
 const ERROR_CATEGORIES: Array<[category: string, pattern: RegExp]> = [
     ['floorPlanNotSupported', /floorplan is not supported/i],
@@ -200,21 +241,33 @@ const ERROR_CATEGORIES: Array<[category: string, pattern: RegExp]> = [
     ['libraryCopyFailed', /error copying library files/i],
     ['commandFailed', /command failed|error code/i]
 ];
-const UNKNOWN_ERROR_CATEGORY = 'other';
 
 /**
  * Get the category of an error message.
+ * Prefers message.code when available, falls back to regex pattern matching on description.
  *
- * @param message - message returned by the migrator or thrown error message
+ * @param message - message object returned by the migrator
  * @returns the matching category, or 'other' if the error is not known
  */
-export function getErrorCategory(message: string): string {
-    return ERROR_CATEGORIES.find(([, pattern]) => pattern.test(message))?.[0] ?? UNKNOWN_ERROR_CATEGORY;
+export function getErrorCategory(message: Message | string): string {
+    // If message is an object with code, prefer the code-based mapping
+    if (typeof message !== 'string' && message.code) {
+        const category = ERROR_CODE_TO_CATEGORY[message.code];
+        if (category) {
+            return category;
+        }
+    }
+
+    // Fall back to regex pattern matching on description
+    const description = typeof message === 'string' ? message : message.description;
+    return ERROR_CATEGORIES.find(([, pattern]) => pattern.test(description))?.[0] ?? UNKNOWN_ERROR_CATEGORY;
 }
 
 /**
  * Get the categories of the error messages of a migration for telemetry. The IDE migration reports the error texts,
  * the CLI reports only categories because the texts can contain project specific data.
+ *
+ * Prefers message.code when available for accurate categorization, falls back to regex pattern matching.
  *
  * @param messages - messages returned by the migrator
  * @returns comma separated, distinct error categories
@@ -222,6 +275,6 @@ export function getErrorCategory(message: string): string {
 export function getErrorCategoriesForTelemetry(messages: Message[] = []): string {
     const categories = messages
         .filter((message) => message.type === 'ERROR')
-        .map((message) => getErrorCategory(message.description));
+        .map((message) => getErrorCategory(message));
     return [...new Set(categories)].join(',');
 }
