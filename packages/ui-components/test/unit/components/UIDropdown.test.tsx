@@ -88,7 +88,7 @@ describe('<UIDropdown />', () => {
                 "color": "var(--vscode-input-foreground)",
                 "fontSize": "13px",
                 "fontWeight": "bold",
-                "padding": "4px 0",
+                "padding": "var(--ui-spacing-small, 5px) 0",
               },
             }
         `
@@ -124,7 +124,7 @@ describe('<UIDropdown />', () => {
                 "color": "var(--vscode-input-foreground)",
                 "fontSize": "13px",
                 "fontWeight": "bold",
-                "padding": "4px 0",
+                "padding": "var(--ui-spacing-small, 5px) 0",
                 "selectors": Object {
                   "::after": Object {
                     "color": "var(--vscode-inputValidation-errorBorder)",

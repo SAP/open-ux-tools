@@ -21,7 +21,10 @@ describe('<UILabel />', () => {
         it('default - label global styles applied', () => {
             const styles = getStylesFn()({} as ILabelStyleProps) as ILabelStyles;
             const root = styles.root as Array<unknown>;
-            expect(root[0]).toEqual({ marginTop: 25, ...labelGlobalStyle });
+            expect(root[0]).toEqual({
+                marginTop: 'calc(var(--ui-spacing-xl, 20px) + var(--ui-spacing-small, 5px))',
+                ...labelGlobalStyle
+            });
         });
 
         it('disabled - opacity 0.4 applied to rendered label', () => {

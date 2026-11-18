@@ -240,7 +240,7 @@
                 border-color: var(--vscode-editorWidget-border);
                 height: 16px;
                 width: 16px;
-                margin-right: 8px;
+                margin-right: var(--ui-spacing-medium, 10px);
             }
             .ms-Checkbox-checkmark {
                 color: var(--vscode-checkbox-border);
@@ -278,7 +278,7 @@
         font-weight: normal;
         height: 26px;
         line-height: 26px;
-        padding-left: 8px;
+        padding-left: var(--ui-spacing-medium, 10px);
     }
 }
 
@@ -290,8 +290,8 @@
     &:before {
         outline: none;
         z-index: 0;
-        left: -$menu-item-horizontal-padding;
-        right: -$menu-item-horizontal-padding;
+        left: calc(-1 * $menu-item-horizontal-padding);
+        right: calc(-1 * $menu-item-horizontal-padding);
         outline: $menu-item-focus-border;
         outline-offset: $menu-item-border-offset;
     }
@@ -299,7 +299,7 @@
 
 .option-loading {
     display: flex;
-    padding-left: 8px;
+    padding-left: var(--ui-spacing-medium, 10px);
     width: 262px;
     height: 26px;
 

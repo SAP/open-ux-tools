@@ -23,15 +23,15 @@ $readonly-labels-opacity: 0.4;
         flex-direction: row;
         flex-wrap: wrap;
         justify-content: space-between;
-        row-gap: 5px;
-        column-gap: 10px;
+        row-gap: var(--ui-spacing-small, 5px);
+        column-gap: var(--ui-spacing-medium, 10px);
         &-primary-actions {
             display: flex;
-            column-gap: 10px;
+            column-gap: var(--ui-spacing-medium, 10px);
         }
         &-secondary-actions {
             display: flex;
-            column-gap: 10px;
+            column-gap: var(--ui-spacing-medium, 10px);
         }
     }
 
@@ -41,7 +41,7 @@ $readonly-labels-opacity: 0.4;
     
     &-content {
         display: flex;
-        margin-top: 10px;
+        margin-top: var(--ui-spacing-medium, 10px);
         flex-direction: column;
         position: relative;
         border: 1px solid var(--vscode-editorWidget-border);
@@ -149,7 +149,7 @@ $readonly-labels-opacity: 0.4;
                     overflow: hidden;
                 }
                 &-no-data {
-                    padding: 5px;
+                    padding: var(--ui-spacing-small, 5px);
                 }
             }
 
@@ -158,9 +158,9 @@ $readonly-labels-opacity: 0.4;
                 justify-content: space-between;
                 flex-wrap: wrap;
                 background-color: var(--vscode-debugView-stateLabelBackground);
-                padding: 5px 10px;
+                padding: var(--ui-spacing-small, 5px) var(--ui-spacing-medium, 10px);
                 align-items: center;
-                row-gap: 5px;
+                row-gap: var(--ui-spacing-small, 5px);
 
                 &-text-content {
                     font-size: 13px;
@@ -177,7 +177,7 @@ $readonly-labels-opacity: 0.4;
                     }
 
                     &-divider {
-                        margin: 0 10px;
+                        margin: 0 var(--ui-spacing-medium, 10px);
                         height: 20px;
                     }
 
@@ -217,7 +217,7 @@ $readonly-labels-opacity: 0.4;
                     .flexible-table-content-table-row-header {
                         background-color: transparent;
                         border: 1px solid var(--vscode-editorWidget-border);
-                        padding: 4px 9px;
+                        padding: calc(var(--ui-spacing-small, 5px) - 1px) calc(var(--ui-spacing-medium, 10px) - 1px);
                     }
                     .flexible-table-content-table-row-wrapper-cells {
                         border: 1px solid var(--vscode-editorWidget-border);
@@ -230,7 +230,7 @@ $readonly-labels-opacity: 0.4;
                     &-title {
                         height: 18px;
                         font-weight: bold;
-                        padding: 0 5px;
+                        padding: 0 var(--ui-spacing-small, 5px);
                         white-space: nowrap;
                         overflow: hidden;
                         text-overflow: ellipsis;
@@ -266,11 +266,12 @@ $readonly-labels-opacity: 0.4;
                             flex-wrap: wrap;
                             width: auto;
                             // Border + padding should 5px on each side
-                            padding: 5px 4px 4px;
+                            padding: var(--ui-spacing-small, 5px) calc(var(--ui-spacing-small, 5px) - 1px)
+                                calc(var(--ui-spacing-small, 5px) - 1px);
                         }
 
                         &-value {
-                            padding: 5px;
+                            padding: var(--ui-spacing-small, 5px);
                         }
                         &-wrapper {
                             border-right: 1px solid var(--vscode-editorWidget-border);
@@ -284,11 +285,11 @@ $readonly-labels-opacity: 0.4;
                                 border-right: none;
                             }
                             &.not-editable {
-                                padding: 10px;
+                                padding: var(--ui-spacing-medium, 10px);
 
                                 span {
                                     &:not(:last-child) {
-                                        padding-bottom: 4px;
+                                        padding-bottom: var(--ui-spacing-small, 5px);
                                     }
 
                                     i {
@@ -309,7 +310,7 @@ $readonly-labels-opacity: 0.4;
                         justify-content: flex-start;
                         min-width: var(--flexible-table-actions-min-width);
                         border-left: 1px solid var(--vscode-editorWidget-border);
-                        padding: 5px;
+                        padding: var(--ui-spacing-small, 5px);
                         align-items: center;
 
                         &-icon {
@@ -317,7 +318,7 @@ $readonly-labels-opacity: 0.4;
                         }
 
                         &-divider {
-                            margin: 0 10px;
+                            margin: 0 var(--ui-spacing-medium, 10px);
                             height: 20px;
                         }
 
@@ -346,7 +347,7 @@ $readonly-labels-opacity: 0.4;
     
 }
 
-$wrapping-table-space-between-scrollbar-and-border: 5px;
+$wrapping-table-space-between-scrollbar-and-border: var(--ui-spacing-small, 5px);
 .flexible-table.wrapping-layout {
     .flexible-table-header {
         // Increase space between scrollbar and border
@@ -374,7 +375,7 @@ $wrapping-table-space-between-scrollbar-and-border: 5px;
                 }
             }
             &-row {
-                margin-bottom: 10px;
+                margin-bottom: var(--ui-spacing-medium, 10px);
                 &:last-child {
                     margin-bottom: 0px;
                 }

@@ -296,8 +296,8 @@ export class UIDefaultButton extends React.Component<UIDefaultButtonProps, {}> {
                 fontSize: '13px',
                 fontWeight: 400,
                 borderRadius: COMMON_INPUT_STYLES.borderRadius,
-                paddingLeft: 13,
-                paddingRight: 13,
+                paddingLeft: 'var(--ui-spacing-large, 15px)',
+                paddingRight: 'var(--ui-spacing-large, 15px)',
                 // Add to use hard coded value here as Theia doesn't support these values correctly
                 // as on Theia
                 // `--vscode-button-secondaryBackground` does not exist and is replaced by:
