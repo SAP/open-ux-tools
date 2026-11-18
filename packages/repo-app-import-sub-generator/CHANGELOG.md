@@ -1,5 +1,13 @@
 # @sap-ux/repo-app-download-sub-generator
 
+## 1.2.110
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/launch-config 1.0.28 → 1.0.29
+
 ## 1.2.109
 
 ### Patch Changes
