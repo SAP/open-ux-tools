@@ -3,7 +3,7 @@ import type { Question } from 'inquirer';
 
 const mockHasbinSync = jest.fn().mockReturnValue(true);
 
-jest.unstable_mockModule('hasbin', () => ({
+jest.unstable_mockModule('which', () => ({
     default: { sync: mockHasbinSync },
     sync: mockHasbinSync
 }));
