@@ -39,7 +39,13 @@ const logger = {
     debug: jest.fn()
 } as unknown as ToolsLogger;
 
-const dummyProvider = {} as unknown as AbapServiceProvider;
+const dummyProvider = {
+    interceptors: {
+        response: {
+            use: jest.fn()
+        }
+    }
+} as unknown as AbapServiceProvider;
 
 const system = 'SYS_010';
 const client = '010';

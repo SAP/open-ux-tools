@@ -312,10 +312,9 @@ describe('CF App Discovery', () => {
 
             mockGetFDCApps.mockResolvedValue([]);
 
-            const result = await getCfApps(serviceKeys, mockCfConfig, mockLogger);
-
-            expect(result).toEqual([]);
-            expect(mockGetFDCApps).toHaveBeenCalledWith([], mockCfConfig, mockLogger);
+            await expect(getCfApps(serviceKeys, mockCfConfig, mockLogger)).rejects.toThrow(
+                "No `appHostIds` were provided. At least one `appHostId` is required."
+            );
             expect(mockLogger.log).toHaveBeenCalledWith('App Host Ids: []');
         });
 

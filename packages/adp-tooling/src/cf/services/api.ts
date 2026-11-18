@@ -341,7 +341,7 @@ export async function getCfUi5AppInfo(
     cfConfig: CfConfig,
     logger?: ToolsLogger
 ): Promise<CfUi5AppInfo> {
-    logger?.debug(`Fetching ui5AppInfo.json for app with id: ${appId}`);
+    logger?.log('Fetching ui5AppInfo.json');
     const requestArguments = await getFDCRequestArguments(cfConfig);
 
     const appHostIdParams = appHostIds.map((id) => `appHostId=${encodeURIComponent(id)}`).join('&');
