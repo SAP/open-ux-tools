@@ -1,5 +1,18 @@
 # @sap-ux/create
 
+## 1.5.27
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-18
+
+#### Workspace Updates
+
+- @sap-ux/fiori-migration-writer 1.2.1 → 1.2.2
+- @sap-ux/preview-middleware 1.2.43 → 1.2.43
+
 ## 1.5.26
 
 ### Patch Changes
