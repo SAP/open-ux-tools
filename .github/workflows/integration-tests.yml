@@ -66,7 +66,7 @@ jobs:
               with:
                 path: |
                     ~/.cache/ms-playwright
-                key: playwright-browsers-chromium-1.65.1-ubuntu-latest-node-version-22.x
+                key: playwright-browsers-chromium-${{ hashFiles('packages/playwright/package.json') }}-ubuntu-latest-node-version-22.x
             - name: Install playwright chromium browsers
               if: steps.cache-playwright-browsers.outputs.cache-hit != 'true'
               run: cd tests/integration/adaptation-editor && pnpm exec playwright install chromium
