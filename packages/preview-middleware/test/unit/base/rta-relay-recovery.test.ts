@@ -29,11 +29,13 @@ describe('relay recovery with the real server and browser client', () => {
     let server: Server;
     let origin: string;
     let now: number;
+    let accelerateTimers: boolean;
     const clients: TestClient[] = [];
 
     beforeEach(async () => {
         now = realNow();
-        jest.spyOn(Date, 'now').mockImplementation(() => now);
+        accelerateTimers = true;
+        jest.spyOn(Date, 'now').mockImplementation(() => (accelerateTimers ? now : realNow()));
         const app = express();
         addRtaRelayApis(app, TOKEN);
         server = app.listen(0, '127.0.0.1');
@@ -139,15 +141,16 @@ describe('relay recovery with the real server and browser client', () => {
             Date,
             // Accelerate short retry delays and advance the shared lease/recovery clock with them.
             setTimeout: (callback: () => void, ms: number) => {
+                const accelerated = accelerateTimers && ms <= 5000;
                 const timer = setTimeout(
                     () => {
                         timers.delete(timer);
-                        if (ms <= 5000) {
+                        if (accelerated) {
                             now += ms;
                         }
                         callback();
                     },
-                    ms <= 5000 ? 10 : ms
+                    accelerated ? 10 : ms
                 );
                 timers.add(timer);
                 if (ms > 30000 && ms <= 55000) {
@@ -459,10 +462,14 @@ describe('relay recovery with the real server and browser client', () => {
     test.each(['__reload__', '__stop__'])(
         '%s retries a lost acknowledgement and performs the lifecycle action once',
         async (actionName) => {
+            // Keep shutdown's 2 s HTTP deadline real; compressing it to 10 ms races network I/O on CI.
+            accelerateTimers = false;
             const client = startClient('owner', async (send, attempt) => {
                 const response = await send();
                 if (attempt === 1) {
                     await response.text();
+                    // Model a response arriving later than the harness's accelerated 10 ms timers.
+                    await new Promise((resolve) => setTimeout(resolve, 50));
                     throw new TypeError('Acknowledgement lost');
                 }
                 return response;
@@ -475,6 +482,7 @@ describe('relay recovery with the real server and browser client', () => {
             );
             expect(client.posts).toHaveLength(2);
             expect(client.posts[0]).toBe(client.posts[1]);
+            expect(client.log).not.toHaveBeenCalled();
             expect(client.effects).not.toHaveBeenCalled();
             expect(client.polls).toHaveLength(1);
             const fresh = startClient('fresh');
