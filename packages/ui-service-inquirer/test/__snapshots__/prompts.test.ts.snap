@@ -43,7 +43,7 @@ exports[`getSystemQuestions getServiceConfigQuestions 1`] = `
     "message": "Package",
     "name": "packageAutocomplete",
     "source": [Function],
-    "type": "search",
+    "type": "autocomplete",
     "validate": [Function],
     "when": [Function],
   },

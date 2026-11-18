@@ -71,7 +71,7 @@ describe('Prompt Generation Tests', () => {
             const questions: CfDeployConfigQuestions[] = await getQuestions(promptOptions);
             const destinationNamePrompt = questions.find((question) => question.name === promptNames.destinationName);
             expect(destinationNamePrompt?.type).toBe('list');
-            expect(destinationNamePrompt?.default).toBe('defaultDestination');
+            expect((destinationNamePrompt?.default as Function)()).toBe('defaultDestination');
         });
 
         it('returns list-based prompt for cap project when environment is BAS', async () => {
@@ -97,7 +97,7 @@ describe('Prompt Generation Tests', () => {
             const questions: CfDeployConfigQuestions[] = await getQuestions(promptOptions);
             const destinationNamePrompt = questions.find((question) => question.name === promptNames.destinationName);
             expect(destinationNamePrompt?.type).toBe('list');
-            expect(destinationNamePrompt?.default).toBe('defaultDestination');
+            expect((destinationNamePrompt?.default as Function)()).toBe('defaultDestination');
             // ensure additional choice is added to the BTP destination list
             expect((destinationNamePrompt as ListQuestion)?.choices).toStrictEqual([
                 ...additionalChoiceList,
@@ -195,7 +195,7 @@ describe('Prompt Generation Tests', () => {
             expect((destinationNamePrompt as ListQuestion)?.choices).toBeUndefined();
             expect((destinationNamePrompt?.source as Function)()).toEqual(additionalChoiceList);
             // Default should be used
-            expect(destinationNamePrompt?.default).toEqual('testChoice');
+            expect((destinationNamePrompt?.default as Function)()).toEqual('testChoice');
         });
 
         it('shows warning additionalMessage when selected destination is a full URL destination', async () => {
@@ -344,7 +344,7 @@ describe('Prompt Generation Tests', () => {
             const routerTypePrompt = questions.find((question) => question.name === promptNames.routerType);
             expect(routerTypePrompt?.guiOptions?.mandatory).toBe(true);
             expect(routerTypePrompt?.guiOptions?.breadcrumb).toBe(t('prompts.generateDeploymentRouterOptionsMessage'));
-            expect(routerTypePrompt?.default).toBe(RouterModuleType.Managed);
+            expect((routerTypePrompt?.default as Function)()).toBe(RouterModuleType.Managed);
             expect((routerTypePrompt?.message as Function)()).toBe(t('prompts.generateDeploymentRouterOptionsMessage'));
             expect((routerTypePrompt as ListQuestion)?.choices).toEqual([
                 { name: t('prompts.routerType.managedAppRouter'), value: RouterModuleType.Managed },

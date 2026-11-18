@@ -126,7 +126,7 @@ describe('App Router Prompt Generation Tests', () => {
             expect(routerTypePrompt?.type).toBe('list');
             expect(routerTypePrompt?.guiOptions?.mandatory).toBe(true);
             expect(routerTypePrompt?.guiOptions?.breadcrumb).toBe(true);
-            expect(routerTypePrompt?.default).toBe(RouterModuleType.Managed);
+            expect((routerTypePrompt?.default as Function)()).toBe(RouterModuleType.Managed);
             expect((routerTypePrompt as ListQuestion)?.choices).toEqual([
                 { name: t('routerType.managedAppRouter'), value: RouterModuleType.Managed },
                 { name: t('routerType.appFrontAppService'), value: RouterModuleType.AppFront },
@@ -260,7 +260,7 @@ describe('App Router Prompt Generation Tests', () => {
             expect(addServiceProviderPrompt?.guiOptions?.breadcrumb).toBe(t('prompts.abapEnvBindingBreadcrumbMessage'));
             expect(addServiceProviderPrompt?.message).toBe(t('prompts.selectServiceMessage'));
             expect(addServiceProviderPrompt?.type).toBe('list');
-            expect(addServiceProviderPrompt?.default).toBe(t('errors.abapEnvsUnavailable'));
+            expect((addServiceProviderPrompt?.default as Function)()).toBe(t('errors.abapEnvsUnavailable'));
             expect(
                 (addServiceProviderPrompt?.when as Function)({
                     [appRouterPromptNames.routerType]: RouterModuleType.Standard,
@@ -307,7 +307,7 @@ describe('App Router Prompt Generation Tests', () => {
             expect(addServiceProviderPrompt?.guiOptions?.breadcrumb).toBe(t('prompts.abapEnvBindingBreadcrumbMessage'));
             expect(addServiceProviderPrompt?.message).toBe(t('prompts.selectServiceMessage'));
             expect(addServiceProviderPrompt?.type).toBe('list');
-            expect(addServiceProviderPrompt?.default).toBe(t('errors.abapEnvsUnavailable'));
+            expect((addServiceProviderPrompt?.default as Function)()).toBe(t('errors.abapEnvsUnavailable'));
             expect(
                 (addServiceProviderPrompt?.when as Function)({
                     [appRouterPromptNames.routerType]: RouterModuleType.Standard,
