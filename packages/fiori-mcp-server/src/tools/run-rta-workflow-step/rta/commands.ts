@@ -342,6 +342,41 @@ export async function executeUfaAction(
 }
 
 /**
+ * Fetches and validates one service's metadata, preserving failures as an entry.
+ *
+ * @param transport Transport whose browser context carries the authentication cookies.
+ * @param site Registered editor URL.
+ * @param uri OData data-source URI.
+ * @param appPath Project root used to persist large metadata documents.
+ * @returns Inline metadata, a file reference, or a service-specific error.
+ */
+async function fetchODataMetadataEntry(
+    transport: FrontendActionTransport,
+    site: string,
+    uri: string,
+    appPath: string
+): Promise<ODataMetadataEntry> {
+    try {
+        const { status, contentType, body } = await transport.fetchViaContext(site, buildMetadataUrl(site, uri));
+        if (status < 200 || status >= 300) {
+            return { url: uri, error: `Failed to fetch OData metadata (status ${status}).` };
+        }
+        const isXml = contentType.toLowerCase().includes('xml');
+        const looksEdmx = looksLikeEdmx(body);
+        if (!isXml || !looksEdmx) {
+            return {
+                url: uri,
+                error: `Expected EDMX but received "${contentType}" (status ${status}) — the editor session may have lost authentication; re-run the "start" step.`
+            };
+        }
+        const formatted = formatXml(body);
+        return { url: uri, ...persistMetadata(appPath, uri, formatted) };
+    } catch (error) {
+        return { url: uri, error: error instanceof Error ? error.message : String(error) };
+    }
+}
+
+/**
  * Fetches OData `$metadata` (EDMX) for each supplied data-source URI through the authenticated
  * browser context registered for `site` — the way to obtain real EDMX for a CF project, which has
  * no ABAP provider. Each URI is independent: a bad response or failed fetch becomes a per-entry
@@ -361,28 +396,18 @@ export async function getODataMetadata(
     appPath: string
 ): Promise<GetODataMetadataResult> {
     const entries: ODataMetadataEntry[] = [];
-    // The HTTP relay has one pending slot. Finish each service before submitting the next.
-    for (const uri of uris) {
-        try {
-            const { status, contentType, body } = await transport.fetchViaContext(site, buildMetadataUrl(site, uri));
-            if (status < 200 || status >= 300) {
-                entries.push({ url: uri, error: `Failed to fetch OData metadata (status ${status}).` });
-                continue;
-            }
-            const isXml = contentType.toLowerCase().includes('xml');
-            const looksEdmx = looksLikeEdmx(body);
-            if (!isXml || !looksEdmx) {
-                entries.push({
-                    url: uri,
-                    error: `Expected EDMX but received "${contentType}" (status ${status}) — the editor session may have lost authentication; re-run the "start" step.`
-                });
-                continue;
-            }
-            const formatted = formatXml(body);
-            entries.push({ url: uri, ...persistMetadata(appPath, uri, formatted) });
-        } catch (error) {
-            entries.push({ url: uri, error: error instanceof Error ? error.message : String(error) });
+    /**
+     * Completes each service before submitting the next to the relay's single pending slot.
+     *
+     * @param index Index of the next service to fetch.
+     * @returns Resolves once all remaining service results have been appended.
+     */
+    async function fetchNext(index: number): Promise<void> {
+        if (index < uris.length) {
+            entries.push(await fetchODataMetadataEntry(transport, site, uris[index], appPath));
+            await fetchNext(index + 1);
         }
     }
+    await fetchNext(0);
     return { entries };
 }

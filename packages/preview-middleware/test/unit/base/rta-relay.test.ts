@@ -184,7 +184,8 @@ describe('preview RTA relay', () => {
             await result(delivery.body.id).expect(200);
             await command.response;
         }
-        await result(ids[0]).expect(404);
+        const evicted = await result(ids[0]).expect(404);
+        expect(evicted.body).toHaveProperty('code', 'RELAY_ACTION_UNKNOWN');
         await result(ids[1]).expect(200);
         await result(ids[64]).expect(200);
     });

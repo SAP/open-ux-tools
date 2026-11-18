@@ -212,23 +212,25 @@ function signalProcess(childProcess: ChildProcess, signal: NodeJS.Signals | 0): 
  * Waits for both the parent and its recorded POSIX group to disappear.
  *
  * @param childProcess - The owned editor child.
+ * @param deadline - The fixed deadline shared by all termination checks.
  * @returns Whether termination was confirmed within the bounded interval.
  */
-async function waitForTermination(childProcess: ChildProcess): Promise<boolean> {
+async function waitForTermination(
+    childProcess: ChildProcess,
+    deadline = Date.now() + EXIT_TIMEOUT_MS
+): Promise<boolean> {
     if (!ownedGroups.has(childProcess)) {
         return waitForExit(childProcess);
     }
-    const deadline = Date.now() + EXIT_TIMEOUT_MS;
-    while (true) {
-        if (hasExited(childProcess) && !signalProcess(childProcess, 0)) {
-            return true;
-        }
-        const remaining = deadline - Date.now();
-        if (remaining <= 0) {
-            return false;
-        }
-        await new Promise((resolve) => setTimeout(resolve, Math.min(GROUP_POLL_INTERVAL_MS, remaining)));
+    if (hasExited(childProcess) && !signalProcess(childProcess, 0)) {
+        return true;
     }
+    const remaining = deadline - Date.now();
+    if (remaining <= 0) {
+        return false;
+    }
+    await new Promise((resolve) => setTimeout(resolve, Math.min(GROUP_POLL_INTERVAL_MS, remaining)));
+    return waitForTermination(childProcess, deadline);
 }
 
 /**
@@ -311,7 +313,7 @@ export function stopEditorSession(site: string): Promise<boolean> {
 /** Stops the editors owned by this MCP lifetime during server shutdown. */
 export async function stopEditorSessions(): Promise<void> {
     shuttingDown = true;
-    await Promise.allSettled([...pendingSpawns]);
+    await Promise.allSettled(pendingSpawns);
     await Promise.all([
         ...[...new Set(sessions.values())].map((session) => stopEditorSession(session.browserUrl)),
         ...[...ownedProcesses].map((childProcess) => terminateEditorProcess(childProcess))
