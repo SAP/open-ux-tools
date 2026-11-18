@@ -41,7 +41,7 @@ export async function getConfiguredProvider(
 
         provider.interceptors.response.use(
             (response) => {
-                if (response.config?.url && response.config?.url !== "/") {
+                if (response.config?.url && response.config?.url !== '/') {
                     logger.debug(`Request URL: ${response.config.url}`);
                 }
                 return response;

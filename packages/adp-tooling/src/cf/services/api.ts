@@ -349,7 +349,6 @@ export async function getCfUi5AppInfo(
         appId
     )}&${appHostIdParams}`;
 
-
     try {
         const response = await axios.get(url, requestArguments.options);
 

@@ -17,6 +17,7 @@ export enum SupportedProject {
  * Gets the supported project types for the system. A system can support cloudReady, onPremise or both types of project.
  *
  * @param provider - The ABAP service provider.
+ * @param logger
  * @returns {Promise<SupportedProject>} The supported project types.
  */
 export async function getSupportedProject(

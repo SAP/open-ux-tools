@@ -19,6 +19,7 @@ const FILTER = {
  *
  * @param {AbapServiceProvider} provider - Instance of the ABAP provider.
  * @param {boolean} isCustomerBase - Indicates whether the adaptation layer is CUSTOMER_BASE.
+ * @param logger
  * @returns {Promise<FlexUICapability | undefined>} settings indicating support for onPremise and UI Flex capabilities.
  */
 export async function getFlexUICapability(
@@ -41,7 +42,9 @@ export async function getFlexUICapability(
 
     const isDtaFolderDeploymentSupported = response.data.includes(FILTER.term);
     const isUIFlexSupported = response.data.includes(FILTER.scheme);
-    logger.debug(`isDtaFolderDeploymentSupported: ${isDtaFolderDeploymentSupported}, isUIFlexSupported: ${isUIFlexSupported}`);
+    logger.debug(
+        `isDtaFolderDeploymentSupported: ${isDtaFolderDeploymentSupported}, isUIFlexSupported: ${isUIFlexSupported}`
+    );
 
     return { isDtaFolderDeploymentSupported, isUIFlexSupported };
 }
@@ -76,6 +79,7 @@ export async function getSystemUI5Version(
  *
  * @param {string} appId - The ID of the application for which to retrieve inbounds.
  * @param {AbapServiceProvider} provider - Instance of the ABAP provider.
+ * @param logger
  * @returns {Promise<ManifestNamespace.Inbound>} list of tile inbounds of the application.
  */
 export async function getBaseAppInbounds(

@@ -607,7 +607,7 @@ export default class extends Generator {
 
         updateCfWizardSteps(this.isCfEnv, this.prompts);
 
-        if (this.targetEnv === "CF") {
+        if (this.targetEnv === 'CF') {
             this.logger.log(`Project organization information: ${JSON.stringify(this.cfConfig.org, null, 2)}`);
             this.logger.log(`Project space information: ${JSON.stringify(this.cfConfig.space, null, 2)}`);
             this.logger.log(`Project apiUrl information: ${JSON.stringify(this.cfConfig.url, null, 2)}`);
