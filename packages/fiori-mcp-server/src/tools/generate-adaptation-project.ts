@@ -1,22 +1,39 @@
 import type { GenerateAdaptationProjectOutput, GenerateAdaptationProjectInput } from '../types/index.js';
 import { isAbsolute, join } from 'node:path';
-import { mkdirSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdirSync, realpathSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { randomUUID } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 import { runCmdArgs, logger } from '../utils/index.js';
+import { GenerateAdaptationProjectInputSchema } from '../types/input.js';
+import {
+    generationError,
+    preflightError,
+    preflightStep,
+    validateAttributes,
+    validateCfApplication,
+    validateGenerationFolder,
+    validationError
+} from './adaptation-project-validation.js';
 import {
     AppRouterType,
     fetchKeyUserChanges,
     findServiceInstancesForApp,
     getConfiguredProvider,
     getDefaultProjectName,
+    getApprouterType,
+    getModuleNames,
+    hasApprouter,
     getSupportedProject,
     isCfInstalled,
     isLoggedInCf,
     loadApps,
     loadCfConfig,
-    SupportedProject
+    SupportedProject,
+    SourceManifest,
+    validateBusinessSolutionName,
+    validateMtaId,
+    validateProjectPath
 } from '@sap-ux/adp-tooling';
 import { AdaptationProjectType } from '@sap-ux/axios-extension';
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
@@ -102,7 +119,7 @@ function applyOptionalFields(
 type ProjectTypeResolution =
     | { kind: 'resolved'; projectType: AdaptationProjectType }
     | { kind: 'inputRequired'; message: string }
-    | { kind: 'error'; message: string };
+    | { kind: 'error'; message: string; field?: string; code?: string };
 
 /**
  * Builds an error resolution for a projectType the system/application cannot support.
@@ -170,8 +187,25 @@ async function resolveProjectType(
     client: string | undefined,
     requested: AdaptationProjectType | undefined
 ): Promise<ProjectTypeResolution> {
-    const provider = await getConfiguredProvider({ system, client }, logger);
-    const supportedProject = await getSupportedProject(provider);
+    const provider = await preflightStep('system', 'system_unavailable', () =>
+        getConfiguredProvider({ system, client }, logger)
+    );
+    const supportedProject = await preflightStep('system', 'system_unavailable', () => getSupportedProject(provider));
+    const apps = await preflightStep('application', 'application_discovery_failed', () =>
+        loadApps(provider, !isInternalFeaturesSettingEnabled(), supportedProject)
+    );
+    const baseApp = apps.find((entry) => entry.id === application);
+    if (!baseApp) {
+        return {
+            kind: 'error',
+            field: 'application',
+            code: 'application_not_found',
+            message: 'Application ' + application + ' is not available for adaptation on system ' + system + '.'
+        };
+    }
+    await preflightStep('application', 'application_metadata_unavailable', () =>
+        new SourceManifest(provider, application).getManifest()
+    );
 
     if (isInternalFeaturesSettingEnabled()) {
         return resolveInternalProjectType(system, supportedProject, requested);
@@ -191,8 +225,7 @@ async function resolveProjectType(
         return { kind: 'resolved', projectType: AdaptationProjectType.ON_PREMISE };
     }
 
-    const apps = await loadApps(provider, true, supportedProject);
-    const status = apps.find((entry) => entry.id === application)?.cloudDevAdaptationStatus;
+    const status = baseApp.cloudDevAdaptationStatus;
 
     if (status === 'released') {
         if (requested) {
@@ -201,10 +234,8 @@ async function resolveProjectType(
         return {
             kind: 'inputRequired',
             message:
-                `The system '${system}' and application '${application}' support BOTH Cloud Ready and ` +
-                'Classic adaptation projects. Ask the user whether they want "Cloud Ready" or "Classic", ' +
-                'then call generate_adaptation_project again with projectType set to ' +
-                "'cloudReady' (for Cloud Ready) or 'onPremise' (for Classic)."
+                `The system '${system}' and application '${application}' support both Cloud Ready and ` +
+                'Classic adaptation projects. projectType is required to select one.'
         };
     }
 
@@ -247,32 +278,73 @@ function cleanupKeyUserChangesFile(filePath: string | undefined): void {
  * other parameters. When `targetEnvironment` is missing the tool returns `InputRequired` so the caller
  * asks the user which target to use.
  *
- * @param params - Input parameters for the adaptation project generation.
+ * @param input - Untrusted input parameters for the adaptation project generation.
  * @returns A promise resolving to the execution output.
  */
-export async function generateAdaptationProject(
-    params: GenerateAdaptationProjectInput
-): Promise<GenerateAdaptationProjectOutput> {
-    const { targetEnvironment, application, appPath, targetFolder } = params;
-
-    if (!application) {
-        return { status: 'Error', message: 'Missing required parameter: application is required.' };
+export async function generateAdaptationProject(input: unknown): Promise<GenerateAdaptationProjectOutput> {
+    const parsed = GenerateAdaptationProjectInputSchema.safeParse(input);
+    if (!parsed.success) {
+        const issues = parsed.error.issues.flatMap((issue) => {
+            const fields = issue.code === 'unrecognized_keys' ? issue.keys : [issue.path.join('.')];
+            return fields.map((field) => ({ field, code: issue.code, message: issue.message }));
+        });
+        return {
+            status: 'Error',
+            phase: 'validation',
+            message: issues.map((issue) => issue.message).join(' '),
+            issues
+        };
     }
+    const params = parsed.data;
+    const { targetEnvironment, appPath, targetFolder } = params;
 
     const finalTargetFolder = targetFolder ?? appPath;
 
-    if (!isAbsolute(finalTargetFolder)) {
-        return { status: 'Error', message: `targetFolder must be an absolute path. Received: "${finalTargetFolder}"` };
+    for (const [field, folder] of [
+        ['appPath', appPath],
+        ['targetFolder', targetFolder]
+    ] as const) {
+        if (folder !== undefined && !isAbsolute(folder)) {
+            return generationError(
+                field,
+                field + ' must be an absolute path. Received: "' + folder + '"',
+                'invalid_path'
+            );
+        }
+    }
+    const folderError = validateGenerationFolder(
+        finalTargetFolder,
+        targetFolder === undefined ? 'appPath' : 'targetFolder'
+    );
+    if (folderError) {
+        return folderError;
     }
 
     if (targetEnvironment !== 'ABAP' && targetEnvironment !== 'CF') {
         return {
             status: 'InputRequired',
-            message:
-                'Specify the target: this can generate an ABAP or a Cloud Foundry adaptation project. ' +
-                'Ask the user which they want, then call generate_adaptation_project again with ' +
-                "targetEnvironment set to 'ABAP' or 'CF'. Do NOT guess - a system alone does not imply ABAP."
+            message: 'targetEnvironment is required before generation.',
+            missingFields: ['targetEnvironment'],
+            choices: {
+                targetEnvironment: [
+                    { value: 'ABAP', label: 'ABAP' },
+                    { value: 'CF', label: 'Cloud Foundry' }
+                ]
+            }
         };
+    }
+    if (targetEnvironment === 'CF' && params.mtaMode === 'new') {
+        if (!params.mtaId) {
+            return {
+                status: 'InputRequired',
+                message: 'mtaId is required when mtaMode is new.',
+                missingFields: ['mtaId']
+            };
+        }
+        const error = validationError('mtaId', validateMtaId(params.mtaId));
+        if (error) {
+            return error;
+        }
     }
 
     return targetEnvironment === 'CF' ? runCfFlow(params, finalTargetFolder) : runAbapFlow(params, finalTargetFolder);
@@ -280,7 +352,7 @@ export async function generateAdaptationProject(
 
 /**
  * ABAP adaptation project flow: resolves the ABAP project type (onPremise/cloudReady), optionally
- * stages key user changes, and invokes the generator. Unchanged behaviour from the original tool.
+ * stages key user changes, validates attributes, and invokes the generator.
  *
  * @param params - Input parameters for the adaptation project generation.
  * @param finalTargetFolder - The validated absolute target folder.
@@ -294,50 +366,74 @@ async function runAbapFlow(
         params;
 
     if (!system) {
-        return { status: 'Error', message: 'Missing required parameter: system is required for an ABAP project.' };
+        return {
+            status: 'InputRequired',
+            message: 'system is required for an ABAP project.',
+            missingFields: ['system']
+        };
     }
 
     let keyUserChangesFilePath: string | undefined;
 
     try {
-        // The zod schema restricts projectType to the AdaptationProjectType values, so the string
-        // is a safe stand-in for the enum type when passed to the resolver.
+        const jsonInput: Record<string, unknown> & { projectName: string } = {
+            system,
+            application,
+            targetFolder: finalTargetFolder,
+            projectName: projectName ?? getDefaultProjectName(finalTargetFolder)
+        };
+        applyOptionalFields(jsonInput, { namespace, applicationTitle, client });
+        const attributeError = validateAttributes(
+            { ...params, projectName: jsonInput.projectName },
+            finalTargetFolder,
+            false
+        );
+        if (attributeError) {
+            return attributeError;
+        }
+        // The schema restricts projectType to the values of the existing AdaptationProjectType enum.
         const resolution = await resolveProjectType(
             system,
             application,
             client,
             projectType as AdaptationProjectType | undefined
         );
-
         if (resolution.kind === 'inputRequired') {
-            return { status: 'InputRequired', message: resolution.message };
+            return {
+                status: 'InputRequired',
+                message: resolution.message,
+                missingFields: ['projectType'],
+                choices: {
+                    projectType: [
+                        { value: 'cloudReady', label: 'Cloud Ready' },
+                        { value: 'onPremise', label: 'Classic' }
+                    ]
+                }
+            };
         }
         if (resolution.kind === 'error') {
-            return { status: 'Error', message: resolution.message };
+            return generationError(
+                resolution.field ?? 'projectType',
+                resolution.message,
+                resolution.code ?? 'unsupported_project_type'
+            );
         }
-
-        const jsonInput: Record<string, unknown> & { projectName: string } = {
-            system,
-            application,
-            projectType: resolution.projectType,
-            targetFolder: finalTargetFolder,
-            projectName: projectName ?? getDefaultProjectName(finalTargetFolder)
-        };
-
-        applyOptionalFields(jsonInput, { namespace, applicationTitle, client });
+        jsonInput.projectType = resolution.projectType;
 
         if (importKeyUserChanges) {
-            const keyUserChanges = await withTimeout(
-                fetchKeyUserChanges({
-                    system,
-                    application,
-                    client,
-                    logger
-                }),
-                KEY_USER_CHANGES_TIMEOUT_MS,
-                `Fetching key user changes for '${application}' on '${system}' timed out after ` +
-                    `${KEY_USER_CHANGES_TIMEOUT_MS}ms. The system may be unreachable; ` +
-                    'set importKeyUserChanges to false.'
+            const keyUserChanges = await preflightStep('importKeyUserChanges', 'key_user_changes_unavailable', () =>
+                withTimeout(
+                    fetchKeyUserChanges({
+                        system,
+                        application,
+                        client,
+                        logger
+                    }),
+                    KEY_USER_CHANGES_TIMEOUT_MS,
+                    `Fetching key user changes for '${application}' on '${system}' timed out after ` +
+                        `${KEY_USER_CHANGES_TIMEOUT_MS}ms. The system may be unreachable; ` +
+                        'set importKeyUserChanges to false.'
+                )
             );
             if (keyUserChanges.length > 0) {
                 const id = randomUUID();
@@ -351,39 +447,73 @@ async function runAbapFlow(
             }
         }
 
-        mkdirSync(finalTargetFolder, { recursive: true });
-
-        // Pass the JSON payload as a single argv element (not interpolated into a shell string) so
-        // quotes, spaces or apostrophes in values cannot corrupt it. A corrupted payload would make
-        // the generator silently fall back to interactive prompts and hang with no attached stdin.
-        const jsonString = JSON.stringify(jsonInput);
-        const { cmd, args } = buildGeneratorCommand(jsonString);
-        const { stdout, stderr } = await runCmdArgs(cmd, args, {
-            cwd: finalTargetFolder,
-            timeout: GENERATION_TIMEOUT_MS
-        });
-
-        if (stdout) {
-            logger.info(stdout);
-        }
-        if (stderr) {
-            logger.warn(stderr);
-        }
-
-        const projectPath = join(finalTargetFolder, jsonInput.projectName);
-
-        return {
-            status: 'Success',
-            message: `Adaptation project generated successfully at ${projectPath}.`,
-            projectPath
-        };
+        return await runGeneration(jsonInput, finalTargetFolder, join(finalTargetFolder, jsonInput.projectName));
     } catch (error) {
-        const message = error instanceof Error ? error.message : String(error);
-        logger.error(`Error generating adaptation project: ${message}`);
-        return { status: 'Error', message: `Error generating adaptation project: ${message}` };
+        return preflightError(error);
     } finally {
         cleanupKeyUserChangesFile(keyUserChangesFilePath);
     }
+}
+
+/**
+ * Validates the CF destination before service discovery and resolves the adaptation app name.
+ *
+ * @param params - Generation inputs.
+ * @param finalTargetFolder - The absolute MTA root or new-MTA parent folder.
+ * @param cfConfig - Current CF login context.
+ * @returns The resolved destination, or a structured validation error.
+ */
+function resolveCfDestination(
+    params: GenerateAdaptationProjectInput,
+    finalTargetFolder: string,
+    cfConfig: ReturnType<typeof loadCfConfig>
+): { mtaMode: 'new' | 'existing'; mtaRoot: string; projectName: string } | GenerateAdaptationProjectOutput {
+    const {
+        mtaMode: requestedMtaMode,
+        mtaId,
+        projectName: requestedProjectName,
+        approuter,
+        businessSolutionName
+    } = params;
+    const mtaMode = requestedMtaMode ?? 'existing';
+    const pathError = validationError(
+        params.targetFolder === undefined ? 'appPath' : 'targetFolder',
+        validateProjectPath(finalTargetFolder, logger, mtaMode, cfConfig.space?.GUID ? cfConfig : undefined)
+    );
+    if (pathError) {
+        return pathError;
+    }
+    if (mtaMode === 'new' && mtaId) {
+        const mtaError = validationError('mtaId', validateMtaId(mtaId, finalTargetFolder));
+        if (mtaError) {
+            return mtaError;
+        }
+    }
+    const mtaRoot = mtaMode === 'new' && mtaId ? join(finalTargetFolder, mtaId) : realpathSync(finalTargetFolder);
+    const projectName = requestedProjectName ?? getDefaultProjectName(mtaRoot);
+    const attributeError = validateAttributes({ ...params, projectName }, mtaRoot, true);
+    if (attributeError) {
+        return attributeError;
+    }
+
+    const explicitApprouter = approuter === 'managed' ? AppRouterType.MANAGED : AppRouterType.STANDALONE;
+    const defaultApprouter = mtaMode === 'new' || approuter ? AppRouterType.MANAGED : getApprouterType(mtaRoot);
+    const resolvedApprouter = approuter ? explicitApprouter : defaultApprouter;
+    if (
+        businessSolutionName?.trim() &&
+        resolvedApprouter === AppRouterType.MANAGED &&
+        (mtaMode === 'new' || !hasApprouter(getModuleNames(mtaRoot)))
+    ) {
+        const businessSolutionError = validationError(
+            'businessSolutionName',
+            validateBusinessSolutionName(businessSolutionName.trim())
+        );
+        if (businessSolutionError) {
+            return businessSolutionError;
+        }
+    }
+
+    return { mtaMode, mtaRoot, projectName };
 }
 
 /**
@@ -400,11 +530,9 @@ async function runCfFlow(
 ): Promise<GenerateAdaptationProjectOutput> {
     const {
         application,
-        projectName,
         namespace,
         applicationTitle,
         serviceInstanceName,
-        mtaMode: requestedMtaMode,
         mtaId,
         businessSolutionName,
         approuter,
@@ -413,63 +541,67 @@ async function runCfFlow(
 
     try {
         const cfConfig = loadCfConfig(logger);
+        const destination = resolveCfDestination(params, finalTargetFolder, cfConfig);
+        if ('status' in destination) {
+            return destination;
+        }
+        const { mtaRoot, mtaMode, projectName } = destination;
 
         // Detection only — this tool never runs `cf login` on the user's behalf.
-        if (!(await isCfInstalled(logger))) {
-            return {
-                status: 'Error',
-                message:
-                    'The Cloud Foundry CLI ("cf") is not installed. Install it and run `cf login`, then call ' +
-                    'generate_adaptation_project again.'
-            };
+        if (!(await preflightStep('targetEnvironment', 'cf_cli_unavailable', () => isCfInstalled(logger)))) {
+            return generationError(
+                'targetEnvironment',
+                'The Cloud Foundry CLI ("cf") is not installed.',
+                'cf_cli_unavailable'
+            );
         }
 
-        const loggedIn = await isLoggedInCf(cfConfig, logger);
-        if (!loggedIn || !cfConfig.org?.Name || !cfConfig.space?.GUID) {
+        const loggedIn = await preflightStep('targetEnvironment', 'cf_login_required', () =>
+            isLoggedInCf(cfConfig, logger)
+        );
+        if (!loggedIn || !cfConfig.org?.Name || !cfConfig.space?.Name || !cfConfig.space?.GUID) {
             const endpoint = cfConfig.url ? `https://api.cf.${cfConfig.url}` : '<API endpoint>';
-            return {
-                status: 'Error',
-                message:
-                    'You are not logged in to a Cloud Foundry org and space. Run ' +
-                    `\`cf login -a ${endpoint} --sso\`, select an org and space, then call ` +
-                    'generate_adaptation_project again.'
-            };
+            const message =
+                'You are not logged in to a Cloud Foundry org and space. Run ' +
+                'cf login -a ' +
+                endpoint +
+                ' --sso and select an org and space.';
+            return generationError('targetEnvironment', message, 'cf_login_required');
         }
 
         let resolvedServiceInstanceName = serviceInstanceName;
         if (!resolvedServiceInstanceName) {
-            const matches = await findServiceInstancesForApp(application, cfConfig, logger);
+            const matches = await preflightStep('serviceInstanceName', 'service_discovery_failed', () =>
+                findServiceInstancesForApp(application, cfConfig, logger)
+            );
             if (matches.length === 0) {
-                return {
-                    status: 'Error',
-                    message:
-                        `No Cloud Foundry service instance in org '${cfConfig.org.Name}' / space ` +
-                        `'${cfConfig.space.Name}' exposes application '${application}'. Verify the application id ` +
-                        'and that you are targeting the correct org and space.'
-                };
+                return generationError(
+                    'application',
+                    'No Cloud Foundry service instance in org ' +
+                        cfConfig.org.Name +
+                        ' / space ' +
+                        cfConfig.space.Name +
+                        ' exposes application ' +
+                        application +
+                        '.',
+                    'application_not_found'
+                );
             }
             if (matches.length === 1) {
                 resolvedServiceInstanceName = matches[0].name;
             } else {
-                const names = matches.map((match) => match.name).join(', ');
                 return {
                     status: 'InputRequired',
-                    message:
-                        `Multiple Cloud Foundry service instances expose application '${application}': ${names}. ` +
-                        'Ask the user which one to use, then call generate_adaptation_project again with ' +
-                        'serviceInstanceName set to the chosen value.'
+                    message: `Multiple Cloud Foundry service instances expose application '${application}'.`,
+                    missingFields: ['serviceInstanceName'],
+                    choices: { serviceInstanceName: matches.map((match) => ({ value: match.name, label: match.name })) }
                 };
             }
         }
 
-        const mtaMode = requestedMtaMode ?? 'existing';
-        if (mtaMode === 'new' && !mtaId) {
-            return {
-                status: 'Error',
-                message:
-                    'mtaMode "new" requires mtaId (the MTA project id/name of the folder to create). ' +
-                    'Provide mtaId and call generate_adaptation_project again.'
-            };
+        const applicationError = await validateCfApplication(resolvedServiceInstanceName, application, cfConfig);
+        if (applicationError) {
+            return applicationError;
         }
 
         if (importKeyUserChanges) {
@@ -481,13 +613,11 @@ async function runCfFlow(
             application,
             serviceInstanceName: resolvedServiceInstanceName,
             mtaMode,
+            projectName,
             targetFolder: finalTargetFolder
         };
 
         applyOptionalFields(jsonInput, { namespace, applicationTitle });
-        if (projectName) {
-            jsonInput.projectName = projectName;
-        }
         if (mtaId) {
             jsonInput.mtaId = mtaId;
         }
@@ -498,33 +628,50 @@ async function runCfFlow(
             jsonInput.approuter = approuter === 'managed' ? AppRouterType.MANAGED : AppRouterType.STANDALONE;
         }
 
-        mkdirSync(finalTargetFolder, { recursive: true });
+        return await runGeneration(jsonInput, finalTargetFolder, join(mtaRoot, projectName), mtaRoot);
+    } catch (error) {
+        return preflightError(error);
+    }
+}
 
-        // Pass the JSON payload as a single argv element (see the ABAP flow for the rationale).
-        const jsonString = JSON.stringify(jsonInput);
-        const { cmd, args } = buildGeneratorCommand(jsonString);
-        const { stdout, stderr } = await runCmdArgs(cmd, args, {
-            cwd: finalTargetFolder,
-            timeout: GENERATION_TIMEOUT_MS
-        });
-
+/**
+ * Executes creation only after all local and backend validation has passed.
+ *
+ * @param jsonInput - Validated generator configuration.
+ * @param targetFolder - Generator working directory.
+ * @param projectPath - Resolved adaptation application path.
+ * @param mtaRoot - Containing MTA for CF, omitted for ABAP.
+ * @returns Success or a structured generation failure.
+ */
+async function runGeneration(
+    jsonInput: Record<string, unknown>,
+    targetFolder: string,
+    projectPath: string,
+    mtaRoot?: string
+): Promise<GenerateAdaptationProjectOutput> {
+    try {
+        if (!mtaRoot) {
+            mkdirSync(targetFolder, { recursive: true });
+        }
+        // Keep the JSON configuration as a single argv element so shell quoting cannot corrupt it.
+        const { cmd, args } = buildGeneratorCommand(JSON.stringify(jsonInput));
+        const { stdout, stderr } = await runCmdArgs(cmd, args, { cwd: targetFolder, timeout: GENERATION_TIMEOUT_MS });
         if (stdout) {
             logger.info(stdout);
         }
         if (stderr) {
             logger.warn(stderr);
         }
-
-        const projectPath = mtaMode === 'new' && mtaId ? join(finalTargetFolder, mtaId) : finalTargetFolder;
-
         return {
             status: 'Success',
-            message: `Cloud Foundry adaptation project generated successfully at ${projectPath}.`,
-            projectPath
+            message: 'Adaptation project generated successfully at ' + projectPath + '.',
+            projectPath,
+            ...(mtaRoot ? { mtaRoot } : {})
         };
     } catch (error) {
-        const message = error instanceof Error ? error.message : String(error);
-        logger.error(`Error generating adaptation project: ${message}`);
-        return { status: 'Error', message: `Error generating adaptation project: ${message}` };
+        const message =
+            'Error generating adaptation project: ' + (error instanceof Error ? error.message : String(error));
+        logger.error(message);
+        return generationError('generation', message, 'generation_failed', 'generation');
     }
 }

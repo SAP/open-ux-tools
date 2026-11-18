@@ -120,50 +120,38 @@ export const CF_MTA_MODES = ['new', 'existing'] as const;
 /** Friendly Cloud Foundry approuter types the caller may request for a CF adaptation project. */
 export const CF_APPROUTER_TYPES = ['managed', 'standalone'] as const;
 
-export const GenerateAdaptationProjectInputSchema = zod.object({
+export const GenerateAdaptationProjectInputSchema = zod.strictObject({
     targetEnvironment: zod
         .enum(TARGET_ENVIRONMENTS)
         .optional()
-        .describe(
-            "The target environment: 'ABAP' or 'CF' (Cloud Foundry). This is the ONLY thing that selects the " +
-                'flow and it must always be provided. When it is omitted the tool returns status ' +
-                "'InputRequired' and you must ask the user which they want, then call this tool again with " +
-                'targetEnvironment set to their answer. Do NOT guess or default it: a provided system does NOT ' +
-                'imply ABAP, and Cloud Foundry parameters do NOT imply CF.'
-        ),
+        .describe('Explicit generation target. No target is inferred; omission returns InputRequired.'),
     system: zod
         .string()
+        .trim()
+        .min(1, 'system must not be empty.')
         .optional()
-        .describe(
-            'The name of the SAP ABAP system (obtained from list_sap_systems), used when targetEnvironment is ' +
-                "'ABAP'. Its presence does NOT select the ABAP flow — set targetEnvironment for that."
-        ),
+        .describe('SAP system name. Required when targetEnvironment is ABAP.'),
     application: zod
-        .string()
-        .describe(
-            'The application ID to adapt. For ABAP this is the system application id (e.g. sap.ui.demoapps.rta.fe); ' +
-                'for Cloud Foundry this is the base app id exposed by a CF service instance.'
-        ),
+        .string({ error: 'application is required and must be a string.' })
+        .trim()
+        .min(1, 'application is required.')
+        .describe('Base application ID: the ABAP application ID or the CF app ID exposed by a service instance.'),
     projectType: zod
         .enum(ADAPTATION_PROJECT_TYPES)
         .optional()
         .describe(
-            'ABAP only. The adaptation project type: \'cloudReady\' (shown to the user as "Cloud Ready") or ' +
-                '\'onPremise\' (shown to the user as "Classic"). ' +
-                'Leave this UNSET on the first call UNLESS the user has already stated which type they want — ' +
-                'in that case pass their choice through on the first call. If the selected system AND application ' +
-                "support both types and this is unset, the tool returns status 'InputRequired' without generating " +
-                'anything; when that happens, ask the user whether they want "Cloud Ready" or "Classic" and then ' +
-                'call this tool again with projectType set to their choice. Do NOT guess or default this value yourself.'
+            'ABAP only. cloudReady (Cloud Ready) or onPremise (Classic). A single supported type resolves ' +
+                'automatically; omission when both types are supported returns InputRequired with choices. ' +
+                'Unsupported requests return Error. Ignored for CF.'
         ),
     serviceInstanceName: zod
         .string()
+        .trim()
+        .min(1, 'serviceInstanceName must not be empty.')
         .optional()
         .describe(
-            'Cloud Foundry only. Name of the live CF service instance that exposes the base application. Omit it ' +
-                'to let the tool discover the instance from the application id; if several instances match, the tool ' +
-                "returns status 'InputRequired' listing them and you re-call with serviceInstanceName set to the " +
-                'chosen value.'
+            'CF only. Validated live service instance in the current space exposing application. Explicit names are checked before creation. If omitted, one match resolves automatically; ' +
+                'multiple matches return InputRequired with choices, and no matches return Error.'
         ),
     mtaMode: zod
         .enum(CF_MTA_MODES)
@@ -174,16 +162,23 @@ export const GenerateAdaptationProjectInputSchema = zod.object({
         ),
     mtaId: zod
         .string()
+        .trim()
+        .min(1, 'mtaId must not be empty.')
         .optional()
         .describe(
-            'Cloud Foundry only. Required when mtaMode is "new": the MTA project id/name of the folder to create.'
+            'Cloud Foundry only. Required when mtaMode is "new": the MTA project id/name of the folder to create. ' +
+                'Use at most 20 characters, starting with a letter or number, followed by letters, numbers, dots, ' +
+                'underscores or hyphens. The name must be unused inside the parent folder.'
         ),
     businessSolutionName: zod
         .string()
+        .trim()
+        .min(1, 'businessSolutionName must not be empty.')
         .optional()
         .describe(
             'Cloud Foundry only. Optional business solution (reuse library) name; auto-generated for a managed ' +
-                'approuter when omitted.'
+                'approuter when omitted. When creating a managed router, start with a lowercase letter or number ' +
+                'and use lowercase letters, numbers, dots, underscores or hyphens.'
         ),
     approuter: zod
         .enum(CF_APPROUTER_TYPES)
@@ -194,22 +189,44 @@ export const GenerateAdaptationProjectInputSchema = zod.object({
         ),
     appPath: zod
         .string()
+        .trim()
+        .min(1, 'appPath must not be empty.')
         .describe(
-            'Absolute path to the folder where the adaptation project will be generated (i.e. the current working directory). The project subdirectory will be created inside this folder.'
+            'Absolute generation folder. ABAP: parent of the app folder. CF: existing MTA root, or an existing parent folder for the new MTA when mtaMode is new.'
         ),
     targetFolder: zod
         .string()
+        .trim()
+        .min(1, 'targetFolder must not be empty.')
         .optional()
         .describe(
             'Optional override: absolute path to a different folder where the project will be generated. Defaults to appPath if not provided.'
         ),
     projectName: zod
         .string()
+        .trim()
+        .min(1, 'projectName must not be empty.')
         .optional()
-        .describe('Optional name of the project. Defaults to app.variant if not provided.'),
-    namespace: zod.string().optional().describe('Optional namespace for the project'),
-    applicationTitle: zod.string().optional().describe('Optional title for the application'),
-    client: zod.string().optional().describe('ABAP only. Optional SAP client number'),
+        .describe(
+            'Adaptation app folder name. Defaults to the first available app.variant, app.variant2, etc. inside the destination.'
+        ),
+    namespace: zod
+        .string()
+        .trim()
+        .min(1, 'namespace must not be empty.')
+        .optional()
+        .describe(
+            'Namespace. Defaults to customer.<projectName> for the customer layer, or projectName for the vendor layer.'
+        ),
+    applicationTitle: zod
+        .string()
+        .trim()
+        .min(1, 'applicationTitle must not be empty.')
+        .optional()
+        .describe(
+            'Application title. ABAP defaults to the base title with a variant suffix; CF uses the base manifest title or the generator fallback.'
+        ),
+    client: zod.string().trim().optional().describe('ABAP only. Optional SAP client number. Ignored for CF.'),
     importKeyUserChanges: zod
         .boolean()
         .optional()

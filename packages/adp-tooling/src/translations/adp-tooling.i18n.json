@@ -86,6 +86,14 @@
         "ui5VersionDoesNotExistGeneric": "An error occurred when validating the SAPUI5 version: {{error}}. Please select a different version."
     },
     "error": {
+        "projectDoesNotExist": "The project does not exist. Please select an MTA project.",
+        "projectDoesNotExistMta": "Provide the path to the MTA project where you want to have your Adaptation Project created.",
+        "projectSpaceMismatch": "The selected MTA project was created for a different Cloud Foundry space. Log in to that space, or choose another project.",
+        "newModeFolderAlreadyMta": "The selected folder is already an MTA project. Choose an empty folder to create a new MTA project, or select 'Use an existing MTA project for creating an adaptation project'.",
+        "mtaIdInvalid": "Invalid MTA project name. Only letters, numbers, dots (.), underscores (_), and hyphens (-) are allowed. The name must start with a letter or number.",
+        "mtaIdTooLong": "MTA project name must be 20 characters or fewer.",
+        "mtaIdAlreadyExists": "A folder with this name already exists in the selected location. Please choose a different MTA project name.",
+        "businessSolutionNameInvalid": "Invalid business solution name. Only lowercase letters, numbers, dots (.), underscores (_), and hyphens (-) are allowed. The name must contain at least one letter or number.",
         "appDoesNotSupportFlexibility": "The selected application does not support flexibility because it has `flexEnabled=false`. SAPUI5 Adaptation Project only supports applications that support flexibility. Please select a different application.",
         "failedToParseXsAppJson": "Failed to parse the `xs-app.json` file. Error: {{error}}",
         "failedToParseManifestJson": "Failed to parse the `manifest.json` file. Error: {{error}}",
@@ -119,7 +127,7 @@
         "failedToUpdateServiceInstance": "Failed to update the service instance: '{{serviceInstanceName}}'. Error: {{error}}",
         "failedToGetFDCApps": "Retrieving FDC apps failed: {{error}}",
         "failedToGetAdaptableBusinessServices": "Retrieving adaptable business services failed: {{error}}",
-        "failedToGetFDCInbounds": "Retrieving inbounds from the UI5 Flexibility Design and Configuration service failed: {{error}}", 
+        "failedToGetFDCInbounds": "Retrieving inbounds from the UI5 Flexibility Design and Configuration service failed: {{error}}",
         "failedToConnectToFDCService": "Failed to connect to the FDC service: '{{status}}'",
         "baseAppRequired": "A base app is required for Cloud Foundry project generation. Please select a base app and try again.",
         "projectTypeNotProvided": "The project type is missing.",
