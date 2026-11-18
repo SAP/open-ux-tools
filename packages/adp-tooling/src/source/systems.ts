@@ -106,7 +106,7 @@ export class SystemLookup {
      *
      * @returns {Promise<Endpoint[]>} An array of system systems.
      */
-    public async getSystems(): Promise<Endpoint[]> {        
+    public async getSystems(): Promise<Endpoint[]> {
         if (!this.systems) {
             this.systems = await this.loadSystems();
         }
