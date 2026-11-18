@@ -9,9 +9,9 @@ import { getSystemConfig } from '../../../utils.js';
 import { getPackageChoices, getPackageInputChoices, shouldRunValidation } from '../../helpers.js';
 import { defaultPackage, defaultPackageChoice } from '../../defaults.js';
 import { validatePackageChoiceInput, validatePackageChoiceInputForCli, validatePackage } from '../../validators.js';
-import type {
-    AutoCompleteQuestion,
+import {
     promptNames,
+    type AutoCompleteQuestion,
     type PackageInputChoices,
     type AbapDeployConfigAnswersInternal,
     type AbapDeployConfigPromptOptions,
