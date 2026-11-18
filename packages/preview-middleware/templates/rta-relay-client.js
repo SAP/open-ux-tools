@@ -100,8 +100,19 @@
 
     async function submitAcknowledged(endpoint, id, response, recoveryMs = RESULT_RECOVERY_MS) {
         // Freeze the exact result once. Retries deliver it again, never execute the frontend action again.
-        let body = JSON.stringify({ id, clientId, ...response });
+        let body;
         let compact = false;
+        try {
+            body = JSON.stringify({ id, clientId, ...response });
+        } catch {
+            // The action has settled. Report the serialization failure so its execution lock can be released.
+            body = JSON.stringify({
+                id,
+                clientId,
+                error: 'The editor action completed, but its result could not be serialized. Inspect the editor before retrying the action.'
+            });
+            compact = true;
+        }
         let retryDelay = RETRY_DELAY_MS;
         const deadline = Date.now() + recoveryMs;
         while (Date.now() < deadline) {

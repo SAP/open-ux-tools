@@ -276,11 +276,23 @@ async function reloadPageHttp(site: string): Promise<void> {
  * the Playwright transport's `fetchViaContext`, used by `get_odata_metadata` for CF projects.
  *
  * @param site Registered editor URL.
- * @param url Absolute URL to GET; the relay client rejects anything not same-origin as the editor.
+ * @param url Absolute URL to GET on the registered local or browser origin.
  * @returns The response status, content-type, and body text.
  */
 async function fetchViaContextHttp(site: string, url: string): Promise<FetchViaContextResult> {
-    const response = await requestRelay(site, '__fetch__', { url });
+    const session = requireEditorSession(site);
+    const target = new URL(url);
+    const browserUrl = new URL(session.browserUrl);
+    // BAS exposes the local editor on a different origin in the user's browser.
+    if (target.origin === new URL(session.localUrl).origin) {
+        target.protocol = browserUrl.protocol;
+        target.hostname = browserUrl.hostname;
+        target.port = browserUrl.port;
+    }
+    if (target.origin !== browserUrl.origin) {
+        throw new Error(`Refusing cross-origin fetch: ${target.origin}`);
+    }
+    const response = await requestRelay(site, '__fetch__', { url: target.toString() });
     if (response.error) {
         throw new Error(`Editor relay fetch failed: ${response.error}`);
     }

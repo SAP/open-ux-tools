@@ -358,6 +358,46 @@ describe('relay recovery with the real server and browser client', () => {
         }
     );
 
+    test.each(['circular', 'BigInt', 'throwing toJSON'])(
+        'recovers a %s result and a lost error acknowledgement without replaying the action',
+        async (kind) => {
+            const client = startClient('owner', async (send, attempt) => {
+                const response = await send();
+                if (attempt === 1) {
+                    await response.text();
+                    throw new TypeError('Acknowledgement lost');
+                }
+                return response;
+            });
+            const payload: Record<string, unknown> = {};
+            if (kind === 'circular') {
+                payload.self = payload;
+            } else if (kind === 'BigInt') {
+                payload.value = 1n;
+            } else {
+                payload.toJSON = () => {
+                    throw new Error('Result serialization detail');
+                };
+            }
+            client.effects.mockResolvedValueOnce({ isSuccess: true, payload });
+            const first = await command();
+            expect(first.status).toBe(500);
+            expect(await first.json()).toEqual({
+                error: 'The editor action completed, but its result could not be serialized. Inspect the editor before retrying the action.'
+            });
+            const next = await command();
+            expect(next.status).toBe(200);
+            expect(await next.json()).toHaveProperty('result.payload.id', 'owner');
+            await until(() => client.posts.length === 3);
+            expect(client.effects).toHaveBeenCalledTimes(2);
+            const errors = client.posts.filter((post) => JSON.parse(post).error);
+            expect(errors).toHaveLength(2);
+            expect(errors[0]).toBe(errors[1]);
+            expect(JSON.parse(errors[0])).toHaveProperty('id', expect.any(String));
+            expect(JSON.parse(errors[0])).toHaveProperty('clientId', 'owner');
+        }
+    );
+
     test('recovers a compact oversized-result error when its acknowledgement is lost', async () => {
         const client = startClient('owner', async (send, attempt) => {
             if (attempt === 1) {

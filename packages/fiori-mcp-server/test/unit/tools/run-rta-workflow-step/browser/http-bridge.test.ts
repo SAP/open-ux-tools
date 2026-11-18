@@ -1,7 +1,8 @@
 import { jest } from '@jest/globals';
 import type { EditorSession } from '../../../../../src/adaptation-editor/editor-session.js';
 
-const requireEditorSessionMock = jest.fn<(site: string) => Pick<EditorSession, 'localUrl' | 'relayToken'>>();
+const requireEditorSessionMock =
+    jest.fn<(site: string) => Pick<EditorSession, 'localUrl' | 'browserUrl' | 'relayToken'>>();
 const stopEditorSessionMock = jest.fn<(site: string) => Promise<boolean>>();
 jest.unstable_mockModule('../../../../../src/adaptation-editor/editor-session.js', () => ({
     requireEditorSession: requireEditorSessionMock,
@@ -45,7 +46,7 @@ describe('browser/http-bridge', () => {
             if (site !== SITE && site !== LOCAL_SITE) {
                 throw new Error('Unknown editor session. Use its exact returned editor URL.');
             }
-            return { localUrl: LOCAL_SITE, relayToken: TOKEN };
+            return { localUrl: LOCAL_SITE, browserUrl: SITE, relayToken: TOKEN };
         });
         stopEditorSessionMock.mockReset().mockResolvedValue(true);
     });
@@ -149,7 +150,7 @@ describe('browser/http-bridge', () => {
     });
 
     test('rejects a session without a relay token before any fetch', async () => {
-        requireEditorSessionMock.mockReturnValue({ localUrl: LOCAL_SITE });
+        requireEditorSessionMock.mockReturnValue({ localUrl: LOCAL_SITE, browserUrl: SITE });
         await expect(httpTransport.callFrontendAction(SITE, START)).rejects.toThrow('This editor has no HTTP relay');
         expect(fetchMock).not.toHaveBeenCalled();
     });
@@ -388,7 +389,7 @@ describe('browser/http-bridge', () => {
     });
 
     describe('fetchViaContext', () => {
-        const URL_TO_FETCH = 'http://127.0.0.1:49152/sap/opu/odata/svc/$metadata';
+        const URL_TO_FETCH = new URL('/sap/opu/odata/svc/$metadata', SITE).toString();
         const fetchResult = { status: 200, contentType: 'application/xml', body: '<edmx/>' };
 
         test('sends __fetch__ with the url and returns the status, content-type and body', async () => {
@@ -399,6 +400,44 @@ describe('browser/http-bridge', () => {
             expect(fetchMock.mock.calls[0][1]?.body).toBe(
                 JSON.stringify({ actionName: '__fetch__', payload: { url: URL_TO_FETCH } })
             );
+        });
+
+        test.each([SITE, LOCAL_SITE])('maps the registered local origin when using site %s', async (site) => {
+            const path = '/sap/opu/odata/A%2FB/$metadata?sap-client=100&filter=a%2Fb';
+            const localMetadataUrl = new URL(path, LOCAL_SITE).toString();
+            const browserMetadataUrl = new URL(path, SITE).toString();
+            respondWith({ result: { isSuccess: true, payload: fetchResult, error: null }, clientId: CLIENT_ID });
+            await expect(httpTransport.fetchViaContext(site, localMetadataUrl)).resolves.toEqual(fetchResult);
+            expect(requireEditorSessionMock).toHaveBeenCalledWith(site);
+            expect(fetchMock).toHaveBeenCalledTimes(1);
+            expect(fetchMock.mock.calls[0][0]).toEqual(new URL('/adp/api/rta/action', LOCAL_SITE));
+            expect(fetchMock.mock.calls[0][1]?.body).toBe(
+                JSON.stringify({ actionName: '__fetch__', payload: { url: browserMetadataUrl } })
+            );
+        });
+
+        test('preserves metadata URLs when local and browser origins are identical', async () => {
+            requireEditorSessionMock.mockReturnValue({
+                localUrl: LOCAL_SITE,
+                browserUrl: LOCAL_SITE,
+                relayToken: TOKEN
+            });
+            const url = new URL('/odata/$metadata?sap-client=100', LOCAL_SITE).toString();
+            respondWith({ result: { isSuccess: true, payload: fetchResult, error: null }, clientId: CLIENT_ID });
+            await expect(httpTransport.fetchViaContext(LOCAL_SITE, url)).resolves.toEqual(fetchResult);
+            expect(fetchMock.mock.calls[0][1]?.body).toBe(
+                JSON.stringify({ actionName: '__fetch__', payload: { url } })
+            );
+        });
+
+        test.each([
+            'https://unrelated.example/odata/$metadata',
+            'http://127.0.0.1:49153/odata/$metadata',
+            'http://localhost:49152/odata/$metadata',
+            'https://127.0.0.1:49152/odata/$metadata'
+        ])('rejects an unregistered metadata origin before dispatch: %s', async (url) => {
+            await expect(httpTransport.fetchViaContext(SITE, url)).rejects.toThrow('Refusing cross-origin fetch');
+            expect(fetchMock).not.toHaveBeenCalled();
         });
 
         test('surfaces a client-side fetch failure (e.g. cross-origin) as an error', async () => {
