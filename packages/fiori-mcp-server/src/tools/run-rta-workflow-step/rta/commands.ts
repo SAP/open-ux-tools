@@ -113,13 +113,19 @@ export interface StartRtaResult {
  *
  * @param transport Transport used to deliver the call.
  * @param page Target editor page.
+ * @param agentName Optional driver name adopted by the status reporter (e.g. `"Joule"`).
  * @returns `{ rtaStarted: true }` once RTA has started, or a `backend_login_required` signal.
  */
-export async function startRta(transport: FrontendActionTransport, page: EditorPage): Promise<StartRtaResult> {
+export async function startRta(
+    transport: FrontendActionTransport,
+    page: EditorPage,
+    agentName?: string
+): Promise<StartRtaResult> {
     const name = action('startRTA');
+    const payload = agentName !== undefined ? { agentName } : {};
     try {
         // `start`/`restart` is the only path allowed to open a fresh editor page.
-        unwrap<unknown>(name, await transport.callFrontendAction(page.site, name, {}, page.frameId, true));
+        unwrap<unknown>(name, await transport.callFrontendAction(page.site, name, payload, page.frameId, true));
         return { rtaStarted: true };
     } catch (error) {
         // `unwrap` decodes the backend-login sentinel into this error for every
@@ -216,20 +222,25 @@ export async function saveChanges(transport: FrontendActionTransport, page: Edit
 }
 
 /**
- * Switches the running RTA instance to visualization mode.
+ * Signals the end of a driver conversation so the page can drop its blocking
+ * status overlay. Best-effort on the page side; the optional `reason` is
+ * purely informational.
  *
  * @param transport Transport used to deliver the call.
  * @param page Target editor page.
- * @returns `{ visualizationStarted: true }` once visualization mode is active.
+ * @param reason Optional informational reason (e.g. `"done"`, `"cancelled"`).
+ * @returns `{ cleaned: true }` once the overlay has been removed.
  */
-export async function startVisualization(
+export async function cleanup(
     transport: FrontendActionTransport,
-    page: EditorPage
-): Promise<{ visualizationStarted: boolean }> {
-    const name = action('startVisualization');
+    page: EditorPage,
+    reason?: string
+): Promise<{ cleaned: boolean }> {
+    const name = action('cleanup');
+    const payload = reason !== undefined ? { reason } : {};
     return unwrap(
         name,
-        await transport.callFrontendAction<{ visualizationStarted: boolean }>(page.site, name, {}, page.frameId)
+        await transport.callFrontendAction<{ cleaned: boolean }>(page.site, name, payload, page.frameId)
     );
 }
 

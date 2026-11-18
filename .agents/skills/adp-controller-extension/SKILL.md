@@ -38,13 +38,14 @@ A single tool, dispatched by the `step` argument. `site` is the editor URL from 
 
 | step | site | frameId | payload | returns |
 |------|------|---------|---------|---------|
-| `start` | required | required (`"preview"`) | — | `{ site, frameId, rtaStarted: true }` |
+| `start` | required | required (`"preview"`) | `{ agentName? }` | `{ site, frameId, rtaStarted: true }` |
 | `describe_ui` | required | carry forward | `{ rootElementId? }` | `{ uiTree: UiElementNode }` |
 | `execute_page_action` | required | carry forward | `{ actionName, elementId?, actionParameters? }` | `{ isSuccess: boolean, result? }` |
 | `get_overlays` | required | carry forward | — | `{ overlays: Overlay[], actionsCatalog: { [actionId]: Action } }` |
 | `get_context` | required | carry forward | `{ controlId, actionId }` | `{ context }` |
 | `call_action` | required | carry forward | `{ controlId, actionId, actionPayload }` | `{ success: boolean }` |
 | `save` | required | carry forward | — | `{ saved: boolean }` |
+| `cleanup` | required | carry forward | `{ reason? }` | `{ cleaned: boolean }` |
 | `restart` | required | carry forward | — | `{ site, frameId, rtaStarted: true }` |
 | `stop` | required | carry forward | — | `{ stopped: true }` |
 
@@ -70,7 +71,7 @@ Three steps require AI judgment: control selection (Step 4), action selection (S
 
 ### Step 1 — Start RTA
 
-Call `run_rta_workflow_step` with `step: "start"`, `site` (the editor URL from `open_adaptation_editor`), `frameId: "preview"`, and `appPath` (the adaptation project root — the same path passed to `open_adaptation_editor`) — all as **top-level parameters**, not inside `payload`. `appPath` is **required**: it identifies the project so an authenticated Cloud Foundry session is reused per project (and ABAP projects skip session handling). Verify `rtaStarted: true`. Pass `site` and `frameId` to every subsequent step. On `false`, wait 3 s and retry once. If `rtaStarted: false` with `needsUserAction: "backend_login_required"`, the editor URL served a login page (CF XSUAA) — surface the message to the user to complete login once in the opened browser, then retry `start`.
+Call `run_rta_workflow_step` with `step: "start"`, `site` (the editor URL from `open_adaptation_editor`), `frameId: "preview"`, and `appPath` (the adaptation project root — the same path passed to `open_adaptation_editor`) — all as **top-level parameters**, not inside `payload`. `appPath` is **required**: it identifies the project so an authenticated Cloud Foundry session is reused per project (and ABAP projects skip session handling). Optionally pass `payload: { agentName: "..." }` to have the status reporter identify the driving agent. Verify `rtaStarted: true`. Pass `site` and `frameId` to every subsequent step. On `false`, wait 3 s and retry once. If `rtaStarted: false` with `needsUserAction: "backend_login_required"`, the editor URL served a login page (CF XSUAA) — surface the message to the user to complete login once in the opened browser, then retry `start`.
 
 ### Step 2 — Navigate the app to the editing target
 

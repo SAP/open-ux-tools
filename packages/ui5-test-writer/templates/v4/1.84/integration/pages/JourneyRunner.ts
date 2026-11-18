@@ -30,6 +30,7 @@ const runner = new JourneyRunner({
 '        )'
 ).join(',\n') %>
     },
+    opaConfig: { autoWait: true },
     async: true
 });
 

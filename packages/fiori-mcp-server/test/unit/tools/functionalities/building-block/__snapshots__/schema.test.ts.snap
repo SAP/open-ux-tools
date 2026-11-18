@@ -1,0 +1,55 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`generated JSON schema (visibility) add-building-block parameters JSON schema matches snapshot 1`] = `
+Object {
+  "additionalProperties": false,
+  "properties": Object {
+    "aggregationPath": Object {
+      "description": "XPath to the aggregation element in the view XML where the building block will be inserted. For standalone types (FilterBar, Chart, Field, Form, Page, Table, RichTextEditor) use the parent container. For aggregation children (CustomColumn → Table, Action → Table, CustomFilterField → FilterBar, CustomFormField → Form, RichTextEditorButtonGroups → RichTextEditorWithMetadata) use the parent macro element.",
+      "type": "string",
+    },
+    "buildingBlockData": Object {
+      "additionalProperties": Object {},
+      "description": "Building block configuration. Use search_docs with the buildingBlockType name to get full property documentation from bb_macro_api.md before populating this object.",
+      "properties": Object {
+        "buildingBlockType": Object {
+          "description": "The building block type.",
+          "enum": Array [
+            "table",
+            "chart",
+            "filter-bar",
+            "field",
+            "form",
+            "page",
+            "rich-text-editor",
+            "rich-text-editor-button-groups",
+            "custom-form-field",
+            "custom-column",
+            "custom-filter-field",
+            "action",
+          ],
+          "type": "string",
+        },
+        "id": Object {
+          "pattern": "^[A-Za-z_][\\\\w.-]*$",
+          "type": "string",
+        },
+      },
+      "required": Array [
+        "buildingBlockType",
+      ],
+      "type": "object",
+    },
+    "viewOrFragmentPath": Object {
+      "description": "Path to the view or fragment XML file relative to the app base path.",
+      "type": "string",
+    },
+  },
+  "required": Array [
+    "viewOrFragmentPath",
+    "aggregationPath",
+    "buildingBlockData",
+  ],
+  "type": "object",
+}
+`;
