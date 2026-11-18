@@ -25,7 +25,7 @@ import {
     type BackendTarget,
     type AbapDeployConfigQuestion
 } from '../../types.js';
-import type { InputQuestion, ListQuestion, ConfirmQuestion } from '@sap-ux/inquirer-common';
+import type { InputQuestion, ListQuestion } from '@sap-ux/inquirer-common';
 import { TargetSystemType } from '../../types.js';
 import type { AdaptationProjectType } from '@sap-ux/axios-extension';
 
@@ -44,7 +44,7 @@ function getDestinationPrompt(
     backendTarget?: BackendTarget,
     adpProjectType?: AdaptationProjectType
 ): AbapDeployConfigQuestion[] {
-    const prompts: (ListQuestion<AbapDeployConfigAnswersInternal> | AbapDeployConfigQuestion)[] = [
+    const prompts: AbapDeployConfigQuestion[] = [
         {
             when: (): boolean => isAppStudio(),
             type: 'list',
@@ -107,7 +107,7 @@ function getTargetSystemPrompt(
     backendTarget?: BackendTarget,
     adpProjectType?: AdaptationProjectType
 ): AbapDeployConfigQuestion[] {
-    const prompts: (ListQuestion<AbapDeployConfigAnswersInternal> | AbapDeployConfigQuestion)[] = [
+    const prompts: AbapDeployConfigQuestion[] = [
         {
             when: (): boolean => !isAppStudio(),
             type: 'list',
@@ -120,7 +120,7 @@ function getTargetSystemPrompt(
             choices: (): AbapSystemChoice[] => choices,
             default: (): string | undefined => defaultTargetSystem(choices),
             validate: (target: string) => validateTargetSystem(target, choices, backendTarget, adpProjectType)
-        } as ListQuestion<AbapDeployConfigAnswersInternal>
+        }
     ];
 
     if (!isAppStudio() && !PromptState.isYUI) {
@@ -172,7 +172,7 @@ function getUrlPrompt(destinations?: Destinations, backendTarget?: BackendTarget
  * @returns confirm question for scp
  */
 function getScpPrompt(backendTarget?: BackendTarget): AbapDeployConfigQuestion[] {
-    const prompts: (ConfirmQuestion<AbapDeployConfigAnswersInternal> | AbapDeployConfigQuestion)[] = [
+    const prompts: AbapDeployConfigQuestion[] = [
         {
             when: (previousAnswers: AbapDeployConfigAnswersInternal): boolean => showScpQuestion(previousAnswers),
             type: 'confirm',
@@ -182,7 +182,7 @@ function getScpPrompt(backendTarget?: BackendTarget): AbapDeployConfigQuestion[]
                 breadcrumb: t('prompts.target.scp.breadcrumb')
             },
             default: (): boolean | undefined => backendTarget?.abapTarget?.scp
-        } as ConfirmQuestion<AbapDeployConfigAnswersInternal>
+        }
     ];
     // Setter prompt to ensure the state for both CLI and YUI is updated when user is toggling the SCP question, Yes/No
     prompts.push({
@@ -209,7 +209,7 @@ function getScpPrompt(backendTarget?: BackendTarget): AbapDeployConfigQuestion[]
  * @returns list question for client choice
  */
 function getClientChoicePrompt(backendTarget?: BackendTarget): AbapDeployConfigQuestion[] {
-    const prompts: (ListQuestion<AbapDeployConfigAnswersInternal> | AbapDeployConfigQuestion)[] = [
+    const prompts: AbapDeployConfigQuestion[] = [
         {
             when: (previousAnswers: AbapDeployConfigAnswersInternal): boolean =>
                 showClientChoiceQuestion(previousAnswers, backendTarget?.abapTarget?.client),
@@ -224,7 +224,7 @@ function getClientChoicePrompt(backendTarget?: BackendTarget): AbapDeployConfigQ
                 backendTarget?.abapTarget.client ? ClientChoiceValue.Base : ClientChoiceValue.Blank,
             validate: (input: ClientChoiceValue): boolean | string =>
                 validateClientChoiceQuestion(input, backendTarget?.abapTarget?.client)
-        } as ListQuestion<AbapDeployConfigAnswersInternal>
+        }
     ];
 
     if (!PromptState.isYUI) {
@@ -259,7 +259,7 @@ function getClientPrompt(): AbapDeployConfigQuestion {
         default: (): string | undefined => PromptState.abapDeployConfig?.client, // Already set from previous step, if passed in from yaml config for example
         filter: (input: string): string => input?.trim(),
         validate: (client: string): boolean | string => validateClient(client)
-    } as InputQuestion<AbapDeployConfigAnswersInternal>;
+    };
 }
 
 /**

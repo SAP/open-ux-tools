@@ -62,7 +62,7 @@ async function getTarget(target?: string): Promise<'abap' | 'cf'> {
     if (!target || (target !== 'abap' && target !== 'cf')) {
         const question: PromptObject = {
             name: 'target',
-            type: 'list',
+            type: 'select',
             message: 'Select the target for deployment',
             choices: [
                 { title: 'ABAP', value: 'abap' }

@@ -214,6 +214,41 @@ describe('getPackagePrompts', () => {
         }
     });
 
+    test('should return a YUI autocomplete prompt when called from the Yeoman UI host', async () => {
+        mockDefaultOrShowSearchPackageQuestion.mockReturnValueOnce(true);
+        mockGetPackageChoices.mockResolvedValueOnce({
+            packages: ['TEST_PACKAGE_1', 'TEST_PACKAGE_2'],
+            morePackageResultsMsg: 'Test additional msg'
+        });
+
+        const packagePrompts = getPackagePrompts({}, true, true);
+        const packageAutocompletePrompt = packagePrompts.find(
+            (prompt) => prompt.name === promptNames.packageAutocomplete
+        );
+
+        expect(packageAutocompletePrompt?.type).toBe('autocomplete');
+        // YUI omits the CLI-only "type to filter" hint from the message
+        expect((packageAutocompletePrompt as any).message).toBe(
+            t('prompts.config.package.packageAutocomplete.message')
+        );
+
+        if (packageAutocompletePrompt) {
+            // YUI's autocomplete renderer calls source with (previousAnswers, input) on each keystroke
+            expect(await ((packageAutocompletePrompt as any).source as Function)({}, 'TEST_PACKAGE')).toStrictEqual([
+                'TEST_PACKAGE_1',
+                'TEST_PACKAGE_2'
+            ]);
+            expect(mockGetPackageChoices).toHaveBeenLastCalledWith(
+                false,
+                'TEST_PACKAGE',
+                expect.anything(),
+                expect.anything(),
+                undefined
+            );
+            expect(((packageAutocompletePrompt as any).additionalInfo as Function)()).toBe('Test additional msg');
+        }
+    });
+
     describe('additionalMessages for packageManual', () => {
         test('should return warning when package is lowercase $tmp', () => {
             const packagePrompts = getPackagePrompts({});

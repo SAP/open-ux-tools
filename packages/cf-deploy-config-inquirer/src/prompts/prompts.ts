@@ -70,7 +70,7 @@ async function getDestinationNamePrompt(
             mandatory: !isBAS,
             breadcrumb: t('prompts.destinationNameMessage')
         },
-        default: defaultValue,
+        default: () => defaultValue,
         name: promptNames.destinationName,
         message: () => (hint ? t('prompts.directBindingDestinationHint') : t('prompts.destinationNameMessage')),
         validate: (destination: string): string | boolean => {
@@ -128,8 +128,6 @@ function getAddManagedAppRouterPrompt(): CfDeployConfigQuestions {
  * @returns A confirmation question object which overwrites destination.
  */
 function getOverwritePrompt(): CfDeployConfigQuestions {
-    // The prompt name (`overwriteCfConfig`) intentionally differs from the answer key (`overwrite`)
-    // it maps to, so the arm's `name: keyof CfDeployConfigAnswers` constraint cannot be satisfied directly.
     return {
         type: 'confirm',
         name: promptNames.overwriteCfConfig,
@@ -155,7 +153,7 @@ function getRouterOptionsPrompt(): CfDeployConfigRouterQuestions {
             mandatory: true,
             breadcrumb: t('prompts.generateDeploymentRouterOptionsMessage')
         },
-        default: RouterModuleType.Managed, // Should always be the preferred choice
+        default: () => RouterModuleType.Managed, // Should always be the preferred choice
         message: () => t('prompts.generateDeploymentRouterOptionsMessage'),
         additionalMessages: (selectedRouter: RouterModuleType) => {
             let additionalMessage;

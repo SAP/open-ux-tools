@@ -156,7 +156,10 @@ function combineAllPrompts(
     // heterogeneous array is assembled at the common base type.
     const questions: YUIQuestion[] = [
         ...getDeployTargetQuestion(supportedTargets, projectRoot),
-        ...(withCondition(abapPrompts, (answers: Answers) => answers.targetName === TargetName.ABAP) as YUIQuestion[]),
+        ...(withCondition(
+            abapPrompts as YUIQuestion[],
+            (answers: Answers) => answers.targetName === TargetName.ABAP
+        ) as YUIQuestion[]),
         ...(withCondition(cfPrompts, (answers: Answers) => answers.targetName === TargetName.CF) as YUIQuestion[])
     ];
 

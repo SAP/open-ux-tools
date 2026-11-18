@@ -57,7 +57,7 @@ export function extendValidate<T extends Answers = Answers>(
         if (extVal !== true) {
             return extVal;
         }
-        return typeof validate === 'function' ? validate(value, combinedAnswers) : true;
+        return typeof validate === 'function' ? validate(value, previousAnswers) : true;
     };
 }
 

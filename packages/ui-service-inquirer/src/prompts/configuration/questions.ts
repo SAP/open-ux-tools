@@ -75,7 +75,7 @@ export function getConfigQuestions(logger: Logger, options?: ServiceConfigOption
         configPrompts.push(getAppGenLaunchQuestion());
     }
 
-    return [...packagePrompts, ...transportPrompts, ...(configPrompts as ServiceConfigQuestion[])];
+    return [...packagePrompts, ...transportPrompts, ...configPrompts] as unknown as ServiceConfigQuestion[];
 }
 
 /**

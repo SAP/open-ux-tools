@@ -205,7 +205,7 @@ describe('system-prompts', () => {
                 : undefined;
 
             expect(systemTypePrompt).toBeDefined();
-            expect(systemTypePrompt.type).toBe('list');
+            expect(systemTypePrompt.type).toBe('select');
             expect(systemTypePrompt.name).toBe('systemType');
             expect(systemTypePrompt.message).toBe('System Type:');
             expect(systemTypePrompt.choices).toEqual(
@@ -231,7 +231,7 @@ describe('system-prompts', () => {
             expect(mockPrompts).toHaveBeenCalledWith(
                 expect.arrayContaining([
                     expect.objectContaining({
-                        type: 'list',
+                        type: 'select',
                         name: 'authenticationType',
                         message: 'Authentication Type:'
                     })
@@ -253,7 +253,7 @@ describe('system-prompts', () => {
             expect(mockPrompts).toHaveBeenCalledWith(
                 expect.arrayContaining([
                     expect.objectContaining({
-                        type: 'list',
+                        type: 'select',
                         name: 'connectionType',
                         message: 'Connection Type:'
                     })

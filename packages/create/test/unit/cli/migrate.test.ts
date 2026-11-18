@@ -871,7 +871,7 @@ describe('migrate command', () => {
 
         await command.parseAsync(getArgv(['migrate', testProjectRoot]));
 
-        expect(mockPrompt).toHaveBeenCalledWith(expect.objectContaining({ type: 'list', name: 'system' }));
+        expect(mockPrompt).toHaveBeenCalledWith(expect.objectContaining({ type: 'select', name: 'system' }));
         expect(mockMigrate).toHaveBeenCalledWith(
             expect.objectContaining({
                 importProjectInfo: expect.objectContaining({ destination: destinationB.Name })

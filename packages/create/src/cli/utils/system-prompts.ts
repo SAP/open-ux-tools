@@ -164,7 +164,7 @@ export async function promptForSystemConfig(partial: {
 
     if (!partial.systemType) {
         questions.push({
-            type: 'list',
+            type: 'select',
             name: 'systemType',
             message: t('systemPrompts.prompts.systemType'),
             choices: Object.values(SystemType).map((type) => ({ title: type, value: type }))
@@ -173,7 +173,7 @@ export async function promptForSystemConfig(partial: {
 
     if (!partial.authenticationType) {
         questions.push({
-            type: 'list',
+            type: 'select',
             name: 'authenticationType',
             message: t('systemPrompts.prompts.authenticationType'),
             choices: Object.values(AuthenticationType).map((type) => ({ title: type, value: type }))
@@ -182,7 +182,7 @@ export async function promptForSystemConfig(partial: {
 
     if (!partial.connectionType) {
         questions.push({
-            type: 'list',
+            type: 'select',
             name: 'connectionType',
             message: t('systemPrompts.prompts.connectionType'),
             choices: Object.values(ConnectionType).map((type) => ({ title: type, value: type }))

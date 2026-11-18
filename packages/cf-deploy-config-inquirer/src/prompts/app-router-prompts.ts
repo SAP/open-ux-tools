@@ -1,4 +1,4 @@
-import type { ListQuestion, ConfirmQuestion, InputQuestion, ChoiceOptions } from '@sap-ux/inquirer-common';
+import type { ListQuestion, InputQuestion, ChoiceOptions } from '@sap-ux/inquirer-common';
 import { t } from '../i18n.js';
 import type {
     CfAppRouterDeployConfigQuestions,
@@ -95,7 +95,7 @@ function getRouterTypePrompt(): CfAppRouterDeployConfigQuestions {
             mandatory: true,
             breadcrumb: true
         },
-        default: RouterModuleType.Managed, // Should always be the preferred choice
+        default: () => RouterModuleType.Managed, // Should always be the preferred choice
         message: t('prompts.routerTypeMessage'),
         choices: [
             { name: t('routerType.managedAppRouter'), value: RouterModuleType.Managed },
@@ -126,7 +126,7 @@ function getConnectivityServicePrompt(): CfAppRouterDeployConfigQuestions {
         default: (): boolean => {
             return false;
         }
-    } as ConfirmQuestion<CfAppRouterDeployConfigAnswers>;
+    };
 }
 
 /**
@@ -147,7 +147,7 @@ function getDestinationService(): CfAppRouterDeployConfigQuestions {
         default: (): boolean => {
             return false;
         }
-    } as ConfirmQuestion<CfAppRouterDeployConfigAnswers>;
+    };
 }
 
 /**
@@ -184,7 +184,7 @@ function getServiceProvider(): CfAppRouterDeployConfigQuestions {
             return choices;
         },
         message: t('prompts.selectServiceMessage'),
-        default: t('errors.abapEnvsUnavailable'),
+        default: () => t('errors.abapEnvsUnavailable'),
         validate: (choice: string): string | boolean => validateAbapService(choice, errorHandler)
     } as ListQuestion<CfAppRouterDeployConfigAnswers>;
 }
