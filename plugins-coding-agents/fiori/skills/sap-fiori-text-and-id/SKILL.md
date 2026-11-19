@@ -19,15 +19,14 @@ Configure foreign-key fields to display business IDs (AgencyID, CustomerID, Stat
 
 This skill is invoked when users ask questions like:
 
-- "Show Customer name and ID instead of GUID"
+- "Show Customer ID instead of GUID"
 - "Display Travel Status as a dropdown"
-- "Display Travel Status description instead of code/ID in status column"
-- "Configure value help for travel agency"
+- "Configure value help for Customer ID"
 ---
 
 ## Prerequisites
 
-- **OData version:** V2 and V4
+- **OData version:** V4 Only
 - **Backend:** CAP or ABAP RAP
 - **MCP servers:**
   - SAP Fiori MCP (required for manifest.json modifications)

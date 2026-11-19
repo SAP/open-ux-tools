@@ -1,6 +1,17 @@
 # CAP Implementation — Text & ID Rendering
 
-### Hide the technical GUID/UUID and instead show the business ID
+## Contents
+
+1. [Show the business ID instead of GUID/UUID](#show-the-business-id-instead-of-guiduuid)
+2. [Configure Text & TextArrangement on the business key](#configure-text--textarrangement-on-the-business-key)
+3. [Adjust an existing value help for the business key](#adjust-an-existing-value-help-for-the-business-key)
+4. [Add readable labels to the value help](#add-readable-labels-to-the-value-help)
+5. [Configure Value Help as a fixed-values dropdown](#configure-value-help-as-a-fixed-values-dropdown)
+6. [Common pitfalls](#common-pitfalls)
+
+> These sections are **independent** — apply only the ones relevant to your task, in any order. (The *fixed-values dropdown* section has its own internal Step 1→3 sequence.)
+
+### Show the business ID instead of GUID/UUID
 
 Annotate the GUID foreign-key element with `@Common.ExternalID`, pointing to
 the business-key property on the target entity (nested syntax):
@@ -10,10 +21,11 @@ annotate service.Travels {
     Agency   { ID @Common.ExternalID : Agency.AgencyID };
 };
 ```
+> 🗣️ **Confirm with the user:** Do they want text arrangement (ID + descriptive text, e.g. `Hot Socks Travel (70007)`), or just the business ID on its own? Skip the next section if they only want the ID.
 
 ### Configure Text & TextArrangement on the business key
 
-1) Place `@Common.Text` + `@Common.TextArrangement` on the **business-key
+Place `@Common.Text` + `@Common.TextArrangement` on the **business-key
 property** of the target entity. Choose the arrangement:
 
 | Value | Rendered as | Use when |
@@ -48,11 +60,13 @@ annotate service.Travels with {
 
 The `TravelStatus.name` path dereferences the association to reach the descriptive field on the target entity. Apply this pattern only for foreign keys that are **not** covered by `@Common.ExternalID`.
 
-2) If value help (Common.ValueList) **already exists** on the association, then **remove the display-only parameter that points to the business key** (otherwise the business ID column would appear twice in the dialog):
+### Adjust an existing value help for the business key
 
-> ⚠️ **Scope boundary:** Do **not** add a new `Common.ValueList` unless the user explicitly asked for value help. The steps in this guide (ExternalID + Text + TextArrangement) are sufficient to render the business ID in place of the GUID. Only modify an existing value help; do not create one.
+> 🔍 **Check first — does a value help already exist?** Search the service's annotation files for an existing `Common.ValueList` on the association (e.g. grep for `ValueList` and the association name).
+> - **If it exists:** modify it in place — **remove the display-only parameter that points to the business key**, otherwise the business ID column appears twice in the dialog (see the example below).
+> - **If it does not exist:** adding `@Common.ExternalID` + `@Common.Text` + `@Common.TextArrangement` is already enough to render the business ID in place of the GUID — you do **not** need a value help for that. Only create a new `Common.ValueList` when the user explicitly asks for value help.
 
-> 💡 **Need to create a value help from scratch?** This skill assumes one already exists. For creating new `Common.ValueList` annotations, consult the **CDS MCP**.
+> 💡 **Need to create a value help from scratch?** For generating new `Common.ValueList` annotations, consult the **CDS MCP**.
 
 ```cds
 annotate service.Travels {
@@ -94,6 +108,41 @@ annotate service.Travels {
 - `ValueListProperty: 'ID'` — the GUID primary key on `TravelAgencies`
 - This is the **InOut** parameter — it binds the FK to the PK and drives the search/filter
 - Additional `DisplayOnly` parameters show extra columns (Name, Street, City) in the value help dialog
+
+### Add readable labels to the value help
+
+By default the value-help dialog shows raw technical property names as its title and column headers (e.g. `Agency`, `AgencyID`, `Name`, `Street`). Give it human-readable labels with two independent annotations:
+
+**Dialog title** — set the `Label` property **inside** the `Common.ValueList` structure. This is the heading shown at the top of the value-help dialog and on the filter field's value-help trigger.
+
+```cds
+annotate service.Travels {
+    Agency @(
+        Common.ValueList : {
+            $Type          : 'Common.ValueListType',
+            Label          : 'Travel Agencies',   // ← dialog title
+            CollectionPath : 'TravelAgencies',
+            Parameters     : [ /* … */ ]
+        }
+    );
+};
+```
+
+**Column headers** — set `@Common.Label` (or its alias `@title`) on each **property of the target entity**. Each value-help column (and every normal column/field bound to that property) inherits this label. Annotate the target entity once; the labels are reused everywhere the property appears.
+
+```cds
+annotate service.TravelAgencies with {
+    AgencyID @Common.Label : 'Agency ID';
+    Name     @Common.Label : 'Agency Name';
+    Street   @Common.Label : 'Street';
+    City     @Common.Label : 'City';
+};
+```
+
+> 💡 **Where to put the label.** Column-header labels belong on the **target entity's property**, never on the `Common.ValueList` parameter. There is no `Label` on a `ValueListParameter…`. The only `Label` inside `Common.ValueList` is the **dialog title**.
+
+> 🌐 **i18n.** Both labels support translation. Use the `{i18n>…}` syntax (e.g. `Label : '{i18n>AgencyValueHelp}'` and `@Common.Label : '{i18n>AgencyName}'`) and add the keys to the service's text bundle so the dialog title and column headers translate with the rest of the app.
+
 
 ### Configure Value Help as a fixed-values dropdown
 
