@@ -16,24 +16,6 @@ The server helps AI models create or modify SAP Fiori applications based on prom
 
 For the best experience we recommend using this server alongside [@cap-js/mcp-server](https://www.npmjs.com/package/@cap-js/mcp-server) and [@ui5/mcp-server](https://www.npmjs.com/package/@ui5/mcp-server).
 
-## Experimental adaptation editor in an external browser
-
-On this branch, BAS uses the HTTP relay to work with the full adaptation editor in a normal browser tab. For desktop testing, set `SAP_FIORI_MCP_ADP_FORCE_AUTOOPEN=true` in the MCP process and the VS Code extension host environment. Other desktop workflows retain their existing Playwright transport.
-
-The application-modeler launcher from the matching tools-suite branch automatically opens the editor URL via VS Code's `env.openExternal`. Both CF and ABAP projects use the external tab; CF login redirects return to the editor in that same tab. No Simple Browser or login-completion mailbox is used by this launcher.
-
-The extension is optional for manual opening: call `open_adaptation_editor`, open its exact `editorUrl` in your browser, then run `run_rta_workflow_step` with `start` and that URL. The project must use preview-middleware with the relay implementation. Keep one tab per editor session. If login takes longer than the start wait budget, finish login and retry `start` on the same session.
-
-In BAS, startup requires an HTTPS URL from port exposure. If the editor port cannot be determined or exposure fails to provide a valid HTTPS URL, `open_adaptation_editor` returns an error, attempts to stop the spawned editor server, and does not request a browser tab. Check the BAS dev space and port exposure before retrying. If server shutdown could not be confirmed, the error also directs you to inspect the MCP logs before starting another editor.
-
-For CF projects, `get_odata_metadata` fetches services sequentially through the authenticated editor. Each browser fetch has a 30-second timeout covering the response body as well as the initial request; a failed service produces its own error and remaining services are still attempted. If no editor tab picks up a metadata request within five seconds, the relay asks you to open or refresh the editor and complete login. This connection deadline applies only to metadata; `start` retains its login wait.
-
-The relay script runs in the editor page and polls the preview server; MCP commands go to the owned local server using its per-session token. The extension only launches the tab and does not carry agent commands or browser cookies. After saving and validating changes, call `stop`: it requests tab closure through the relay, then terminates the owned editor server even if the browser is unresponsive. Browsers may block automatic closure, especially for manually opened tabs; close any remaining editor tab manually. The result's `browserCloseRequested` reports acknowledgement of the request, not verified tab closure.
-
-Editor processes are tracked throughout startup, before their URLs are available. MCP shutdown includes pending spawns and prevents late launches or session registration. On macOS/Linux, a CLI parent's exit also triggers cleanup of its remaining owned process group. Each cleanup attempt allows two seconds for graceful termination and another two seconds after forced termination; success requires both the parent and its group to be gone. Failed cleanup is logged and ownership is retained for retry while MCP remains running.
-
-For relay stop results, stopped and editorServerStopped are true only when server shutdown is confirmed. If they are false, retry the stop step once with the same site. If the session is no longer registered or the retry fails, inspect the MCP logs and report cleanup as incomplete. Closing the browser tab does not establish that the server stopped.
-
 ## [Setup](#setup)
 
 The server uses `stdio` transport and is launched via `npx` — no global installation required. Pick the section for your MCP client below.
