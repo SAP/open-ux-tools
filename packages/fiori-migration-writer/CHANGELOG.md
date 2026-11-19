@@ -1,5 +1,13 @@
 # @sap-ux/fiori-migration-writer
 
+## 1.2.2
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/launch-config 1.0.28 → 1.0.29
+
 ## 1.2.1
 
 ### Patch Changes
