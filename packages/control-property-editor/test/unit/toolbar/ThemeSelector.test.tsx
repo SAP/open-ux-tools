@@ -1,5 +1,5 @@
 import React from 'react';
-import { screen, fireEvent } from '@testing-library/react';
+import { screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { render } from '../utils';
 
@@ -57,10 +57,11 @@ test('change theme to light and navigate via keyboard for dark to have focus', a
         cb(1);
         return 1;
     });
-    await new Promise((resolve) => setTimeout(resolve, 1));
     // Check if default/selected child is focused
     const lightButton = screen.getByTitle('Light');
-    expect(document.activeElement).toEqual(lightButton);
+    await waitFor(() => {
+        expect(document.activeElement).toEqual(lightButton);
+    });
     // Use arrow left to focus previous
     triggerKeyDown('ArrowRight', 39);
     const darkButton = screen.getByTitle('Dark');
