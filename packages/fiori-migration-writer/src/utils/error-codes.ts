@@ -20,6 +20,8 @@ export const MigrationErrorCode = {
 
     // Configuration errors
     UNSUPPORTED_FLOORPLAN: 'UNSUPPORTED_FLOORPLAN',
+    MISSING_MANIFEST: 'MISSING_MANIFEST',
+    MISSING_COMPONENT: 'MISSING_COMPONENT',
     MISSING_ODATA_SERVICE: 'MISSING_ODATA_SERVICE',
     INVALID_PROJECT_STRUCTURE: 'INVALID_PROJECT_STRUCTURE',
 
@@ -98,6 +100,28 @@ function matchKnownPatterns(lowerMessage: string): string | null {
         /\bfloorplan\b/.test(lowerMessage)
     ) {
         return MigrationErrorCode.UNSUPPORTED_FLOORPLAN;
+    }
+
+    // Check for missing manifest
+    if (
+        (lowerMessage.includes('manifest') || lowerMessage.includes('manifest.json')) &&
+        (lowerMessage.includes('not found') ||
+            lowerMessage.includes('missing') ||
+            lowerMessage.includes('does not exist') ||
+            lowerMessage.includes('no such file'))
+    ) {
+        return MigrationErrorCode.MISSING_MANIFEST;
+    }
+
+    // Check for missing Component.js
+    if (
+        (lowerMessage.includes('component.js') || lowerMessage.includes('component')) &&
+        (lowerMessage.includes('not found') ||
+            lowerMessage.includes('missing') ||
+            lowerMessage.includes('does not exist') ||
+            lowerMessage.includes('no such file'))
+    ) {
+        return MigrationErrorCode.MISSING_COMPONENT;
     }
 
     // Simple substring checks (early returns for better readability)

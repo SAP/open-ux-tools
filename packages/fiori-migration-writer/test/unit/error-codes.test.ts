@@ -15,6 +15,8 @@ describe('error-codes', () => {
             expect(MigrationErrorCode.YAML_PARSE_ERROR).toBe('YAML_PARSE_ERROR');
             expect(MigrationErrorCode.XML_PARSE_ERROR).toBe('XML_PARSE_ERROR');
             expect(MigrationErrorCode.UNSUPPORTED_FLOORPLAN).toBe('UNSUPPORTED_FLOORPLAN');
+            expect(MigrationErrorCode.MISSING_MANIFEST).toBe('MISSING_MANIFEST');
+            expect(MigrationErrorCode.MISSING_COMPONENT).toBe('MISSING_COMPONENT');
             expect(MigrationErrorCode.MISSING_ODATA_SERVICE).toBe('MISSING_ODATA_SERVICE');
             expect(MigrationErrorCode.INVALID_PROJECT_STRUCTURE).toBe('INVALID_PROJECT_STRUCTURE');
             expect(MigrationErrorCode.MIGRATION_FAILED).toBe('MIGRATION_FAILED');
@@ -194,6 +196,31 @@ describe('error-codes', () => {
             it('should extract UNSUPPORTED_FLOORPLAN with different wording', () => {
                 const error = new Error('Floorplan type CUSTOM is unsupported');
                 expect(extractErrorCode(error)).toBe('UNSUPPORTED_FLOORPLAN');
+            });
+
+            it('should extract MISSING_MANIFEST for missing manifest errors', () => {
+                const error = new Error('manifest.json not found in project root');
+                expect(extractErrorCode(error)).toBe('MISSING_MANIFEST');
+            });
+
+            it('should extract MISSING_MANIFEST with different wording', () => {
+                const error = new Error('Required manifest file is missing');
+                expect(extractErrorCode(error)).toBe('MISSING_MANIFEST');
+            });
+
+            it('should extract MISSING_MANIFEST for file not found', () => {
+                const error = new Error('manifest.json does not exist');
+                expect(extractErrorCode(error)).toBe('MISSING_MANIFEST');
+            });
+
+            it('should extract MISSING_COMPONENT for missing Component.js', () => {
+                const error = new Error('Component.js not found in webapp folder');
+                expect(extractErrorCode(error)).toBe('MISSING_COMPONENT');
+            });
+
+            it('should extract MISSING_COMPONENT with different wording', () => {
+                const error = new Error('Required component file is missing');
+                expect(extractErrorCode(error)).toBe('MISSING_COMPONENT');
             });
 
             it('should extract NOT_SUITABLE_FOR_MIGRATION', () => {
