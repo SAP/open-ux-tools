@@ -48,13 +48,13 @@ export type MigrationErrorCode = (typeof MigrationErrorCode)[keyof typeof Migrat
  * @param errorMessage - Error message string
  * @returns Error code if found and valid, null otherwise
  */
-function extractNodeErrorCode(errorMessage: string): string | null {
+function extractNodeErrorCode(errorMessage: string): MigrationErrorCode | null {
     const nodeErrorPattern = /\b(E[A-Z]+):/;
     const match = nodeErrorPattern.exec(errorMessage);
     if (match) {
         const code = match[1];
         if (Object.hasOwn(MigrationErrorCode, code)) {
-            return code;
+            return code as MigrationErrorCode;
         }
     }
     return null;
@@ -66,7 +66,7 @@ function extractNodeErrorCode(errorMessage: string): string | null {
  * @param lowerMessage - Lowercase error message
  * @returns Error code if pattern matches, null otherwise
  */
-function matchParsingError(lowerMessage: string): string | null {
+function matchParsingError(lowerMessage: string): MigrationErrorCode | null {
     if (!lowerMessage.includes('parse') && !lowerMessage.includes('parsing')) {
         return null;
     }
@@ -93,7 +93,7 @@ function matchParsingError(lowerMessage: string): string | null {
  * @param lowerMessage - Lowercase error message
  * @returns Error code if pattern matches, null otherwise
  */
-function matchKnownPatterns(lowerMessage: string): string | null {
+function matchKnownPatterns(lowerMessage: string): MigrationErrorCode | null {
     // Check unsupported patterns
     if (
         (lowerMessage.includes('not supported') || lowerMessage.includes('unsupported')) &&
@@ -159,7 +159,7 @@ function matchKnownPatterns(lowerMessage: string): string | null {
  * @param depth - Recursion depth to prevent stack overflow from circular error chains
  * @returns Error code from wrapped error if available, otherwise MIGRATION_FAILED
  */
-function extractFromMigrationError(error: Error, depth = 0): string {
+function extractFromMigrationError(error: Error, depth = 0): MigrationErrorCode {
     // Prevent stack overflow from circular error.cause chains
     if (depth > 5) {
         return MigrationErrorCode.MIGRATION_FAILED;
@@ -184,7 +184,7 @@ function extractFromMigrationError(error: Error, depth = 0): string {
  * @param message - Error message string
  * @returns Appropriate error code based on context
  */
-function classifySyntaxError(message: string): string {
+function classifySyntaxError(message: string): MigrationErrorCode {
     const lowerMessage = message.toLowerCase();
 
     // Check for template/EJS-specific patterns
@@ -224,7 +224,7 @@ function classifySyntaxError(message: string): string {
  * extractErrorCode(new Error('Failed to parse manifest.json'))
  * // Returns: 'MANIFEST_PARSE_ERROR'
  */
-export function extractErrorCode(error: unknown, depth = 0): string {
+export function extractErrorCode(error: unknown, depth = 0): MigrationErrorCode {
     // Priority 1: Check error.name for custom error types (most explicit)
     if (error instanceof Error) {
         switch (error.name) {
@@ -243,7 +243,7 @@ export function extractErrorCode(error: unknown, depth = 0): string {
         if ('code' in error && typeof error.code === 'string') {
             const nodeCode = error.code;
             if (Object.hasOwn(MigrationErrorCode, nodeCode)) {
-                return nodeCode;
+                return nodeCode as MigrationErrorCode;
             }
         }
     }
