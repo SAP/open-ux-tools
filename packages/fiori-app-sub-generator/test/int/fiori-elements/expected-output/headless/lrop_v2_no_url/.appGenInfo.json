@@ -1,7 +1,7 @@
 {
   "generationParameters": {
-    "generationDate": "Mon Nov 16 2026 15:11:11 GMT+0000 (Greenwich Mean Time)",
-    "generatorPlatform": "Visual Studio Code",
+    "generationDate": "Tue May 27 2025 15:16:52 GMT+0100 (Irish Standard Time)",
+    "generatorPlatform": "CLI",
     "serviceType": "File",
     "metadataFilename": "",
     "serviceUrl": "N/A",
@@ -11,7 +11,6 @@
     "appNamespace": "testnamespace",
     "ui5Theme": "sap_fiori_3",
     "ui5Version": "1.71.0",
-    "enableEslint": false,
     "enableTypeScript": false,
     "showMockDataInfo": true,
     "generatorVersion": "0.0.0",
@@ -27,6 +26,6 @@
         "value": "to_ProductSalesData"
       }
     ],
-    "launchText": "To launch the generated application, run the following from the generated application root folder:\n\n```\n    npm start\n```"
+    "launchText": "In order to launch the generated app, simply run the following from the generated app root folder:\n\n```\n    npm start\n```"
   }
 }
