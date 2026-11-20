@@ -198,6 +198,18 @@ export function validateMtaId(value: string, parentPath?: string): string | bool
 }
 
 /**
+ * Throws the error message of a failed validator result; does nothing when the result is `true`.
+ *
+ * @param {string | boolean} result - The validator result to assert.
+ * @throws {Error} When the result is an error message string.
+ */
+export function assertValidationPassed(result: string | boolean): void {
+    if (isString(result)) {
+        throw new Error(result);
+    }
+}
+
+/**
  * Validate business solution name.
  *
  * @param {string} value - Value to validate.

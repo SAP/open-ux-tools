@@ -14,6 +14,8 @@ The SAPUI5 Adaptation Project generator is included in the [@sap/generator-fiori
 
 Open the Command Palette in MS Visual Studio Code ( CMD/CTRL + Shift + P ) and execute the `Fiori: Open Adaptation Project Generator` command.
 
+For CLI generation, pass the project configuration as a JSON argument. Supplied JSON must be valid and contain the required fields for its target environment; invalid or incomplete input stops generation before CF CLI calls or prompts. Without a JSON argument, the generator opens the interactive wizard.
+
 ## Keywords
 
 SAP Fiori Elements
