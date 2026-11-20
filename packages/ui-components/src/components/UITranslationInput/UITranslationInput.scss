@@ -31,14 +31,14 @@
         }
     }
     &__message {
-        padding: 20px;
+        padding: var(--ui-spacing-xl, 20px);
         text-align: center;
         font-size: var(--vscode-font-size);
         word-break: break-word;
         .ui-translatable__actions {
-            margin-top: 16px;
+            margin-top: var(--ui-spacing-large, 15px);
             > .ms-Button {
-                margin-right: 10px;
+                margin-right: var(--ui-spacing-medium, 10px);
                 &:last-child {
                     margin-right: 0;
                 }

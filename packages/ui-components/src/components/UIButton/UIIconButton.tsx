@@ -56,7 +56,7 @@ export class UIIconButton extends React.Component<ButtonProps, {}> {
                 height: 16,
                 width: width,
                 boxSizing: 'content-box',
-                padding: 3,
+                padding: 'var(--ui-spacing-xs, 3px)',
                 backgroundColor: 'transparent',
                 borderRadius: 'var(--vscode-cornerRadius-small, 4px)',
                 selectors: {

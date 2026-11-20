@@ -226,11 +226,11 @@ export class UIToggle extends React.Component<UIToggleProps, {}> {
                     fontWeight: 'normal',
                     fontSize: sizeInfo?.label.fontSize,
                     padding: sizeInfo?.label.padding,
-                    ...(inlineLabel && { marginLeft: 10 }),
+                    ...(inlineLabel && { marginLeft: 'var(--ui-spacing-medium, 10px)' }),
                     ...(inlineLabelLeft && {
                         order: 0,
                         marginLeft: 0,
-                        marginRight: 10
+                        marginRight: 'var(--ui-spacing-medium, 10px)'
                     }),
                     opacity: this.props.disabled ? DISABLED_OPACITY : 'inherit'
                 },

@@ -151,6 +151,8 @@ export class UITextInput extends React.Component<UITextInputProps> {
                         color: COLOR_STYLES.regular.color,
                         fontSize: '13px',
                         fontWeight: 'normal',
+                        paddingLeft: 'var(--ui-spacing-small, 5px)',
+                        paddingRight: props.hasIcon ? undefined : 'var(--ui-spacing-small, 5px)',
                         boxSizing: 'border-box',
                         borderRadius: COMMON_INPUT_STYLES.borderRadius,
                         selectors: {
@@ -195,7 +197,7 @@ export class UITextInput extends React.Component<UITextInputProps> {
                     label: {
                         root: [
                             {
-                                marginTop: 25,
+                                marginTop: 'calc(var(--ui-spacing-xl, 20px) + var(--ui-spacing-small, 5px))',
                                 ...labelGlobalStyle
                             },
                             props.disabled && {
@@ -206,7 +208,7 @@ export class UITextInput extends React.Component<UITextInputProps> {
                                     '::after': {
                                         content: REQUIRED_LABEL_INDICATOR,
                                         color: 'var(--vscode-inputValidation-errorBorder)',
-                                        paddingRight: 12
+                                        paddingRight: 'var(--ui-spacing-medium, 10px)'
                                     }
                                 }
                             }

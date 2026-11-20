@@ -10,7 +10,7 @@ export const labelGlobalStyle = {
     fontWeight: 'bold',
     fontSize: '13px',
     color: 'var(--vscode-input-foreground)',
-    padding: '4px 0'
+    padding: 'var(--ui-spacing-small, 5px) 0'
 };
 
 /**
@@ -40,7 +40,7 @@ export class UILabel extends React.Component<UILabelProps> {
                 ...{
                     root: [
                         {
-                            marginTop: 25,
+                            marginTop: 'calc(var(--ui-spacing-xl, 20px) + var(--ui-spacing-small, 5px))',
                             ...labelGlobalStyle
                         },
                         props.disabled && {
@@ -51,7 +51,7 @@ export class UILabel extends React.Component<UILabelProps> {
                                 '::after': {
                                     content: REQUIRED_LABEL_INDICATOR,
                                     color: 'var(--vscode-inputValidation-errorBorder)',
-                                    paddingRight: 12
+                                    paddingRight: 'var(--ui-spacing-medium, 10px)'
                                 }
                             }
                         }

@@ -98,11 +98,11 @@ export class UISearchBox extends React.Component<ISearchBoxProps, {}> {
                 iconContainer: [
                     {
                         alignItems: 'flex-start',
-                        marginLeft: 5,
+                        marginLeft: 'var(--ui-spacing-small, 5px)',
                         height: 16,
                         width: 23,
                         cursor: 'text',
-                        paddingTop: 5,
+                        paddingTop: 'var(--ui-spacing-small, 5px)',
                         transition: 'width 0.167s ease 0s',
                         selectors: {
                             svg: {
@@ -115,7 +115,7 @@ export class UISearchBox extends React.Component<ISearchBoxProps, {}> {
                     },
                     props.hasFocus && {
                         width: 0,
-                        marginLeft: 5
+                        marginLeft: 'var(--ui-spacing-small, 5px)'
                     }
                 ],
                 clearButton: [
