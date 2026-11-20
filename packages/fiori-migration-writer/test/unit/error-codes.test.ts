@@ -351,7 +351,10 @@ describe('error-codes', () => {
                     { error: new Error('ENOENT: file not found'), expectedCode: 'ENOENT' },
                     { error: new Error('EACCES: permission denied'), expectedCode: 'EACCES' },
                     { error: new Error('Failed to parse manifest.json'), expectedCode: 'MANIFEST_PARSE_ERROR' },
-                    { error: new Error('The V2_ANALYTICAL floorplan is not supported'), expectedCode: 'UNSUPPORTED_FLOORPLAN' }
+                    {
+                        error: new Error('The V2_ANALYTICAL floorplan is not supported'),
+                        expectedCode: 'UNSUPPORTED_FLOORPLAN'
+                    }
                 ];
 
                 testCases.forEach(({ error, expectedCode }) => {
