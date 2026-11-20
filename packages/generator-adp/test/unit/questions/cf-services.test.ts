@@ -125,7 +125,8 @@ const mockCFApp: CFApp = {
 describe('CFServicesPrompter', () => {
     const mockLogger: ToolsLogger = {
         log: jest.fn(),
-        error: jest.fn()
+        error: jest.fn(),
+        info: jest.fn()
     } as unknown as ToolsLogger;
 
     beforeAll(async () => {

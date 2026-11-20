@@ -30,6 +30,9 @@ export function getFirstArg<T>(args: T | T[]): T | string {
  * if the object does not match the above interface - returns undefined.
  */
 export function parseJsonInput(jsonString: string, logger: ToolsLogger): JsonInput | undefined {
+    if (!jsonString) {
+        return undefined;
+    }
     try {
         const parsed = JSON.parse(jsonString);
 

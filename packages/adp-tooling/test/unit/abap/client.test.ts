@@ -6,11 +6,15 @@ import { getBaseAppInbounds, getFlexUICapability, getSystemUI5Version } from '..
 
 describe('getFlexUICapability', () => {
     it('should return immediately when isCustomerBase is false', async () => {
+        const loggerMock = {
+            debug: jest.fn()
+        } as unknown as ToolsLogger;
+
         const provider = {
             get: jest.fn()
         } as unknown as AbapServiceProvider;
 
-        const result = await getFlexUICapability(provider, false);
+        const result = await getFlexUICapability(provider, false, loggerMock);
 
         expect(result).toEqual({ isDtaFolderDeploymentSupported: true, isUIFlexSupported: true });
     });
@@ -20,11 +24,15 @@ describe('getFlexUICapability', () => {
             'Some text including dta_folder and http://www.sap.com/adt/categories/ui_flex and other details';
         const response = { data: fakeData };
 
+        const loggerMock = {
+            debug: jest.fn()
+        } as unknown as ToolsLogger;
+
         const provider = {
             get: jest.fn().mockResolvedValue(response)
         } as unknown as AbapServiceProvider;
 
-        const result = await getFlexUICapability(provider, true);
+        const result = await getFlexUICapability(provider, true, loggerMock);
 
         expect(provider.get).toHaveBeenCalledWith(AdtCatalogService.ADT_DISCOVERY_SERVICE_PATH, {
             headers: { Accept: 'application/*' }
