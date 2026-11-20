@@ -17,8 +17,9 @@
 
 sap.ui.define([
     "sap/ui/test/opaQunit",
-    "./pages/JourneyRunner"
-], function (opaTest, runner) {
+    "./pages/JourneyRunner",
+    "sap/ui/core/library"
+], function (opaTest, runner, coreLibrary) {
     "use strict";
 
     function journey() {
@@ -92,6 +93,14 @@ sap.ui.define([
         opaTest("Check the Set Cancel Date to Tomorrow action", function (Given, When, Then) {
             // When.onTheTravelListGenerated.onTable(defaultTableId).iPressAction("Set Cancel Date to Tomorrow");
             Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckAction("Set Cancel Date to Tomorrow", { enabled: false });
+        });
+
+        opaTest("Check table columns", function (Given, When, Then) {
+            Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckColumns(undefined, {"TravelID":{"header":"Travel ID"},"AgencyID":{"header":"Agency ID"},"CustomerID":{"header":"Customer ID"},"BeginDate":{"header":"Starting Date"},"EndDate":{"header":"End Date"},"BookingFee":{"header":"Booking Fee"},"TotalPrice":{"header":"Total Price"},"LatestCancellationDate":{"header":"Latest Cancellation Date"},"Memo":{"header":"Description"},"Status":{"header":"Travel Status"}});
+        });
+
+        opaTest("Check default sort order from PresentationVariant", function (Given, When, Then) {
+            Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckSortOrder({ name: "TravelID" }, coreLibrary.SortOrder.Descending, true);
         });
 
         opaTest("Navigate to ObjectPage", function (Given, When, Then) {
