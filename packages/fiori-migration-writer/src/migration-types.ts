@@ -3,6 +3,7 @@ import type { MigrationTypes, postMigrationAction } from './utils/constants.js';
 import type { UI5FlexLayer } from '@sap-ux/project-access';
 import type { Annotations, ODataVersion } from '@sap-ux/axios-extension';
 import type { Editor } from 'mem-fs-editor';
+import type { MigrationErrorCode } from './utils/error-codes.js';
 
 // Re-export ProjectFolder interface for abstraction from VS Code
 export type { ProjectFolder } from './types/project-folder.js';
@@ -191,7 +192,7 @@ export interface Message {
      * (not the description, which may contain PII or sensitive data). The description is for logs only.
      * Examples: 'UNSUPPORTED_FLOORPLAN', 'ENOENT', 'MANIFEST_PARSE_ERROR', 'MISSING_ODATA_SERVICE'
      */
-    code?: string;
+    code?: MigrationErrorCode;
 }
 
 export const TemplateDataKey = {

@@ -15,8 +15,6 @@ describe('error-codes', () => {
             expect(MigrationErrorCode.YAML_PARSE_ERROR).toBe('YAML_PARSE_ERROR');
             expect(MigrationErrorCode.XML_PARSE_ERROR).toBe('XML_PARSE_ERROR');
             expect(MigrationErrorCode.UNSUPPORTED_FLOORPLAN).toBe('UNSUPPORTED_FLOORPLAN');
-            expect(MigrationErrorCode.MISSING_MANIFEST).toBe('MISSING_MANIFEST');
-            expect(MigrationErrorCode.MISSING_COMPONENT).toBe('MISSING_COMPONENT');
             expect(MigrationErrorCode.MISSING_ODATA_SERVICE).toBe('MISSING_ODATA_SERVICE');
             expect(MigrationErrorCode.INVALID_PROJECT_STRUCTURE).toBe('INVALID_PROJECT_STRUCTURE');
             expect(MigrationErrorCode.MIGRATION_FAILED).toBe('MIGRATION_FAILED');

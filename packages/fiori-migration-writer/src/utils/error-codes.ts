@@ -20,8 +20,6 @@ export const MigrationErrorCode = {
 
     // Configuration errors
     UNSUPPORTED_FLOORPLAN: 'UNSUPPORTED_FLOORPLAN',
-    MISSING_MANIFEST: 'MISSING_MANIFEST',
-    MISSING_COMPONENT: 'MISSING_COMPONENT',
     MISSING_ODATA_SERVICE: 'MISSING_ODATA_SERVICE',
     INVALID_PROJECT_STRUCTURE: 'INVALID_PROJECT_STRUCTURE',
 
@@ -53,7 +51,7 @@ function extractNodeErrorCode(errorMessage: string): string | null {
     const match = nodeErrorPattern.exec(errorMessage);
     if (match) {
         const code = match[1];
-        if (code in MigrationErrorCode) {
+        if (Object.hasOwn(MigrationErrorCode, code)) {
             return code;
         }
     }
@@ -115,7 +113,7 @@ function matchKnownPatterns(lowerMessage: string): string | null {
         return MigrationErrorCode.COMMIT_FAILED;
     }
 
-    if (lowerMessage.includes('typescript') || lowerMessage.includes('enabling typescript')) {
+    if (lowerMessage.includes('typescript')) {
         return MigrationErrorCode.TYPESCRIPT_SETUP_FAILED;
     }
 
@@ -134,14 +132,20 @@ function matchKnownPatterns(lowerMessage: string): string | null {
  * Extract error code from MigrationError, checking wrapped cause for more specific code.
  *
  * @param error - MigrationError instance
+ * @param depth - Recursion depth to prevent stack overflow from circular error chains
  * @returns Error code from wrapped error if available, otherwise MIGRATION_FAILED
  */
-function extractFromMigrationError(error: Error): string {
+function extractFromMigrationError(error: Error, depth = 0): string {
+    // Prevent stack overflow from circular error.cause chains
+    if (depth > 5) {
+        return MigrationErrorCode.MIGRATION_FAILED;
+    }
+
     // Check if MigrationError wraps another error - extract code from the wrapped error
     // for more specific telemetry (e.g., ENOENT instead of generic MIGRATION_FAILED)
     if ('cause' in error && error.cause) {
-        const wrappedCode = extractErrorCode(error.cause);
-        // Only use wrapped error code if it's more specific than MIGRATION_FAILED
+        const wrappedCode = extractErrorCode(error.cause, depth + 1);
+        // Only use wrapped code when cause produces something more specific than UNKNOWN_ERROR
         if (wrappedCode !== MigrationErrorCode.UNKNOWN_ERROR) {
             return wrappedCode;
         }
@@ -151,7 +155,7 @@ function extractFromMigrationError(error: Error): string {
 
 /**
  * Classify SyntaxError by inspecting the error message context.
- * Distinguishes between JSON parsing errors and template rendering errors.
+ * Distinguishes between JSON, YAML, XML parsing errors and template rendering errors.
  *
  * @param message - Error message string
  * @returns Appropriate error code based on context
@@ -164,6 +168,14 @@ function classifySyntaxError(message: string): string {
         return MigrationErrorCode.TEMPLATE_GENERATION_FAILED;
     }
 
+    // Check for YAML/XML patterns (before defaulting to JSON)
+    if (lowerMessage.includes('yaml') || lowerMessage.includes('yml')) {
+        return MigrationErrorCode.YAML_PARSE_ERROR;
+    }
+    if (lowerMessage.includes('xml')) {
+        return MigrationErrorCode.XML_PARSE_ERROR;
+    }
+
     // Default to JSON_PARSE_ERROR (most common case in migration workflows)
     return MigrationErrorCode.JSON_PARSE_ERROR;
 }
@@ -173,9 +185,10 @@ function classifySyntaxError(message: string): string {
  * Priority order for extraction:
  * 1. Error.name for custom error types (UnsupportedProjectError, MigrationError, etc.)
  * 2. Error.code for Node.js filesystem errors (ENOENT, EACCES, etc.)
- * 3. Pattern matching in error message (fallback for external library errors)
+ * 3. Pattern matching in error message (fallback for external library errors).
  *
  * @param error - Error object, string, or unknown error
+ * @param depth - Internal recursion depth counter (for circular error.cause chains)
  * @returns A safe error code string for telemetry (no PII, paths, or sensitive data)
  * @example
  * extractErrorCode(new UnsupportedProjectError('...'))
@@ -187,22 +200,25 @@ function classifySyntaxError(message: string): string {
  * extractErrorCode(new Error('Failed to parse manifest.json'))
  * // Returns: 'MANIFEST_PARSE_ERROR'
  */
-export function extractErrorCode(error: unknown): string {
+export function extractErrorCode(error: unknown, depth = 0): string {
     // Priority 1: Check error.name for custom error types (most explicit)
     if (error instanceof Error) {
         switch (error.name) {
             case 'UnsupportedProjectError':
                 return MigrationErrorCode.NOT_SUITABLE_FOR_MIGRATION;
             case 'MigrationError':
-                return extractFromMigrationError(error);
+                return extractFromMigrationError(error, depth);
             case 'SyntaxError':
                 return classifySyntaxError(error.message);
+            default:
+                // Fall through to check error.code and message patterns
+                break;
         }
 
         // Priority 2: Check error.code for Node.js filesystem errors (explicit property)
         if ('code' in error && typeof error.code === 'string') {
             const nodeCode = error.code;
-            if (nodeCode in MigrationErrorCode) {
+            if (Object.hasOwn(MigrationErrorCode, nodeCode)) {
                 return nodeCode;
             }
         }
