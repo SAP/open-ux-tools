@@ -103,7 +103,7 @@ define root view entity ZC_ENTITY
 
 ## Value Help With Business ID Only (No UUID)
 
-Use this pattern when the value-help entity has **no UUID** — only a business key (e.g. `SupplierID`). This is the simplest and most common case for master data without technical keys.
+Use this pattern when the value-help entity has **no UUID** — only a business key (e.g., `SupplierID`). This is the simplest and most common case for master data without technical keys.
 
 > **✅ CRITICAL:** You do **NOT** need to add an association to the value help view in the projection. The `@Consumption.valueHelpDefinition` annotation alone is sufficient for the value help to work.
 
@@ -141,7 +141,7 @@ as select from zsupplier_vhk
 SupplierID,
 ```
 - **Do not add** `@ObjectModel.text.element` or `@UI.textArrangement` here
-- **Do not add** association to the value help view
+- **Do not add** an association to the value help view
 - **Do not expose** extra text fields (e.g., `_Supplier.Name as SupplierName`)
 - The framework handles text retrieval and display automatically from the value help view
 
@@ -194,7 +194,7 @@ Add this annotation to the **value help view**:
    - Create the view (generates a template with placeholder)
 
 2. **Edit the generated template**:
-   The creation step generates a skeleton with `DATA_SOURCE_NAME` placeholder.
+   The creation step generates a skeleton with a `DATA_SOURCE_NAME` placeholder.
    Immediately edit the file to replace it with the actual view definition.
 
 3. **Activate**:
@@ -237,7 +237,7 @@ group by status
 **Key annotations for dropdown**:
 - `@ObjectModel.supportedCapabilities: [ #VALUE_HELP_PROVIDER ]` — marks as value help
 - `@ObjectModel.representativeKey: 'Status'` — the key field to return
-- `@ObjectModel.resultSet.sizeCategory: #XS` — **THIS makes it a dropdown instead of dialog**
+- `@ObjectModel.resultSet.sizeCategory: #XS` — **THIS makes it a dropdown instead of a dialog**
 - `@Consumption.valueHelpDefault.fetchValues: #AUTOMATICALLY_WHEN_DISPLAYED` — preloads values
 - `@UI.textArrangement: #TEXT_ONLY` on Status field — shows only text, hides code
 - `@ObjectModel.text.element: [ 'StatusText' ]` — links Status to its description
@@ -287,7 +287,7 @@ Simplest approach:
 
 Remove their UI annotations from the `.ddlx` metadata extension.
 
-Keep fields in metadata for draft/ETag support.
+Keep the fields in metadata for draft/ETag support.
 
 ---
 
