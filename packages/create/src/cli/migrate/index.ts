@@ -449,6 +449,44 @@ async function findMigrationSystem(
 }
 
 /**
+ * Resolve the backend system for a legacy project without loading project info.
+ * Measures only the backend lookup time, excluding local I/O.
+ *
+ * @param projectInfo - project information from getProjectInfo()
+ * @returns the matched system, if available, and the lookup duration in ms
+ */
+async function resolveBackendSystem(
+    projectInfo: ImportProjectInfo | undefined
+): Promise<{ system?: MigrationSystem; durationMs: number }> {
+    const logger = getLogger();
+    const startTime = Date.now();
+    try {
+        if (!projectInfo) {
+            return { durationMs: Date.now() - startTime };
+        }
+
+        if (isAppStudio()) {
+            const system = await findBASDestination(projectInfo.destination, projectInfo.hostname);
+            return { system, durationMs: Date.now() - startTime };
+        }
+
+        if (!projectInfo.hostname) {
+            return { durationMs: Date.now() - startTime };
+        }
+
+        const service = await getService<BackendSystem, BackendSystemKey>({ entityName: 'system', logger });
+        const savedSystem = await findSystemByUrl(projectInfo.hostname, projectInfo.sapClient || undefined, service);
+        return {
+            system: savedSystem ? { ...savedSystem, scp: false } : undefined,
+            durationMs: Date.now() - startTime
+        };
+    } catch (error) {
+        logger.debug(`Unable to resolve a migration system: ${(error as Error).message}`);
+        return { durationMs: Date.now() - startTime };
+    }
+}
+
+/**
  * Match the legacy project backend to a BAS destination.
  *
  * @param destinationName - destination parsed from the legacy project
@@ -949,11 +987,17 @@ async function runMigration(
     }
     summary.forceOverride = forced;
 
-    // Get project info first (local filesystem operation)
-    const { system: matchedSystem, projectInfo } = await findMigrationSystem(resolvedPath);
-    // Capture start time after local I/O, before backend lookup
-    const backendLoadStart = Date.now();
-    await trackMigrateEvent(MigrationEventName.MIGRATION_BACKEND_LOAD, {}, Date.now() - backendLoadStart);
+    // Get project info first (local filesystem operation, not measured)
+    let projectInfo: ImportProjectInfo | undefined;
+    try {
+        ({ projectInfo } = await ProjectAccess.getProjectInfo(resolvedPath));
+    } catch (error) {
+        getLogger().debug(`Unable to load project info: ${(error as Error).message}`);
+    }
+
+    // Resolve backend system (network lookup, measured separately)
+    const { system: matchedSystem, durationMs: backendLoadMs } = await resolveBackendSystem(projectInfo);
+    await trackMigrateEvent(MigrationEventName.MIGRATION_BACKEND_LOAD, {}, backendLoadMs);
     summary.systemResolvedVia = getSystemResolvedVia(options, matchedSystem);
 
     // 3. Resolve options with fallbacks

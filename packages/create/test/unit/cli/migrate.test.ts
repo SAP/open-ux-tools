@@ -820,7 +820,7 @@ describe('migrate command', () => {
 
         await command.parseAsync(getArgv(['migrate', testProjectRoot, '--hostname', 'myhost.com', '--client', '100']));
 
-        expect(loggerMock.debug).toHaveBeenCalledWith(expect.stringContaining('migration system'));
+        expect(loggerMock.debug).toHaveBeenCalledWith(expect.stringContaining('project info'));
         expect(mockMigrate).toHaveBeenCalled();
     });
 
