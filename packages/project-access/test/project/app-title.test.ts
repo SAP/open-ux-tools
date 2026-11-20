@@ -111,4 +111,47 @@ describe('resolveApplicationTitle()', () => {
 
         expect(result).toBeUndefined();
     });
+
+    test('when title has embedded i18n token, returns token resolved within the string', async () => {
+        mockReadJSON.mockResolvedValue(makeManifest('44 {{appTitle}}'));
+        mockGetI18nPropertiesPaths.mockResolvedValue({ 'sap.app': I18N_PATH, models: {} });
+        mockGetPropertiesI18nBundle.mockResolvedValue(makeBundle('appTitle', 'My App'));
+
+        const result = await resolveApplicationTitle({ webappPath: WEBAPP_PATH });
+
+        expect(result).toBe('44 My App');
+    });
+
+    test('when title has embedded i18n token that is absent from bundle, returns undefined', async () => {
+        mockReadJSON.mockResolvedValue(makeManifest('44 {{missingKey}}'));
+        mockGetI18nPropertiesPaths.mockResolvedValue({ 'sap.app': I18N_PATH, models: {} });
+        mockGetPropertiesI18nBundle.mockResolvedValue({});
+
+        const result = await resolveApplicationTitle({ webappPath: WEBAPP_PATH });
+
+        expect(result).toBeUndefined();
+    });
+
+    test('when title has multiple embedded i18n tokens, returns all resolved', async () => {
+        mockReadJSON.mockResolvedValue(makeManifest('App {{prefix}} and {{suffix}}'));
+        mockGetI18nPropertiesPaths.mockResolvedValue({ 'sap.app': I18N_PATH, models: {} });
+        mockGetPropertiesI18nBundle.mockResolvedValue({
+            ...makeBundle('prefix', 'Hello'),
+            ...makeBundle('suffix', 'World')
+        });
+
+        const result = await resolveApplicationTitle({ webappPath: WEBAPP_PATH });
+
+        expect(result).toBe('App Hello and World');
+    });
+
+    test('when title has multiple embedded tokens and one is missing, returns undefined', async () => {
+        mockReadJSON.mockResolvedValue(makeManifest('{{resolved}} and {{missing}}'));
+        mockGetI18nPropertiesPaths.mockResolvedValue({ 'sap.app': I18N_PATH, models: {} });
+        mockGetPropertiesI18nBundle.mockResolvedValue(makeBundle('resolved', 'OK'));
+
+        const result = await resolveApplicationTitle({ webappPath: WEBAPP_PATH });
+
+        expect(result).toBeUndefined();
+    });
 });
