@@ -22,5 +22,14 @@ module.exports = {
         RichTextEditor: 'rich-text-editor',
         RichTextEditorButtonGroups: 'rich-text-editor-button-groups',
         Action: 'action'
-    }
+    },
+    // Mirrors the real derived export (keys of BUILDING_BLOCK_CONFIG) — the aggregation-child types.
+    // Kept in sync with BuildingBlockType above when a new child type is wired in (see the skill).
+    AGGREGATION_CHILD_BB_TYPES: [
+        'custom-column',
+        'custom-filter-field',
+        'custom-form-field',
+        'rich-text-editor-button-groups',
+        'action'
+    ]
 };

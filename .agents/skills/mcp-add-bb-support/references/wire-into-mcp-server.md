@@ -38,6 +38,10 @@ version constant if the type is versioned.
 - `packages/fiori-mcp-server/test/__mocks__/@sap-ux/fe-fpm-writer.cjs`
 - `packages/fiori-mcp-server/test/unit/tools/functionalities/building-block/execute-functionality.test.ts`
 
+If the new type is an **aggregation child**, also add its kebab-case value to the `AGGREGATION_CHILD_BB_TYPES`
+array in `packages/fiori-mcp-server/test/__mocks__/@sap-ux/fe-fpm-writer.cjs`. The bb-sync forward-
+completeness test imports this array — omitting it gives a false green.
+
 ## utils.test.ts — only if versioned
 
 Read `packages/fiori-mcp-server/test/unit/tools/functionalities/building-block/utils.test.ts` and
@@ -46,9 +50,11 @@ mirror the existing assertions for the versioned type whose constraint shape mos
 
 ## Snapshots — always regenerate both
 
-```bash
-NODE_OPTIONS='--experimental-vm-modules' pnpm --filter @sap-ux/fiori-mcp-server exec jest --testPathPatterns "schema|list-functionalities" --updateSnapshot --no-coverage
-```
+Update the `schema` and `list-functionalities` snapshots using the package's own test runner. Read
+`packages/fiori-mcp-server/package.json` to find how its jest tests are invoked (script name, any
+required `NODE_OPTIONS`), then run that with jest's `--updateSnapshot` scoped to the `schema` and
+`list-functionalities` tests only — do not bulk-update every snapshot. Mirror the exact invocation
+the package already uses rather than assuming flags; they change over time.
 
 Regenerate snapshots only after all other wiring changes are complete.
 Verify the updated `schema.test.ts.snap` contains the new type's kebab-case value in the `enum` array.

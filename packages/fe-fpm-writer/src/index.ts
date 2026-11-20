@@ -74,6 +74,7 @@ export {
     getSerializedFileContent,
     generateBuildingBlockAggregation
 } from './building-block/index.js';
+export { AGGREGATION_CHILD_BB_TYPES } from './building-block/processor.js';
 export type {
     ChartPromptsAnswer,
     FilterBarPromptsAnswer,

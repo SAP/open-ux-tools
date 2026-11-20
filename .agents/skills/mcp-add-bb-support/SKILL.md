@@ -39,7 +39,7 @@ Use this as your working checklist — tick each item off as you complete it:
 - [ ] `translate.ts` — add to `EMBEDDED_FRAGMENT_TYPES` (if has `embededFragment`) — **manual review, no test**
 - [ ] `translate.ts` — add field rename `if` block (if XML → TS renames) — **manual review, no test**
 - [ ] `translate.ts` — update `resolveAggregationChildDefaults` (if aggregation child with a key field) — **manual review, no test**
-- [ ] `fe-fpm-writer.cjs` — add type to `BuildingBlockType` (always) + constant (if versioned)
+- [ ] `fe-fpm-writer.cjs` — add type to `BuildingBlockType` (always) + constant (if versioned) + add to `AGGREGATION_CHILD_BB_TYPES` array (if aggregation child)
 - [ ] `execute-functionality.test.ts` — add type to local `BuildingBlockType` (always) + constant (if versioned)
 - [ ] `utils.test.ts` — update `BB_TYPE_MIN_UI5_VERSION` keys assertion (if versioned)
 - [ ] `schema.test.ts.snap` + `list-functionalities.test.ts.snap` — regenerate both snapshots
@@ -65,12 +65,13 @@ All tests must pass, including `bb-sync.test.ts`.
 After all tests pass, print the following message verbatim:
 
 ---
-✅ Skill complete — build and tests pass. Note the following before closing:
+✅ Skill complete — build and tests pass.
 
-⚠️  Tests confirm registration, not correctness. Verify the translate.ts wiring decisions
-(position, fragment, renames, aggregation defaults) match the new type's interface — a wrong
-wiring compiles green but generates broken XML at runtime.
+⚠️  Note the following before closing:
 
-⚠️  search_docs won't return results for this new building block type until build-bb-macro-docs.ts is manually updated
-and data_local/bb_macro_api.md is regenerated. See references/conditional-wiring.md.
+- Tests confirm registration, not correctness. A human must verify the translate.ts wiring decisions
+  (position, fragment, renames, aggregation defaults) match the new type's interface — a wrong wiring
+  compiles green and passes every test, then generates broken XML at runtime.
+- search_docs won't return results for this new building block type until build-bb-macro-docs.ts is
+  manually updated and data_local/bb_macro_api.md is regenerated. See references/conditional-wiring.md.
 ---

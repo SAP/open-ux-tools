@@ -117,6 +117,17 @@ export const BUILDING_BLOCK_CONFIG: Partial<Record<BuildingBlockType, BuildingBl
 };
 
 /**
+ * Building block types inserted as children of a parent macro's aggregation, rather than standalone.
+ * Derived from {@link BUILDING_BLOCK_CONFIG} keys so it stays in sync automatically.
+ *
+ * Consumers (e.g. @sap-ux/fiori-mcp-server) rely on this list, so adding a child type here makes it
+ * visible to them.
+ */
+export const AGGREGATION_CHILD_BB_TYPES: readonly BuildingBlockType[] = Object.keys(
+    BUILDING_BLOCK_CONFIG
+) as BuildingBlockType[];
+
+/**
  * Retrieves the configuration for a building block type.
  *
  * @param buildingBlockType - The building block type
