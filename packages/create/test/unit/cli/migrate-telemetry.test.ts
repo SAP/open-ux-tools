@@ -177,14 +177,22 @@ describe('migrate telemetry', () => {
             expect(mockReportEventBlocking).not.toHaveBeenCalled();
         });
 
-        test('treats a missing setting as disabled (fail closed) to avoid sending without verified consent', async () => {
+        test('treats a missing setting as enabled by default (opt-out model with notice)', async () => {
             mockGetTelemetrySetting.mockResolvedValue(undefined);
             await initCliTelemetry('1.0.0');
 
             await trackMigrateEvent(MigrationEventName.MIGRATION_SUCCESS, { success: 'true' }, 42, '/some/project');
 
-            // Should not send events when setting cannot be read (fail closed)
-            expect(mockReportEventBlocking).not.toHaveBeenCalled();
+            // Should send events when setting is undefined (opt-out model, enabled by default)
+            expect(mockReportEventBlocking).toHaveBeenCalledWith(
+                {
+                    eventName: 'MIGRATION_SUCCESS',
+                    properties: { success: 'true', source: 'CLI', SessionId: expect.stringMatching(UUID) },
+                    measurements: { ms: 42 }
+                },
+                2, // NoSampling = 2
+                { appPath: '/some/project' }
+            );
         });
 
         test('sends no measurements and helper properties when not provided', async () => {
