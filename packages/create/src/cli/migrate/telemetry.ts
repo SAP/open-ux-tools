@@ -35,13 +35,14 @@ const SEND_TIMEOUT_MS = 3000;
 const NOTICE_MARKER_FILE = 'create-telemetry-notice-shown';
 
 /** How the backend system of a migration was determined. */
-export type SystemResolvedVia = 'cliOption' | 'savedSystem' | 'basDestination' | 'prompt';
+export type SystemResolvedVia = 'cliOption' | 'savedSystem' | 'basDestination' | 'prompt' | 'none';
 
 let telemetryEnabled = false;
 // Set when sending fails or times out, so an unreachable backend delays the CLI at most once per run
 let sendingFailed = false;
 // Random id correlating the events of one run; it is neither persisted nor linked to a user or machine
-let sessionId = randomUUID();
+// Initialized to empty string and set in initCliTelemetry
+let sessionId = '';
 
 /**
  * Get the environment variable that opts out of telemetry, if set. Besides the variable supported by all
@@ -122,6 +123,10 @@ export async function trackMigrateEvent(
     if (!telemetryEnabled || sendingFailed) {
         return;
     }
+    // Assert sessionId was initialized by initCliTelemetry
+    if (!sessionId) {
+        throw new Error('trackMigrateEvent called before initCliTelemetry');
+    }
     let timer: NodeJS.Timeout | undefined;
     try {
         const timeout = new Promise<'timeout'>((resolve) => {
@@ -135,7 +140,12 @@ export async function trackMigrateEvent(
                 appPath ? { appPath } : undefined
             )
             .then(() => 'sent' as const);
-        if ((await Promise.race([send, timeout])) === 'timeout') {
+        const result = await Promise.race([send, timeout]);
+        // Swallow late rejections after timeout to avoid unhandled rejection crashes
+        send.catch(() => {
+            /* rejection already logged or timed out */
+        });
+        if (result === 'timeout') {
             sendingFailed = true;
             getLogger().debug(`Telemetry event ${eventName} timed out, no further events are sent`);
         }

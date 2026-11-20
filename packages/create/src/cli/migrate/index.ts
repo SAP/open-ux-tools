@@ -884,8 +884,8 @@ async function migrateProject(
     }
 
     const success = isMigrationSuccessful(result.result, result.messages);
-    summary.successfulMigrations = success ? 1 : 0;
-    summary.failedMigrations = success ? 0 : 1;
+    summary.successfulMigrations += success ? 1 : 0;
+    summary.failedMigrations += success ? 0 : 1;
     await trackProjectResult(
         success,
         getErrorCategoriesForTelemetry(result.messages),
@@ -934,12 +934,15 @@ async function runMigration(
     const { proceed, forced } = await checkForceRequired(resolvedPath, options.force ?? false);
     if (!proceed) {
         summary.cancelled = true;
+        summary.systemResolvedVia = 'none'; // No lookup attempted
         return;
     }
     summary.forceOverride = forced;
 
-    const backendLoadStart = Date.now();
+    // Get project info first (local filesystem operation)
     const { system: matchedSystem, projectInfo } = await findMigrationSystem(resolvedPath);
+    // Capture start time after local I/O, before backend lookup
+    const backendLoadStart = Date.now();
     await trackMigrateEvent(MigrationEventName.MIGRATION_BACKEND_LOAD, {}, Date.now() - backendLoadStart);
     summary.systemResolvedVia = getSystemResolvedVia(options, matchedSystem);
 

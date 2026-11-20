@@ -51,11 +51,16 @@ export function getTelemetryCommand(): Command {
  */
 async function changeTelemetrySetting(enable: boolean): Promise<void> {
     const logger = getLogger();
-    await setEnableTelemetry(enable);
-    const saved = await getTelemetrySetting();
-    if (saved?.enableTelemetry === enable) {
-        logger.info(t(enable ? 'telemetry.status.enabled' : 'telemetry.status.disabled'));
-    } else {
+    try {
+        await setEnableTelemetry(enable);
+        const saved = await getTelemetrySetting();
+        if (saved?.enableTelemetry === enable) {
+            logger.info(t(enable ? 'telemetry.status.enabled' : 'telemetry.status.disabled'));
+        } else {
+            logger.error(t('telemetry.status.updateFailed'));
+            process.exitCode = 1;
+        }
+    } catch {
         logger.error(t('telemetry.status.updateFailed'));
         process.exitCode = 1;
     }
