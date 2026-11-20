@@ -8,6 +8,7 @@ import { MigrationTypes } from '../utils/constants.js';
 import { detectMainServiceFromManifest } from '../utils/service-detection.js';
 import { extractTemplateDetails } from '../template/details.js';
 import { extractBackendAndI18nConfig } from '../config/backend-i18n.js';
+import { extractErrorCode } from '../utils/error-codes.js';
 import { extractSapLibraries } from '../data/sap-libraries.js';
 import { processFlpSandboxFiles } from '../config/flp/sandbox.js';
 import { processNeoAppAndODataVersion } from '../config/neoapp.js';
@@ -222,7 +223,8 @@ export async function processRegularProject(
     } catch (error) {
         messages.push({
             type: 'ERROR',
-            description: error instanceof Error ? error.message : String(error)
+            description: error instanceof Error ? error.message : String(error),
+            code: extractErrorCode(error)
         });
         projectInfo = {
             ...defaultProjectInfo,

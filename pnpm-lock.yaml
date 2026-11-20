@@ -1730,6 +1730,9 @@ importers:
       '@sap-ux/system-access':
         specifier: workspace:*
         version: link:../system-access
+      '@sap-ux/telemetry':
+        specifier: workspace:*
+        version: link:../telemetry
       '@sap-ux/ui5-config':
         specifier: workspace:*
         version: link:../ui5-config

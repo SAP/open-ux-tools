@@ -126,3 +126,10 @@ export { MigrationTypes, postMigrationAction, distVar } from './utils/constants.
 // Public API - Compatibility layer for read-package-up
 export { readPackageUpAsync, type ReadResult } from './utils/read-package-up-compat.js';
 export type { Options as ReadOptions } from 'read-package-up';
+
+// Public API - Error code utilities for telemetry
+export {
+    MigrationErrorCode,
+    extractErrorCode,
+    type MigrationErrorCode as MigrationErrorCodeType
+} from './utils/error-codes.js';
