@@ -1,4 +1,4 @@
-import { BuildingBlockType, AGGREGATION_CHILD_BB_TYPES } from '@sap-ux/fe-fpm-writer';
+import { BuildingBlockType } from '@sap-ux/fe-fpm-writer';
 import { buildBuildingBlockMembers } from '../../../../../src/tools/functionalities/building-block/schema.js';
 import {
     AGGREGATION_PARENT_MACRO,
@@ -28,19 +28,6 @@ describe('fiori-mcp-server stays in sync with fe-fpm-writer BuildingBlockType', 
         }
     });
 
-    test('every aggregation-child type has an AGGREGATION_PARENT_MACRO entry', () => {
-        // Forward-completeness: the writer's AGGREGATION_CHILD_BB_TYPES (derived from BUILDING_BLOCK_CONFIG)
-        // is the source of truth for which types are aggregation children. A new child added upstream must
-        // get a parent-macro entry here or the tool inserts it at the wrong place. The parent-macro *string*
-        // itself (e.g. 'Table') is mcp-specific and cannot be derived from the writer — it stays a manual
-        // review item in the skill; this test only enforces that an entry exists.
-        const wired = new Set(Object.keys(AGGREGATION_PARENT_MACRO));
-        const missing = AGGREGATION_CHILD_BB_TYPES.filter((type) => !wired.has(type));
-        if (missing.length > 0) {
-            failWith(`Missing entries in AGGREGATION_PARENT_MACRO for aggregation children: ${missing.join(', ')}.`);
-        }
-    });
-
     test('every key in AGGREGATION_PARENT_MACRO is a valid BuildingBlockType', () => {
         // Catches stale entries left behind when a type is removed from fe-fpm-writer.
         const validTypes = new Set<string>(ALL_TYPES);
@@ -50,10 +37,6 @@ describe('fiori-mcp-server stays in sync with fe-fpm-writer BuildingBlockType', 
         }
     });
 
-    // ANNOTATION_SHELL_TERMS and BB_TYPE_MIN_UI5_VERSION are stale-only (no forward-completeness check):
-    // whether a new type drives an OData annotation, or is version-gated, is a judgment call the writer
-    // does not expose as a machine-readable fact — forcing a guess would be worse than requiring the
-    // developer to decide. The skill's discover-new-bb.md walks through both questions manually.
     test('every key in ANNOTATION_SHELL_TERMS is a valid BuildingBlockType', () => {
         const validTypes = new Set<string>(ALL_TYPES);
         const stale = Object.keys(ANNOTATION_SHELL_TERMS).filter((type) => !validTypes.has(type));

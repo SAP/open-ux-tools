@@ -38,10 +38,6 @@ version constant if the type is versioned.
 - `packages/fiori-mcp-server/test/__mocks__/@sap-ux/fe-fpm-writer.cjs`
 - `packages/fiori-mcp-server/test/unit/tools/functionalities/building-block/execute-functionality.test.ts`
 
-If the new type is an **aggregation child**, also add its kebab-case value to the `AGGREGATION_CHILD_BB_TYPES`
-array in `packages/fiori-mcp-server/test/__mocks__/@sap-ux/fe-fpm-writer.cjs`. The bb-sync forward-
-completeness test imports this array — omitting it gives a false green.
-
 ## utils.test.ts — only if versioned
 
 Read `packages/fiori-mcp-server/test/unit/tools/functionalities/building-block/utils.test.ts` and

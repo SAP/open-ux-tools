@@ -39,7 +39,7 @@ Use this as your working checklist — tick each item off as you complete it:
 - [ ] `translate.ts` — add to `EMBEDDED_FRAGMENT_TYPES` (if has `embededFragment`) — **manual review, no test**
 - [ ] `translate.ts` — add field rename `if` block (if XML → TS renames) — **manual review, no test**
 - [ ] `translate.ts` — update `resolveAggregationChildDefaults` (if aggregation child with a key field) — **manual review, no test**
-- [ ] `fe-fpm-writer.cjs` — add type to `BuildingBlockType` (always) + constant (if versioned) + add to `AGGREGATION_CHILD_BB_TYPES` array (if aggregation child)
+- [ ] `fe-fpm-writer.cjs` — add type to `BuildingBlockType` (always) + constant (if versioned)
 - [ ] `execute-functionality.test.ts` — add type to local `BuildingBlockType` (always) + constant (if versioned)
 - [ ] `utils.test.ts` — update `BB_TYPE_MIN_UI5_VERSION` keys assertion (if versioned)
 - [ ] `schema.test.ts.snap` + `list-functionalities.test.ts.snap` — regenerate both snapshots
