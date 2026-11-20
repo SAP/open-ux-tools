@@ -50,8 +50,8 @@ export function buildBuildingBlockMembers(): Record<BuildingBlockType, BuildingB
         [BuildingBlockType.CustomColumn]: baseSchema(BuildingBlockType.CustomColumn),
         [BuildingBlockType.CustomFilterField]: baseSchema(BuildingBlockType.CustomFilterField),
         [BuildingBlockType.Action]: baseSchema(BuildingBlockType.Action)
-    // if adding a new type to fe-fpm-writer, update the add building block MCP tool as well.
-    // Run the skill: .agents/skills/mcp-add-bb-support/SKILL.md
+        // if adding a new type to fe-fpm-writer, update the add building block MCP tool as well.
+        // Run the skill: .agents/skills/mcp-add-bb-support/SKILL.md
     } satisfies Record<BuildingBlockType, BuildingBlockMemberSchema>;
 
     return buildingBlockSchemaByType;
