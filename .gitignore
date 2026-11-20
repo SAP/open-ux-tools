@@ -214,3 +214,10 @@ packages/cds-odata-annotation-converter/test/data/bookshop/package-lock.json
 # But allow .che in test inputs (needed for extension project detection tests)
 !packages/fiori-migration-writer/test/fixtures/input/**/.che
 !packages/fiori-migration-writer/test/fixtures/input/**/.che/**
+
+# Temporary work files - do not commit
+COMMENT_REPLIES.txt
+DAVID_FINDING_RESPONSE.txt
+*_RESPONSE.txt
+*_REPLIES.txt
+.claude/BRANCH_CHECKLIST.md
