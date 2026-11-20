@@ -49,10 +49,24 @@
         });
     }
 
+    /**
+     * Wait between readiness checks or transport retries.
+     *
+     * @param {number} ms Delay in milliseconds.
+     * @returns {Promise<void>} Resolves when the delay expires.
+     */
     function delay(ms) {
         return new Promise((resolve) => setTimeout(resolve, ms));
     }
 
+    /**
+     * Send an authenticated relay request and bound both the request and JSON body read.
+     *
+     * @param {string} endpoint Path relative to the relay script, including any query string.
+     * @param {string} [body] Serialized JSON for POST; omitted for GET.
+     * @param {number} [timeoutMs=REQUEST_TIMEOUT_MS] Request deadline in milliseconds.
+     * @returns {Promise<unknown>} Parsed relay response.
+     */
     async function request(endpoint, body, timeoutMs = REQUEST_TIMEOUT_MS) {
         const controller = new AbortController();
         const timer = setTimeout(() => controller.abort(), timeoutMs);
@@ -94,10 +108,25 @@
         }
     }
 
+    /**
+     * Identify network failures and HTTP responses eligible for transport recovery.
+     *
+     * @param {Error & {status?: number}} error Request failure with an optional HTTP status.
+     * @returns {boolean} Whether the request can be retried.
+     */
     function isTransientTransportError(error) {
         return error.status === undefined || error.status === 408 || error.status === 429 || error.status >= 500;
     }
 
+    /**
+     * Deliver a result or timeout notification until acknowledged, without replaying the action.
+     *
+     * @param {string} endpoint Result or timeout endpoint.
+     * @param {string} id Relay action ID retained across retries.
+     * @param {object} response Result, error or timeout-notification fields.
+     * @param {number} [recoveryMs=RESULT_RECOVERY_MS] Total delivery budget in milliseconds.
+     * @returns {Promise<void>} Resolves after acknowledgement; rejects when delivery cannot be confirmed.
+     */
     async function submitAcknowledged(endpoint, id, response, recoveryMs = RESULT_RECOVERY_MS) {
         // Freeze the exact result once. Retries deliver it again, never execute the frontend action again.
         let body;
@@ -143,6 +172,14 @@
         );
     }
 
+    /**
+     * Wait for UI5 and load a module within the action's remaining time budget.
+     *
+     * @param {Window} targetWindow Editor window containing UI5.
+     * @param {string} moduleId UI5 module path.
+     * @param {number} deadline Absolute deadline in milliseconds since the Unix epoch.
+     * @returns {Promise<unknown>} Loaded module export.
+     */
     async function requireModule(targetWindow, moduleId, deadline) {
         while (typeof targetWindow.sap?.ui?.require !== 'function') {
             if (Date.now() >= deadline) {
@@ -170,7 +207,12 @@
         });
     }
 
-    // Normalizes a raw UFA result into the Flex { isSuccess, payload, error } envelope (mirrors frontend-actions.ts).
+    /**
+     * Normalize a UFA result into the Flex envelope, mirroring frontend-actions.ts.
+     *
+     * @param {unknown} raw Value returned by a unified frontend action.
+     * @returns {object} Result envelope with isSuccess, payload and error.
+     */
     function normalizeUfa(raw) {
         if (raw && typeof raw === 'object' && raw.success === false) {
             const message =
@@ -184,6 +226,13 @@
         return { isSuccess: true, payload: isBareSuccess ? null : raw, error: null };
     }
 
+    /**
+     * Wait for the editor's existing RTA instance and its outline synchronization.
+     *
+     * @param {Window} targetWindow Editor window containing UI5.
+     * @param {number} deadline Absolute deadline in milliseconds since the Unix epoch.
+     * @returns {Promise<boolean>} Whether RTA became ready before the deadline.
+     */
     async function waitForEditorRta(targetWindow, deadline) {
         let timer;
         try {
@@ -219,6 +268,12 @@
         }
     }
 
+    /**
+     * Wait for the shell's app-loaded message when running in the top document.
+     *
+     * @param {number} deadline Absolute deadline in milliseconds since the Unix epoch.
+     * @returns {Promise<boolean>} Whether loading was observed or no shell message is required.
+     */
     async function waitForAppLoaded(deadline) {
         if (!appLoadedListening) {
             return true;
@@ -232,6 +287,12 @@
         return true;
     }
 
+    /**
+     * Fetch metadata through the editor's authenticated origin, with a bounded body read.
+     *
+     * @param {object} payload Command payload containing the URL to fetch.
+     * @returns {Promise<object>} Result envelope containing the HTTP status, content type and text, or an error.
+     */
     async function fetchViaContext(payload) {
         // Same-origin only: the editor page fetches its own origin (proxied to the backend), never a foreign host.
         const target = new URL(String(payload?.url ?? ''), location.href);
@@ -271,6 +332,12 @@
         }
     }
 
+    /**
+     * Locate the preview frame or use the current window for an injected in-frame client.
+     *
+     * @param {string} [frameId] Preview iframe element ID.
+     * @returns {Window} Window in which to invoke frontend actions.
+     */
     function resolveTargetWindow(frameId) {
         const frame = document.getElementById(frameId);
         if (frame && frame.contentWindow) {
@@ -283,6 +350,14 @@
         throw new Error("[rta-relay] editor frame '" + frameId + "' not found in the top document");
     }
 
+    /**
+     * Invoke UI5 once and report a deadline expiry while continuing to observe its completion.
+     *
+     * @param {object} action Relay command whose ID identifies timeout notifications.
+     * @param {object} execution Tracked deadline, timer and timeout state.
+     * @param {function(): unknown} invoke Frontend method invocation.
+     * @returns {Promise<unknown>} Eventual frontend result; timeout reporting does not cancel the method.
+     */
     async function invokeFrontendAction(action, execution, invoke) {
         if (stopped || Date.now() >= execution.deadline) {
             throw new Error('The action deadline expired before the UI5 method was invoked.');
@@ -302,6 +377,13 @@
         }
     }
 
+    /**
+     * Dispatch metadata, readiness, Flex or UFA commands in the target editor window.
+     *
+     * @param {object} action Relay command with its name, payload and optional frame ID.
+     * @param {object} execution Tracked action deadline and invocation state.
+     * @returns {Promise<unknown>} Command result for relay delivery.
+     */
     async function callAction(action, execution) {
         // Authenticated same-origin fetch through the editor page; needs no UI5/RTA, so handle it first.
         if (action.actionName === '__fetch__') {
@@ -340,6 +422,12 @@
         return await invokeFrontendAction(action, execution, () => api[method](action.payload));
     }
 
+    /**
+     * Track one action through settlement and acknowledged result delivery.
+     *
+     * @param {object} action Delivered relay command and its execution budget.
+     * @returns {Promise<void>} Resolves after handling the result or a shutdown interruption.
+     */
     async function processAction(action) {
         if (activeAction) {
             // The server normally prevents this. Never execute overlapping UI5 methods even if a
@@ -371,6 +459,11 @@
         await submitAcknowledged('result', action.id, response);
     }
 
+    /**
+     * Find a same-origin top-level editor window that the relay may request to close.
+     *
+     * @returns {Window|undefined} Editor window, or undefined when embedded in a cross-origin host.
+     */
     function externalEditorWindow() {
         try {
             // An embedded editor must never close its cross-origin BAS/IDE host.
@@ -380,6 +473,12 @@
         }
     }
 
+    /**
+     * Receive relay commands, recover temporary transport failures and handle stop/reload.
+     * Polling remains active during UI5 execution so shutdown can still be delivered.
+     *
+     * @returns {Promise<void>} Resolves when the document stops polling.
+     */
     async function pollLoop() {
         let recoveryDeadline;
         let retryDelay = RETRY_DELAY_MS;

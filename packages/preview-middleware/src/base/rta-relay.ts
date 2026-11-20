@@ -122,26 +122,19 @@ function isValidResultBody(body: unknown): body is ResultBody {
         : Object.hasOwn(body, 'result');
 }
 
-/**
- * Register an opt-in, single-action relay owned by this preview router.
- * The public script contains no secret; all API requests require the token in `X-Relay-Token`.
- *
- * @param router preview router
- * @param token child-process relay token (exactly 64 hexadecimal characters)
- * @returns client tag renderer, or undefined when the token is invalid
- */
-export function addRtaRelayApis(
-    router: Router,
-    token: string
-): { clientTag: (baseUrl?: string) => string } | undefined {
-    if (token.length !== 64 || !/^[\da-f]{64}$/i.test(token)) {
-        return undefined;
-    }
-    const configuredLimit = Number(process.env.SAP_FIORI_MCP_ADP_RELAY_RESULT_LIMIT_BYTES);
-    // Reserve enough space for a compact error envelope even when the configured result limit is small.
-    const resultLimitBytes =
-        Number.isSafeInteger(configuredLimit) && configuredLimit >= 1024 ? configuredLimit : DEFAULT_RESULT_LIMIT_BYTES;
+interface RelayHandlers {
+    handlePoll: (req: Request, res: Response) => void;
+    handleAction: (req: Request, res: Response) => void;
+    handleTimeout: (req: Request, res: Response) => void;
+    handleResult: (req: Request, res: Response) => void;
+}
 
+/**
+ * Create route handlers sharing state for one preview router.
+ *
+ * @returns Poll, action, timeout and result handlers scoped to this relay.
+ */
+function createRelayHandlers(): RelayHandlers {
     let pending: PendingAction | undefined;
     // A delivered UI5 operation can outlive its HTTP caller. Retain only its identity until it settles.
     let executing: { id: string; clientId: string } | undefined;
@@ -277,21 +270,7 @@ export function addRtaRelayApis(
         return undefined;
     };
 
-    router.get(`${API}/client.js`, (_req, res) => {
-        res.set('Cache-Control', 'no-store');
-        res.type('application/javascript').send(RELAY_CLIENT_JS);
-    });
-    router.use(API, (req, res, next) => {
-        res.set('Cache-Control', 'no-store');
-        // Not Authorization: the BAS ingress router answers 401 to browser requests that set it.
-        if (req.headers['x-relay-token'] !== token) {
-            res.status(401).json({ error: 'Unauthorized' });
-            return;
-        }
-        next();
-    });
-
-    router.get(`${API}/poll`, (req, res) => {
+    const handlePoll = (req: Request, res: Response): void => {
         const clientId = req.query.clientId;
         if (!isValidClientId(clientId)) {
             res.status(400).json({ error: 'clientId is required' });
@@ -329,9 +308,9 @@ export function addRtaRelayApis(
             }
         });
         deliver();
-    });
+    };
 
-    router.post(`${API}/action`, json({ limit: COMMAND_LIMIT_BYTES }), (req, res) => {
+    const handleAction = (req: Request, res: Response): void => {
         const body: unknown = req.body;
         if (!isValidActionBody(body)) {
             res.status(400).json({ error: 'Invalid actionName, payload or frameId' });
@@ -413,10 +392,10 @@ export function addRtaRelayApis(
         // A disconnected caller releases its response, never a possibly running UI5 operation.
         res.once('close', () => releaseRequest(action));
         deliver();
-    });
+    };
 
     // This is a progress notification, not a final result. It must not enter the result-ack cache.
-    router.post(`${API}/timeout`, json({ limit: COMMAND_LIMIT_BYTES }), (req, res) => {
+    const handleTimeout = (req: Request, res: Response): void => {
         const body: unknown = req.body;
         if (!isObject(body) || !isValidClientId(body.id) || !isValidClientId(body.clientId)) {
             res.status(400).json({ error: 'id and clientId are required' });
@@ -439,9 +418,9 @@ export function addRtaRelayApis(
             reportUnknownOutcome();
         }
         res.json({ ok: true });
-    });
+    };
 
-    router.post(`${API}/result`, json({ limit: resultLimitBytes }), (req, res) => {
+    const handleResult = (req: Request, res: Response): void => {
         const body: unknown = req.body;
         if (!isValidResultBody(body)) {
             res.status(400).json({ error: 'Invalid result' });
@@ -491,7 +470,50 @@ export function addRtaRelayApis(
             action.res.json({ result: body.result, clientId: body.clientId });
         }
         res.json({ ok: true });
+    };
+
+    return { handlePoll, handleAction, handleTimeout, handleResult };
+}
+
+/**
+ * Register an opt-in, single-action relay owned by this preview router.
+ * The public script contains no secret; all API requests require the token in `X-Relay-Token`.
+ *
+ * @param router preview router
+ * @param token child-process relay token (exactly 64 hexadecimal characters)
+ * @returns client tag renderer, or undefined when the token is invalid
+ */
+export function addRtaRelayApis(
+    router: Router,
+    token: string
+): { clientTag: (baseUrl?: string) => string } | undefined {
+    if (token.length !== 64 || !/^[\da-f]{64}$/i.test(token)) {
+        return undefined;
+    }
+    const configuredLimit = Number(process.env.SAP_FIORI_MCP_ADP_RELAY_RESULT_LIMIT_BYTES);
+    // Reserve enough space for a compact error envelope even when the configured result limit is small.
+    const resultLimitBytes =
+        Number.isSafeInteger(configuredLimit) && configuredLimit >= 1024 ? configuredLimit : DEFAULT_RESULT_LIMIT_BYTES;
+    const { handlePoll, handleAction, handleTimeout, handleResult } = createRelayHandlers();
+
+    router.get(`${API}/client.js`, (_req, res) => {
+        res.set('Cache-Control', 'no-store');
+        res.type('application/javascript').send(RELAY_CLIENT_JS);
     });
+    router.use(API, (req, res, next) => {
+        res.set('Cache-Control', 'no-store');
+        // Not Authorization: the BAS ingress router answers 401 to browser requests that set it.
+        if (req.headers['x-relay-token'] !== token) {
+            res.status(401).json({ error: 'Unauthorized' });
+            return;
+        }
+        next();
+    });
+
+    router.get(`${API}/poll`, handlePoll);
+    router.post(`${API}/action`, json({ limit: COMMAND_LIMIT_BYTES }), handleAction);
+    router.post(`${API}/timeout`, json({ limit: COMMAND_LIMIT_BYTES }), handleTimeout);
+    router.post(`${API}/result`, json({ limit: resultLimitBytes }), handleResult);
     router.use(`${API}/result`, (error: unknown, _req: Request, res: Response, next: NextFunction) => {
         if (isObject(error) && error.type === 'entity.too.large') {
             // Keep the pending action until its owning document submits a compact error with matching IDs.

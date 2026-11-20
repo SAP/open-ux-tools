@@ -14,26 +14,6 @@ When this middleware is used together with the `reload-middleware`, then the ord
   afterMiddleware: reload-middleware
 ```
 
-## Adaptation editor relay result size
-
-When the MCP relay is enabled, command request bodies are limited to 100 KiB and result request bodies to 10 MiB. The result limit includes the complete JSON envelope encoded as UTF-8, including metadata or overlay data.
-
-Set `SAP_FIORI_MCP_ADP_RELAY_RESULT_LIMIT_BYTES` in the preview server environment to override the result limit. The MCP-launched preview server inherits this variable from the MCP process. Values must be safe integers of at least 1024 bytes; missing or invalid values use the 10 MiB default. Restart the editor server after changing the value.
-
-If the relay or an upstream proxy rejects a result with HTTP 413, the browser submits a compact error for the same action. Once that error is acknowledged, the session can process the next command. The frontend action is not executed again. A proxy may impose a lower limit than the preview server.
-
-## Adaptation editor relay recovery
-
-The relay keeps one active editor document. A refreshed page retries temporary ownership or busy responses for up to 90 seconds, with delays increasing from one to five seconds. The previous owner's reservation lasts 30 seconds after its last contact. A second tab cannot displace an active poll or a document whose action is still pending. Documents replaced by a new owner or retired by `stop`/`reload` cannot reclaim ownership. Waiting duplicate tabs are also retired during takeover or lifecycle acknowledgement, so they cannot claim the newly loaded document's connection. Authentication failures and unrecognized conflicts stop polling.
-
-If a result submission fails transiently, the browser retries the same serialized result for up to 30 seconds. Stop acknowledgements use a two-second budget so an unavailable server does not delay closing the tab. It never executes the frontend action again. The server remembers up to 64 result fingerprints for two minutes so it can acknowledge an identical submission when its previous acknowledgement was lost, without retaining the result bodies or consuming a newer command. The compact error used after HTTP 413 follows the same acknowledgement recovery.
-
-UI5 module loading, editor readiness, and method execution share a budget of up to 55 seconds, reduced by time spent waiting for delivery. The remaining five seconds of the server's 60-second deadline are reserved for reporting the result. If readiness exhausts the budget, the method is not invoked. Metadata retains its separate 30-second fetch abort and timeout diagnostics.
-
-If a delivered UI5 action has no confirmed result within its deadline, its outcome is reported as unknown. This does not trigger the MCP's automatic start/login retry. UI5 methods are not cancellable through these APIs: the relay continues tracking the operation after a timeout or caller disconnection. Further editor actions (including reload and metadata) fail immediately with `RELAY_ACTION_IN_PROGRESS`. Another document cannot take ownership while the operation is unresolved, even after the usual owner lease expires.
-
-The owning document keeps polling so `stop` can still close the tab and end the session. Stopping during an unresolved operation prevents further commands in that session, even if the operation subsequently completes. Closing a tab does not undo backend effects. If the method settles later without shutdown, its final result is acknowledged separately from the timeout notification and normal commands become available again. The original caller's timeout is not retroactively changed to success and the action is never automatically replayed; inspect the editor before retrying. If no final result can be confirmed, stop the affected session and inspect the application state before reopening it. A page refresh alone does not release the unresolved-action protection. Persistent transport failures and late completion are logged in the browser console.
-
 ## [Configuration Options](#configuration-options)
 | Option                       | Value Type | Requirement Type                               | Default Value                   | Description                                                                                                                                                                                                                                                                                                                                                                   |
 |------------------------------|------------|------------------------------------------------|---------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|

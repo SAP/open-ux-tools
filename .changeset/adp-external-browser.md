@@ -15,3 +15,4 @@ The relay supports CF and ABAP adaptation projects, with automatic opening throu
 - Track editor processes throughout startup and shutdown, including pending launches and owned POSIX process groups after parent exit. Fail startup and attempt cleanup when BAS cannot expose a valid HTTPS editor URL.
 - Request browser-tab closure before independently stopping the editor server. Report unconfirmed server termination as an unsuccessful stop and provide manual-close guidance when browser closure is not acknowledged.
 - Resolve ABAP adaptation configuration from both `fiori-tools-preview` and `preview-middleware`, preserving the configured destination for merged manifests and base application resources.
+- Keep relay state scoped to each preview router through named request handlers, and document the browser-client helpers.
