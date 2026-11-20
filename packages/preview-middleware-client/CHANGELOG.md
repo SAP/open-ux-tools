@@ -1,5 +1,7 @@
 # @sap-ux-private/preview-middleware-client
 
+## 1.2.44
+
 ## 1.2.43
 
 ### Patch Changes
