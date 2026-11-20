@@ -1,5 +1,5 @@
 import { isAbsolute, resolve } from 'node:path';
-import { searchChoices, ui5VersionsGrouped, getDefaultUI5VersionChoice } from '@sap-ux/inquirer-common';
+import { searchableListPrompt, ui5VersionsGrouped, getDefaultUI5VersionChoice } from '@sap-ux/inquirer-common';
 import { getMtaPath } from '@sap-ux/project-access';
 import { validateModuleName, validateNamespace, validateFioriAppTargetFolder } from '@sap-ux/project-input-validator';
 import { t } from '../i18n.js';
@@ -7,9 +7,8 @@ import { promptNames } from '../types.js';
 import { defaultAppName } from './prompt-helpers.js';
 import { validateAppName } from './validators.js';
 import type { UI5Version } from '@sap-ux/ui5-info';
-import type { ListChoiceOptions } from 'inquirer';
 import type { UI5ApplicationAnswers, UI5ApplicationPromptOptions, UI5ApplicationQuestion } from '../types.js';
-import type { ConfirmQuestion, FileBrowserQuestion, InputQuestion, ListQuestion } from '@sap-ux/inquirer-common';
+import type { ConfirmQuestion, FileBrowserQuestion, InputQuestion } from '@sap-ux/inquirer-common';
 
 /**
  * Gets the `name` prompt.
@@ -37,7 +36,7 @@ export function getNamePrompt(
         name: promptNames.name,
         message: t('prompts.name.message'),
         default: (answers: UI5ApplicationAnswers) => answers.name || appName || defaultAppName(targetDir),
-        validate: (name, answers: UI5ApplicationAnswers): boolean | string => {
+        validate: (name: string, answers: UI5ApplicationAnswers): boolean | string => {
             // In a CLI context, we need to validate the name within the default target folder - that it does not already exist.
             // Also as CAP project folder is set and can't be updated, we need to validate the app name doest not already exist within the CAP project.
             const shouldValidateNamePath = !isYUI || isCapProject;
@@ -141,7 +140,7 @@ export function getTargetFolderPrompt(
             }
             return input && !isAbsolute(input) ? resolve(input) : input;
         },
-        validate: async (target, { name = '' }: UI5ApplicationAnswers): Promise<boolean | string> => {
+        validate: async (target: string, { name = '' }: UI5ApplicationAnswers): Promise<boolean | string> => {
             if (name.length > 2) {
                 return await validateFioriAppTargetFolder(target, name, validateFioriAppFolder);
             }
@@ -170,22 +169,20 @@ export function getUI5VersionPrompt(
         defaultChoice,
         !!ui5VersionPromptOptions?.defaultChoice && ui5VersionPromptOptions.defaultChoice.value === defaultChoice?.value
     );
-    return {
-        when: () => !!ui5VersionChoices,
-        type: ui5VersionPromptOptions?.useAutocomplete ? 'autocomplete' : 'list',
-        name: promptNames.ui5Version,
-        guiOptions: {
-            hint: t('prompts.ui5Version.tooltip'),
-            breadcrumb: t('prompts.ui5Version.breadcrumb')
+    return searchableListPrompt<UI5ApplicationAnswers>(
+        {
+            when: () => !!ui5VersionChoices,
+            name: promptNames.ui5Version,
+            guiOptions: {
+                hint: t('prompts.ui5Version.tooltip'),
+                breadcrumb: t('prompts.ui5Version.breadcrumb')
+            },
+            message: t('prompts.ui5Version.message'),
+            default: defaultChoice?.value
         },
-        choices: () => ui5VersionChoices,
-        source: (prevAnswers: UI5ApplicationAnswers, input: string) =>
-            searchChoices(input, ui5VersionChoices as ListChoiceOptions[]),
-        message: t('prompts.ui5Version.message'),
-        default: () => {
-            return defaultChoice?.value;
-        }
-    } as ListQuestion<UI5ApplicationAnswers>;
+        () => ui5VersionChoices,
+        !!ui5VersionPromptOptions?.useAutocomplete
+    );
 }
 
 /**

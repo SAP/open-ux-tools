@@ -9,8 +9,6 @@ import { t } from '../../utils/i18n.js';
 import type { Credentials } from '../../types.js';
 import { configPromptNames } from '../../app/types.js';
 
-import type { LayeredRepositoryService } from '@sap-ux/axios-extension';
-
 interface ClientCredentials {
     system: string;
     client: string;
@@ -66,13 +64,13 @@ function getPasswordPrompt(abapTarget: AbapTarget, logger: ToolsLogger): Passwor
             applyDefaultWhenDirty: true
         },
         default: '',
-        validate: async (value: string, answers: Credentials): Promise<boolean | string> => {
+        validate: async (value: string, answers?: Partial<Credentials>): Promise<boolean | string> => {
             const validationResult = validateEmptyString(value);
             if (typeof validationResult === 'string') {
                 return validationResult;
             }
 
-            if (!answers.username) {
+            if (!answers?.username) {
                 return t('error.pleaseProvideAllRequiredData');
             }
 

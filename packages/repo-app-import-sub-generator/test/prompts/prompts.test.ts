@@ -191,7 +191,7 @@ describe('getPrompts', () => {
             applyDefaultWhenDirty: true
         });
         expect(await (appSelectionPrompt as any)?.validate(appValue)).toBe(true);
-        expect((appSelectionPrompt as any)?.default()).toBe(0);
+        expect((appSelectionPrompt as any)?.default()).toEqual(appValue);
         expect(appSelectionPrompt).toHaveProperty('name', PromptNames.selectedApp);
 
         // target folder prompt

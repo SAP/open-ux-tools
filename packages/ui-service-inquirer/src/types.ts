@@ -1,10 +1,9 @@
 import type { AbapDeployConfigAnswersInternal } from '@sap-ux/abap-deploy-config-inquirer';
 import type { ServiceProvider, UiServiceGenerator } from '@sap-ux/axios-extension';
 import type { Destination } from '@sap-ux/btp-utils';
-import type { YUIQuestion } from '@sap-ux/inquirer-common';
+import type { Question, WhenQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
 import type { promptNames, SystemSelectionAnswerType } from '@sap-ux/odata-service-inquirer';
 import type { BackendSystem } from '@sap-ux/store';
-import type { Question } from 'inquirer';
 
 export interface UiServiceAnswers extends AbapDeployConfigAnswersInternal {
     [promptNames.systemSelection]?: SystemSelectionAnswerType;
@@ -23,7 +22,9 @@ export interface ServiceConfig {
 }
 
 export type SystemSelectionQuestion = Question<UiServiceAnswers>;
-export type ServiceConfigQuestion = YUIQuestion<UiServiceAnswers>;
+// `getConfigQuestions` spreads the abap-deploy-config prompts, which include CLI-only `WhenQuestion`
+// gates, so the config question type must admit them alongside the renderable YUI questions.
+export type ServiceConfigQuestion = YUIQuestion<UiServiceAnswers> | WhenQuestion<UiServiceAnswers>;
 
 export interface SystemSelectionAnswers {
     /**

@@ -1,5 +1,4 @@
-import type { ListChoiceOptions } from 'inquirer';
-import { ErrorHandler } from '@sap-ux/inquirer-common';
+import { ErrorHandler, type ChoiceOptions } from '@sap-ux/inquirer-common';
 import { t } from '../i18n.js';
 import { DatasourceType, type DatasourceTypePromptOptions } from '../types.js';
 
@@ -13,10 +12,8 @@ export const errorHandler = new ErrorHandler(undefined, undefined, '@sap-ux/odat
  * @param options.includeNone - Include the `NONE` option in the datasource type prompt
  * @returns The datasource type choices
  */
-export function getDatasourceTypeChoices({
-    includeNone = false
-}: DatasourceTypePromptOptions = {}): ListChoiceOptions[] {
-    const choices: ListChoiceOptions[] = [
+export function getDatasourceTypeChoices({ includeNone = false }: DatasourceTypePromptOptions = {}): ChoiceOptions[] {
+    const choices: ChoiceOptions[] = [
         {
             name: t('prompts.datasourceType.sapSystemChoiceText'),
             value: DatasourceType.sapSystem

@@ -4,7 +4,7 @@ import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { jest } from '@jest/globals';
-import type { ChoiceOptions } from 'inquirer';
+import type { ChoiceOptions } from '@sap-ux/inquirer-common';
 import type { getMinimumUI5Version } from '@sap-ux/project-access';
 import type {
     TablePromptsAnswer,

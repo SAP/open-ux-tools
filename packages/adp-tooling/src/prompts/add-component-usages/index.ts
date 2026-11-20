@@ -211,7 +211,7 @@ export function getPrompts(basePath: string, layer: UI5FlexLayer): YUIQuestion<A
             validate: (value: string) => validatePromptLibrary(value, libraryChangeFiles),
             store: false,
             when: (answers: AddComponentUsageAnswers) => answers.shouldAddLibrary
-        } as InputQuestion<AddComponentUsageAnswers>,
+        },
         {
             type: 'list',
             name: 'libraryIsLazy',
@@ -224,6 +224,6 @@ export function getPrompts(basePath: string, layer: UI5FlexLayer): YUIQuestion<A
                 hint: t('prompts.component.libraryIsLazyTooltip')
             },
             when: (answers: AddComponentUsageAnswers) => answers.shouldAddLibrary
-        } as ListQuestion<AddComponentUsageAnswers>
+        }
     ];
 }

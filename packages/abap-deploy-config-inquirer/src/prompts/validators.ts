@@ -320,7 +320,7 @@ export function validateClient(client: string): boolean | string {
  */
 export async function validateCredentials(
     input: string,
-    previousAnswers: AbapDeployConfigAnswersInternal,
+    previousAnswers: Partial<AbapDeployConfigAnswersInternal>,
     backendTarget?: BackendTarget,
     adpProjectType?: AdaptationProjectType
 ): Promise<boolean | string> {

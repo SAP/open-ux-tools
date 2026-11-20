@@ -6,10 +6,18 @@ import {
     isAppStudio
 } from '@sap-ux/btp-utils';
 import { hostEnvironment } from '@sap-ux/fiori-generator-shared';
-import { type ListQuestion, ERROR_TYPE, getCFAbapInstanceChoices, withCondition } from '@sap-ux/inquirer-common';
+import {
+    type ChoiceOptions,
+    type ListQuestion,
+    type WhenQuestion,
+    type YUIQuestion,
+    ERROR_TYPE,
+    getCFAbapInstanceChoices,
+    withCondition
+} from '@sap-ux/inquirer-common';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
 import { type ServiceInstanceInfo, apiGetInstanceCredentials } from '@sap/cf-tools';
-import type { Answers, ListChoiceOptions, Question } from 'inquirer';
+import type { Answers } from 'inquirer';
 import { t } from '../../../../i18n.js';
 import type { ConnectedSystem, OdataServiceAnswers, OdataServicePromptOptions } from '../../../../types.js';
 import {
@@ -55,10 +63,10 @@ interface AbapOnBtpAnswers extends Partial<OdataServiceAnswers> {
 export function getAbapOnBTPSystemQuestions(
     promptOptions?: OdataServicePromptOptions,
     cachedConnectedSystem?: ConnectedSystem
-): Question<AbapOnBtpAnswers & ServiceAnswer>[] {
+): YUIQuestion<AbapOnBtpAnswers & ServiceAnswer>[] {
     PromptState.reset();
     const connectValidator = new ConnectionValidator();
-    const questions: Question<AbapOnBtpAnswers & ServiceAnswer>[] = [];
+    const questions: YUIQuestion<AbapOnBtpAnswers & ServiceAnswer>[] = [];
     questions.push({
         type: 'list',
         name: abapOnBtpPromptNames.abapOnBtpAuthType,
@@ -73,7 +81,7 @@ export function getAbapOnBTPSystemQuestions(
             PromptState.resetConnectedSystem();
             return true;
         }
-    } as ListQuestion);
+    } as ListQuestion<AbapOnBtpAnswers & ServiceAnswer>);
 
     // Re-entrance ticket system prompt
     questions.push(
@@ -94,10 +102,11 @@ export function getAbapOnBTPSystemQuestions(
                 return false;
             }
         )[0],
-        ...withCondition(
+        // `getCFDiscoverPrompts` includes a CLI-only `WhenQuestion` gate; bridge to the page's answer-typed array
+        ...(withCondition(
             [...getCFDiscoverPrompts(connectValidator, undefined, undefined, cachedConnectedSystem)],
             (answers: AbapOnBtpAnswers) => answers?.abapOnBtpAuthType === 'cloudFoundry'
-        )
+        ) as YUIQuestion<AbapOnBtpAnswers & ServiceAnswer>[])
     );
 
     // New system store name propmt
@@ -116,12 +125,12 @@ export function getAbapOnBTPSystemQuestions(
 
     // Service selection prompt
     questions.push(
-        ...getSystemServiceQuestion(
+        ...(getSystemServiceQuestion(
             connectValidator,
             abapOnBtpPromptNamespace,
             promptOptions?.serviceSelection,
             promptOptions?.valueHelpDownload?.hide
-        )
+        ) as YUIQuestion<AbapOnBtpAnswers & ServiceAnswer>[])
     );
     return questions;
 }
@@ -224,11 +233,11 @@ export function getCFDiscoverPrompts(
     promptNamespace?: string,
     requiredOdataVersion?: OdataVersion,
     cachedConnectedSystem?: ConnectedSystem
-): Question[] {
-    let choices: ListChoiceOptions<ServiceInstanceInfo>[] = [];
+): (YUIQuestion | WhenQuestion)[] {
+    let choices: ChoiceOptions<ServiceInstanceInfo>[] = [];
     const promptName = `${promptNamespace ? promptNamespace + ':' : ''}${abapOnBtpPromptNames.cloudFoundryAbapSystem}`;
 
-    const questions: Question[] = [
+    const questions: (YUIQuestion | WhenQuestion)[] = [
         {
             type: 'list',
             name: promptName,
@@ -246,7 +255,10 @@ export function getCFDiscoverPrompts(
                 }
                 return choices;
             },
-            default: () => getDefaultChoiceIndex(choices as Answers[]),
+            default: () => {
+                const defaultIndex = getDefaultChoiceIndex(choices as Answers[]);
+                return defaultIndex === undefined ? undefined : choices[defaultIndex]?.value;
+            },
             message: t('prompts.cloudFoundryAbapSystem.message'),
             validate: async (abapService: ServiceInstanceInfo): Promise<ValidationResult> => {
                 if (abapService) {
@@ -299,7 +311,7 @@ export function getCFDiscoverPrompts(
                 return false;
             },
             name: cliCfAbapServicePromptName
-        } as Question);
+        });
     }
 
     return questions;

@@ -8,7 +8,7 @@ import {
 } from './communication.js';
 import type { DynamicChoices, PromptQuestion, TranslationProperties, PromptsGroup } from '@sap-ux/ui-prompting';
 import type { PromptsType } from './types.js';
-import type { Answers } from 'inquirer';
+import type { Answers } from '@sap-ux/inquirer-common';
 import type { I18nBundle, TranslationEntry } from '@sap-ux/ui-components';
 
 /**

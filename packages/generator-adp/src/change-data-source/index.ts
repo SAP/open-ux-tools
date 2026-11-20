@@ -37,7 +37,7 @@ class OdataServiceGenerator extends SubGeneratorWithAuthBase {
         try {
             const manifest = await this.getManifest();
             this.dataSources = manifest?.['sap.app']?.dataSources ?? {};
-            this.answers = await this.prompt(getPromptsForChangeDataSource(this.dataSources));
+            this.answers = await this.prompt<ChangeDataSourceAnswers>(getPromptsForChangeDataSource(this.dataSources));
             this.logger.log(`Current OData services\n${JSON.stringify(this.answers, null, 2)}`);
         } catch (error) {
             await this.handleRuntimeCrash(error.message);

@@ -15,8 +15,7 @@ import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-sha
 import { destinationQuestionDefaultOption, getCFChoices } from './utils.js';
 import { t } from '../utils/index.js';
 import type { ApiHubConfig } from '@sap-ux/cf-deploy-config-writer';
-import type { Answers, Question, PromptModule } from 'inquirer';
-import { withCondition } from '@sap-ux/inquirer-common';
+import { withCondition, type Answers, type YUIQuestion } from '@sap-ux/inquirer-common';
 import type { Logger } from '@sap-ux/logger';
 
 /**
@@ -30,7 +29,6 @@ import type { Logger } from '@sap-ux/logger';
  * @param options.addOverwrite - whether to add the overwrite prompt.
  * @param options.apiHubConfig - the API Hub configuration.
  * @param options.promptOptions - additional prompt options.
- * @param options.promptModule - the inquirer prompt module instance used to register plugins.
  * @returns the cf deploy config questions.
  */
 export async function getCFQuestions({
@@ -40,8 +38,7 @@ export async function getCFQuestions({
     isCap,
     addOverwrite,
     apiHubConfig,
-    promptOptions,
-    promptModule
+    promptOptions
 }: {
     projectRoot: string;
     isAbapDirectServiceBinding: boolean;
@@ -50,7 +47,6 @@ export async function getCFQuestions({
     addOverwrite: boolean;
     apiHubConfig?: ApiHubConfig;
     promptOptions?: CfDeployConfigPromptOptions;
-    promptModule?: PromptModule;
 }): Promise<CfDeployConfigQuestions[]> {
     const isBAS = isAppStudio();
     const mtaYamlExists = !!(await getMtaPath(projectRoot));
@@ -82,7 +78,7 @@ export async function getCFQuestions({
         })
     );
     const logger = DeploymentGenerator.logger as unknown as Logger;
-    return getPrompts(options, logger, promptModule);
+    return getPrompts(options, logger);
 }
 
 /**
@@ -118,12 +114,14 @@ async function getCFApprouterQuestionsForCap({
  * @param options.projectRoot - the root path of the project.
  * @returns the cf approuter config questions, restricting prompts being shown to the user
  */
-export async function getCAPMTAQuestions({ projectRoot }: { projectRoot: string }): Promise<Question[]> {
-    // If launched as root generator, add a prompt to allow user decide if they want to add an MTA config
-    let questions = (await getCFApprouterQuestionsForCap({
-        projectRoot
-    })) as Question[];
-    questions = withCondition(questions, (answers: Answers) => answers.addCapMtaContinue === true);
-    questions.unshift(...getConfirmMtaContinuePrompt());
-    return questions;
+export async function getCAPMTAQuestions({ projectRoot }: { projectRoot: string }): Promise<YUIQuestion[]> {
+    const appRouterQuestions = withCondition(
+        await getCFApprouterQuestionsForCap({ projectRoot }),
+        (answers: Answers) => answers.addCapMtaContinue === true
+    );
+    // If launched as root generator, prepend a prompt to let the user decide whether to add an MTA config.
+    // The array mixes two answers shapes (the confirm prompt vs. the app-router prompts); each element is a
+    // valid question, but `YUIQuestion`'s answer-typed `when`/`validate` make the heterogeneous array fail to
+    // unify at `YUIQuestion<Answers>`, so the whole array is typed to the common base here.
+    return [...getConfirmMtaContinuePrompt(), ...appRouterQuestions] as YUIQuestion[];
 }

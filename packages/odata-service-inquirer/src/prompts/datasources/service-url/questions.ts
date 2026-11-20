@@ -7,11 +7,12 @@ import {
     type ConfirmQuestion,
     type InputQuestion,
     type PasswordQuestion,
+    type WhenQuestion,
     type YUIQuestion
 } from '@sap-ux/inquirer-common';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
-import type { Question } from 'inquirer';
+import type { Answers } from 'inquirer';
 import { t } from '../../../i18n.js';
 import type { OdataServiceAnswers, OdataServiceUrlPromptOptions } from '../../../types.js';
 import { promptNames } from '../../../types.js';
@@ -218,12 +219,13 @@ function getIgnoreCertErrorsPrompt(
 function getCliIgnoreCertValidatePrompt(
     connectValidator: ConnectionValidator,
     requiredVersion?: OdataVersion
-): Question<ServiceUrlAnswers> {
+): WhenQuestion<ServiceUrlAnswers> {
     return {
         // Add dummy prompt for CLI to revalidate since "confirm" prompt validators don't run on CLI
         // The `when` condition should never return true (so it does not get rendered in GUI prompts) but will throw an error to exit generation
         // if the user chooses to not ignore cert errors or if the odata service is not valid
-        when: async ({ serviceUrl, ignoreCertError }: ServiceUrlAnswers) => {
+        when: async (answers: Answers) => {
+            const { serviceUrl, ignoreCertError } = answers as ServiceUrlAnswers;
             if (serviceUrl && connectValidator.validity.canSkipCertError) {
                 // If the user choose to not ignore cert errors, we cannot continue
                 if (!ignoreCertError) {
@@ -344,13 +346,13 @@ function getPasswordPrompt(
  */
 export function getServiceUrlQuestions(
     serviceUrlPromptOptions: OdataServiceUrlPromptOptions = {}
-): Question<OdataServiceAnswers>[] {
+): YUIQuestion<OdataServiceAnswers>[] {
     // Connection validator maintains connection state and validity across multiple prompts
     const connectValidator = new ConnectionValidator();
     const requiredVersion = serviceUrlPromptOptions?.requiredOdataVersion;
     PromptState.reset();
 
-    let questions: Question<ServiceUrlAnswers>[] = [
+    let questions: (YUIQuestion<ServiceUrlAnswers> | WhenQuestion<ServiceUrlAnswers>)[] = [
         getServiceUrlPrompt(connectValidator, requiredVersion, serviceUrlPromptOptions?.showCollaborativeDraftWarning),
         getIgnoreCertErrorsPrompt(
             connectValidator,
@@ -385,7 +387,9 @@ export function getServiceUrlQuestions(
     }
 
     if (promptsOptToExtend) {
-        questions = extendWithOptions(questions as YUIQuestion[], promptsOptToExtend, PromptState.odataService);
+        questions = extendWithOptions(questions, promptsOptToExtend, PromptState.odataService);
     }
-    return questions;
+    // `questions` is typed to `ServiceUrlAnswers`; `YUIQuestion`'s answer-typed `when`/`validate` make it
+    // non-assignable to the wider `OdataServiceAnswers` answer shape, so bridge at the common base.
+    return questions as YUIQuestion<OdataServiceAnswers>[];
 }

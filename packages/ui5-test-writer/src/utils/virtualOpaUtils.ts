@@ -26,7 +26,7 @@ export async function hasVirtualOPA5(basePath: string): Promise<boolean> {
                 ui5Config.findCustomMiddleware<PreviewMiddlewareConfig>(name)
             ).find((middleware) => middleware !== undefined);
             const testEntries = previewMiddleware?.configuration?.test;
-            if (testEntries?.some((entry) => entry.framework === 'OPA5')) {
+            if (testEntries?.some((entry: PreviewMiddlewareTestConfig) => entry.framework === 'OPA5')) {
                 return true;
             }
         } catch {

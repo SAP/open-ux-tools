@@ -264,7 +264,7 @@ export class KeyUserImportPrompter {
                 }
                 return false;
             }
-        } as KeyUserImportQuestion;
+        };
     }
 
     /**
@@ -287,7 +287,7 @@ export class KeyUserImportPrompter {
                 }
                 return false;
             }
-        } as KeyUserImportQuestion;
+        };
     }
 
     /**
@@ -308,7 +308,7 @@ export class KeyUserImportPrompter {
                 }
             },
             when: () => this.detectRestrictedViews()
-        } as InputQuestion<KeyUserImportAnswers>;
+        };
     }
 
     /**

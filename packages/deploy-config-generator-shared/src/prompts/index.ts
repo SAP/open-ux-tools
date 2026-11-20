@@ -1,5 +1,5 @@
 import { t } from '../utils/index.js';
-import type { Question } from 'inquirer';
+import type { YUIQuestion } from '@sap-ux/inquirer-common';
 
 /**
  * Enumeration of prompt names
@@ -13,7 +13,7 @@ enum promptNames {
  *
  * @returns the CAP MTA continue question.
  */
-export function getConfirmMtaContinuePrompt(): Question[] {
+export function getConfirmMtaContinuePrompt(): YUIQuestion[] {
     return [
         {
             type: 'confirm',

@@ -1,8 +1,7 @@
 import type { Annotations } from '@sap-ux/axios-extension';
 import type { TableSelectionMode } from '@sap-ux/fiori-elements-writer';
-import type { ConfirmQuestion, ListQuestion } from '@sap-ux/inquirer-common';
+import type { ChoiceOptions, ConfirmQuestion, ListQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
-import type { ChoiceOptions, Question } from 'inquirer';
 import { t } from '../../i18n.js';
 import type { AlpTableConfigAnswers, EntitySelectionAnswers } from '../../types.js';
 import { EntityPromptNames } from '../../types.js';
@@ -62,8 +61,8 @@ export function getAnalyticListPageQuestions(
     odataVersion: OdataVersion,
     annotations?: Annotations,
     hideTableLayoutPrompts = false
-): Question<AlpTableConfigAnswers>[] {
-    const alpQuestions: Question<AlpTableConfigAnswers>[] = [];
+): YUIQuestion<AlpTableConfigAnswers>[] {
+    const alpQuestions: YUIQuestion<AlpTableConfigAnswers>[] = [];
 
     if (annotations && odataVersion === OdataVersion.v2) {
         let qualifierChoices: ChoiceOptions[] = [];

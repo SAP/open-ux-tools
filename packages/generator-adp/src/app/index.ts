@@ -330,7 +330,7 @@ export default class extends Generator {
                 importKeyUserChanges: { hide: this.shouldCreateExtProject }
             };
             const attributesQuestions = getPrompts(this.destinationPath(), optionalPromptsConfig, options);
-            this.attributeAnswers = await this.prompt(attributesQuestions);
+            this.attributeAnswers = await this.prompt<AttributesAnswers>(attributesQuestions);
 
             // Steps need to be updated here to be available after back navigation in Yeoman UI.
             this._updateWizardStepsAfterNavigation();
@@ -643,7 +643,7 @@ export default class extends Generator {
             options
         );
 
-        this.attributeAnswers = await this.prompt(attributesQuestions);
+        this.attributeAnswers = await this.prompt<AttributesAnswers>(attributesQuestions);
         this.logger.info(`Project Attributes: ${JSON.stringify(this.attributeAnswers, null, 2)}`);
 
         const cfServicesQuestions = await this.cfPrompter.getPrompts(projectPath, this.cfConfig);

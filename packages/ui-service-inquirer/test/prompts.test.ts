@@ -1,7 +1,6 @@
 import { jest } from '@jest/globals';
 import nock from 'nock';
-import type { Answers, Question as YoQuestion } from 'inquirer';
-import type { YUIQuestion } from '@sap-ux/inquirer-common';
+import type { Answers, Question as YoQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 
 // Pre-import actual modules before setting up mocks (to avoid missing export errors)

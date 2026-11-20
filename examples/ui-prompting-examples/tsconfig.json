@@ -27,6 +27,9 @@
       "path": "../../packages/i18n"
     },
     {
+      "path": "../../packages/inquirer-common"
+    },
+    {
       "path": "../../packages/project-access"
     },
     {

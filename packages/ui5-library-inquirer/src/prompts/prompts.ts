@@ -1,9 +1,7 @@
-import type { ConfirmQuestion, FileBrowserQuestion, InputQuestion } from '@sap-ux/inquirer-common';
-import { searchChoices, ui5VersionsGrouped } from '@sap-ux/inquirer-common';
+import type { ConfirmQuestion, FileBrowserQuestion, InputQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
+import { searchableListPrompt, ui5VersionsGrouped } from '@sap-ux/inquirer-common';
 import { validateLibModuleName, validateNamespace, validateProjectFolder } from '@sap-ux/project-input-validator';
 import type { UI5Version } from '@sap-ux/ui5-info';
-import type { Answers, ListChoiceOptions, ListQuestion, Question } from 'inquirer';
-import type { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
 import { t } from '../i18n.js';
 import type { UI5LibraryAnswers, UI5LibraryPromptOptions } from '../types.js';
 
@@ -17,7 +15,7 @@ import type { UI5LibraryAnswers, UI5LibraryPromptOptions } from '../types.js';
 export function getQuestions(
     ui5Versions: UI5Version[],
     options?: UI5LibraryPromptOptions
-): Question<UI5LibraryAnswers>[] {
+): YUIQuestion<UI5LibraryAnswers>[] {
     const ui5VersionChoices = ui5VersionsGrouped(ui5Versions, options?.includeSeparators);
     return [
         {
@@ -28,7 +26,7 @@ export function getQuestions(
                 mandatory: true,
                 breadcrumb: true
             },
-            validate: (libraryName): boolean | string => validateLibModuleName(libraryName),
+            validate: (libraryName: string): boolean | string => validateLibModuleName(libraryName),
             default: t('prompts.libraryNameDefault')
         } as InputQuestion<UI5LibraryAnswers>,
         {
@@ -39,7 +37,7 @@ export function getQuestions(
                 mandatory: true,
                 breadcrumb: true
             },
-            validate: (namespace, answers): boolean | string =>
+            validate: (namespace: string, answers): boolean | string =>
                 validateNamespace(namespace, answers?.libraryName, false),
             default: t('prompts.libraryNamespaceDefault')
         } as InputQuestion<UI5LibraryAnswers>,
@@ -54,22 +52,22 @@ export function getQuestions(
                 breadcrumb: true
             },
             default: options?.targetFolder ?? process.cwd(),
-            validate: (target, answers): boolean | string =>
+            validate: (target: string, answers): boolean | string =>
                 validateProjectFolder(target, `${answers?.namespace}.${answers?.libraryName}`)
         } as FileBrowserQuestion<UI5LibraryAnswers>,
-        {
-            when: () => !!ui5VersionChoices,
-            type: options?.useAutocomplete ? 'autocomplete' : 'list',
-            name: 'ui5Version',
-            message: t('prompts.libraryUi5VersionLabel'),
-            guiOptions: {
-                hint: t('prompts.libraryUi5VersionTooltip'),
-                breadcrumb: true
+        searchableListPrompt<UI5LibraryAnswers>(
+            {
+                when: () => !!ui5VersionChoices,
+                name: 'ui5Version',
+                message: t('prompts.libraryUi5VersionLabel'),
+                guiOptions: {
+                    hint: t('prompts.libraryUi5VersionTooltip'),
+                    breadcrumb: true
+                }
             },
-            choices: () => ui5VersionChoices,
-            source: (prevAnswers: Answers, input: string) =>
-                searchChoices(input, ui5VersionChoices as ListChoiceOptions[])
-        } as ListQuestion<UI5LibraryAnswers> | AutocompleteQuestionOptions<UI5LibraryAnswers>,
+            () => ui5VersionChoices,
+            !!options?.useAutocomplete
+        ),
         {
             type: 'confirm',
             name: 'enableTypescript',
@@ -79,5 +77,5 @@ export function getQuestions(
             },
             default: false
         } as ConfirmQuestion
-    ] as Question<UI5LibraryAnswers>[] | AutocompleteQuestionOptions<UI5LibraryAnswers>[];
+    ] as YUIQuestion<UI5LibraryAnswers>[];
 }

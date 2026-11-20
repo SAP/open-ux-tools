@@ -9,6 +9,7 @@ import type {
     ConfirmQuestion
 } from '@sap-ux/inquirer-common';
 import type { UI5FlexLayer } from '@sap-ux/project-access';
+import type { Answers } from 'inquirer';
 import type { Destination } from '@sap-ux/btp-utils';
 import { listDestinations, isOnPremiseDestination, isAppStudio } from '@sap-ux/btp-utils';
 import { Severity, MessageType, type IMessageSeverity, type AppWizard } from '@sap-devx/yeoman-ui-types';
@@ -306,9 +307,11 @@ export async function getPrompts(
     const buildResultingUrlMessage = (
         i18nKey: string,
         uri: unknown,
-        previousAnswers?: NewModelAnswers
+        previousAnswers?: Answers
     ): IMessageSeverity | undefined => {
-        const destinationUrl = isCFEnv ? previousAnswers?.destination?.Host : abapServiceUrl;
+        const destinationUrl = isCFEnv
+            ? (previousAnswers?.destination as Destination | undefined)?.Host
+            : abapServiceUrl;
         const resultingUrl = buildResultingServiceUrl(destinationUrl, uri as string | undefined);
         if (!resultingUrl) {
             return undefined;
@@ -412,9 +415,9 @@ export async function getPrompts(
                 hint: t('prompts.oDataAnnotationDataSourceUriTooltip')
             },
             when: (answers: NewModelAnswers) => answers.addAnnotationMode,
-            additionalMessages: (uri: unknown, previousAnswers?: NewModelAnswers): IMessageSeverity | undefined =>
+            additionalMessages: (uri: unknown, previousAnswers?: Answers): IMessageSeverity | undefined =>
                 buildResultingUrlMessage('prompts.resultingAnnotationUrl', uri, previousAnswers)
-        } as InputQuestion<NewModelAnswers>,
+        },
         {
             type: 'editor',
             name: 'annotationSettings',
@@ -425,7 +428,7 @@ export async function getPrompts(
                 hint: t('prompts.oDataAnnotationSettingsTooltip')
             },
             when: (answers: NewModelAnswers) => answers.addAnnotationMode
-        } as EditorQuestion<NewModelAnswers>
+        }
     ];
 }
 

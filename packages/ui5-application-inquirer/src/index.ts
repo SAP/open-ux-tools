@@ -1,7 +1,6 @@
 import { type CdsUi5PluginInfo } from '@sap-ux/project-access';
 import type { InquirerAdapter, PromptDefaultValue } from '@sap-ux/inquirer-common';
 import { getDefaultUI5Theme, getUI5Versions, type UI5VersionFilterOptions } from '@sap-ux/ui5-info';
-import autocomplete from 'inquirer-autocomplete-prompt';
 import isNil from 'lodash/isNil.js';
 import { getQuestions } from './prompts/index.js';
 import type { UI5ApplicationAnswers, UI5ApplicationPromptOptions, UI5ApplicationQuestion } from './types.js';
@@ -50,11 +49,6 @@ async function prompt(
 ): Promise<UI5ApplicationAnswers> {
     const ui5AppPrompts = await getPrompts(promptOptions, capCdsInfo, isYUI);
 
-    if (adapter?.promptModule && promptOptions?.ui5Version?.useAutocomplete) {
-        const pm = adapter.promptModule;
-        pm.registerPrompt('autocomplete', autocomplete);
-    }
-
     const answers = await adapter.prompt<UI5ApplicationAnswers>(ui5AppPrompts);
     // Apply default values to prompts in case they have not been executed
     if (promptOptions) {
@@ -98,7 +92,9 @@ function applyPromptOptionDefaults(
                 defaultValue = getDefaultValue(answers, defaultValueOrFunc);
             } else if (promptOpt.advancedOption) {
                 // Apply the original default value if it was not answered
-                const originalDefault = ui5AppPrompts.find((prompt) => prompt.name === promptKey)?.default;
+                const originalPrompt = ui5AppPrompts.find((prompt) => prompt.name === promptKey);
+                const originalDefault =
+                    originalPrompt && 'default' in originalPrompt ? originalPrompt.default : undefined;
                 defaultValue = getDefaultValue(answers, originalDefault);
             }
             Object.assign(defaultAnswers, {
@@ -117,10 +113,7 @@ function applyPromptOptionDefaults(
  * @param promptDefault the default value or function to determine the default value
  * @returns the default value for the prompt or undefined if no default value is provided
  */
-function getDefaultValue(
-    answers: Partial<UI5ApplicationAnswers>,
-    promptDefault?: PromptDefaultValue<string | boolean>['default']
-) {
+function getDefaultValue(answers: Partial<UI5ApplicationAnswers>, promptDefault?: unknown) {
     if (typeof promptDefault === 'function') {
         return (promptDefault as Function)(answers);
     }

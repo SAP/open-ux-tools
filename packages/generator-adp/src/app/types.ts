@@ -1,7 +1,7 @@
 import type Generator from 'yeoman-generator';
 import type { AppWizard, Prompts as YeomanUiSteps } from '@sap-devx/yeoman-ui-types';
 
-import type { YUIQuestion } from '@sap-ux/inquirer-common';
+import type { WhenQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
 import type { TelemetryData } from '@sap-ux/fiori-generator-shared';
 import type { AdaptationDescriptor, AdaptationProjectType, KeyUserChangeContent } from '@sap-ux/axios-extension';
 import type { AttributesAnswers, ConfigAnswers, FlexLayer } from '@sap-ux/adp-tooling';
@@ -51,7 +51,7 @@ export enum configPromptNames {
 /**
  * The question type specific to configuration prompts.
  */
-export type ConfigQuestion = YUIQuestion<ConfigAnswers>;
+export type ConfigQuestion = YUIQuestion<ConfigAnswers> | WhenQuestion<ConfigAnswers>;
 
 /**
  * Options for individual prompts.
@@ -136,7 +136,7 @@ export enum attributePromptNames {
     importKeyUserChanges = 'importKeyUserChanges'
 }
 
-export type AttributesQuestion = YUIQuestion<AttributesAnswers>;
+export type AttributesQuestion = YUIQuestion<AttributesAnswers> | WhenQuestion<AttributesAnswers>;
 
 export interface ProjectNamePromptOptions {
     hide?: boolean;
@@ -193,7 +193,7 @@ export type AttributePromptOptions = Partial<{
     [attributePromptNames.importKeyUserChanges]: ImportKeyUserChangesPromptOptions;
 }>;
 
-export type KeyUserImportQuestion = YUIQuestion<KeyUserImportAnswers>;
+export type KeyUserImportQuestion = YUIQuestion<KeyUserImportAnswers> | WhenQuestion<KeyUserImportAnswers>;
 
 /**
  * Enumeration of prompt names used in the key-user import.

@@ -269,8 +269,7 @@ describe('Deployment Generator', () => {
             expect.not.objectContaining({
                 overwrite: expect.anything()
             }),
-            expect.any(Object),
-            undefined
+            expect.any(Object)
         );
         expect(mockGetAbapQuestions).toHaveBeenCalledWith(
             expect.objectContaining({
@@ -340,8 +339,7 @@ describe('Deployment Generator', () => {
                     hide: true
                 }
             },
-            expect.any(Object),
-            undefined
+            expect.any(Object)
         );
         expect(mockGetAbapQuestions).toHaveBeenCalledWith({
             appRootPath: expect.stringContaining('project1'),

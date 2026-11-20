@@ -1,4 +1,10 @@
-import { type ConfirmQuestion, type InputQuestion, type ListQuestion, searchChoices } from '@sap-ux/inquirer-common';
+import {
+    type ConfirmQuestion,
+    type InputQuestion,
+    type ListQuestion,
+    type SearchQuestion,
+    searchableListPrompt
+} from '@sap-ux/inquirer-common';
 import { t } from '../i18n.js';
 import {
     type CfDeployConfigPromptOptions,
@@ -58,24 +64,21 @@ async function getDestinationNamePrompt(
     // If BAS is used or additional choices are provided, the prompt should be a list
     // If VsCode is used and additional choices are not provided, the prompt should be an input field
     // If VsCode is used and additional choices are provided, the prompt should be a list
-    const basePromptType = isBAS || additionalChoiceList.length ? 'list' : 'input';
-    // If autocomplete is enabled and there are destination choices, the prompt should be an autocomplete
-    const promptType = useAutocomplete && destinationList.length ? 'autocomplete' : basePromptType;
-    return {
+    const useList = isBAS || additionalChoiceList.length > 0;
+    const base: Omit<SearchQuestion<CfDeployConfigAnswers>, 'type' | 'source'> = {
         guiOptions: {
             mandatory: !isBAS,
             breadcrumb: t('prompts.destinationNameMessage')
         },
-        type: promptType,
         default: () => defaultValue,
         name: promptNames.destinationName,
         message: () => (hint ? t('prompts.directBindingDestinationHint') : t('prompts.destinationNameMessage')),
         validate: (destination: string): string | boolean => {
             return validators.validateDestinationQuestion(destination, !destination && isBAS);
         },
-        additionalMessages: (selectedDestination: string) => {
+        additionalMessages: (selectedDestination: unknown) => {
             const choice = destinationList.find((c) => c.value === selectedDestination);
-            const dest = destinations?.[selectedDestination];
+            const dest = destinations?.[selectedDestination as string];
             if (choice?.isFullUrl || (dest && isFullUrlDestination(dest))) {
                 return {
                     message: t('warning.fullUrlDestination'),
@@ -83,9 +86,19 @@ async function getDestinationNamePrompt(
                 };
             }
             return undefined;
-        },
-        source: (prevAnswers: CfDeployConfigAnswers, input: string) => searchChoices(input, destinationList),
-        choices: destinationList
+        }
+    };
+    if (useList) {
+        // If autocomplete is enabled and there are destination choices, emit the filterable `search` arm
+        return searchableListPrompt<CfDeployConfigAnswers>(
+            base,
+            destinationList,
+            useAutocomplete && destinationList.length > 0
+        ) as CfDeployConfigQuestions;
+    }
+    return {
+        ...base,
+        type: 'input'
     } as InputQuestion<CfDeployConfigAnswers>;
 }
 
@@ -125,7 +138,7 @@ function getOverwritePrompt(): CfDeployConfigQuestions {
             return true;
         },
         message: () => t('prompts.overwriteMessage')
-    } as ConfirmQuestion<CfDeployConfigAnswers>;
+    };
 }
 
 /**

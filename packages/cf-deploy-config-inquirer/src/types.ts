@@ -1,5 +1,4 @@
-import type { CommonPromptOptions, YUIQuestion } from '@sap-ux/inquirer-common';
-import type { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
+import type { CommonPromptOptions, SearchQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
 
 /**
  * Enum defining prompt names for Cloud Foundry (CF) deployment configuration.
@@ -113,17 +112,16 @@ export type CfAppRouterDeployConfigPromptOptions = Record<appRouterPromptNames.m
 
 /**
  * Represents a question in the CF deployment configuration.
- * Extends `YUIQuestion` with optional autocomplete functionality.
+ * Extends `YUIQuestion` with optional filterable `search` functionality.
  */
-export type CfDeployConfigQuestions = YUIQuestion<CfDeployConfigAnswers> &
-    Partial<Pick<AutocompleteQuestionOptions, 'source'>>;
+export type CfDeployConfigQuestions = YUIQuestion<CfDeployConfigAnswers> & Partial<Pick<SearchQuestion, 'source'>>;
 
 /**
  * Represents a question in the CF deployment configuration.
- * Extends `YUIQuestion` with optional autocomplete functionality.
+ * Extends `YUIQuestion` with optional filterable `search` functionality.
  */
 export type CfDeployConfigRouterQuestions = YUIQuestion<CfDeployConfigRouterAnswers> &
-    Partial<Pick<AutocompleteQuestionOptions, 'source'>>;
+    Partial<Pick<SearchQuestion, 'source'>>;
 
 export type CfAppRouterDeployConfigQuestions = YUIQuestion<CfAppRouterDeployConfigAnswers>;
 

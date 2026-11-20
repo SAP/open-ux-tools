@@ -64,7 +64,9 @@ class AddComponentUsagesGenerator extends SubGeneratorBase {
             return;
         }
 
-        this.answers = await this.prompt(getPromptsForAddComponentUsages(this.projectPath, this.variant.layer));
+        this.answers = await this.prompt<AddComponentUsageAnswers>(
+            getPromptsForAddComponentUsages(this.projectPath, this.variant.layer)
+        );
         this.logger.log(`Current answers\n${JSON.stringify(this.answers, null, 2)}`);
     }
 

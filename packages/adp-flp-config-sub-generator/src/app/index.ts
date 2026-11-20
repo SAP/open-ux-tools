@@ -1,5 +1,4 @@
 import type { FlpConfigOptions } from './types.js';
-import type { Question } from 'inquirer';
 import Generator from 'yeoman-generator';
 import { join, basename } from 'node:path';
 import {
@@ -163,7 +162,7 @@ export default class AdpFlpConfigGenerator extends Generator {
             this._setupReplacePage();
         }
 
-        const prompts: Question<FLPConfigAnswers>[] = await getPrompts(
+        const prompts = await getPrompts(
             this.inbounds,
             getAdpFlpConfigPromptOptions(
                 this.tileSettingsAnswers as TileSettingsAnswers,
@@ -172,7 +171,7 @@ export default class AdpFlpConfigGenerator extends Generator {
                 this.isCfProject
             )
         );
-        this.answers = await this.prompt(prompts);
+        this.answers = await this.prompt<FLPConfigAnswers>(prompts);
     }
 
     async writing(): Promise<void> {
@@ -457,7 +456,7 @@ export default class AdpFlpConfigGenerator extends Generator {
     /**
      * Prompts the user for tile actions and returns the answers.
      *
-     * @returns {Promise<(TileSettingsAnswers & FLPConfigAnswers) | undefined>} The answers from the tile actions prompt, or undefined.
+     * @returns {Promise<TileSettingsAnswers | undefined>} The answers from the tile actions prompt, or undefined.
      */
     private async _promptTileActions(): Promise<TileSettingsAnswers | undefined> {
         if (!this.inbounds) {
@@ -473,7 +472,7 @@ export default class AdpFlpConfigGenerator extends Generator {
         };
         const tileSettingsPrompts = getTileSettingsQuestions(promptOptions);
 
-        return this.prompt(tileSettingsPrompts);
+        return this.prompt<TileSettingsAnswers>(tileSettingsPrompts);
     }
 
     /**

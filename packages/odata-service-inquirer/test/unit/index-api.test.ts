@@ -167,20 +167,9 @@ describe('API tests', () => {
 
         const result = await prompt(mockAdapter as unknown as InquirerAdapter, promptOptions);
 
-        expect(mockAdapter.promptModule?.registerPrompt).toHaveBeenCalledWith('autocomplete', expect.any(Function));
+        // inquirer 13's `search` arm is built-in; no plugin is registered
+        expect(mockAdapter.promptModule?.registerPrompt).not.toHaveBeenCalled();
         expect(result).toEqual({ ...userAnswers, metadata: 'some metadata' });
-    });
-
-    test('prompt - capProject autocomplete registration', async () => {
-        mockAdapter.prompt.mockResolvedValue({} as any);
-        mockGetQuestions.mockResolvedValueOnce([]);
-        PromptState.odataService = {};
-
-        await prompt(mockAdapter as unknown as InquirerAdapter, {
-            capProject: { capSearchPaths: ['/test'], useAutoComplete: true }
-        });
-
-        expect(mockAdapter.promptModule?.registerPrompt).toHaveBeenCalledWith('autocomplete', expect.any(Function));
     });
 
     test('prompt - no autocomplete when disabled or missing promptModule', async () => {

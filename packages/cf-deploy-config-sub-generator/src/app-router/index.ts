@@ -85,7 +85,7 @@ export default class extends DeploymentGenerator {
         };
 
         const prompts = await getAppRouterPrompts(appRouterPromptOptions);
-        this.answers = await this.prompt(prompts);
+        this.answers = await this.prompt<CfAppRouterDeployConfigAnswers>(prompts);
     }
 
     public async writing(): Promise<void> {

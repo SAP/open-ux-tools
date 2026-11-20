@@ -54,7 +54,6 @@
         "@storybook/react-webpack5": "10.5.1",
         "@testing-library/jest-dom": "6.9.1",
         "@testing-library/react": "12.1.5",
-        "@types/inquirer": "8.2.6",
         "@types/react": "18.3.23",
         "@types/react-dom": "18.3.7",
         "babel-jest": "30.5.2",

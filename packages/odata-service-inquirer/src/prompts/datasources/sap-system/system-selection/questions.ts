@@ -2,10 +2,19 @@ import { Severity } from '@sap-devx/yeoman-ui-types';
 import type { Destination } from '@sap-ux/btp-utils';
 import { isAppStudio, isPartialUrlDestination } from '@sap-ux/btp-utils';
 import { hostEnvironment } from '@sap-ux/fiori-generator-shared';
-import { type InputQuestion, type ListQuestion, searchChoices, withCondition } from '@sap-ux/inquirer-common';
+import {
+    type ChoiceOptions,
+    type ListQuestion,
+    type SearchQuestion,
+    searchChoices,
+    type Validator,
+    type WhenQuestion,
+    withCondition,
+    type YUIQuestion
+} from '@sap-ux/inquirer-common';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
 import { BackendSystemKey, type BackendSystem } from '@sap-ux/store';
-import type { Answers, ListChoiceOptions, Question } from 'inquirer';
+import type { Answers } from 'inquirer';
 import { t } from '../../../../i18n.js';
 import { type ConnectedSystem, type OdataServicePromptOptions, promptNames } from '../../../../types.js';
 import { getPromptHostEnvironment, PromptState } from '../../../../utils/index.js';
@@ -110,45 +119,50 @@ async function validateSystemSelection(
 export async function getSystemSelectionQuestions(
     promptOptions?: OdataServicePromptOptions,
     connectedSystem?: ConnectedSystem
-): Promise<Question<SystemSelectionAnswers & ServiceAnswer>[]> {
+): Promise<YUIQuestion<SystemSelectionAnswers & ServiceAnswer>[]> {
     PromptState.reset();
     const connectValidator = new ConnectionValidator();
 
-    const questions: Question<SystemSelectionAnswers & ServiceAnswer>[] = await getSystemConnectionQuestions(
+    // `getSystemConnectionQuestions` includes CLI-only `WhenQuestion` gates; bridge to the page's
+    // combined answer-typed array at the common base.
+    const questions = (await getSystemConnectionQuestions(
         connectValidator,
         promptOptions,
         connectedSystem
-    );
+    )) as YUIQuestion<SystemSelectionAnswers & ServiceAnswer>[];
 
     // Existing system (BackendSystem or Destination) selected,
     if (!promptOptions?.serviceSelection?.hide) {
+        // Each sub-prompt set is typed to its own answers shape; `YUIQuestion`'s answer-typed
+        // `when`/`validate` prevent a concrete-answers array from unifying with the combined
+        // `SystemSelectionAnswers & ServiceAnswer` shape, so bridge at the common base.
         questions.push(
-            ...withCondition(
+            ...(withCondition(
                 getSystemServiceQuestion(
                     connectValidator,
                     systemSelectionPromptNamespace,
                     promptOptions?.serviceSelection,
                     promptOptions?.valueHelpDownload?.hide
-                ) as Question[],
+                ),
                 (answers: Answers) => (answers as SystemSelectionAnswers).systemSelection?.type !== 'newSystemChoice'
-            )
+            ) as YUIQuestion<SystemSelectionAnswers & ServiceAnswer>[])
         );
     }
 
     // Create new system connection for storage only supported on non-App Studio environments
     if (!isAppStudio()) {
         questions.push(
-            ...withCondition(
-                getNewSystemQuestions(promptOptions, connectedSystem) as Question[],
+            ...(withCondition(
+                getNewSystemQuestions(promptOptions, connectedSystem),
                 (answers: Answers) => (answers as SystemSelectionAnswers).systemSelection?.type === 'newSystemChoice'
-            )
+            ) as YUIQuestion<SystemSelectionAnswers & ServiceAnswer>[])
         );
     } else {
         questions.push(
-            ...withCondition(
-                getCfAbapBASQuestions(promptOptions) as Question[],
+            ...(withCondition(
+                getCfAbapBASQuestions(promptOptions),
                 (answers: Answers) => (answers as SystemSelectionAnswers).systemSelection?.type === 'cfAbapEnvService'
-            )
+            ) as YUIQuestion<SystemSelectionAnswers & ServiceAnswer>[])
         );
     }
 
@@ -169,7 +183,7 @@ export async function getSystemConnectionQuestions(
     connectionValidator: ConnectionValidator,
     promptOptions?: OdataServicePromptOptions,
     cachedConnectedSystem?: ConnectedSystem
-): Promise<Question<SystemSelectionAnswers>[]> {
+): Promise<(YUIQuestion<SystemSelectionAnswers> | WhenQuestion<SystemSelectionAnswers>)[]> {
     const requiredOdataVersion = promptOptions?.serviceSelection?.requiredOdataVersion;
     const destinationFilters = promptOptions?.systemSelection?.destinationFilters;
     const systemChoices = await createSystemChoices(
@@ -188,77 +202,94 @@ export async function getSystemConnectionQuestions(
     const shouldOnlyShowDefaultChoice =
         promptOptions?.systemSelection?.onlyShowDefaultChoice && promptOptions?.systemSelection?.defaultChoice;
 
-    const questions: Question[] = [
-        {
-            type: promptOptions?.systemSelection?.useAutoComplete ? 'autocomplete' : 'list',
-            name: promptNames.systemSelection,
-            message: t('prompts.systemSelection.message'),
-            guiOptions: {
-                breadcrumb: true,
-                hint: t('prompts.systemSelection.hint')
-            },
-            source: (prevAnswers: unknown, input: string) => searchChoices(input, systemChoices as ListChoiceOptions[]),
-            choices: shouldOnlyShowDefaultChoice ? [systemChoices[defaultChoiceIndex]] : systemChoices,
-            default: () => {
-                if (shouldOnlyShowDefaultChoice) {
-                    return 0;
-                }
-                defaultChoiceIndex = findDefaultSystemSelectionIndex(
-                    systemChoices,
-                    promptOptions?.systemSelection?.defaultChoice
-                ); // Recalc to allow default choice to be bound to ref from another prompt
+    const effectiveSystemChoices = shouldOnlyShowDefaultChoice ? [systemChoices[defaultChoiceIndex]] : systemChoices;
 
-                // Regardless of finding a match the provided connect path is applied
-                if (typeof promptOptions?.systemSelection?.connectPath === 'object') {
-                    connectPath = promptOptions?.systemSelection.connectPath;
-                }
-                return defaultChoiceIndex;
-            },
-            validate: async (
-                selectedSystem: SystemSelectionAnswerType | ListChoiceOptions<SystemSelectionAnswerType>
-            ): Promise<ValidationResult> => {
-                if (!selectedSystem) {
-                    return false;
-                }
-                let selectedSystemAnswer = selectedSystem as SystemSelectionAnswerType;
-                // Autocomplete passes the entire choice object as the answer, so we need to extract the value
-                if (promptOptions?.systemSelection?.useAutoComplete && (selectedSystem as ListChoiceOptions).value) {
-                    selectedSystemAnswer = (selectedSystem as ListChoiceOptions).value;
-                }
-                return (
-                    validateSystemSelection(
-                        selectedSystemAnswer,
-                        connectionValidator,
-                        requiredOdataVersion,
-                        cachedConnectedSystem,
-                        connectPath?.value
-                    ) ?? false
-                );
-            },
-            additionalMessages: async (selectedSystem: SystemSelectionAnswerType) => {
-                if (
-                    selectedSystem.type === 'backendSystem' &&
-                    connectionValidator.systemAuthType === 'basic' &&
-                    (await connectionValidator.isAuthRequired())
-                ) {
-                    return {
-                        message: t('prompts.systemSelection.authenticationFailedUpdateCredentials'),
-                        severity: Severity.information
-                    };
-                }
-                if (connectionValidator.ignoreCertError) {
-                    return {
-                        message: t('warnings.certErrorIgnoredByNodeSetting'),
-                        severity: Severity.warning
-                    };
-                }
+    // inquirer 13's `select`/`search` default is a choice value (not the inquirer 8 list index); the
+    // former index-returning default logic is retained but mapped to the choice value at that index.
+    const getSystemSelectionDefault = (): SystemSelectionAnswerType | undefined => {
+        let defaultIndex: number;
+        if (shouldOnlyShowDefaultChoice) {
+            defaultIndex = 0;
+        } else {
+            defaultChoiceIndex = findDefaultSystemSelectionIndex(
+                systemChoices,
+                promptOptions?.systemSelection?.defaultChoice
+            ); // Recalc to allow default choice to be bound to ref from another prompt
+
+            // Regardless of finding a match the provided connect path is applied
+            if (typeof promptOptions?.systemSelection?.connectPath === 'object') {
+                connectPath = promptOptions?.systemSelection.connectPath;
             }
-        } as ListQuestion<SystemSelectionAnswers>
+            defaultIndex = defaultChoiceIndex;
+        }
+        return effectiveSystemChoices[defaultIndex]?.value;
+    };
+
+    const systemSelectionBase = {
+        name: promptNames.systemSelection,
+        message: t('prompts.systemSelection.message'),
+        guiOptions: {
+            breadcrumb: true,
+            hint: t('prompts.systemSelection.hint')
+        },
+        default: getSystemSelectionDefault,
+        validate: async (selectedSystem?: SystemSelectionAnswerType): Promise<ValidationResult> => {
+            if (!selectedSystem) {
+                return false;
+            }
+            return (
+                validateSystemSelection(
+                    selectedSystem,
+                    connectionValidator,
+                    requiredOdataVersion,
+                    cachedConnectedSystem,
+                    connectPath?.value
+                ) ?? false
+            );
+        },
+        additionalMessages: async (selectedSystem?: unknown) => {
+            const system = selectedSystem as SystemSelectionAnswerType;
+            if (
+                system.type === 'backendSystem' &&
+                connectionValidator.systemAuthType === 'basic' &&
+                (await connectionValidator.isAuthRequired())
+            ) {
+                return {
+                    message: t('prompts.systemSelection.authenticationFailedUpdateCredentials'),
+                    severity: Severity.information
+                };
+            }
+            if (connectionValidator.ignoreCertError) {
+                return {
+                    message: t('warnings.certErrorIgnoredByNodeSetting'),
+                    severity: Severity.warning
+                };
+            }
+        }
+    };
+
+    const systemSelectionQuestion: YUIQuestion<SystemSelectionAnswers> = promptOptions?.systemSelection?.useAutoComplete
+        ? ({
+              ...systemSelectionBase,
+              type: 'search',
+              source: (term: string | undefined): ChoiceOptions[] =>
+                  searchChoices(term ?? '', effectiveSystemChoices as ChoiceOptions[])
+          } as SearchQuestion<SystemSelectionAnswers>)
+        : ({
+              ...systemSelectionBase,
+              type: 'list',
+              choices: effectiveSystemChoices
+          } as ListQuestion<SystemSelectionAnswers>);
+
+    const questions: (YUIQuestion<SystemSelectionAnswers> | WhenQuestion<SystemSelectionAnswers>)[] = [
+        systemSelectionQuestion
     ];
 
     if (isAppStudio()) {
         // Additional service path prompt for partial URL destinations
-        const servicePathPrompt = {
+        // Renderable input prompt whose `name` is a synthetic CLI id (not a key of the answers type),
+        // so it is typed at the base `YUIQuestion` union (bare-string `name`) rather than the input arm.
+        const servicePathPrompt: YUIQuestion<SystemSelectionAnswers> = {
             when: (answers: SystemSelectionAnswers): boolean => {
                 const selectedSystem = answers?.[promptNames.systemSelection];
                 if (selectedSystem?.type === 'destination') {
@@ -276,7 +307,10 @@ export async function getSystemConnectionQuestions(
                 applyDefaultWhenDirty: true
             },
             default: '',
-            validate: async (servicePath: string, answers: SystemSelectionAnswers) => {
+            // `validate` can resolve to a rich `ValidationLink`; cast to `Validator` whose narrow
+            // `boolean | string` return keeps the question assignable to `this.prompt` (the link's
+            // `toString()` serializes for CLI, YUI renders the link itself).
+            validate: (async (servicePath: string, answers: SystemSelectionAnswers) => {
                 // @sap-ux/btp-utils getDestinationUrlForAppStudio() enforces a path length of > 1, even though it could be a valid path
                 // Double slashes are not allowed at the start of the path as they break URL construction
                 if (!servicePath || servicePath.trim().length < 2 || servicePath.startsWith('//')) {
@@ -298,8 +332,8 @@ export async function getSystemConnectionQuestions(
                     servicePath
                 );
                 return connectValResult;
-            }
-        } as InputQuestion<SystemSelectionAnswers>;
+            }) as Validator<SystemSelectionAnswers>
+        };
         questions.push(servicePathPrompt);
     }
 

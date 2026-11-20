@@ -1,5 +1,5 @@
 import type { AllAppResults, ReuseLib } from '@sap-ux/project-access';
-import type { ListChoiceOptions } from 'inquirer';
+import type { ChoiceOptions } from '@sap-ux/inquirer-common';
 import type { ReuseLibChoice } from './types.js';
 import { basename } from 'node:path';
 
@@ -9,8 +9,8 @@ import { basename } from 'node:path';
  * @param apps array of applications found in the workspace folders.
  * @returns list of projects
  */
-export const getProjectChoices = async (apps?: AllAppResults[]): Promise<ListChoiceOptions[]> => {
-    const projectChoices: ListChoiceOptions[] = [];
+export const getProjectChoices = async (apps?: AllAppResults[]): Promise<ChoiceOptions[]> => {
+    const projectChoices: ChoiceOptions[] = [];
 
     if (apps) {
         for (const app of apps) {

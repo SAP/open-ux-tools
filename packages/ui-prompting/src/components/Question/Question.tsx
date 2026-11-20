@@ -1,5 +1,5 @@
 import React from 'react';
-import type { Answers } from 'inquirer';
+import type { Answers } from '@sap-ux/inquirer-common';
 import { Input, Select, MultiSelect, TranslationInput } from '../Inputs/index.js';
 import { getAnswer } from '../../utilities/index.js';
 import type { PromptQuestion, ValidationResults, AnswerValue, PromptListChoices } from '../../types.js';

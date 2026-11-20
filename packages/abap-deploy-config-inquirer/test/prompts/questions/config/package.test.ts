@@ -1,7 +1,6 @@
 import { jest } from '@jest/globals';
 import { promptNames, PackageInputChoices } from '../../../../src/types.js';
-import type { ListQuestion } from '@sap-ux/inquirer-common';
-import type { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
+import type { ListQuestion, SearchQuestion } from '@sap-ux/inquirer-common';
 import { Severity } from '@sap-devx/yeoman-ui-types';
 
 const mockShowPackageInputChoiceQuestion = jest.fn<typeof actualConditions.showPackageInputChoiceQuestion>();
@@ -93,7 +92,7 @@ describe('getPackagePrompts', () => {
                 "message": "Package (Type to filter matching records)",
                 "name": "packageAutocomplete",
                 "source": [Function],
-                "type": "autocomplete",
+                "type": "search",
                 "validate": [Function],
                 "when": [Function],
               },
@@ -206,11 +205,47 @@ describe('getPackagePrompts', () => {
                 true
             );
             PromptState.isYUI = false;
-            expect(
-                await ((packageAutocompletePrompt as AutocompleteQuestionOptions).source as Function)()
-            ).toStrictEqual(['TEST_PACKAGE_1', 'TEST_PACKAGE_2']);
+            expect(await ((packageAutocompletePrompt as SearchQuestion).source as Function)()).toStrictEqual([
+                'TEST_PACKAGE_1',
+                'TEST_PACKAGE_2'
+            ]);
             expect(((packageAutocompletePrompt as any).additionalInfo as Function)()).toBe('Test additional msg');
             expect(await (packageAutocompletePrompt.validate as Function)({ name: '$TMP', value: '$TMP' })).toBe(true);
+        }
+    });
+
+    test('should return a YUI autocomplete prompt when called from the Yeoman UI host', async () => {
+        mockDefaultOrShowSearchPackageQuestion.mockReturnValueOnce(true);
+        mockGetPackageChoices.mockResolvedValueOnce({
+            packages: ['TEST_PACKAGE_1', 'TEST_PACKAGE_2'],
+            morePackageResultsMsg: 'Test additional msg'
+        });
+
+        const packagePrompts = getPackagePrompts({}, true, true);
+        const packageAutocompletePrompt = packagePrompts.find(
+            (prompt) => prompt.name === promptNames.packageAutocomplete
+        );
+
+        expect(packageAutocompletePrompt?.type).toBe('autocomplete');
+        // YUI omits the CLI-only "type to filter" hint from the message
+        expect((packageAutocompletePrompt as any).message).toBe(
+            t('prompts.config.package.packageAutocomplete.message')
+        );
+
+        if (packageAutocompletePrompt) {
+            // YUI's autocomplete renderer calls source with (previousAnswers, input) on each keystroke
+            expect(await ((packageAutocompletePrompt as any).source as Function)({}, 'TEST_PACKAGE')).toStrictEqual([
+                'TEST_PACKAGE_1',
+                'TEST_PACKAGE_2'
+            ]);
+            expect(mockGetPackageChoices).toHaveBeenLastCalledWith(
+                false,
+                'TEST_PACKAGE',
+                expect.anything(),
+                expect.anything(),
+                undefined
+            );
+            expect(((packageAutocompletePrompt as any).additionalInfo as Function)()).toBe('Test additional msg');
         }
     });
 

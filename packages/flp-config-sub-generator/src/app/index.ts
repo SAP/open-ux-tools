@@ -20,12 +20,11 @@ import { extendWithOptions } from '@sap-ux/inquirer-common';
 import { generatorTitle, i18nKeySubTitle, i18nKeyTitle } from '../utils/constants.js';
 import { t, getPromptOptions, getYUIDetails } from '../utils/index.js';
 import { EventName } from '../telemetryEvents/index.js';
-import type { FLPConfigAnswers, FLPConfigPromptOptions } from '@sap-ux/flp-config-inquirer';
+import type { FLPConfigAnswers, FLPConfigPromptOptions, FLPConfigQuestion } from '@sap-ux/flp-config-inquirer';
 import type { VSCodeInstance } from '@sap-ux/fiori-generator-shared';
 import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
 import type { FlpConfigOptions } from './types.js';
-import type { Question } from 'inquirer';
-import type { CommonPromptOptions, YUIQuestion } from '@sap-ux/inquirer-common';
+import type { CommonPromptOptions } from '@sap-ux/inquirer-common';
 
 const flpConfigSubGenNamespace = '@sap-ux/flp-config-sub-generator';
 
@@ -149,16 +148,13 @@ export default class extends Generator {
         }
 
         const silentOverwrite = this.options.overwrite;
-        let questions: Question[] = (await getPrompts(inbounds, {
+        let questions: FLPConfigQuestion[] = await getPrompts(inbounds, {
             silentOverwrite,
             ...getPromptOptions(this.promptOptions)
-        })) as Question[];
+        });
 
         if (this.promptOptions) {
-            questions = extendWithOptions(
-                questions as YUIQuestion[],
-                this.promptOptions as Record<string, CommonPromptOptions>
-            );
+            questions = extendWithOptions(questions, this.promptOptions as Record<string, CommonPromptOptions>);
         }
 
         this.answers = {} as FLPConfigAnswers;

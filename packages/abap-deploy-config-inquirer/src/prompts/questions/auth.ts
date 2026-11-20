@@ -1,8 +1,13 @@
 import { t } from '../../i18n.js';
 import { showPasswordQuestion, showUsernameQuestion } from '../conditions.js';
 import { validateCredentials } from '../validators.js';
-import { promptNames, type AbapDeployConfigAnswersInternal, type AbapDeployConfigPromptOptions } from '../../types.js';
-import type { InputQuestion, PasswordQuestion, Question } from 'inquirer';
+import {
+    promptNames,
+    type AbapDeployConfigAnswersInternal,
+    type AbapDeployConfigPromptOptions,
+    type AbapDeployConfigQuestion
+} from '../../types.js';
+import type { Validator } from '@sap-ux/inquirer-common';
 import type { IValidationLink } from '@sap-devx/yeoman-ui-types';
 
 /**
@@ -11,7 +16,7 @@ import type { IValidationLink } from '@sap-devx/yeoman-ui-types';
  * @param options - abap deploy config prompt options
  * @returns input question for username
  */
-function getUsernamePrompt(options: AbapDeployConfigPromptOptions): Question<AbapDeployConfigAnswersInternal> {
+function getUsernamePrompt(options: AbapDeployConfigPromptOptions): AbapDeployConfigQuestion {
     return {
         when: (): Promise<boolean> => showUsernameQuestion(options.backendTarget),
         type: 'input',
@@ -20,7 +25,7 @@ function getUsernamePrompt(options: AbapDeployConfigPromptOptions): Question<Aba
         guiOptions: {
             mandatory: true
         }
-    } as InputQuestion<AbapDeployConfigAnswersInternal>;
+    };
 }
 
 /**
@@ -29,7 +34,20 @@ function getUsernamePrompt(options: AbapDeployConfigPromptOptions): Question<Aba
  * @param options - abap deploy config prompt options
  * @returns password question for password
  */
-function getPasswordPrompt(options: AbapDeployConfigPromptOptions): Question<AbapDeployConfigAnswersInternal> {
+function getPasswordPrompt(options: AbapDeployConfigPromptOptions): AbapDeployConfigQuestion {
+    // `validateCredentials` returns a rich `IValidationLink`, which inquirer 13's password arm
+    // `validate` (mirrored by `Validator`) does not permit — YeomanUI renders the link, the CLI
+    // relies on its `toString()`. Casting only the validator keeps the rest of the prompt checked.
+    const validate = (async (
+        input: string,
+        previousAnswers: Partial<AbapDeployConfigAnswersInternal> = {}
+    ): Promise<boolean | string | IValidationLink> =>
+        await validateCredentials(
+            input,
+            previousAnswers,
+            options.backendTarget,
+            options.adpProjectType
+        )) as Validator<AbapDeployConfigAnswersInternal>;
     return {
         when: (): boolean => showPasswordQuestion(),
         type: 'password',
@@ -42,12 +60,8 @@ function getPasswordPrompt(options: AbapDeployConfigPromptOptions): Question<Aba
             applyDefaultWhenDirty: true
         },
         default: '',
-        validate: async (
-            input: string,
-            previousAnswers: AbapDeployConfigAnswersInternal
-        ): Promise<boolean | string | IValidationLink> =>
-            await validateCredentials(input, previousAnswers, options.backendTarget, options.adpProjectType)
-    } as PasswordQuestion<AbapDeployConfigAnswersInternal>;
+        validate
+    };
 }
 
 /**
@@ -56,6 +70,6 @@ function getPasswordPrompt(options: AbapDeployConfigPromptOptions): Question<Aba
  * @param options - abap deploy config prompt options
  * @returns list of questions for auth prompting
  */
-export function getAuthPrompts(options: AbapDeployConfigPromptOptions): Question<AbapDeployConfigAnswersInternal>[] {
+export function getAuthPrompts(options: AbapDeployConfigPromptOptions): AbapDeployConfigQuestion[] {
     return [getUsernamePrompt(options), getPasswordPrompt(options)];
 }
