@@ -29,6 +29,16 @@ import {
     type SystemResolvedVia
 } from './telemetry.js';
 
+/**
+ * Thrown when user cancels an operation (e.g., declines a prompt).
+ */
+export class OperationCancelledError extends Error {
+    constructor(message?: string) {
+        super(message || t('migrate.validation.operationCancelled'));
+        this.name = 'OperationCancelledError';
+    }
+}
+
 interface MigrateCommandOptions {
     destination?: string;
     sapSystemName?: string;
@@ -172,7 +182,7 @@ async function promptRequiredText(name: string, message: string, fieldName: stri
         validate: createRequiredValidator(fieldName)
     });
     if (response[name] === undefined) {
-        throw new Error(t('migrate.validation.operationCancelled'));
+        throw new OperationCancelledError();
     }
     return response[name] as string;
 }
@@ -188,7 +198,7 @@ async function promptRequiredText(name: string, message: string, fieldName: stri
 async function promptConfirm(name: string, message: string, initial: boolean): Promise<boolean> {
     const response = await prompts({ type: 'confirm', name, message, initial });
     if (response[name] === undefined) {
-        throw new Error(t('migrate.validation.operationCancelled'));
+        throw new OperationCancelledError();
     }
     return response[name] as boolean;
 }
@@ -481,7 +491,7 @@ async function findBASDestination(
                 }))
             });
             if (answer.system === undefined) {
-                throw new Error(t('migrate.validation.operationCancelled'));
+                throw new OperationCancelledError();
             }
             return answer.system as MigrationSystem;
         }
@@ -778,7 +788,7 @@ async function migrate(projectPath: string | undefined, options: MigrateCommandO
     try {
         await runMigration(projectPath, options, summary);
     } catch (error) {
-        summary.cancelled = (error as Error).message === t('migrate.validation.operationCancelled');
+        summary.cancelled = error instanceof OperationCancelledError;
         throw error;
     } finally {
         await trackMigrateEvent(

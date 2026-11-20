@@ -77,8 +77,9 @@ export async function initCliTelemetry(version: string): Promise<void> {
         });
         // Events are sent in blocking mode (the process may exit right after), which does not check the opt-out
         // setting itself, so it is resolved once here.
-        // Fail closed: treat read errors (undefined) as opt-out to avoid sending without verified consent
-        telemetryEnabled = !getTelemetryOptOutEnvVariable() && (await getTelemetrySetting())?.enableTelemetry === true;
+        // Default to enabled when no setting exists (opt-out with notice), matching docs and industry practice
+        const setting = await getTelemetrySetting();
+        telemetryEnabled = !getTelemetryOptOutEnvVariable() && (setting?.enableTelemetry ?? true);
     } catch (error) {
         telemetryEnabled = false;
         getLogger().debug(`Unable to initialize telemetry: ${(error as Error).message}`);

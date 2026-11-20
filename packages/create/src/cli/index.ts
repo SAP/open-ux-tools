@@ -149,16 +149,18 @@ function getCommanderProgram(): Command {
     program.addCommand(getCommands);
 
     // Handler for create-fiori migrate ..
-    program.addCommand(getMigrateCommand());
+    const migrateCommand = getMigrateCommand();
+    program.addCommand(migrateCommand);
 
     // Handler for create-fiori telemetry ..
-    program.addCommand(getTelemetryCommand());
+    const telemetryCommand = getTelemetryCommand();
+    program.addCommand(telemetryCommand);
 
     // Telemetry is only needed by the commands that report events or manage the setting
     program.hook('preAction', async (_thisCommand, actionCommand) => {
-        if (actionCommand.name() === 'migrate' || actionCommand.parent?.name() === 'telemetry') {
+        if (actionCommand === migrateCommand || actionCommand.parent === telemetryCommand) {
             await initCliTelemetry(version);
-            if (actionCommand.name() === 'migrate') {
+            if (actionCommand === migrateCommand) {
                 showTelemetryNoticeOnce();
             }
         }
