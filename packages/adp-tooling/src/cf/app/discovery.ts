@@ -4,8 +4,14 @@ import type { ToolsLogger } from '@sap-ux/logger';
 
 import { t } from '../../i18n.js';
 import { extractXSApp } from '../utils/index.js';
-import { getFDCApps } from '../services/api.js';
-import type { CfConfig, CFApp, ServiceKeys, XsApp } from '../../types.js';
+import {
+    getAdaptableBusinessServices,
+    getAdpServiceInstances,
+    getBusinessServiceInfo,
+    getFDCApps,
+    getSapCloudServiceName
+} from '../services/api.js';
+import type { CfConfig, CfServiceInstanceChoice, CFApp, ServiceKeys, XsApp } from '../../types.js';
 
 /**
  * Get the app host ids from service keys.
@@ -152,4 +158,74 @@ export async function getCfApps(serviceKeys: ServiceKeys[], cfConfig: CfConfig, 
     }
 
     return getFDCApps(appHostIds, cfConfig, logger);
+}
+
+/**
+ * Finds every live managed service instance in the current CF space whose apps include one with the
+ * given `appId`. The caller decides what to do with the result (none/one/many) — this stays policy-free.
+ *
+ * The lookup first narrows the candidates with a read-only pre-filter: it resolves each instance's
+ * `sap.cloud.service` name from its existing service key (via {@link getSapCloudServiceName}, which
+ * never creates a key) and asks FDC which of those services expose adaptable apps (via
+ * {@link getAdaptableBusinessServices}). Only the surviving candidates are resolved with
+ * {@link getBusinessServiceInfo} — which may create a service key — so keys are never created on
+ * unrelated instances. A failure while probing a single instance is logged and skipped rather than
+ * aborting the whole search.
+ *
+ * Blind spot (matches the interactive picker): an adaptable instance that has never had a service key
+ * created resolves to no `sap.cloud.service` name and is therefore excluded, even if it exposes the app.
+ *
+ * @param {string} appId - The base application id to search for (matched against `CFApp.appId`).
+ * @param {CfConfig} cfConfig - The CF configuration (must have a space GUID; caller ensures login first).
+ * @param {ToolsLogger} logger - The logger.
+ * @returns {Promise<CfServiceInstanceChoice[]>} The matching service instances (possibly empty).
+ */
+export async function findServiceInstancesForApp(
+    appId: string,
+    cfConfig: CfConfig,
+    logger: ToolsLogger
+): Promise<CfServiceInstanceChoice[]> {
+    const instances = await getAdpServiceInstances(cfConfig.space.GUID, logger);
+    if (instances.length === 0) {
+        return [];
+    }
+
+    // Read-only pre-filter: resolve each instance's business-service name from its existing key.
+    const cloudServiceNameByGuid = new Map<string, string>();
+    await Promise.all(
+        instances.map(async (instance) => {
+            try {
+                const name = await getSapCloudServiceName(instance.guid, logger);
+                if (name) {
+                    cloudServiceNameByGuid.set(instance.guid, name);
+                }
+            } catch (error) {
+                logger?.warn(`Failed to resolve business service for instance '${instance.name}': ${error}`);
+            }
+        })
+    );
+
+    const adaptable = await getAdaptableBusinessServices([...cloudServiceNameByGuid.values()], cfConfig, logger);
+    const candidates = instances.filter((instance) => {
+        const name = cloudServiceNameByGuid.get(instance.guid);
+        return name !== undefined && adaptable.has(name);
+    });
+
+    const matches: CfServiceInstanceChoice[] = [];
+    for (const instance of candidates) {
+        try {
+            const serviceInfo = await getBusinessServiceInfo(instance.name, cfConfig, logger);
+            if (!serviceInfo) {
+                continue;
+            }
+            const apps = await getCfApps(serviceInfo.serviceKeys, cfConfig, logger);
+            if (apps.some((app) => app.appId === appId)) {
+                matches.push(instance);
+            }
+        } catch (error) {
+            logger?.warn(`Failed to inspect apps for service instance '${instance.name}': ${error}`);
+        }
+    }
+
+    return matches;
 }

@@ -3,6 +3,10 @@ import type AdmZip from 'adm-zip';
 import type { ToolsLogger } from '@sap-ux/logger';
 
 const mockGetFDCApps = jest.fn() as jest.Mock;
+const mockGetAdpServiceInstances = jest.fn() as jest.Mock;
+const mockGetSapCloudServiceName = jest.fn() as jest.Mock;
+const mockGetAdaptableBusinessServices = jest.fn() as jest.Mock;
+const mockGetBusinessServiceInfo = jest.fn() as jest.Mock;
 const mockExtractXSApp = jest.fn() as jest.Mock;
 const mockIsAppStudio = jest.fn<typeof realBtpUtils.isAppStudio>();
 const mockCreate = jest.fn() as jest.Mock;
@@ -18,7 +22,11 @@ jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
 }));
 
 jest.unstable_mockModule('../../../../src/cf/services/api', () => ({
-    getFDCApps: mockGetFDCApps
+    getFDCApps: mockGetFDCApps,
+    getAdpServiceInstances: mockGetAdpServiceInstances,
+    getSapCloudServiceName: mockGetSapCloudServiceName,
+    getAdaptableBusinessServices: mockGetAdaptableBusinessServices,
+    getBusinessServiceInfo: mockGetBusinessServiceInfo
 }));
 
 jest.unstable_mockModule('../../../../src/cf/utils/validation', () => ({
@@ -27,8 +35,14 @@ jest.unstable_mockModule('../../../../src/cf/utils/validation', () => ({
     validateODataEndpoints: jest.fn()
 }));
 
-const { getAppHostIds, getCfApps, getOAuthPathsFromXsApp, getBackendUrlsFromServiceKeys, getServiceKeyDestinations } =
-    await import('../../../../src/cf/app/discovery.js');
+const {
+    getAppHostIds,
+    getCfApps,
+    getOAuthPathsFromXsApp,
+    getBackendUrlsFromServiceKeys,
+    getServiceKeyDestinations,
+    findServiceInstancesForApp
+} = await import('../../../../src/cf/app/discovery.js');
 const { initI18n, t } = await import('../../../../src/i18n.js');
 import type { CFApp, CfConfig, ServiceKeys, Organization, Space, Uaa, XsApp } from '../../../../src/types.js';
 
@@ -627,6 +641,128 @@ describe('CF App Discovery', () => {
             const result = getServiceKeyDestinations(serviceKeys);
 
             expect(result).toEqual([{ name: 'valid-destination', url: '/valid-url' }]);
+        });
+    });
+
+    describe('findServiceInstancesForApp', () => {
+        const mockLogger = {
+            log: jest.fn(),
+            warn: jest.fn(),
+            error: jest.fn(),
+            info: jest.fn(),
+            debug: jest.fn()
+        } as unknown as ToolsLogger;
+        const cfConfig = {
+            org: { Name: 'org', GUID: 'org-guid' },
+            space: { Name: 'space', GUID: 'space-guid' },
+            token: 'token',
+            url: 'eu10.hana.ondemand.com'
+        } as CfConfig;
+
+        const instance = (name: string, guid: string) => ({ name, guid, service: 'svc', servicePlan: 'plan' });
+        const serviceInfo = { serviceKeys: [] as ServiceKeys[], serviceInstance: { guid: 'si-guid' } };
+
+        test('returns [] and skips discovery when there are no instances', async () => {
+            mockGetAdpServiceInstances.mockResolvedValue([]);
+
+            const result = await findServiceInstancesForApp('target-app', cfConfig, mockLogger);
+
+            expect(result).toEqual([]);
+            expect(mockGetSapCloudServiceName).not.toHaveBeenCalled();
+            expect(mockGetAdaptableBusinessServices).not.toHaveBeenCalled();
+            expect(mockGetBusinessServiceInfo).not.toHaveBeenCalled();
+        });
+
+        test('excludes non-adaptable instances without creating a service key', async () => {
+            mockGetAdpServiceInstances.mockResolvedValue([instance('inst-1', 'guid-1')]);
+            mockGetSapCloudServiceName.mockResolvedValue('cloud-a');
+            mockGetAdaptableBusinessServices.mockResolvedValue(new Set<string>());
+
+            const result = await findServiceInstancesForApp('target-app', cfConfig, mockLogger);
+
+            expect(result).toEqual([]);
+            // getBusinessServiceInfo creates a key as a side effect — it must not run for excluded instances.
+            expect(mockGetBusinessServiceInfo).not.toHaveBeenCalled();
+        });
+
+        test('returns the single adaptable instance that exposes the app', async () => {
+            const inst = instance('inst-1', 'guid-1');
+            mockGetAdpServiceInstances.mockResolvedValue([inst]);
+            mockGetSapCloudServiceName.mockResolvedValue('cloud-a');
+            mockGetAdaptableBusinessServices.mockResolvedValue(new Set(['cloud-a']));
+            mockGetBusinessServiceInfo.mockResolvedValue(serviceInfo);
+            mockGetFDCApps.mockResolvedValue([{ appId: 'target-app' } as CFApp]);
+
+            const result = await findServiceInstancesForApp('target-app', cfConfig, mockLogger);
+
+            expect(result).toEqual([inst]);
+            expect(mockGetBusinessServiceInfo).toHaveBeenCalledWith('inst-1', cfConfig, mockLogger);
+        });
+
+        test('excludes an adaptable instance whose apps do not include the app', async () => {
+            mockGetAdpServiceInstances.mockResolvedValue([instance('inst-1', 'guid-1')]);
+            mockGetSapCloudServiceName.mockResolvedValue('cloud-a');
+            mockGetAdaptableBusinessServices.mockResolvedValue(new Set(['cloud-a']));
+            mockGetBusinessServiceInfo.mockResolvedValue(serviceInfo);
+            mockGetFDCApps.mockResolvedValue([{ appId: 'other-app' } as CFApp]);
+
+            const result = await findServiceInstancesForApp('target-app', cfConfig, mockLogger);
+
+            expect(result).toEqual([]);
+        });
+
+        test('returns every instance that exposes the app', async () => {
+            const inst1 = instance('inst-1', 'guid-1');
+            const inst2 = instance('inst-2', 'guid-2');
+            mockGetAdpServiceInstances.mockResolvedValue([inst1, inst2]);
+            mockGetSapCloudServiceName.mockImplementation((guid) =>
+                Promise.resolve(guid === 'guid-1' ? 'cloud-a' : 'cloud-b')
+            );
+            mockGetAdaptableBusinessServices.mockResolvedValue(new Set(['cloud-a', 'cloud-b']));
+            mockGetBusinessServiceInfo.mockResolvedValue(serviceInfo);
+            mockGetFDCApps.mockResolvedValue([{ appId: 'target-app' } as CFApp]);
+
+            const result = await findServiceInstancesForApp('target-app', cfConfig, mockLogger);
+
+            expect(result).toEqual([inst1, inst2]);
+        });
+
+        test('skips an instance whose business-service name lookup fails, keeping the others', async () => {
+            const inst2 = instance('inst-2', 'guid-2');
+            mockGetAdpServiceInstances.mockResolvedValue([instance('inst-1', 'guid-1'), inst2]);
+            mockGetSapCloudServiceName.mockImplementation((guid) =>
+                guid === 'guid-1' ? Promise.reject(new Error('boom')) : Promise.resolve('cloud-b')
+            );
+            mockGetAdaptableBusinessServices.mockResolvedValue(new Set(['cloud-b']));
+            mockGetBusinessServiceInfo.mockResolvedValue(serviceInfo);
+            mockGetFDCApps.mockResolvedValue([{ appId: 'target-app' } as CFApp]);
+
+            const result = await findServiceInstancesForApp('target-app', cfConfig, mockLogger);
+
+            expect(result).toEqual([inst2]);
+        });
+
+        test('skips a candidate whose app inspection fails, without throwing', async () => {
+            mockGetAdpServiceInstances.mockResolvedValue([instance('inst-1', 'guid-1')]);
+            mockGetSapCloudServiceName.mockResolvedValue('cloud-a');
+            mockGetAdaptableBusinessServices.mockResolvedValue(new Set(['cloud-a']));
+            mockGetBusinessServiceInfo.mockRejectedValue(new Error('boom'));
+
+            const result = await findServiceInstancesForApp('target-app', cfConfig, mockLogger);
+
+            expect(result).toEqual([]);
+        });
+
+        test('excludes an instance that has no existing service key (blind spot)', async () => {
+            mockGetAdpServiceInstances.mockResolvedValue([instance('inst-1', 'guid-1')]);
+            mockGetSapCloudServiceName.mockResolvedValue(undefined);
+            mockGetAdaptableBusinessServices.mockResolvedValue(new Set<string>());
+
+            const result = await findServiceInstancesForApp('target-app', cfConfig, mockLogger);
+
+            expect(result).toEqual([]);
+            expect(mockGetAdaptableBusinessServices).toHaveBeenCalledWith([], cfConfig, mockLogger);
+            expect(mockGetBusinessServiceInfo).not.toHaveBeenCalled();
         });
     });
 });

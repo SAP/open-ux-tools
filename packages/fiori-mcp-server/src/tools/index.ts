@@ -46,38 +46,23 @@ const adpTools = [
     },
     {
         name: 'generate_adaptation_project',
-        description: `Generates a new SAP Fiori adaptation project by calling the @sap-ux/adp generator.
-
-        This tool requires:
-        - system: The name of the SAP system (from list_sap_systems)
-        - application: The application ID to adapt
-        - appPath: The current working directory — the project subfolder is created INSIDE this folder
-
-        The generated project folder will be at: <appPath>/<projectName> (default: <appPath>/app.variant)
-
-        Optional parameters: projectType, targetFolder (overrides appPath), projectName, namespace, applicationTitle, client, importKeyUserChanges.
-
-        PROJECT TYPE SELECTION: Leave projectType UNSET on the first call UNLESS the user has already stated
-        which type they want — in that case pass their choice through on the first call. When the selected system
-        AND application both support CloudReady and Classic (on-premise) adaptation projects and projectType is
-        unset, the tool does NOT generate anything and instead returns status 'InputRequired' with a message. When
-        you receive 'InputRequired', ask the user which type they want, then call this tool again with
-        projectType set to 'cloudReady' or 'onPremise'. If only one type is supported, the tool resolves
-        it automatically and you never need to set projectType. Do NOT guess or default this value yourself.
-        Passing a projectType the system or application cannot support returns status 'Error'.
-
-        Set importKeyUserChanges to true to automatically fetch the DEFAULT adaptation's key user
-        changes from LREP (using the same system) and include them in the generated
-        project. Generation aborts if the fetch fails or no DEFAULT adaptation exists.
-
-        Use 'list_sap_systems' first to discover available systems.
-        The generator will be executed with the provided JSON configuration.`,
+        description:
+            'Generates an ABAP or Cloud Foundry SAP Fiori adaptation project using the @sap-ux/adp ' +
+            'Yeoman generator. Validates all applicable inputs and backend compatibility before invoking creation. Requires an explicit targetEnvironment. ' +
+            'Creates project files, updates an existing MTA for CF, and invokes the generator with overwrite enabled. ' +
+            'Connects to the selected backend; CF preflight/generation may create service keys or provision the HTML5 repository runtime service. ' +
+            'Detects CF login without performing login. ' +
+            'Success returns the adaptation app projectPath and, for CF, mtaRoot. ' +
+            'InputRequired returns missingFields and available choices without generating project files. ' +
+            'Error returns field-level issues and phase (validation before creation, or generation during creation). ' +
+            'system is required for ABAP; mtaId is required for CF when mtaMode is new. ' +
+            'Parameter defaults and environment-specific requirements are defined in the input schema.',
         annotations: {
             title: 'Generate Adaptation Project',
             readOnlyHint: false,
             destructiveHint: true,
             idempotentHint: false,
-            openWorldHint: false
+            openWorldHint: true
         },
         inputSchema: convertToSchema(Input.GenerateAdaptationProjectInputSchema),
         outputSchema: convertToSchema(Output.GenerateAdaptationProjectOutputSchema)
