@@ -198,29 +198,21 @@ describe('error-codes', () => {
                 expect(extractErrorCode(error)).toBe('UNSUPPORTED_FLOORPLAN');
             });
 
-            it('should extract MISSING_MANIFEST for missing manifest errors', () => {
-                const error = new Error('manifest.json not found in project root');
-                expect(extractErrorCode(error)).toBe('MISSING_MANIFEST');
+            it.each([
+                ['manifest.json not found in project root', 'MISSING_MANIFEST'],
+                ['Required manifest file is missing', 'MISSING_MANIFEST'],
+                ['manifest.json does not exist', 'MISSING_MANIFEST']
+            ])('should extract %s for error: %s', (errorMessage, expectedCode) => {
+                const error = new Error(errorMessage);
+                expect(extractErrorCode(error)).toBe(expectedCode);
             });
 
-            it('should extract MISSING_MANIFEST with different wording', () => {
-                const error = new Error('Required manifest file is missing');
-                expect(extractErrorCode(error)).toBe('MISSING_MANIFEST');
-            });
-
-            it('should extract MISSING_MANIFEST for file not found', () => {
-                const error = new Error('manifest.json does not exist');
-                expect(extractErrorCode(error)).toBe('MISSING_MANIFEST');
-            });
-
-            it('should extract MISSING_COMPONENT for missing Component.js', () => {
-                const error = new Error('Component.js not found in webapp folder');
-                expect(extractErrorCode(error)).toBe('MISSING_COMPONENT');
-            });
-
-            it('should extract MISSING_COMPONENT with different wording', () => {
-                const error = new Error('Required component file is missing');
-                expect(extractErrorCode(error)).toBe('MISSING_COMPONENT');
+            it.each([
+                ['Component.js not found in webapp folder', 'MISSING_COMPONENT'],
+                ['Required component file is missing', 'MISSING_COMPONENT']
+            ])('should extract %s for error: %s', (errorMessage, expectedCode) => {
+                const error = new Error(errorMessage);
+                expect(extractErrorCode(error)).toBe(expectedCode);
             });
 
             it('should extract NOT_SUITABLE_FOR_MIGRATION', () => {
