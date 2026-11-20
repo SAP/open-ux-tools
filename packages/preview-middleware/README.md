@@ -14,6 +14,12 @@ When this middleware is used together with the `reload-middleware`, then the ord
   afterMiddleware: reload-middleware
 ```
 
+## BAS adaptation editor login
+
+When the MCP relay is enabled, the BAS editor launcher can open an editor URL in login-only mode. This URL follows the project's existing CF authentication middleware, then serves a completion page without loading the editor or relay. The page acknowledges completion through `sap-ux-adp-login.json` in the shared temporary directory, and the launcher reloads the embedded editor for the matching login attempt. The separate mailbox leaves MCP open/close commands untouched.
+
+This requires compatible versions of preview-middleware and the BAS launcher running as the same user with the same temporary directory. Browser cookie policy still determines whether the authenticated session is available to the embedded editor. Desktop VS Code retains its embedded login flow.
+
 ## [Configuration Options](#configuration-options)
 | Option                       | Value Type | Requirement Type                               | Default Value                   | Description                                                                                                                                                                                                                                                                                                                                                                   |
 |------------------------------|------------|------------------------------------------------|---------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
