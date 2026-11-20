@@ -50,7 +50,7 @@ export class EnableTableFilteringQuickAction
                 smartTable.getId(),
                 'personalization'
             ) as Personalization;
-            const isFilterEnabled = value?.filter === undefined ? personalizationData.includes('Filter') : value.filter;
+            const isFilterEnabled = value?.filter === undefined ? (personalizationData as string[]).includes('Filter') : value.filter;
             const path = this.children.length.toString();
             this.children.push({
                 path,
