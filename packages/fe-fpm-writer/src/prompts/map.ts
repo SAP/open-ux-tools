@@ -6,6 +6,7 @@ import {
     getPageBuildingBlockPrompts,
     getFilterBarBuildingBlockPrompts,
     getFormBuildingBlockPrompts,
+    getKPITagBuildingBlockPrompts,
     getBuildingBlockTypePrompts,
     getRichTextEditorBuildingBlockPrompts,
     getRichTextEditorButtonGroupsBuildingBlockPrompts
@@ -16,6 +17,7 @@ import type {
     PagePromptsAnswer,
     FilterBarPromptsAnswer,
     FormPromptsAnswer,
+    KPITagPromptsAnswer,
     BuildingBlockTypePromptsAnswer,
     RichTextEditorPromptsAnswer,
     RichTextEditorButtonGroupsPromptsAnswer
@@ -28,6 +30,7 @@ type AnswerMapping = {
     [PromptsType.Page]: PagePromptsAnswer;
     [PromptsType.FilterBar]: FilterBarPromptsAnswer;
     [PromptsType.Form]: FormPromptsAnswer;
+    [PromptsType.KPITag]: KPITagPromptsAnswer;
     [PromptsType.RichTextEditor]: RichTextEditorPromptsAnswer;
     [PromptsType.RichTextEditorButtonGroups]: RichTextEditorButtonGroupsPromptsAnswer;
     [PromptsType.BuildingBlocks]: BuildingBlockTypePromptsAnswer;
@@ -44,6 +47,7 @@ export type SupportedPrompts =
     | BasePrompt<PromptsType.Table>
     | BasePrompt<PromptsType.FilterBar>
     | BasePrompt<PromptsType.Form>
+    | BasePrompt<PromptsType.KPITag>
     | BasePrompt<PromptsType.Page>
     | BasePrompt<PromptsType.BuildingBlocks>
     | BasePrompt<PromptsType.RichTextEditor>
@@ -55,6 +59,7 @@ export type SupportedGeneratorPrompts =
     | BasePrompt<PromptsType.Page>
     | BasePrompt<PromptsType.FilterBar>
     | BasePrompt<PromptsType.Form>
+    | BasePrompt<PromptsType.KPITag>
     | BasePrompt<PromptsType.RichTextEditor>;
 
 export type NarrowPrompt<T, N = SupportedPrompts> = N extends { type: T } ? N : never;
@@ -70,6 +75,7 @@ export const PromptsQuestionsMap: SupportedPromptsMap = {
     [PromptsType.Table]: getTableBuildingBlockPrompts,
     [PromptsType.FilterBar]: getFilterBarBuildingBlockPrompts,
     [PromptsType.Form]: getFormBuildingBlockPrompts,
+    [PromptsType.KPITag]: getKPITagBuildingBlockPrompts,
     [PromptsType.BuildingBlocks]: getBuildingBlockTypePrompts,
     [PromptsType.Page]: getPageBuildingBlockPrompts,
     [PromptsType.RichTextEditor]: getRichTextEditorBuildingBlockPrompts,
@@ -81,6 +87,7 @@ export const PromptsGeneratorsMap = {
     [PromptsType.Table]: generateBuildingBlock,
     [PromptsType.FilterBar]: generateBuildingBlock,
     [PromptsType.Form]: generateBuildingBlock,
+    [PromptsType.KPITag]: generateBuildingBlock,
     [PromptsType.RichTextEditor]: generateBuildingBlock,
     [PromptsType.RichTextEditorButtonGroups]: generateBuildingBlock,
     [PromptsType.Page]: generateBuildingBlock
@@ -91,6 +98,7 @@ export const PromptsCodePreviewMap = {
     [PromptsType.Table]: getSerializedFileContent,
     [PromptsType.FilterBar]: getSerializedFileContent,
     [PromptsType.Form]: getSerializedFileContent,
+    [PromptsType.KPITag]: getSerializedFileContent,
     [PromptsType.RichTextEditor]: getSerializedFileContent,
     [PromptsType.RichTextEditorButtonGroups]: getSerializedFileContent,
     [PromptsType.Page]: getSerializedFileContent
@@ -101,6 +109,7 @@ export type SupportedGeneratorAnswers =
     | ChartPromptsAnswer
     | FilterBarPromptsAnswer
     | FormPromptsAnswer
+    | KPITagPromptsAnswer
     | PagePromptsAnswer
     | RichTextEditorPromptsAnswer
     | RichTextEditorButtonGroupsPromptsAnswer;

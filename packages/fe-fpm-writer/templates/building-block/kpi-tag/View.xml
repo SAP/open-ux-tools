@@ -1,0 +1,6 @@
+<<%- macrosNamespace %>:KPITag
+    id="<%- data.id %>"
+    number="<%- data.number %>"<% if (data.unit) { %>
+    unit="<%- data.unit %>"<% } %><% if (data.status && data.status !== 'None') { %>
+    status="<%- data.status %>"<% } %>
+/>
