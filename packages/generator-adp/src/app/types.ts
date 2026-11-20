@@ -46,7 +46,8 @@ export enum configPromptNames {
     appValidationCli = 'appValidationCli',
     fioriId = 'fioriId',
     ach = 'ach',
-    shouldCreateExtProject = 'shouldCreateExtProject'
+    shouldCreateExtProject = 'shouldCreateExtProject',
+    addMockServer = 'addMockServer'
 }
 
 /**
@@ -105,6 +106,10 @@ export interface ShouldCreateExtProjectPromptOptions {
     isExtensibilityExtInstalled?: boolean;
 }
 
+export interface AddMockServerPromptOptions {
+    hide?: boolean;
+}
+
 /**
  * Options for the configuration inquirer & the prompts.
  */
@@ -122,6 +127,7 @@ export type ConfigPromptOptions = Partial<{
     [configPromptNames.fioriId]: FioriIdPromptOptions;
     [configPromptNames.ach]: AchPromptOptions;
     [configPromptNames.shouldCreateExtProject]: ShouldCreateExtProjectPromptOptions;
+    [configPromptNames.addMockServer]: AddMockServerPromptOptions;
 }>;
 
 export enum attributePromptNames {

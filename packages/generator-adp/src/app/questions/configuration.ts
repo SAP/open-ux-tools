@@ -42,6 +42,7 @@ import type { TelemetryCollector } from '../../telemetry/index.js';
 import { t } from '../../utils/i18n.js';
 import type {
     AchPromptOptions,
+    AddMockServerPromptOptions,
     ApplicationPromptOptions,
     ConfigPromptOptions,
     ConfigQuestion,
@@ -282,6 +283,9 @@ export class ConfigPrompter {
             [configPromptNames.ach]: this.getAchPrompt(),
             [configPromptNames.shouldCreateExtProject]: this.getShouldCreateExtProjectPrompt(
                 promptOptions?.[configPromptNames.shouldCreateExtProject]
+            ),
+            [configPromptNames.addMockServer]: this.getAddMockServerPrompt(
+                promptOptions?.[configPromptNames.addMockServer]
             )
         };
 
@@ -687,6 +691,30 @@ export class ConfigPrompter {
                     hasSyncViews: this.containsSyncViews,
                     isExtensibilityExtInstalled: !!options?.isExtensibilityExtInstalled
                 })
+        };
+    }
+
+    /**
+     * Returns a yes/no confirmation prompt asking whether to add mock server support to the project.
+     *
+     * The prompt is only shown when all three conditions hold: the project is a VENDOR-layer project
+     * (not CUSTOMER_BASE), the selected application is supported, and the project is not an extension
+     * project. Defaults to `false`.
+     *
+     * @param {AddMockServerPromptOptions} [_] - Reserved for future prompt options (e.g. `hide`). Currently unused.
+     * @returns {ConfirmQuestion<ConfigAnswers>} The Inquirer confirm question for the mock server toggle.
+     */
+    private getAddMockServerPrompt(_?: AddMockServerPromptOptions): ConfirmQuestion<ConfigAnswers> {
+        return {
+            type: 'confirm',
+            name: configPromptNames.addMockServer,
+            message: t('prompts.addMockServerLabel'),
+            default: false,
+            guiOptions: {
+                applyDefaultWhenDirty: true
+            },
+            when: ({ shouldCreateExtProject }: ConfigAnswers) =>
+                !this.isCustomerBase && this.isApplicationSupported && !shouldCreateExtProject
         };
     }
 
