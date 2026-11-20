@@ -3,6 +3,7 @@ import {
     SampleRate,
     getTelemetrySetting,
     initTelemetrySettings,
+    isTelemetryDisabledByEnv,
     type TelemetryProperties
 } from '@sap-ux/telemetry';
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
@@ -45,8 +46,8 @@ let sendingFailed = false;
 let sessionId = '';
 
 /**
- * Get the environment variable that opts out of telemetry, if set. Besides the variable supported by all
- * Fiori tools, the cross-tool `DO_NOT_TRACK` convention is honored.
+ * Get the name of the environment variable that disables telemetry, if any is set.
+ * Wraps the shared isTelemetryDisabledByEnv check to return the variable name for user-facing messages.
  *
  * @returns name of the environment variable, or undefined if telemetry is not disabled by the environment
  */
@@ -79,7 +80,7 @@ export async function initCliTelemetry(version: string): Promise<void> {
         // setting itself, so it is resolved once here.
         // Default to enabled when no setting exists (opt-out with notice), matching docs and industry practice
         const setting = await getTelemetrySetting();
-        telemetryEnabled = !getTelemetryOptOutEnvVariable() && (setting?.enableTelemetry ?? true);
+        telemetryEnabled = !isTelemetryDisabledByEnv() && (setting?.enableTelemetry ?? true);
     } catch (error) {
         telemetryEnabled = false;
         getLogger().debug(`Unable to initialize telemetry: ${(error as Error).message}`);

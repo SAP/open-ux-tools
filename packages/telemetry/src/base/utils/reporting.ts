@@ -71,7 +71,7 @@ const getReportingTelemetryClient = (): appInsights.TelemetryClient => {
  *
  * @returns true if telemetry is disabled by environment
  */
-const isTelemetryDisabledByEnv = (): boolean => {
+export const isTelemetryDisabledByEnv = (): boolean => {
     // Check DO_NOT_TRACK (cross-tool convention)
     if (['1', 'true'].includes(process.env.DO_NOT_TRACK?.toLowerCase() ?? '')) {
         return true;
