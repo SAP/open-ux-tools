@@ -133,7 +133,7 @@ function matchKnownPatterns(lowerMessage: string): MigrationErrorCode | null {
         return MigrationErrorCode.PROJECT_INFO_FAILED;
     }
 
-    if (/\bcommit(?:ting)?\b/.test(lowerMessage)) {
+    if (lowerMessage.includes('error committing migration') || lowerMessage.includes('failed to commit migration')) {
         return MigrationErrorCode.COMMIT_FAILED;
     }
 

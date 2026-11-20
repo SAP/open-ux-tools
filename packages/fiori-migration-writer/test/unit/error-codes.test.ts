@@ -236,12 +236,12 @@ describe('error-codes', () => {
 
         describe('Migration process errors', () => {
             it('should extract COMMIT_FAILED for commit errors', () => {
-                const error = new Error('Error committing changes to disk');
+                const error = new Error('Error committing migration changes');
                 expect(extractErrorCode(error)).toBe('COMMIT_FAILED');
             });
 
             it('should extract COMMIT_FAILED from bulk migrator wording', () => {
-                const error = new Error('Failed to commit migration changes: underlying error details');
+                const error = new Error('Failed to commit migration: underlying error details');
                 expect(extractErrorCode(error)).toBe('COMMIT_FAILED');
             });
 
@@ -338,7 +338,7 @@ describe('error-codes', () => {
             });
 
             it('should handle commit failure with nested error', () => {
-                const error = new Error('Error committing changes during migration process');
+                const error = new Error('Error committing migration: nested error details');
                 expect(extractErrorCode(error)).toBe('COMMIT_FAILED');
             });
 
