@@ -1,5 +1,6 @@
 import { FioriElementsVersion, FileName } from './project-spec-types.js';
-import { determineMessage, readFile, updateFile, fileExists } from './utils/index.js';
+import { readFile, updateFile, fileExists } from './utils/index.js';
+import { describeError, MigrationStep, runMigrationStep } from './utils/migration-utils.js';
 import { createMemFsEditor, loadProjectIntoEditor } from './utils/fs-adapter.js';
 import { ui5VersionRequestInfo } from '@sap-ux/ui5-info';
 import { getAppProgrammingLanguage } from '@sap-ux/project-access';
@@ -95,13 +96,12 @@ export class ProjectMigrator {
         try {
             // Load the project tree into mem-fs so existence checks see untracked files
             // on disk and migration writes never silently overwrite them.
-            await loadProjectIntoEditor(editor, projectRoot);
+            await runMigrationStep(MigrationStep.loadProject, () => loadProjectIntoEditor(editor, projectRoot));
 
             // Load or fetch project information
-            const { projectInfo, messages: projectInfoMessages } = await loadOrFetchProjectInfo(
-                projectRoot,
-                importProjectInfoOpt,
-                editor
+            const { projectInfo, messages: projectInfoMessages } = await runMigrationStep(
+                MigrationStep.loadProjectInfo,
+                () => loadOrFetchProjectInfo(projectRoot, importProjectInfoOpt, editor)
             );
             messages = messages.concat(projectInfoMessages);
 
@@ -111,12 +111,16 @@ export class ProjectMigrator {
             projectInfo.baseUri = baseUriOpt;
 
             // Resolve UI5 versions for migration
-            const ui5Versions = await resolveUI5VersionsForMigration(projectInfo, ui5SnapshotUrlOpt);
+            const ui5Versions = await runMigrationStep(MigrationStep.resolveUI5Versions, () =>
+                resolveUI5VersionsForMigration(projectInfo, ui5SnapshotUrlOpt)
+            );
             projectInfo.localUI5Version = ui5Versions?.[0]?.version;
             // ui5Version left as-is from project/neo-app data
 
             // Validate project is suitable for migration (not a Fiori app in CAP project)
-            await validateProjectForMigration(editor, projectRoot);
+            await runMigrationStep(MigrationStep.validateProject, () =>
+                validateProjectForMigration(editor, projectRoot)
+            );
 
             const dispatch = await this.runMigrationForProjectInfo(editor, projectInfo, messages, {
                 vscode: vscodeOpt,
@@ -131,7 +135,7 @@ export class ProjectMigrator {
             const useMessage = typeof e === 'object' && e !== null && 'useMessage' in e ? Boolean(e.useMessage) : false;
             messages.push({
                 type: 'ERROR',
-                description: `Error during migration: ${determineMessage(error, undefined, useMessage)}`
+                description: `Error during migration: ${describeError(error, projectRoot, useMessage)}`
             });
         }
 
@@ -231,114 +235,130 @@ export class ProjectMigrator {
 
         try {
             // Detect TypeScript project
-            const isTypeScriptApp = await ProjectMigrator.detectTypeScriptApp(fs, rootPath, projectInfo.webappPath);
+            const isTypeScriptApp = await runMigrationStep(MigrationStep.detectTypeScript, () =>
+                ProjectMigrator.detectTypeScriptApp(fs, rootPath, projectInfo.webappPath)
+            );
 
             // Prepare configuration data
-            const configData = await prepareConfigurationData(fs, projectInfo, projectInfo.ui5Version, isTypeScriptApp);
+            const configData = await runMigrationStep(MigrationStep.prepareConfiguration, () =>
+                prepareConfigurationData(fs, projectInfo, projectInfo.ui5Version, isTypeScriptApp)
+            );
 
             // Phase 1: Setup project structure
-            const { webappPath, keepIndex } = await setupProjectStructure(fs, projectInfo, rootPath);
+            const { webappPath, keepIndex } = await runMigrationStep(MigrationStep.setupProjectStructure, () =>
+                setupProjectStructure(fs, projectInfo, rootPath)
+            );
             projectInfo.webappPath = webappPath;
 
             // Phase 2: Assemble template data
-            const templateContext = await assembleTemplateData({
-                fs,
-                projectInfo,
-                rootPath,
-                projectData: configData.projectData,
-                serviceData: configData.serviceData,
-                config: {
-                    semanticObject: configData.semanticObject,
-                    fullyQualifiedProjectName: configData.fullyQualifiedProjectName,
-                    fullyQualifiedProjectNameAMD: configData.fullyQualifiedProjectNameAMD,
-                    sapUiLibs: configData.sapUiLibs,
-                    ui5Theme: configData.ui5Theme,
-                    projectUI5Version: configData.projectUI5Version,
-                    baseUiLibsStr: configData.baseUiLibsStr,
-                    supportedThemes: configData.supportedThemes,
-                    sapClientParam: configData.sapClientParam
-                },
-                moduleInfo: {
-                    moduleName: projectInfo.moduleName,
-                    moduleDescription: projectInfo.moduleDescription,
-                    destination
-                },
-                ui5Config: {
-                    projectUI5Version: configData.projectUI5Version,
-                    localUI5Version: projectInfo.localUI5Version,
-                    ui5Version: projectInfo.ui5Version,
-                    ui5SnapshotUrl,
-                    ui5VersionRequestInfo,
-                    ui5Theme: configData.ui5Theme
-                },
-                backendConfig: {
-                    baseUri: projectInfo.baseUri ?? '',
-                    scp: projectInfo.scp,
-                    destination,
-                    sapClient: projectInfo.sapClient
-                },
-                libraryConfig: {
-                    sapLibs: projectInfo.sapLibs ?? '',
-                    baseUiLibsStr: configData.baseUiLibsStr,
-                    supportedThemes: configData.supportedThemes
-                },
-                flags: {
-                    keepIndex,
-                    internalToggle,
-                    hasRootIntent: projectInfo.hasRootIntent,
-                    floorPlan: projectInfo.floorPlan
-                }
-            });
+            const templateContext = await runMigrationStep(MigrationStep.assembleTemplateData, () =>
+                assembleTemplateData({
+                    fs,
+                    projectInfo,
+                    rootPath,
+                    projectData: configData.projectData,
+                    serviceData: configData.serviceData,
+                    config: {
+                        semanticObject: configData.semanticObject,
+                        fullyQualifiedProjectName: configData.fullyQualifiedProjectName,
+                        fullyQualifiedProjectNameAMD: configData.fullyQualifiedProjectNameAMD,
+                        sapUiLibs: configData.sapUiLibs,
+                        ui5Theme: configData.ui5Theme,
+                        projectUI5Version: configData.projectUI5Version,
+                        baseUiLibsStr: configData.baseUiLibsStr,
+                        supportedThemes: configData.supportedThemes,
+                        sapClientParam: configData.sapClientParam
+                    },
+                    moduleInfo: {
+                        moduleName: projectInfo.moduleName,
+                        moduleDescription: projectInfo.moduleDescription,
+                        destination
+                    },
+                    ui5Config: {
+                        projectUI5Version: configData.projectUI5Version,
+                        localUI5Version: projectInfo.localUI5Version,
+                        ui5Version: projectInfo.ui5Version,
+                        ui5SnapshotUrl,
+                        ui5VersionRequestInfo,
+                        ui5Theme: configData.ui5Theme
+                    },
+                    backendConfig: {
+                        baseUri: projectInfo.baseUri ?? '',
+                        scp: projectInfo.scp,
+                        destination,
+                        sapClient: projectInfo.sapClient
+                    },
+                    libraryConfig: {
+                        sapLibs: projectInfo.sapLibs ?? '',
+                        baseUiLibsStr: configData.baseUiLibsStr,
+                        supportedThemes: configData.supportedThemes
+                    },
+                    flags: {
+                        keepIndex,
+                        internalToggle,
+                        hasRootIntent: projectInfo.hasRootIntent,
+                        floorPlan: projectInfo.floorPlan
+                    }
+                })
+            );
 
             // Phase 3: Generate app settings
             const sourceTemplateType = determineSourceTemplateType(projectInfo, MigrationTypes);
-            await generateAppSettings({
-                fs,
-                rootPath,
-                templateData: templateContext.templateData,
-                destination,
-                webappPath,
-                messages,
-                sourceTemplateType,
-                hasDataSource: templateContext.hasDataSource,
-                neoappDestinations,
-                sourceTemplateTest: projectInfo.sourceTemplate,
-                firstNeoAppDestination,
-                strict
-            });
+            await runMigrationStep(MigrationStep.generateAppSettings, () =>
+                generateAppSettings({
+                    fs,
+                    rootPath,
+                    templateData: templateContext.templateData,
+                    destination,
+                    webappPath,
+                    messages,
+                    sourceTemplateType,
+                    hasDataSource: templateContext.hasDataSource,
+                    neoappDestinations,
+                    sourceTemplateTest: projectInfo.sourceTemplate,
+                    firstNeoAppDestination,
+                    strict
+                })
+            );
 
             // Phase 4: Apply all templates
-            await applyAllTemplates({
-                fs,
-                projectInfo,
-                rootPath,
-                templateData: templateContext.templateData,
-                hasDataSource: templateContext.hasDataSource,
-                finalKeepIndex: templateContext.keepIndex,
-                internalToggle,
-                ui5Version: projectInfo.ui5Version,
-                isSAPApp,
-                appIntent: templateContext.appIntent ?? '',
-                appMockIntent: templateContext.appMockIntent
-            });
+            await runMigrationStep(MigrationStep.applyTemplates, () =>
+                applyAllTemplates({
+                    fs,
+                    projectInfo,
+                    rootPath,
+                    templateData: templateContext.templateData,
+                    hasDataSource: templateContext.hasDataSource,
+                    finalKeepIndex: templateContext.keepIndex,
+                    internalToggle,
+                    ui5Version: projectInfo.ui5Version,
+                    isSAPApp,
+                    appIntent: templateContext.appIntent ?? '',
+                    appMockIntent: templateContext.appMockIntent
+                })
+            );
 
             // Phase 5: Post-processing
-            await postProcessMigration({
-                fs,
-                projectInfo,
-                rootPath,
-                manifestJSON: templateContext.manifestJSON,
-                vscode,
-                appIntent: templateContext.appIntent,
-                appMockIntent: templateContext.appMockIntent,
-                flpSandboxAvailable: templateContext.flpSandboxAvailable,
-                messages,
-                strict
-            });
+            await runMigrationStep(MigrationStep.postProcessing, () =>
+                postProcessMigration({
+                    fs,
+                    projectInfo,
+                    rootPath,
+                    manifestJSON: templateContext.manifestJSON,
+                    vscode,
+                    appIntent: templateContext.appIntent,
+                    appMockIntent: templateContext.appMockIntent,
+                    flpSandboxAvailable: templateContext.flpSandboxAvailable,
+                    messages,
+                    strict
+                })
+            );
 
             // Phase 6: TypeScript setup (if TypeScript app detected)
             if (isTypeScriptApp) {
-                const tsMessages = await ProjectMigrator.setupTypeScript(fs, rootPath);
+                const tsMessages = await runMigrationStep(MigrationStep.setupTypeScript, () =>
+                    ProjectMigrator.setupTypeScript(fs, rootPath)
+                );
                 messages.push(...tsMessages);
             }
 
@@ -346,7 +366,7 @@ export class ProjectMigrator {
         } catch (e) {
             return {
                 result: false,
-                messages: [...messages, { type: 'ERROR', description: createMigrationErrorMessage(e) }]
+                messages: [...messages, { type: 'ERROR', description: createMigrationErrorMessage(e, rootPath) }]
             };
         }
     }

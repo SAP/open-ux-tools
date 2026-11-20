@@ -1,6 +1,7 @@
 import type { Message, ImportProjectInfo } from '../types.js';
 import type { Editor } from 'mem-fs-editor';
-import { validateMetadata, determineMessage } from '../utils/index.js';
+import { validateMetadata } from '../utils/index.js';
+import { describeError } from '../utils/migration-utils.js';
 import { MigrationTypes, postMigrationAction } from '../utils/constants.js';
 import { updateExtConfigJson } from '../components/extension.js';
 import { i18nText } from '../i18n.js';
@@ -71,10 +72,9 @@ export function checkForErrors(messages: Message[]): boolean {
  * Creates error message for migration failure
  *
  * @param e - Error object
+ * @param projectRoot - Absolute path of the project, so a file in the error is reported relative to it
  * @returns Formatted error message
  */
-export function createMigrationErrorMessage(e: any): string {
-    const errorText =
-        e.name === 'MigrationError' ? e.message.toString() : determineMessage(e) || e.message?.toString() || String(e);
-    return `Error copying common files: ${errorText}`;
+export function createMigrationErrorMessage(e: any, projectRoot?: string): string {
+    return `Error copying common files: ${describeError(e, projectRoot)}`;
 }
