@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Synthetic OData V2 service with meaningless names. Ua and Uc each list Ub children through an association
+     without a referential constraint. Both parents declare two of the three keys of Ub, Um and Un, as
+     properties of their own that are not their keys: nullable ones in Ua, required ones in Uc. Each Ub
+     references itself through all of its keys. -->
+<edmx:Edmx Version="1.0" xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx"
+    xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata">
+    <edmx:DataServices m:DataServiceVersion="2.0">
+        <Schema Namespace="Us" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
+            <EntityType Name="Ua">
+                <Key>
+                    <PropertyRef Name="Uk"/>
+                </Key>
+                <Property Name="Uk" Type="Edm.String" Nullable="false" MaxLength="10"/>
+                <Property Name="Um" Type="Edm.String" MaxLength="10"/>
+                <Property Name="Un" Type="Edm.String" MaxLength="6"/>
+                <NavigationProperty Name="Ubs" Relationship="Us.UaUb" FromRole="FromUa" ToRole="ToUb"/>
+            </EntityType>
+            <EntityType Name="Uc">
+                <Key>
+                    <PropertyRef Name="Uj"/>
+                </Key>
+                <Property Name="Uj" Type="Edm.String" Nullable="false" MaxLength="10"/>
+                <Property Name="Um" Type="Edm.String" Nullable="false" MaxLength="10"/>
+                <Property Name="Un" Type="Edm.String" Nullable="false" MaxLength="6"/>
+                <NavigationProperty Name="Ubs" Relationship="Us.UcUb" FromRole="FromUc" ToRole="ToUb"/>
+            </EntityType>
+            <EntityType Name="Ub">
+                <Key>
+                    <PropertyRef Name="Um"/>
+                    <PropertyRef Name="Un"/>
+                    <PropertyRef Name="Uz"/>
+                </Key>
+                <Property Name="Um" Type="Edm.String" Nullable="false" MaxLength="10"/>
+                <Property Name="Un" Type="Edm.String" Nullable="false" MaxLength="6"/>
+                <Property Name="Uz" Type="Edm.String" Nullable="false" MaxLength="4"/>
+                <Property Name="Uq" Type="Edm.Decimal" Precision="13" Scale="2"/>
+                <NavigationProperty Name="Ub" Relationship="Us.UbUb" FromRole="FromUb" ToRole="ToUb"/>
+            </EntityType>
+            <Association Name="UaUb">
+                <End Type="Us.Ua" Multiplicity="1" Role="FromUa"/>
+                <End Type="Us.Ub" Multiplicity="*" Role="ToUb"/>
+            </Association>
+            <Association Name="UcUb">
+                <End Type="Us.Uc" Multiplicity="1" Role="FromUc"/>
+                <End Type="Us.Ub" Multiplicity="*" Role="ToUb"/>
+            </Association>
+            <Association Name="UbUb">
+                <End Type="Us.Ub" Multiplicity="1" Role="FromUb"/>
+                <End Type="Us.Ub" Multiplicity="1" Role="ToUb"/>
+                <ReferentialConstraint>
+                    <Principal Role="ToUb">
+                        <PropertyRef Name="Um"/>
+                        <PropertyRef Name="Un"/>
+                        <PropertyRef Name="Uz"/>
+                    </Principal>
+                    <Dependent Role="FromUb">
+                        <PropertyRef Name="Um"/>
+                        <PropertyRef Name="Un"/>
+                        <PropertyRef Name="Uz"/>
+                    </Dependent>
+                </ReferentialConstraint>
+            </Association>
+            <EntityContainer Name="Us_Entities" m:IsDefaultEntityContainer="true">
+                <EntitySet Name="Uas" EntityType="Us.Ua"/>
+                <EntitySet Name="Ucs" EntityType="Us.Uc"/>
+                <EntitySet Name="Ubs" EntityType="Us.Ub"/>
+                <AssociationSet Name="UaUbSet" Association="Us.UaUb">
+                    <End EntitySet="Uas" Role="FromUa"/>
+                    <End EntitySet="Ubs" Role="ToUb"/>
+                </AssociationSet>
+                <AssociationSet Name="UcUbSet" Association="Us.UcUb">
+                    <End EntitySet="Ucs" Role="FromUc"/>
+                    <End EntitySet="Ubs" Role="ToUb"/>
+                </AssociationSet>
+                <AssociationSet Name="UbUbSet" Association="Us.UbUb">
+                    <End EntitySet="Ubs" Role="FromUb"/>
+                    <End EntitySet="Ubs" Role="ToUb"/>
+                </AssociationSet>
+            </EntityContainer>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>

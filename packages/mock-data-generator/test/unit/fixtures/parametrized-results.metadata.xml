@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Synthetic service with meaningless names. Wp is parametrized (Common.ResultContext): it cannot be listed,
+     and each of its rows contains the result rows Wr read under the parameters it holds. Wr has no entity set. -->
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/Common.xml">
+        <edmx:Include Namespace="com.sap.vocabularies.Common.v1" Alias="Common"/>
+    </edmx:Reference>
+    <edmx:DataServices>
+        <Schema Namespace="Ws" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <EntityContainer Name="EntityContainer">
+                <EntitySet Name="Wps" EntityType="Ws.Wp"/>
+            </EntityContainer>
+            <EntityType Name="Wp">
+                <Key>
+                    <PropertyRef Name="Wc"/>
+                    <PropertyRef Name="Wd"/>
+                </Key>
+                <Property Name="Wc" Type="Edm.String" Nullable="false" MaxLength="5"/>
+                <Property Name="Wd" Type="Edm.Date" Nullable="false"/>
+                <NavigationProperty Name="Set" Type="Collection(Ws.Wr)" Partner="Parameters" ContainsTarget="true"/>
+            </EntityType>
+            <EntityType Name="Wr">
+                <Key>
+                    <PropertyRef Name="Wk"/>
+                </Key>
+                <Property Name="Wk" Type="Edm.String" Nullable="false" MaxLength="12"/>
+                <Property Name="Wv" Type="Edm.Decimal" Precision="15" Scale="2"/>
+                <NavigationProperty Name="Parameters" Type="Ws.Wp" Partner="Set"/>
+            </EntityType>
+            <Annotations Target="Ws.Wp">
+                <Annotation Term="Common.ResultContext"/>
+            </Annotations>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>

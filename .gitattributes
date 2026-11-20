@@ -32,3 +32,4 @@ pnpm-lock.yaml eol=lf merge=ours
 *.so.0.0.0 binary
 *.zip binary -delta
 *.node binary -delta
+*.safetensors binary -delta

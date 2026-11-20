@@ -1,0 +1,28 @@
+{
+    "numHiddenLayers": 30,
+    "numKeyValueHeads": 3,
+    "hiddenSize": 576,
+    "numAttentionHeads": 9,
+    "promptContractVersion": 1,
+    "samplingOptions": {
+        "temperature": 0.6,
+        "topP": 0.9,
+        "repetitionPenalty": 1.15,
+        "noRepeatNgramSize": 4,
+        "maxNewTokens": 300
+    },
+    "promptTemplate": {
+        "systemPrompt": "You generate realistic, internally consistent SAP business mock data as JSON. Output ONLY a JSON array of row objects. No markdown, no commentary, no code fences. Every object must have exactly the requested keys. Respect stated max lengths, value-help targets (values should look like they belong to the referenced entity), and foreign-key targets. Use plausible English business text (company names, person names, cities, descriptions) - never placeholder text, never random characters.",
+        "exampleRow": {
+            "WidgetID": "W-1042",
+            "WidgetName": "Northgate Assembly Kit",
+            "ManufacturerCity": "Stuttgart",
+            "UnitPrice": 128.5,
+            "CreatedAt": "2026-03-11T00:00:00"
+        },
+        "chatMarkers": {
+            "turnStart": "<|im_start|>",
+            "turnEnd": "<|im_end|>"
+        }
+    }
+}

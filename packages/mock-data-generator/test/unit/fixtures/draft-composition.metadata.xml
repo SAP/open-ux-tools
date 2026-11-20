@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Synthetic draft composition with meaningless names: a draft root Qa composes Qb children through a to-many
+     navigation without a constraint whose partner (the child's to-one) carries the constraint, as CAP and RAP
+     services declare it. -->
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:Reference Uri="https://sap.github.io/odata-vocabularies/vocabularies/Common.xml">
+        <edmx:Include Alias="Common" Namespace="com.sap.vocabularies.Common.v1"/>
+    </edmx:Reference>
+    <edmx:DataServices>
+        <Schema Namespace="Qs" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <EntityContainer Name="EntityContainer">
+                <EntitySet Name="Qas" EntityType="Qs.Qa">
+                    <NavigationPropertyBinding Path="Qbs" Target="Qbs"/>
+                    <NavigationPropertyBinding Path="SiblingEntity" Target="Qas"/>
+                    <NavigationPropertyBinding Path="DraftAdministrativeData" Target="DraftAdministrativeData"/>
+                </EntitySet>
+                <EntitySet Name="Qbs" EntityType="Qs.Qb">
+                    <NavigationPropertyBinding Path="Qa" Target="Qas"/>
+                    <NavigationPropertyBinding Path="SiblingEntity" Target="Qbs"/>
+                    <NavigationPropertyBinding Path="DraftAdministrativeData" Target="DraftAdministrativeData"/>
+                </EntitySet>
+                <EntitySet Name="DraftAdministrativeData" EntityType="Qs.DraftAdministrativeData"/>
+            </EntityContainer>
+            <EntityType Name="Qa">
+                <Key>
+                    <PropertyRef Name="ID"/>
+                    <PropertyRef Name="IsActiveEntity"/>
+                </Key>
+                <Property Name="ID" Type="Edm.Guid" Nullable="false"/>
+                <Property Name="Qn" Type="Edm.String" MaxLength="20"/>
+                <Property Name="Qv" Type="Edm.Int32"/>
+                <Property Name="IsActiveEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="true"/>
+                <Property Name="HasActiveEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="false"/>
+                <Property Name="HasDraftEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="false"/>
+                <Property Name="DraftAdministrativeData_DraftUUID" Type="Edm.Guid"/>
+                <NavigationProperty Name="Qbs" Type="Collection(Qs.Qb)" Partner="Qa">
+                    <OnDelete Action="Cascade"/>
+                </NavigationProperty>
+                <NavigationProperty Name="DraftAdministrativeData" Type="Qs.DraftAdministrativeData" ContainsTarget="true"/>
+                <NavigationProperty Name="SiblingEntity" Type="Qs.Qa"/>
+            </EntityType>
+            <EntityType Name="Qb">
+                <Key>
+                    <PropertyRef Name="ID"/>
+                    <PropertyRef Name="IsActiveEntity"/>
+                </Key>
+                <Property Name="ID" Type="Edm.Guid" Nullable="false"/>
+                <Property Name="Qa_ID" Type="Edm.Guid"/>
+                <Property Name="Qm" Type="Edm.String" MaxLength="30"/>
+                <Property Name="IsActiveEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="true"/>
+                <Property Name="HasActiveEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="false"/>
+                <Property Name="HasDraftEntity" Type="Edm.Boolean" Nullable="false" DefaultValue="false"/>
+                <Property Name="DraftAdministrativeData_DraftUUID" Type="Edm.Guid"/>
+                <NavigationProperty Name="Qa" Type="Qs.Qa" Partner="Qbs">
+                    <ReferentialConstraint Property="Qa_ID" ReferencedProperty="ID"/>
+                </NavigationProperty>
+                <NavigationProperty Name="DraftAdministrativeData" Type="Qs.DraftAdministrativeData" ContainsTarget="true"/>
+                <NavigationProperty Name="SiblingEntity" Type="Qs.Qb"/>
+            </EntityType>
+            <EntityType Name="DraftAdministrativeData">
+                <Key>
+                    <PropertyRef Name="DraftUUID"/>
+                </Key>
+                <Property Name="DraftUUID" Type="Edm.Guid" Nullable="false"/>
+                <Property Name="CreationDateTime" Type="Edm.DateTimeOffset" Precision="7"/>
+                <Property Name="InProcessByUser" Type="Edm.String" MaxLength="256"/>
+                <Property Name="DraftIsCreatedByMe" Type="Edm.Boolean"/>
+            </EntityType>
+            <Action Name="draftPrepare" IsBound="true" EntitySetPath="in">
+                <Parameter Name="in" Type="Qs.Qa"/>
+                <Parameter Name="SideEffectsQualifier" Type="Edm.String"/>
+                <ReturnType Type="Qs.Qa"/>
+            </Action>
+            <Action Name="draftActivate" IsBound="true" EntitySetPath="in">
+                <Parameter Name="in" Type="Qs.Qa"/>
+                <ReturnType Type="Qs.Qa"/>
+            </Action>
+            <Action Name="draftEdit" IsBound="true" EntitySetPath="in">
+                <Parameter Name="in" Type="Qs.Qa"/>
+                <Parameter Name="PreserveChanges" Type="Edm.Boolean"/>
+                <ReturnType Type="Qs.Qa"/>
+            </Action>
+            <Annotations Target="Qs.EntityContainer/Qas">
+                <Annotation Term="Common.DraftRoot">
+                    <Record Type="Common.DraftRootType">
+                        <PropertyValue Property="ActivationAction" String="Qs.draftActivate"/>
+                        <PropertyValue Property="EditAction" String="Qs.draftEdit"/>
+                        <PropertyValue Property="PreparationAction" String="Qs.draftPrepare"/>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="Qs.EntityContainer/Qbs">
+                <Annotation Term="Common.DraftNode">
+                    <Record Type="Common.DraftNodeType">
+                        <PropertyValue Property="PreparationAction" String="Qs.draftPrepare"/>
+                    </Record>
+                </Annotation>
+            </Annotations>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>

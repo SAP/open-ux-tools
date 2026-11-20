@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Synthetic service with meaningless names. Ko is draft-enabled through the standard draft keys and flags,
+     and the KoDraftUi rows declare the key of Ko. The set name of the children holds the word of a draft
+     flag of Ko, nothing more links them. -->
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:DataServices>
+        <Schema Namespace="Ks" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <EntityContainer Name="EntityContainer">
+                <EntitySet Name="KoUi" EntityType="Ks.Ko">
+                    <NavigationPropertyBinding Path="SiblingEntity" Target="KoUi"/>
+                </EntitySet>
+                <EntitySet Name="KoDraftUi" EntityType="Ks.KoDraft"/>
+            </EntityContainer>
+            <EntityType Name="Ko">
+                <Key>
+                    <PropertyRef Name="Kk"/>
+                    <PropertyRef Name="IsActiveEntity"/>
+                </Key>
+                <Property Name="Kk" Type="Edm.String" Nullable="false" MaxLength="10"/>
+                <Property Name="IsActiveEntity" Type="Edm.Boolean" Nullable="false"/>
+                <Property Name="HasActiveEntity" Type="Edm.Boolean" Nullable="false"/>
+                <Property Name="HasDraftEntity" Type="Edm.Boolean" Nullable="false"/>
+                <Property Name="Kn" Type="Edm.String" MaxLength="40"/>
+                <NavigationProperty Name="SiblingEntity" Type="Ks.Ko"/>
+            </EntityType>
+            <EntityType Name="KoDraft">
+                <Key>
+                    <PropertyRef Name="Kk"/>
+                    <PropertyRef Name="Kd"/>
+                </Key>
+                <Property Name="Kk" Type="Edm.String" Nullable="false" MaxLength="10"/>
+                <Property Name="Kd" Type="Edm.String" Nullable="false" MaxLength="4"/>
+                <Property Name="Kq" Type="Edm.Decimal" Precision="13" Scale="2"/>
+            </EntityType>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>

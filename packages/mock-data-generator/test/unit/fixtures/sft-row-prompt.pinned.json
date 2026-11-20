@@ -1,0 +1,70 @@
+{
+    "single": {
+        "input": {
+            "entityName": "BookType",
+            "fields": [
+                {
+                    "name": "Title",
+                    "primitiveType": "string",
+                    "nullable": false,
+                    "maxLength": 80
+                }
+            ]
+        },
+        "prompt": "<|im_start|>system\nYou generate realistic, internally consistent SAP business mock data as JSON. Output ONLY a JSON array of row objects. No markdown, no commentary, no code fences. Every object must have exactly the requested keys. Respect stated max lengths, value-help targets (values should look like they belong to the referenced entity), and foreign-key targets. Use plausible English business text (company names, person names, cities, descriptions) - never placeholder text, never random characters.<|im_end|>\n<|im_start|>user\nEntity: Book\nGenerate 1 realistic row for this service entity.\nFields:\n- Title: string, [required], maxLength=80\n\nExample of the kind of concrete, filled-in values expected (different entity, shown only to demonstrate the JSON shape and level of detail):\n{\"WidgetID\":\"W-1042\"}\n\nNow return a JSON array of exactly 1 filled-in objects (no \"...\" placeholders, no comments) with keys: Title<|im_end|>\n<|im_start|>assistant\n"
+    },
+    "many": {
+        "input": {
+            "entityName": "SalesOrderItemType",
+            "fields": [
+                {
+                    "name": "SalesOrder",
+                    "primitiveType": "string",
+                    "nullable": false,
+                    "isKey": true,
+                    "maxLength": 10,
+                    "label": "Sales Order",
+                    "foreignKeyTargets": ["SalesOrder.SalesOrder"]
+                },
+                {
+                    "name": "Material",
+                    "primitiveType": "string",
+                    "nullable": true,
+                    "maxLength": 40,
+                    "semanticRole": "product_name",
+                    "valueHelpTargets": ["Materials.Material"]
+                },
+                {
+                    "name": "NetAmount",
+                    "primitiveType": "decimal",
+                    "nullable": true,
+                    "precision": 15,
+                    "scale": 2,
+                    "currencyOrUnitField": "Currency"
+                },
+                {
+                    "name": "Currency",
+                    "primitiveType": "string",
+                    "nullable": true,
+                    "maxLength": 5,
+                    "declaredMaxLength": 5,
+                    "referencedBy": ["SalesOrderItem.NetAmount"]
+                },
+                {
+                    "name": "Status",
+                    "primitiveType": "string",
+                    "nullable": false,
+                    "allowedDomain": ["A", "B", "C"],
+                    "description": "Processing status"
+                },
+                {
+                    "name": "CreatedAt",
+                    "primitiveType": "datetimeoffset",
+                    "nullable": true,
+                    "description": "CreatedAt"
+                }
+            ]
+        },
+        "prompt": "<|im_start|>system\nYou generate realistic, internally consistent SAP business mock data as JSON. Output ONLY a JSON array of row objects. No markdown, no commentary, no code fences. Every object must have exactly the requested keys. Respect stated max lengths, value-help targets (values should look like they belong to the referenced entity), and foreign-key targets. Use plausible English business text (company names, person names, cities, descriptions) - never placeholder text, never random characters.<|im_end|>\n<|im_start|>user\nEntity: SalesOrderItem\nGenerate 1 realistic row for this service entity.\nFields:\n- SalesOrder: string, [PRIMARY KEY], [required], maxLength=10, label=\"Sales Order\", FK-target=SalesOrder.SalesOrder\n- Material: string, maxLength=40, semantics=product_name, value-help-target=Materials.Material\n- NetAmount: decimal, precision=15, scale=2, currency/unit-code-field=Currency\n- Currency: string, maxLength=5, referenced-by=SalesOrderItem.NetAmount\n- Status: string, [required], guidance=\"Processing status\", enum=[\"A\",\"B\",\"C\"]\n- CreatedAt: datetimeoffset\n\nExample of the kind of concrete, filled-in values expected (different entity, shown only to demonstrate the JSON shape and level of detail):\n{\"WidgetID\":\"W-1042\",\"WidgetName\":\"Northgate Assembly Kit\",\"ManufacturerCity\":\"Stuttgart\",\"UnitPrice\":128.5,\"CreatedAt\":\"2026-03-11T00:00:00\"}\n\nNow return a JSON array of exactly 1 filled-in objects (no \"...\" placeholders, no comments) with keys: SalesOrder, Material, NetAmount, Currency, Status, CreatedAt<|im_end|>\n<|im_start|>assistant\n"
+    }
+}
