@@ -1,6 +1,7 @@
 import { Command } from 'commander';
 import { resolve, basename } from 'node:path';
 import { existsSync, readFileSync } from 'node:fs';
+import prompts from 'prompts';
 import {
     ProjectAccess,
     ProjectMigrator,
@@ -18,7 +19,6 @@ import {
 import { getLogger } from '../../tracing/index.js';
 import { findSystemByUrl } from '../utils/system-lookup.js';
 import { t } from '../../i18n.js';
-import { ask, NoInputError } from './ask.js';
 import { writeMigrationLog, getMigrationLogsDirectory, type MigrationLogEntry } from './traceability.js';
 import {
     MigrationEventName,
@@ -165,7 +165,7 @@ function createRequiredValidator(fieldName: string): (value: string) => boolean 
  * @returns user input
  */
 async function promptRequiredText(name: string, message: string, fieldName: string): Promise<string> {
-    const response = await ask({
+    const response = await prompts({
         type: 'text',
         name,
         message,
@@ -186,7 +186,7 @@ async function promptRequiredText(name: string, message: string, fieldName: stri
  * @returns confirmation response
  */
 async function promptConfirm(name: string, message: string, initial: boolean): Promise<boolean> {
-    const response = await ask({ type: 'confirm', name, message, initial });
+    const response = await prompts({ type: 'confirm', name, message, initial });
     if (response[name] === undefined) {
         throw new Error(t('migrate.validation.operationCancelled'));
     }
@@ -370,7 +370,7 @@ async function getClient(optionClient?: string): Promise<string | undefined> {
         );
     }
 
-    const response = await ask({
+    const response = await prompts({
         type: 'text',
         name: 'clientValue',
         message: t('migrate.prompts.enterClientOptional'),
@@ -397,7 +397,7 @@ async function getUI5Version(optionVersion?: string): Promise<string | undefined
         return undefined;
     }
 
-    const response = await ask({
+    const response = await prompts({
         type: 'text',
         name: 'version',
         message: t('migrate.prompts.enterUI5Version'),
@@ -433,10 +433,6 @@ async function findMigrationSystem(
         const savedSystem = await findSystemByUrl(projectInfo.hostname, projectInfo.sapClient || undefined, service);
         return { projectInfo, system: savedSystem ? { ...savedSystem, scp: false } : undefined };
     } catch (error) {
-        // Later prompts could not be answered either
-        if (error instanceof NoInputError) {
-            throw error;
-        }
         logger.debug(`Unable to resolve a migration system: ${(error as Error).message}`);
         return { projectInfo };
     }
@@ -472,7 +468,7 @@ async function findBASDestination(
             return matches[0];
         }
         if (matches.length > 1) {
-            const answer = await ask({
+            const answer = await prompts({
                 type: 'select',
                 name: 'system',
                 message: t('migrate.prompts.selectBASDestination'),
@@ -491,7 +487,7 @@ async function findBASDestination(
         }
     } catch (error) {
         // Re-throw cancellation errors so the user can abort
-        if (error instanceof NoInputError || (error as Error).message === t('migrate.validation.operationCancelled')) {
+        if ((error as Error).message === t('migrate.validation.operationCancelled')) {
             throw error;
         }
         // Invalid source or destination URLs cannot be matched safely.
@@ -782,9 +778,7 @@ async function migrate(projectPath: string | undefined, options: MigrateCommandO
     try {
         await runMigration(projectPath, options, summary);
     } catch (error) {
-        // The run ended before migrating, because the user cancelled or there was no input to answer a prompt
-        summary.cancelled =
-            error instanceof NoInputError || (error as Error).message === t('migrate.validation.operationCancelled');
+        summary.cancelled = (error as Error).message === t('migrate.validation.operationCancelled');
         throw error;
     } finally {
         await trackMigrateEvent(
