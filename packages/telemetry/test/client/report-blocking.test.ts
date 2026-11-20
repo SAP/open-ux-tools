@@ -83,4 +83,31 @@ describe('ClientFactory Send Report Blocking Tests', () => {
         expect(flushMock).toHaveBeenCalledTimes(1);
         telemetryClientWrapperTrackEventMock.mockClear();
     });
+
+    it('reportEventBlocking - does not send or flush if telemetry is disabled', async () => {
+        TelemetrySettings.telemetryEnabled = false;
+        trackEventMock.mockClear();
+        flushMock.mockClear();
+
+        await ClientFactory.getTelemetryClient().reportEventBlocking(
+            { eventName: EventName.Test, properties: {}, measurements: {} },
+            SampleRate.NoSampling
+        );
+
+        expect(trackEventMock).not.toHaveBeenCalled();
+        expect(flushMock).not.toHaveBeenCalled();
+    });
+
+    it('reportBlocking - does not send if telemetry is disabled, also when ignoreSettings is set', async () => {
+        TelemetrySettings.telemetryEnabled = false;
+        trackEventMock.mockClear();
+        flushMock.mockClear();
+        const telemetryClient = ClientFactory.getTelemetryClient();
+
+        await telemetryClient.reportBlocking(EventName.Test, {}, {}, SampleRate.NoSampling);
+        await telemetryClient.reportBlocking(EventName.Test, {}, {}, SampleRate.NoSampling, true);
+
+        expect(trackEventMock).not.toHaveBeenCalled();
+        expect(flushMock).not.toHaveBeenCalled();
+    });
 });
