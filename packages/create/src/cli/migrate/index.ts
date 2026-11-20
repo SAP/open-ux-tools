@@ -152,47 +152,6 @@ function validateUI5Version(version: string): string {
  * @param fieldName - name of the field for error message
  * @returns validation function
  */
-function createRequiredValidator(fieldName: string): (value: string) => boolean | string {
-    return (value: string) => (value ? true : t('migrate.validation.fieldRequired', { fieldName }));
-}
-
-/**
- * Helper to prompt for a required text input.
- *
- * @param name - prompt name
- * @param message - prompt message
- * @param fieldName - field name for validation error
- * @returns user input
- */
-async function promptRequiredText(name: string, message: string, fieldName: string): Promise<string> {
-    const response = await prompts({
-        type: 'text',
-        name,
-        message,
-        validate: createRequiredValidator(fieldName)
-    });
-    if (response[name] === undefined) {
-        throw new Error(t('migrate.validation.operationCancelled'));
-    }
-    return response[name] as string;
-}
-
-/**
- * Helper to prompt for confirmation.
- *
- * @param name - prompt name
- * @param message - prompt message
- * @param initial - initial value
- * @returns confirmation response
- */
-async function promptConfirm(name: string, message: string, initial: boolean): Promise<boolean> {
-    const response = await prompts({ type: 'confirm', name, message, initial });
-    if (response[name] === undefined) {
-        throw new Error(t('migrate.validation.operationCancelled'));
-    }
-    return response[name] as boolean;
-}
-
 /**
  * Returns the 'migrate' command for the commander program.
  *
@@ -221,32 +180,13 @@ export function getMigrateCommand(): Command {
 }
 
 /**
- * Get project path from user or use provided path.
+ * Get project path from argument or default to current directory.
  *
  * @param projectPath - optional project path from command line
  * @returns resolved project path
  */
 async function getProjectPath(projectPath: string | undefined): Promise<string> {
-    let resolvedPath = projectPath ? validatePath(projectPath) : process.cwd();
-
-    if (!projectPath) {
-        const confirmPath = await promptConfirm(
-            'confirmPath',
-            t('migrate.prompts.confirmCurrentDir', { path: resolvedPath }),
-            true
-        );
-
-        if (!confirmPath) {
-            const customPath = await promptRequiredText(
-                'customPath',
-                t('migrate.prompts.enterPath'),
-                t('migrate.prompts.enterPathField')
-            );
-            resolvedPath = validatePath(customPath);
-        }
-    }
-
-    return resolvedPath;
+    return projectPath ? validatePath(projectPath) : process.cwd();
 }
 
 /**
@@ -279,20 +219,17 @@ async function checkForceRequired(
     }
 
     if (isToolsProject && !force) {
+        // Default to not forcing migration (safe default)
         logger.warn(t('migrate.prompts.alreadyMigrated'));
-        const confirmForce = await promptConfirm('confirmForce', t('migrate.prompts.forceConfirm'), false);
-
-        if (!confirmForce) {
-            logger.info(t('migrate.prompts.cancelled'));
-            return { proceed: false, forced: false };
-        }
+        logger.info(t('migrate.prompts.cancelled'));
+        return { proceed: false, forced: false };
     }
 
     return { proceed: true, forced: isToolsProject };
 }
 
 /**
- * Get destination or hostname from user or options.
+ * Get destination or hostname from options, defaulting to localhost if neither provided.
  *
  * @param options - command options
  * @returns object with destination and hostname
@@ -301,7 +238,6 @@ async function getDestinationOrHostname(options: MigrateCommandOptions): Promise
     destination?: string;
     hostname?: string;
 }> {
-    const appStudio = isAppStudio();
     let destination = options.destination ?? options.sapSystemName;
     let hostname = options.hostname ? validateHostname(options.hostname) : undefined;
 
@@ -310,102 +246,34 @@ async function getDestinationOrHostname(options: MigrateCommandOptions): Promise
         destination = validateDestination(destination);
     }
 
-    if (appStudio) {
-        if (!destination) {
-            destination = validateDestination(
-                await promptRequiredText(
-                    'dest',
-                    t('migrate.prompts.enterBASDestination'),
-                    t('migrate.prompts.destinationField')
-                )
-            );
-        }
-    } else if (!hostname && !destination) {
-        const useDestination = await promptConfirm('useDestination', t('migrate.prompts.useDestination'), true);
-
-        if (useDestination) {
-            const dest = await promptRequiredText(
-                'dest',
-                t('migrate.prompts.enterBTPDestination'),
-                t('migrate.prompts.destinationField')
-            );
-            destination = validateDestination(dest);
-        }
-
-        if (!destination) {
-            const host = await promptRequiredText(
-                'host',
-                t('migrate.prompts.enterHostname'),
-                t('migrate.prompts.hostnameField')
-            );
-            hostname = validateHostname(host);
-        }
-    } else if (!hostname && destination) {
-        // Outside BAS with destination but no hostname - prompt for hostname
-        const host = await promptRequiredText(
-            'host',
-            t('migrate.prompts.enterHostname'),
-            t('migrate.prompts.hostnameField')
-        );
-        hostname = validateHostname(host);
+    // Default hostname to localhost if not provided
+    if (!hostname) {
+        hostname = 'localhost';
     }
 
     return { destination, hostname };
 }
 
 /**
- * Get optional client parameter.
+ * Get optional client parameter, defaulting to undefined if not provided.
  *
  * @param optionClient - client from command options
  * @returns client value or undefined
  */
 async function getClient(optionClient?: string): Promise<string | undefined> {
-    if (optionClient) {
-        return validateClient(optionClient);
-    }
-
-    if (!isAppStudio()) {
-        return validateClient(
-            await promptRequiredText('clientValue', t('migrate.prompts.enterClient'), t('migrate.prompts.clientField'))
-        );
-    }
-
-    const response = await prompts({
-        type: 'text',
-        name: 'clientValue',
-        message: t('migrate.prompts.enterClientOptional'),
-        initial: ''
-    });
-
-    const client = response.clientValue as string;
-    return client ? validateClient(client) : undefined;
+    // Default to undefined (no client) if not provided
+    return optionClient ? validateClient(optionClient) : undefined;
 }
 
 /**
- * Get UI5 version parameter.
+ * Get UI5 version parameter, defaulting to undefined (project default) if not provided.
  *
  * @param optionVersion - UI5 version from command options
  * @returns UI5 version or undefined
  */
 async function getUI5Version(optionVersion?: string): Promise<string | undefined> {
-    if (optionVersion) {
-        return validateUI5Version(optionVersion);
-    }
-
-    // Non-interactive: use project default
-    if (!process.stdin.isTTY) {
-        return undefined;
-    }
-
-    const response = await prompts({
-        type: 'text',
-        name: 'version',
-        message: t('migrate.prompts.enterUI5Version'),
-        initial: ''
-    });
-
-    const version = response.version as string;
-    return version ? validateUI5Version(version) : undefined;
+    // Default to undefined (use project default) if not provided
+    return optionVersion ? validateUI5Version(optionVersion) : undefined;
 }
 
 /**
