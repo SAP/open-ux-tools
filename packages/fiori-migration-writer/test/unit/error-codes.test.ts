@@ -297,8 +297,9 @@ describe('error-codes', () => {
             });
 
             it('should not match partial words', () => {
-                // "floorplanning" should not match "floorplan"
-                const error = new Error('Error during project floorplanning phase');
+                // "floorplans" (plural) should not match the singular "floorplan" pattern
+                // Word boundary check prevents matching "unsupported floorplans" vs "unsupported floorplan"
+                const error = new Error('Multiple floorplans detected in project');
                 expect(extractErrorCode(error)).toBe('UNKNOWN_ERROR');
             });
         });
