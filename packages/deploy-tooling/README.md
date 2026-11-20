@@ -60,6 +60,8 @@ This is the minimal custom task configuration for deployment using package `$TMP
 
 > **Note:** The package name `$TMP` must be uppercase. If a lowercase variant, for example, `$tmp` is detected in the configuration, it is automatically normalized to `$TMP` and a warning is logged because lowercase values can cause deployment failures.
 
+> **Note:** You do not need to maintain `configuration.exclude` manually. At deploy time the deploy tooling reads `builder.resources.excludes` from your `ui5-deploy.yaml` and merges (unions) those patterns with any explicit `configuration.exclude` entries and any `--exclude` CLI patterns. The YAML file is not rewritten — merging happens in memory at runtime. Explicit values are added to, not substituted for, the derived values. Patterns use glob semantics (`*` within a path segment, `**` across segments); regex metacharacters such as `.` are matched literally. Previous versions matched `configuration.exclude` entries as regular expressions — migrate any regex patterns to globs (e.g. `.*\.map$` becomes `/**/*.map`). A warning is logged at deploy time for entries that still look like regular expressions.
+
 ```yaml
 - name: abap-deploy-task
   configuration:
@@ -70,6 +72,7 @@ This is the minimal custom task configuration for deployment using package `$TMP
       url: https://target.example
     exclude:
       - /test/
+      - /localService/
 ```
 
 #### Configuration with logging enabled
@@ -141,6 +144,7 @@ Options:
   --description <description>          Project description of the app
   --safe                               Prevents accidentally breaking deployments.
   --keep                               Keep a copy of the deployed archive in the project folder.
+  --exclude <patterns...>              Exclude files matching these glob/path patterns from the deployment archive (e.g. /test/ /localService/). Merged (union) with configuration.exclude and the builder.resources.excludes derived from the yaml config.
   --archive-url <url>                  Download app bundle from this url and upload this bundle for deployment
   --archive-path <path>                Provide path of the app bundle for deployment
   --archive-folder <path>              Provide path to a folder for deployment
@@ -180,8 +184,8 @@ builder:
           description: <app-description>
           package: <package-name>
           transport: <transport-request>
-        exclude:
-          - /test/
+        # configuration.exclude is merged at deploy time with builder.resources.excludes above.
+        # The yaml is not rewritten; e.g. '/test/**' and '/localService/**' are applied at deploy time.
 ```
 Deploy CLI command;
 ```bash
