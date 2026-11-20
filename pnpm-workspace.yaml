@@ -156,7 +156,7 @@ overrides:
     '@tootallnate/once': '>=3.0.1'
     esbuild-loader: '>=4.0.0'
     qs: '6.16.0'
-    axios: '>=1.20.0'
+    axios: '>=1.21.1'
     '@sap-ux/ui5-config>axios': '>=1.20.0'
     '@sap-ux/project-access>axios': '>=1.20.0'
     '@sap/bas-sdk>axios': '>=1.20.0'
