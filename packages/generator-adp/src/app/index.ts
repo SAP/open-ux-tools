@@ -117,6 +117,7 @@ import { hasExistingApprouter, resolveCfProjectPath, resolveCfServiceInstance } 
 import { initTelemetrySettings } from '@sap-ux/telemetry';
 
 const generatorTitle = 'Adaptation Project';
+const resourceId = 'ApplicationInsightsInstrumentationKeyPLACEH0LDER';
 
 /**
  * Generator for creating an Adaptation Project.
@@ -317,7 +318,8 @@ export default class extends Generator {
                 version: this.rootGeneratorVersion()
             },
             internalFeature: isInternalUsage,
-            watchTelemetrySettingStore: false
+            watchTelemetrySettingStore: false,
+            resourceId
         });
         this.telemetryCollector = new TelemetryCollector();
         if (!this.jsonInput) {
