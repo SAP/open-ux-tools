@@ -110,7 +110,16 @@ jest.unstable_mockModule('@sap-ux/telemetry', () => ({
     ClientFactory: { getTelemetryClient: () => ({ reportEventBlocking: mockReportEventBlocking }) },
     SampleRate: { NoSampling: 2 },
     initTelemetrySettings: jest.fn().mockResolvedValue(undefined),
-    getTelemetrySetting: () => mockGetTelemetrySetting()
+    getTelemetrySetting: () => mockGetTelemetrySetting(),
+    isTelemetryDisabledByEnv: (): boolean => {
+        if (['1', 'true'].includes(process.env.DO_NOT_TRACK?.toLowerCase() ?? '')) {
+            return true;
+        }
+        if (process.env.SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY === 'true') {
+            return true;
+        }
+        return false;
+    }
 }));
 
 const { getMigrateCommand } = await import('../../../src/cli/migrate/index.js');

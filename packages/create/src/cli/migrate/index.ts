@@ -419,36 +419,6 @@ async function getUI5Version(optionVersion?: string): Promise<string | undefined
 }
 
 /**
- * Load the legacy project information and resolve its backend to a saved system or BAS destination.
- *
- * @param projectPath - legacy project root
- * @returns the project information and the matched system, if available
- */
-async function findMigrationSystem(
-    projectPath: string
-): Promise<{ system?: MigrationSystem; projectInfo?: ImportProjectInfo }> {
-    const logger = getLogger();
-    let projectInfo: ImportProjectInfo | undefined;
-    try {
-        ({ projectInfo } = await ProjectAccess.getProjectInfo(projectPath));
-        if (isAppStudio()) {
-            return { projectInfo, system: await findBASDestination(projectInfo.destination, projectInfo.hostname) };
-        }
-
-        if (!projectInfo.hostname) {
-            return { projectInfo };
-        }
-
-        const service = await getService<BackendSystem, BackendSystemKey>({ entityName: 'system', logger });
-        const savedSystem = await findSystemByUrl(projectInfo.hostname, projectInfo.sapClient || undefined, service);
-        return { projectInfo, system: savedSystem ? { ...savedSystem, scp: false } : undefined };
-    } catch (error) {
-        logger.debug(`Unable to resolve a migration system: ${(error as Error).message}`);
-        return { projectInfo };
-    }
-}
-
-/**
  * Resolve the backend system for a legacy project without loading project info.
  * Measures only the backend lookup time, excluding local I/O.
  *

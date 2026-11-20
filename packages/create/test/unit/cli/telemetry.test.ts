@@ -17,7 +17,16 @@ jest.unstable_mockModule('@sap-ux/telemetry', () => ({
     SampleRate: { NoSampling: 2 },
     initTelemetrySettings: jest.fn(),
     setEnableTelemetry: (enable: boolean) => mockSetEnableTelemetry(enable),
-    getTelemetrySetting: () => mockGetTelemetrySetting()
+    getTelemetrySetting: () => mockGetTelemetrySetting(),
+    isTelemetryDisabledByEnv: (): boolean => {
+        if (['1', 'true'].includes(process.env.DO_NOT_TRACK?.toLowerCase() ?? '')) {
+            return true;
+        }
+        if (process.env.SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY === 'true') {
+            return true;
+        }
+        return false;
+    }
 }));
 
 jest.unstable_mockModule('@sap-ux/store', () => ({ getFioriToolsDirectory: () => '/tmp/fioritools-test' }));
