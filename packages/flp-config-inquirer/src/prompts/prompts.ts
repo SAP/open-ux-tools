@@ -49,7 +49,7 @@ export function getQuestions(
             existingKeyRef,
             promptOptions?.[promptNames.overwrite]
         ),
-        [promptNames.title]: getTitlePrompt(existingKeyRef, silentOverwrite, isCLI, promptOptions?.[promptNames.title]),
+        [promptNames.title]: getTitlePrompt(existingKeyRef, silentOverwrite, promptOptions?.[promptNames.title]),
         [promptNames.subTitle]: getSubTitlePrompt(
             existingKeyRef,
             silentOverwrite,

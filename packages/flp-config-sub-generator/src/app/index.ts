@@ -128,15 +128,15 @@ export default class extends Generator {
             this.launchFlpConfigAsSubGenerator &&
             this.options.inboundConfig?.semanticObject !== undefined &&
             this.options.inboundConfig?.action !== undefined &&
-            this.options.inboundConfig?.title !== undefined &&
             this.options.skipPrompt
         ) {
             this.answers = {
                 overwrite: true,
                 semanticObject: this.options.inboundConfig.semanticObject,
                 action: this.options.inboundConfig.action,
-                title: this.options.inboundConfig.title,
-                subTitle: this.options.inboundConfig.subTitle
+                // blank title/subTitle must be omitted so the manifest falls back to `sap.app/title`
+                title: this.options.inboundConfig.title === '' ? undefined : this.options.inboundConfig.title,
+                subTitle: this.options.inboundConfig.subTitle === '' ? undefined : this.options.inboundConfig.subTitle
             };
             return;
         }
@@ -167,6 +167,11 @@ export default class extends Generator {
         if (answers.s4Continue === false || (answers.overwrite === false && !silentOverwrite)) {
             this.abort = true;
             process.exit(0); // only relevant for CLI
+        }
+
+        if (answers.title === '') {
+            // '' (empty string) should be set as undefined
+            answers.title = undefined;
         }
 
         if (answers.subTitle === '') {

@@ -67,6 +67,23 @@ describe('Unit tests for navigation config generation', () => {
         expect(fs.readJSON(join(appPathNoInbounds, 'webapp', 'manifest.json'))).toMatchSnapshot();
     });
 
+    test('overwrite clears title/subTitle when not provided', async () => {
+        // existing inbound semanticObject1-action1 has title1/subtitle1
+        const appPathInbounds = join(fixturePath, '/ui5-app-inbounds');
+        const fs = await generateInboundNavigationConfig(
+            appPathInbounds,
+            { semanticObject: 'semanticObject1', action: 'action1' },
+            true
+        );
+        const manifest = fs.readJSON(join(appPathInbounds, 'webapp', 'manifest.json')) as {
+            'sap.app': { crossNavigation: { inbounds: Record<string, Record<string, unknown>> } };
+        };
+        const inbound = manifest['sap.app'].crossNavigation.inbounds['semanticObject1-action1'];
+        expect(inbound).not.toHaveProperty('title');
+        expect(inbound).not.toHaveProperty('subTitle');
+        expect(inbound).toMatchObject({ semanticObject: 'semanticObject1', action: 'action1' });
+    });
+
     test('manifest not found', async () => {
         const appPathNoInbounds = join(fixturePath, '/not-existing-app');
         await expect(() =>
