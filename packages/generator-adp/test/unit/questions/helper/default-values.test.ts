@@ -16,7 +16,7 @@ jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
     validateUI5VersionExists: jest.fn().mockResolvedValue(true)
 }));
 
-const { getDefaultNamespace, getDefaultVersion } =
+const { generateBusinessSolutionName, getDefaultNamespace, getDefaultVersion, resolveProjectName } =
     await import('../../../../src/app/questions/helper/default-values.js');
 const { getDefaultProjectName } = await import('@sap-ux/adp-tooling');
 
@@ -46,6 +46,34 @@ describe('getDefaultProjectName', () => {
         const defaultName = getDefaultProjectName(testPath);
 
         expect(defaultName).toBe('app.variant2');
+    });
+});
+
+describe('resolveProjectName', () => {
+    const testPath = 'home/projects';
+
+    afterEach(() => {
+        jest.restoreAllMocks();
+    });
+
+    it('should return the requested name verbatim when provided', () => {
+        expect(resolveProjectName(testPath, 'app.variant.cf')).toBe('app.variant.cf');
+    });
+
+    it('should fall back to the derived default when no name is requested', () => {
+        mockExistsSync.mockReturnValueOnce(true).mockReturnValueOnce(false);
+
+        expect(resolveProjectName(testPath)).toBe('app.variant2');
+    });
+});
+
+describe('generateBusinessSolutionName', () => {
+    it('should return a "solution-" prefixed name with 10 hex characters', () => {
+        expect(generateBusinessSolutionName()).toMatch(/^solution-[0-9a-f]{10}$/);
+    });
+
+    it('should return a different value on each call', () => {
+        expect(generateBusinessSolutionName()).not.toBe(generateBusinessSolutionName());
     });
 });
 
