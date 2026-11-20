@@ -1,5 +1,17 @@
 # @sap-ux/fiori-tools-plugin
 
+## 1.17.2
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-20
+
+#### Bug Fixes
+
+- Streamline sap-fiori-text-and-id skill guidance [[29f121a](https://github.com/SAP/open-ux-tools/commit/29f121acf3b71313c767e4a342dcda2916bd246f)]
+
 ## 1.17.1
 
 ### Patch Changes
