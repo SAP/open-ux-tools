@@ -535,4 +535,48 @@ describe('<UITranslationInput />', () => {
             );
         }
     );
+
+    describe('Read only', () => {
+        test('Callout is not opened when input is read only', () => {
+            render(
+                <UITranslationInput
+                    id={id}
+                    value="Some text"
+                    entries={entries}
+                    allowedPatterns={[TranslationTextPattern.SingleBracketBinding]}
+                    defaultPattern={TranslationTextPattern.SingleBracketBinding}
+                    i18nPrefix={'i18n'}
+                    readOnly={true}
+                    onChange={jest.fn()}
+                />
+            );
+
+            clickI18nButton(false);
+        });
+
+        test('Closes an open callout and prevents accepting after input becomes read only', () => {
+            const onCreateNewEntry = jest.fn();
+            const onChange = jest.fn();
+            const props = {
+                id,
+                value: 'new translation',
+                entries,
+                allowedPatterns: [TranslationTextPattern.SingleBracketBinding],
+                defaultPattern: TranslationTextPattern.SingleBracketBinding,
+                i18nPrefix: 'i18n',
+                onCreateNewEntry,
+                onChange
+            };
+            const { rerender } = render(<UITranslationInput {...props} />);
+
+            clickI18nButton();
+            expect(document.querySelectorAll(selectors.callout)).toHaveLength(1);
+
+            rerender(<UITranslationInput {...props} readOnly={true} />);
+
+            expect(document.querySelectorAll(selectors.callout)).toHaveLength(0);
+            expect(onCreateNewEntry).not.toHaveBeenCalled();
+            expect(onChange).not.toHaveBeenCalled();
+        });
+    });
 });

@@ -195,7 +195,8 @@ export const UITranslationInput = <T extends TranslationEntry = TranslationEntry
         disabled,
         strings,
         invertedCalloutTheme,
-        preventFocusRestoreOnAccept
+        preventFocusRestoreOnAccept,
+        readOnly
     } = props;
 
     const suggestion = getTranslationSuggestion(props);
@@ -235,6 +236,7 @@ export const UITranslationInput = <T extends TranslationEntry = TranslationEntry
                 suggestion={suggestion}
                 invertedCalloutTheme={invertedCalloutTheme}
                 preventFocusRestoreOnAccept={preventFocusRestoreOnAccept}
+                readOnly={readOnly}
             />
         );
     }, [
@@ -250,7 +252,8 @@ export const UITranslationInput = <T extends TranslationEntry = TranslationEntry
         onCreateNewEntry,
         onShowExistingEntry,
         onUpdateValue,
-        preventFocusRestoreOnAccept
+        preventFocusRestoreOnAccept,
+        readOnly
     ]);
 
     const onRenderInput = useCallback(
