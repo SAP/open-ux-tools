@@ -195,17 +195,29 @@ describe('Test abap deploy config inquirer conditions', () => {
 
     test('should show ui5 app deploy config questions', () => {
         PromptState.transportAnswers.transportConfigNeedsCreds = false;
-        expect(showUi5AppDeployConfigQuestion()).toBe(true);
+        expect(showUi5AppDeployConfigQuestion(false)).toBe(true);
     });
 
     test('should not show ui5 app deploy config questions', () => {
-        expect(showUi5AppDeployConfigQuestion({ hideIfOnPremise: true })).toBe(false);
+        expect(showUi5AppDeployConfigQuestion(false, { hideIfOnPremise: true })).toBe(false);
         PromptState.transportAnswers.transportConfigNeedsCreds = true;
         const promptOptions = {
             hide: true,
             hideIfOnPremise: true
         };
-        expect(showUi5AppDeployConfigQuestion(promptOptions)).toBe(false);
+        expect(showUi5AppDeployConfigQuestion(false, promptOptions)).toBe(false);
+    });
+
+    test('should not show ui5 app deploy config questions for cloud system without ADP workflow', () => {
+        PromptState.abapDeployConfig.scp = true;
+        PromptState.transportAnswers.transportConfigNeedsCreds = false;
+        expect(showUi5AppDeployConfigQuestion(false, { hideIfOnPremise: true })).toBe(true);
+    });
+
+    test('should not show ui5 app deploy config questions for cloud system with ADP workflow', () => {
+        PromptState.abapDeployConfig.scp = true;
+        PromptState.transportAnswers.transportConfigNeedsCreds = false;
+        expect(showUi5AppDeployConfigQuestion(true, { hideIfOnPremise: true })).toBe(false);
     });
 
     test('should show package input choice question', () => {
@@ -246,30 +258,42 @@ describe('Test abap deploy config inquirer conditions', () => {
     test('should show transport input choice question', () => {
         PromptState.transportAnswers.transportConfigError = undefined;
         PromptState.transportAnswers.transportConfigNeedsCreds = false;
-        expect(showTransportInputChoice()).toBe(true);
+        expect(showTransportInputChoice(false)).toBe(true);
     });
 
     test('should not show transport input choice question for onPremise systems', () => {
         PromptState.transportAnswers.transportRequired = false;
         PromptState.abapDeployConfig.scp = false;
-        expect(showTransportInputChoice({ hideIfOnPremise: true })).toBe(false);
+        expect(showTransportInputChoice(false, { hideIfOnPremise: true })).toBe(false);
     });
 
     test('should not show transport input choice question when transport is not required', () => {
         PromptState.transportAnswers.transportRequired = false;
-        expect(showTransportInputChoice()).toBe(false);
+        expect(showTransportInputChoice(false)).toBe(false);
     });
 
     test('should not show transport input choice question', () => {
         PromptState.transportAnswers.transportConfigError = undefined;
         PromptState.transportAnswers.transportConfigNeedsCreds = true;
-        expect(showTransportInputChoice()).toBe(false);
+        expect(showTransportInputChoice(false)).toBe(false);
 
         PromptState.transportAnswers.transportConfig = {
             getDefaultTransport: jest.fn().mockReturnValue('K123456')
         } as unknown as TransportConfig;
 
-        expect(showTransportInputChoice()).toBe(false);
+        expect(showTransportInputChoice(false)).toBe(false);
+    });
+
+    test('should not show transport input choice for cloud system without ADP workflow', () => {
+        PromptState.transportAnswers.transportConfigNeedsCreds = false;
+        PromptState.abapDeployConfig.scp = true;
+        expect(showTransportInputChoice(false, { hideIfOnPremise: true })).toBe(true);
+    });
+
+    test('should not show transport input choice for cloud system with ADP workflow', () => {
+        PromptState.transportAnswers.transportConfigNeedsCreds = false;
+        PromptState.abapDeployConfig.scp = true;
+        expect(showTransportInputChoice(true, { hideIfOnPremise: true })).toBe(false);
     });
 
     test('should show transport list question', () => {

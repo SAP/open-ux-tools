@@ -1,13 +1,14 @@
-import { showUi5AppDeployConfigQuestion } from '../../conditions.js';
-import { validateAppDescription, validateUi5AbapRepoName } from '../../validators.js';
-import { PromptState } from '../../prompt-state.js';
+import type { InputQuestion, Question } from 'inquirer';
 import { t } from '../../../i18n.js';
 import {
     promptNames,
     type AbapDeployConfigAnswersInternal,
     type AbapDeployConfigPromptOptions
 } from '../../../types.js';
-import type { InputQuestion, Question } from 'inquirer';
+import { isAdaptationProjectType } from '../../../utils.js';
+import { showUi5AppDeployConfigQuestion } from '../../conditions.js';
+import { PromptState } from '../../prompt-state.js';
+import { validateAppDescription, validateUi5AbapRepoName } from '../../validators.js';
 
 /**
  * Returns the UI5 ABAP repository prompt.
@@ -16,8 +17,9 @@ import type { InputQuestion, Question } from 'inquirer';
  * @returns input question for UI5 ABAP repository
  */
 function getUi5AbapRepoPrompt(options: AbapDeployConfigPromptOptions): Question<AbapDeployConfigAnswersInternal> {
+    const isAdpWorkflow = isAdaptationProjectType(options.adpProjectType);
     return {
-        when: (): boolean => showUi5AppDeployConfigQuestion(options.ui5AbapRepo),
+        when: (): boolean => showUi5AppDeployConfigQuestion(isAdpWorkflow, options.ui5AbapRepo),
         type: 'input',
         name: promptNames.ui5AbapRepo,
         message: (): string => {
