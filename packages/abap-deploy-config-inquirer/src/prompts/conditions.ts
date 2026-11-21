@@ -1,6 +1,4 @@
 import { isAppStudio } from '@sap-ux/btp-utils';
-import { PromptState } from './prompt-state.js';
-import { findBackendSystemByUrl, initTransportConfig } from '../utils.js';
 import { handleTransportConfigError } from '../error-handler.js';
 import { t } from '../i18n.js';
 import LoggerHelper from '../logger-helper.js';
@@ -9,13 +7,15 @@ import {
     PackageInputChoices,
     TargetSystemType,
     TransportChoices,
-    type UI5AbapRepoPromptOptions,
     type AbapDeployConfigAnswersInternal,
     type AbapDeployConfigPromptOptions,
     type BackendTarget,
+    type TransportInputChoicePromptOptions,
     type TransportListItem,
-    type TransportInputChoicePromptOptions
+    type UI5AbapRepoPromptOptions
 } from '../types.js';
+import { findBackendSystemByUrl, initTransportConfig } from '../utils.js';
+import { PromptState } from './prompt-state.js';
 
 /**
  * Determines if URL question should be shown.
@@ -139,11 +139,20 @@ export function showPasswordQuestion(): boolean {
 /**
  * Determines if the UI5 app deploy config question should be shown (UI5 Abap Repo name & Description).
  *
+ * @param isAdpWorkflow - Flag indicating we are using the prompt in the context of Adaptation project/
+ * Adaptation project generator. In case of Adp workflow we exclude the scp check.
  * @param ui5AbapPromptOptions - UI5 Abap Repo prompt options
  * @returns boolean
  */
-export function showUi5AppDeployConfigQuestion(ui5AbapPromptOptions?: UI5AbapRepoPromptOptions): boolean {
-    if (!ui5AbapPromptOptions?.hide && ui5AbapPromptOptions?.hideIfOnPremise && !PromptState.abapDeployConfig?.scp) {
+export function showUi5AppDeployConfigQuestion(
+    isAdpWorkflow: boolean,
+    ui5AbapPromptOptions?: UI5AbapRepoPromptOptions
+): boolean {
+    if (
+        !ui5AbapPromptOptions?.hide &&
+        ui5AbapPromptOptions?.hideIfOnPremise &&
+        (!PromptState.abapDeployConfig?.scp || isAdpWorkflow)
+    ) {
         return false;
     }
     return !PromptState.transportAnswers.transportConfigNeedsCreds;
@@ -232,11 +241,13 @@ function defaultOrShowTransportQuestion(): boolean {
 /**
  * Determines if the transport input choice question should be shown.
  *
+ * @param isAdpWorkflow - Flag indicating we are using the prompt in the context of Adaptation project/
+ * Adaptation project generator. In case of Adp workflow we exclude the scp check.
  * @param options - abap deploy config prompt options
  * @returns boolean
  */
-export function showTransportInputChoice(options?: TransportInputChoicePromptOptions): boolean {
-    if (options?.hideIfOnPremise && !PromptState.abapDeployConfig?.scp) {
+export function showTransportInputChoice(isAdpWorkflow: boolean, options?: TransportInputChoicePromptOptions): boolean {
+    if (options?.hideIfOnPremise && (!PromptState.abapDeployConfig?.scp || isAdpWorkflow)) {
         return false;
     }
 
