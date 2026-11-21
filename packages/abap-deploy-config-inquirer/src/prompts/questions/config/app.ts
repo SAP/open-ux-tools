@@ -49,8 +49,9 @@ function getUi5AbapRepoPrompt(options: AbapDeployConfigPromptOptions): Question<
  * @returns input question for description
  */
 function getDescriptionPrompt(options: AbapDeployConfigPromptOptions): Question<AbapDeployConfigAnswersInternal> {
+    const isAdpWorkflow = isAdaptationProjectType(options.adpProjectType);
     return {
-        when: (): boolean => showUi5AppDeployConfigQuestion(options.ui5AbapRepo),
+        when: (): boolean => showUi5AppDeployConfigQuestion(isAdpWorkflow, options.ui5AbapRepo),
         type: 'input',
         name: promptNames.description,
         message: t('prompts.config.app.description.message'),

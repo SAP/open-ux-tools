@@ -108,4 +108,44 @@ describe('getConfirmPrompts', () => {
             expect((descriptionPrompt.validate as Function)()).toBe(true);
         }
     });
+
+    test('should pass isAdpWorkflow=true to showUi5AppDeployConfigQuestion for ui5AbapRepo prompt when adpProjectType is set', () => {
+        mockShowUi5AppDeployConfigQuestion.mockReturnValue(true);
+
+        const appConfigPrompts = getAppConfigPrompts({ adpProjectType: 'cloudReady' as any });
+        const ui5AbapRepoPrompt = appConfigPrompts.find((prompt) => prompt.name === promptNames.ui5AbapRepo);
+
+        (ui5AbapRepoPrompt?.when as Function)();
+        expect(mockShowUi5AppDeployConfigQuestion).toHaveBeenCalledWith(true, undefined);
+    });
+
+    test('should pass isAdpWorkflow=false to showUi5AppDeployConfigQuestion for ui5AbapRepo prompt when adpProjectType is not set', () => {
+        mockShowUi5AppDeployConfigQuestion.mockReturnValue(true);
+
+        const appConfigPrompts = getAppConfigPrompts({});
+        const ui5AbapRepoPrompt = appConfigPrompts.find((prompt) => prompt.name === promptNames.ui5AbapRepo);
+
+        (ui5AbapRepoPrompt?.when as Function)();
+        expect(mockShowUi5AppDeployConfigQuestion).toHaveBeenCalledWith(false, undefined);
+    });
+
+    test('should pass isAdpWorkflow=true to showUi5AppDeployConfigQuestion for description prompt when adpProjectType is set', () => {
+        mockShowUi5AppDeployConfigQuestion.mockReturnValue(true);
+
+        const appConfigPrompts = getAppConfigPrompts({ adpProjectType: 'onPremise' as any });
+        const descriptionPrompt = appConfigPrompts.find((prompt) => prompt.name === promptNames.description);
+
+        (descriptionPrompt?.when as Function)();
+        expect(mockShowUi5AppDeployConfigQuestion).toHaveBeenCalledWith(true, undefined);
+    });
+
+    test('should pass isAdpWorkflow=false to showUi5AppDeployConfigQuestion for description prompt when adpProjectType is not set', () => {
+        mockShowUi5AppDeployConfigQuestion.mockReturnValue(true);
+
+        const appConfigPrompts = getAppConfigPrompts({});
+        const descriptionPrompt = appConfigPrompts.find((prompt) => prompt.name === promptNames.description);
+
+        (descriptionPrompt?.when as Function)();
+        expect(mockShowUi5AppDeployConfigQuestion).toHaveBeenCalledWith(false, undefined);
+    });
 });
