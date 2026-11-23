@@ -101,7 +101,7 @@ overrides:
   onnx-proto>protobufjs: '>=8.2.0'
   '@opentelemetry/otlp-transformer>protobufjs': '>=8.0.2'
   '@opentelemetry/otlp-exporter-base>protobufjs': '>=8.0.2'
-  follow-redirects: '>=1.16.0'
+  follow-redirects: '>=1.16.2'
   jsdom>http-proxy-agent: '>=7.0.2'
   css-loader>postcss: '>=8.5.23'
   sanitize-html>postcss: '>=8.5.23'
@@ -122,8 +122,8 @@ overrides:
   esbuild-loader: '>=4.0.0'
   qs: 6.16.0
   axios: '>=1.21.1'
-  '@sap-ux/ui5-config>axios': '>=1.20.0'
-  '@sap-ux/project-access>axios': '>=1.20.0'
+  '@sap-ux/ui5-config>axios': '>=1.21.1'
+  '@sap-ux/project-access>axios': '>=1.21.1'
   '@sap/bas-sdk>axios': '>=1.20.0'
   '@sap/bas-sdk@3.13.3>axios': '>=1.20.0'
   '@sap/service-provider-apis>axios': '>=1.20.0'
@@ -5149,8 +5149,8 @@ importers:
         specifier: 8.20.0
         version: 8.20.0
       axios:
-        specifier: '>=1.20.0'
-        version: 1.20.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+        specifier: '>=1.21.1'
+        version: 1.21.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       js-yaml:
         specifier: 4.3.2
         version: 4.3.2
@@ -13128,8 +13128,8 @@ packages:
     engines: {node: '>=10.10.0'}
     hasBin: true
 
-  follow-redirects@1.16.0:
-    resolution: {integrity: sha512-y5rN/uOsadFT/JfYwhxRS5R7Qce+g3zG97+JrtFZlC9klX/W5hD7iiLzScI4nZqUS7DNUdhPgw4xI8W2LuXlUw==}
+  follow-redirects@1.16.3:
+    resolution: {integrity: sha512-toOSoqN6d51Wjf1aOFJYcoVv1aND9rj/CwjLU0Vz40oDuSpWDayCeKe4JpL5NL0WdFvoOOCI3BRo69HahjbR1A==}
     engines: {node: '>=4.0'}
     peerDependencies:
       debug: '*'
@@ -23056,7 +23056,7 @@ snapshots:
     dependencies:
       '@sap-ux/yaml': 0.17.7
       ajv: 8.18.0
-      axios: 1.20.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+      axios: 1.21.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       js-yaml: 4.3.2
       lodash: 4.18.1
       semver: 7.7.4
@@ -25580,7 +25580,7 @@ snapshots:
 
   axios@1.20.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1):
     dependencies:
-      follow-redirects: 1.16.0(debug@4.4.3(supports-color@8.1.1))
+      follow-redirects: 1.16.3(debug@4.4.3(supports-color@8.1.1))
       form-data: 4.0.6
       https-proxy-agent: 5.0.1(supports-color@8.1.1)
       proxy-from-env: 2.1.0
@@ -25590,7 +25590,7 @@ snapshots:
 
   axios@1.21.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1):
     dependencies:
-      follow-redirects: 1.16.0(debug@4.4.3(supports-color@8.1.1))
+      follow-redirects: 1.16.3(debug@4.4.3(supports-color@8.1.1))
       form-data: 4.0.6
       https-proxy-agent: 5.0.1(supports-color@8.1.1)
       proxy-from-env: 2.1.0
@@ -27851,7 +27851,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  follow-redirects@1.16.0(debug@4.4.3(supports-color@8.1.1)):
+  follow-redirects@1.16.3(debug@4.4.3(supports-color@8.1.1)):
     optionalDependencies:
       debug: 4.4.3(supports-color@8.1.1)
 
@@ -28418,7 +28418,7 @@ snapshots:
   http-proxy@1.18.1(debug@4.4.3(supports-color@8.1.1)):
     dependencies:
       eventemitter3: 4.0.7
-      follow-redirects: 1.16.0(debug@4.4.3(supports-color@8.1.1))
+      follow-redirects: 1.16.3(debug@4.4.3(supports-color@8.1.1))
       requires-port: 1.0.0
     transitivePeerDependencies:
       - debug
@@ -30711,7 +30711,7 @@ snapshots:
       escape-string-regexp: 1.0.5
       figures: 3.2.0
       flat: 5.0.2
-      follow-redirects: 1.16.0(debug@4.4.3(supports-color@8.1.1))
+      follow-redirects: 1.16.3(debug@4.4.3(supports-color@8.1.1))
       form-data: 4.0.6
       fs-constants: 1.0.0
       function-bind: 1.1.2
