@@ -26,7 +26,7 @@ import {
 } from './modelUtils.js';
 import { type I18nLabelResolver, passthroughLabelResolver } from './i18nUtils.js';
 import { extractContactCardColumnsFromNode, extractTableColumnsFromNode } from './tableUtils.js';
-import { PageTypeV4 } from '@sap/ux-specification/dist/types/src/common/page.js';
+import { PageTypeV4 } from '@sap/ux-specification/dist/types/src';
 import type { ConvertedMetadata, EntityType } from '@sap-ux/vocabularies-types';
 import {
     buildActionStateFromSpecModelKey,
