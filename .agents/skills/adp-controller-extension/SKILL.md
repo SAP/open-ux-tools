@@ -371,6 +371,7 @@ Report to the user: summary of all changes made, files created, any issues encou
 | `start` returns `rtaStarted: false` | Retry once after 3 s. If still false, the app may not support RTA. |
 | `get_overlays` returns empty | Wait 5 s, retry. If still empty, ask the user to confirm the editor is on the right view. |
 | Expected action id is not in the chosen overlay's `actionIds` | **Stop.** This is the hard-stop case from *Confidence & HITL Gating*. Do not silently switch controls or actions. Tell the user what you expected, what came back, and ask how to proceed. |
+| Step 7 or 7a fails | Check the installed version in `<appPath>/node_modules/@ui5/task-adaptation/package.json`. If missing or below `1.7.0`, ask the user to update `@ui5/task-adaptation` to `1.7.0` or higher before retrying. Otherwise, report the original error. |
 | Action execution fails | Report error, offer retry with different params. |
 | Save fails | Report error. Inform user changes may be lost. |
 | `adp_controller_extension` Phase 1 (knowledge base) fails | Surface the error and stop. Ask the user to verify `appPath` points to an adaptation project root (a folder containing `webapp/manifest.appdescr_variant`). |
