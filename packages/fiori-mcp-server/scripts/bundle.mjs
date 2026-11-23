@@ -4,6 +4,7 @@
  * Produces a self-contained dist/ directory:
  *
  *   dist/index.js                         bundled JS (TS source + all deps inlined)
+ *   dist/lz-string.cjs                    lz-string CJS module (required by @sap/ux-specification)
  *   dist/ort-wasm-simd-threaded.wasm      ONNX WASM runtime binary (~12 MB)
  *   dist/ort-wasm-simd-threaded.mjs       WASM factory loader (loaded by ort.node.min.mjs)
  *   dist/ort-wasm-simd-threaded.jsep.mjs  JSEP WASM factory (used by transformers internally)
@@ -283,6 +284,35 @@ if (matchCount === 0) {
     bundleSource = bundleSource.replace(zowePattern, ZOWE_SHIM);
     fs.writeFileSync(bundleFile, bundleSource, 'utf8');
     console.log(`✓ Rewrote ${matchCount} @zowe/secrets-for-zowe-sdk require(s) to inline prebuilds shim`);
+}
+
+// ── Step 1c: copy lz-string and rewrite its dynamic require in bundle ────────
+// @sap/ux-specification 1.144.13 added lz-string as a runtime dep and requires
+// it via createRequire(import.meta.url)('lz-string'). esbuild cannot intercept
+// a dynamic createRequire call, so the string "lz-string" lands verbatim in the
+// bundle — causing a MODULE_NOT_FOUND crash at runtime (lz-string is not a
+// direct dep of fiori-mcp-server and is not in dist/).
+// Fix: copy lz-string.cjs into dist/ and rewrite every \w+("lz-string") call
+// in the bundle to require('./lz-string.cjs') so it resolves relative to dist/.
+const uxSpecEntry = req.resolve('@sap/ux-specification');
+const uxSpecReq = createRequire(uxSpecEntry);
+const lzStringEntry = uxSpecReq.resolve('lz-string');
+const lzStringSrc = path.join(path.dirname(lzStringEntry), 'lz-string.js');
+fs.copyFileSync(lzStringSrc, path.join(DIST, 'lz-string.cjs'));
+console.log('✓ Copied lz-string.cjs to dist/');
+// Re-read bundleSource after the zowe rewrite above
+bundleSource = fs.readFileSync(bundleFile, 'utf8');
+const lzStringPattern = /\b(\w+)\("lz-string"\)/g;
+const lzMatchCount = (bundleSource.match(lzStringPattern) || []).length;
+if (lzMatchCount === 0) {
+    throw new Error(
+        'No createRequire(...)("lz-string") call found in bundle — shim not applied. ' +
+        '@sap/ux-specification may have changed how it imports lz-string; update bundle.mjs.'
+    );
+} else {
+    bundleSource = bundleSource.replace(lzStringPattern, 'require("./lz-string.cjs")');
+    fs.writeFileSync(bundleFile, bundleSource, 'utf8');
+    console.log(`✓ Rewrote ${lzMatchCount} lz-string require(s) to dist-local copy`);
 }
 
 // ── Step 2: copy @zowe/secrets-for-zowe-sdk prebuilds ────────────────────────
