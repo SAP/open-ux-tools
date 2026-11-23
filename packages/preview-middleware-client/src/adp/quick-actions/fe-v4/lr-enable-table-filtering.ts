@@ -5,6 +5,7 @@ import type {
     QuickActionContext
 } from '../../../cpe/quick-actions/quick-action-definition.js';
 import type Table from 'sap/ui/mdc/Table';
+import TableP13nMode from 'sap/ui/mdc/enums/TableP13nMode';
 import { TableQuickActionDefinitionBase } from '../table-quick-action-base.js';
 import { getRelevantControlFromActivePage } from '../../../cpe/quick-actions/utils.js';
 import { createManifestPropertyChange } from '../../../utils/fe-v4.js';
@@ -50,7 +51,7 @@ export class EnableTableFilteringQuickAction
                 smartTable.getId(),
                 'personalization'
             ) as Personalization;
-            const isFilterEnabled = value?.filter === undefined ? (personalizationData as string[]).includes('Filter') : value.filter;
+            const isFilterEnabled = value?.filter === undefined ? personalizationData.includes(TableP13nMode.Filter) : value.filter;
             const path = this.children.length.toString();
             this.children.push({
                 path,

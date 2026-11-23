@@ -12,7 +12,7 @@ import { isMacroTable } from '../../../utils/fe-v4.js';
 import { getLineItemAnnotation, getPropertyPath, getAppDescriptorBase } from './utils.js';
 import { getUi5Version, isLowerThanMinimalUi5Version } from '../../../utils/version.js';
 import { isA } from '../../../utils/core.js';
-import UI5Element from 'sap/ui/core/Element';
+import type UI5Element from 'sap/ui/core/Element';
 
 export const CREATE_TABLE_CUSTOM_COLUMN = 'create-table-custom-column';
 const regexForAnnotationPath =
@@ -108,7 +108,7 @@ function findAnchor(table: UI5Element): string {
             const segments = macroTable.metaPath.split('/');
             segments.pop();
             const path = segments.join('/');
-                return `${path}/${getLineItemAnnotation(macroTable as unknown as UI5Element)}`;
+                return `${path}/${getLineItemAnnotation(macroTable)}`;
             })();
         if (!metaPath) {
             return '';
