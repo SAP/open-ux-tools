@@ -1,7 +1,7 @@
 import { RuleTester } from 'eslint';
-import intentBasedNavRule from '../../src/rules/sap-no-data-field-intent-based-navigation';
-import { meta, languages } from '../../src/index';
-import { CAP_ANNOTATIONS, CAP_ANNOTATIONS_PATH, CAP_APP_PATH, CAP_FACETS_ANNOTATIONS, setup } from '../test-helper';
+import intentBasedNavRule from '../../src/rules/sap-no-data-field-intent-based-navigation.js';
+import { meta, languages } from '../../src/index.js';
+import { CAP_ANNOTATIONS, CAP_ANNOTATIONS_PATH, CAP_APP_PATH, CAP_FACETS_ANNOTATIONS, setup } from '../test-helper.js';
 
 const ruleTester = new RuleTester({
     plugins: { ['@sap-ux/eslint-plugin-fiori-tools']: { ...meta, languages } },
@@ -113,7 +113,7 @@ annotate service.Incidents with @(
 `;
 
 const TEST_NAME = 'sap-no-data-field-intent-based-navigation';
-const { createValidTest, createInvalidTest } = setup(`${TEST_NAME} - CAP`, CAP_APP_PATH);
+const { createValidTest, createInvalidTest } = setup(`${TEST_NAME} - CDS`, CAP_APP_PATH);
 
 ruleTester.run(`${TEST_NAME} - CDS`, intentBasedNavRule, {
     valid: [
@@ -161,7 +161,7 @@ ruleTester.run(`${TEST_NAME} - CDS`, intentBasedNavRule, {
                 errors: [
                     {
                         message:
-                            'DataFieldForIntentBasedNavigation annotation must not be used. Please use a semantic link navigation instead.',
+                            '`DataFieldForIntentBasedNavigation` annotation must not be used. Please use a semantic link navigation instead.',
                         column: 5,
                         endColumn: 6,
                         endLine: 51,
@@ -169,7 +169,7 @@ ruleTester.run(`${TEST_NAME} - CDS`, intentBasedNavRule, {
                     },
                     {
                         message:
-                            'DataFieldWithIntentBasedNavigation annotation must not be used. Please use a semantic link navigation instead.',
+                            '`DataFieldWithIntentBasedNavigation` annotation must not be used. Please use a semantic link navigation instead.',
                         column: 5,
                         endColumn: 6,
                         endLine: 56,
@@ -187,7 +187,7 @@ ruleTester.run(`${TEST_NAME} - CDS`, intentBasedNavRule, {
                 errors: [
                     {
                         message:
-                            'DataFieldWithIntentBasedNavigation annotation must not be used. Please use a semantic link navigation instead.',
+                            '`DataFieldWithIntentBasedNavigation` annotation must not be used. Please use a semantic link navigation instead.',
                         column: 5,
                         endColumn: 6,
                         endLine: 62,
@@ -195,7 +195,7 @@ ruleTester.run(`${TEST_NAME} - CDS`, intentBasedNavRule, {
                     },
                     {
                         message:
-                            'DataFieldForIntentBasedNavigation annotation must not be used. Please use a semantic link navigation instead.',
+                            '`DataFieldForIntentBasedNavigation` annotation must not be used. Please use a semantic link navigation instead.',
                         column: 5,
                         endColumn: 6,
                         endLine: 66,
@@ -213,7 +213,7 @@ ruleTester.run(`${TEST_NAME} - CDS`, intentBasedNavRule, {
                 errors: [
                     {
                         message:
-                            'DataFieldForIntentBasedNavigation annotation must not be used. Please use a semantic link navigation instead.',
+                            '`DataFieldForIntentBasedNavigation` annotation must not be used. Please use a semantic link navigation instead.',
                         column: 13,
                         endColumn: 14,
                         endLine: 61,
@@ -221,7 +221,7 @@ ruleTester.run(`${TEST_NAME} - CDS`, intentBasedNavRule, {
                     },
                     {
                         message:
-                            'DataFieldWithIntentBasedNavigation annotation must not be used. Please use a semantic link navigation instead.',
+                            '`DataFieldWithIntentBasedNavigation` annotation must not be used. Please use a semantic link navigation instead.',
                         column: 13,
                         endColumn: 14,
                         endLine: 66,

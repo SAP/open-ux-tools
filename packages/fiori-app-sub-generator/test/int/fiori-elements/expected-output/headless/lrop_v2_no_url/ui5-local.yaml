@@ -2,7 +2,7 @@
 
 specVersion: "4.0"
 metadata:
-  name: testNameSpace.lropv2nourl
+  name: testnamespace.lropv2nourl
 type: application
 framework:
   name: SAPUI5
@@ -46,3 +46,8 @@ server:
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**

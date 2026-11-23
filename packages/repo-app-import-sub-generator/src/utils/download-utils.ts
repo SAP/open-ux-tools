@@ -1,11 +1,33 @@
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
-import { PromptState } from '../prompts/prompt-state';
-import { t } from './i18n';
-import RepoAppDownloadLogger from '../utils/logger';
-import { qfaJsonFileName } from './constants';
+import { PromptState } from '../prompts/prompt-state.js';
+import { t } from './i18n.js';
+import RepoAppDownloadLogger from '../utils/logger.js';
+import { qfaJsonFileName } from './constants.js';
 import { type Logger } from '@sap-ux/logger';
+import { TransportChecksService, FileStoreService } from '@sap-ux/axios-extension';
+import { restoreServiceProviderLoggers } from '@sap-ux/fiori-generator-shared';
+
+/**
+ * Fetches the metadata of a given service from the provided ABAP service provider.
+ *
+ * @param {AbapServiceProvider} provider - The ABAP service provider instance.
+ * @param {string} serviceUrl - The URL of the service to retrieve metadata for.
+ * @returns {Promise<string | undefined>} - A promise resolving to the service metadata XML string.
+ */
+export async function fetchServiceMetadata(
+    provider: AbapServiceProvider,
+    serviceUrl: string
+): Promise<string | undefined> {
+    try {
+        const metadata = await provider.service(serviceUrl).metadata();
+        RepoAppDownloadLogger.logger?.debug('Metadata fetched successfully');
+        return metadata as string | undefined;
+    } catch (err) {
+        RepoAppDownloadLogger.logger?.error(t('error.metadataFetchError', { error: (err as Error).message }));
+    }
+}
 
 /**
  * Checks whether the ZIP archive contains an entry named qfa.json
@@ -45,16 +67,89 @@ export async function extractZip(extractedProjectPath: string, fs: Editor): Prom
 
 /**
  * Downloads application files from the ABAP repository.
+ * First attempts download via ABAP_REPOSITORY_SRV (requires SAP_UI 754+).
+ * Falls back to ADT FileStoreService on older systems.
  *
  * @param {string} repoName - The repository name of the application.
+ * @returns `{ success: true }` on success, or `{ success: false, errorMessage }` if the server
+ * returns no content (e.g. a legacy ABAP system that does not support repository downloads).
  */
-export async function downloadApp(repoName: string): Promise<void> {
+export async function downloadApp(repoName: string): Promise<{ success: boolean; errorMessage?: string }> {
     const serviceProvider = PromptState.systemSelection?.connectedSystem?.serviceProvider as AbapServiceProvider;
-    const ui5AbapRepository = await serviceProvider.getUi5AbapRepository();
+    const ui5AbapRepository = serviceProvider.getUi5AbapRepository();
     ui5AbapRepository.log = RepoAppDownloadLogger.logger as unknown as Logger;
     RepoAppDownloadLogger.logger?.debug(`App download started: ${repoName}`);
-    const downloadedAppPackage = await ui5AbapRepository.downloadFiles(repoName);
+    let downloadedAppPackage: Buffer | undefined;
+    try {
+        downloadedAppPackage = await ui5AbapRepository.downloadFiles(repoName);
+    } catch (error) {
+        // ABAP_REPOSITORY_SRV may not be available on older systems (e.g. ABAP 731 / SAP_UI < 754).
+        // Fall through to the ADT FileStoreService fallback below.
+        RepoAppDownloadLogger.logger?.debug(
+            `ABAP_REPOSITORY_SRV unavailable, falling back to ADT: ${(error as Error).message}`
+        );
+    }
+    if (!downloadedAppPackage || downloadedAppPackage.length === 0) {
+        RepoAppDownloadLogger.logger?.debug(t('error.adtFallbackDownload'));
+        try {
+            const fileStoreService = await serviceProvider.getAdtService<FileStoreService>(FileStoreService);
+            if (fileStoreService) {
+                downloadedAppPackage = await ui5AbapRepository.downloadFilesViaAdt(repoName, fileStoreService);
+            }
+        } catch (error) {
+            RepoAppDownloadLogger.logger?.error(
+                t('error.adtFallbackDownloadFailed', { error: (error as Error).message })
+            );
+        }
+    }
+    if (!downloadedAppPackage || downloadedAppPackage.length === 0) {
+        // Legacy ABAP systems may return empty content rather than an error response.
+        const errorMessage = t('error.appDownloadFailed');
+        RepoAppDownloadLogger.logger?.error(errorMessage);
+        return { success: false, errorMessage };
+    }
     RepoAppDownloadLogger.logger?.debug(`App download completed: ${repoName}`);
-    // store downloaded package in prompt state
     PromptState.admZip = downloadedAppPackage;
+    return { success: true };
+}
+
+/**
+ * Resolve a transport request for the given app/package.
+ *
+ * @param serviceProvider - The ABAP service provider instance.
+ * @param packageName - The ABAP package name.
+ * @param appName - The repository/app name used for transport lookup.
+ * @returns { Promise<string> }
+ *  - '' when package is local ('$TMP')
+ *  - '<transport-request-id>' when transport request is found
+ *  - 'REPLACE_WITH_TRANSPORT' when no transport request is found
+ * @throws Error when the transport check fails
+ */
+export async function resolveTransportRequest(
+    serviceProvider: AbapServiceProvider | undefined,
+    packageName: string,
+    appName: string
+): Promise<string> {
+    if (packageName === '$TMP') {
+        return '';
+    }
+
+    // Restore loggers lost during odata-service-inquirer serialization to prevent 'this.log.error is not a function' errors in service calls
+    restoreServiceProviderLoggers(RepoAppDownloadLogger.logger as unknown as Logger, serviceProvider);
+
+    try {
+        const transportService = await serviceProvider?.getAdtService<TransportChecksService>(TransportChecksService);
+        const transportRequests = await transportService?.getTransportRequests(packageName, appName);
+        if (transportRequests?.length === 1) {
+            return transportRequests[0].transportNumber;
+        }
+        return 'REPLACE_WITH_TRANSPORT';
+    } catch (error) {
+        if (error.message === TransportChecksService.LocalPackageError) {
+            return '';
+        }
+        const msg = t('error.transportCheckFailed', { error: error?.message });
+        RepoAppDownloadLogger.logger?.error(msg);
+        throw new Error(msg);
+    }
 }

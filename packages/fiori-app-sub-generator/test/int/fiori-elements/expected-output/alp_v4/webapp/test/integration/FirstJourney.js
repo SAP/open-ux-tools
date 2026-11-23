@@ -8,22 +8,12 @@ sap.ui.define([
         QUnit.module("First journey");
 
         opaTest("Start application", function (Given, When, Then) {
+            Given.iResetMockData({ ServiceUri: "/sap/opu/odata4/sap/c_salesordermanage_srv/srvd/sap/c_salesordermanage_sd_aggregate/0001/" });
+            Given.iResetTestData();
             Given.iStartMyApp();
-            Then.onTheSalesOrderItemList.iSeeThisPage();
+            
         });
 
-
-        opaTest("Navigate to ObjectPage", function (Given, When, Then) {
-            // Note: this test will fail if the ListReport page doesn't show any data
-            
-            When.onTheSalesOrderItemList.onFilterBar().iExecuteSearch();
-            
-            Then.onTheSalesOrderItemList.onTable().iCheckRows();
-
-            When.onTheSalesOrderItemList.onTable().iPressRow(0);
-            Then.onTheSalesOrderItemObjectPage.iSeeThisPage();
-
-        });
 
         opaTest("Teardown", function (Given, When, Then) { 
             // Cleanup

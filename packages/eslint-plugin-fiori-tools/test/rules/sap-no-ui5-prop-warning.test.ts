@@ -6,7 +6,7 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-import rule from '../../src/rules/sap-no-ui5-prop-warning';
+import rule from '../../src/rules/sap-no-ui5-prop-warning.js';
 import { RuleTester } from 'eslint';
 
 //------------------------------------------------------------------------------

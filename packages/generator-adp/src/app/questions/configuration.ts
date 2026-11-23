@@ -1,8 +1,5 @@
 import type { ConfigAnswers, FlexUICapability, SourceApplication, SystemLookup, UI5Version } from '@sap-ux/adp-tooling';
 import {
-    getFlexUICapability,
-    getSupportedProject,
-    SupportedProject,
     checkSystemVersionPattern,
     fetchPublicVersions,
     FlexLayer,
@@ -11,14 +8,18 @@ import {
     getConfiguredProvider,
     getEndpointNames,
     getFioriId,
+    getFlexUICapability,
     getRelevantVersions,
+    getSupportedProject,
     getSystemUI5Version,
     isAppSupported,
+    isAuthRequired,
     isFeatureSupportedVersion,
     isSyncLoadedView,
     isV4Application,
     loadApps,
-    SourceManifest
+    SourceManifest,
+    SupportedProject
 } from '@sap-ux/adp-tooling';
 import { AdaptationProjectType, isAxiosError, type AbapServiceProvider } from '@sap-ux/axios-extension';
 import { isAppStudio } from '@sap-ux/btp-utils';
@@ -33,8 +34,12 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
 import { validateAch, validateEmptyString } from '@sap-ux/project-input-validator';
 
-import { t } from '../../utils/i18n';
-import type { TelemetryCollector } from '../../telemetry';
+import type { IMessageSeverity } from '@sap-devx/yeoman-ui-types';
+import { Severity } from '@sap-devx/yeoman-ui-types';
+import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
+import type { Answers } from 'inquirer';
+import type { TelemetryCollector } from '../../telemetry/index.js';
+import { t } from '../../utils/i18n.js';
 import type {
     AchPromptOptions,
     ApplicationPromptOptions,
@@ -47,23 +52,19 @@ import type {
     StoreCredentialsPromptOptions,
     SystemPromptOptions,
     UsernamePromptOptions
-} from '../types';
-import { configPromptNames, SystemType } from '../types';
-import { getAppAdditionalMessages, getSystemAdditionalMessages } from './helper/additional-messages';
-import { getApplicationChoices, getProjectTypeChoices } from './helper/choices';
+} from '../types.js';
+import { configPromptNames, SystemType } from '../types.js';
+import { getAppAdditionalMessages, getSystemAdditionalMessages } from './helper/additional-messages.js';
+import { getApplicationChoices, getProjectTypeChoices } from './helper/choices.js';
 import {
     showApplicationQuestion,
     showCredentialQuestion,
     showExtensionProjectQuestion,
     showInternalQuestions,
     showStoreCredentialsQuestion
-} from './helper/conditions';
-import { getExtProjectMessage } from './helper/message';
-import { validateExtensibilityExtension } from './helper/validators';
-import type { IMessageSeverity } from '@sap-devx/yeoman-ui-types';
-import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
-import { Severity } from '@sap-devx/yeoman-ui-types';
-import type { Answers } from 'inquirer';
+} from './helper/conditions.js';
+import { getExtProjectMessage } from './helper/message.js';
+import { validateExtensibilityExtension } from './helper/validators.js';
 
 /**
  * A stateful prompter class that creates configuration questions.
@@ -315,9 +316,9 @@ export class ConfigPrompter {
                 hint: t('prompts.systemTooltip')
             },
             default: '',
-            validate: async (value: string, answers: ConfigAnswers) => await this.validateSystem(value, answers),
+            validate: (value: string) => this.validateSystem(value),
             additionalMessages: () => {
-                this.systemAdditionalMessage = getSystemAdditionalMessages(
+                this.systemAdditionalMessage ??= getSystemAdditionalMessages(
                     this.flexUICapability,
                     this.selectedProjectType
                 );
@@ -334,12 +335,12 @@ export class ConfigPrompter {
     private getSystemValidationPromptForCli() {
         return {
             name: configPromptNames.systemValidationCli,
-            when: async (answers: ConfigAnswers): Promise<boolean> => {
-                if (!answers.system) {
+            when: async ({ system }: ConfigAnswers): Promise<boolean> => {
+                if (!system) {
                     return false;
                 }
 
-                const result = await this.validateSystem(answers.system, answers);
+                const result = await this.validateSystem(system);
                 if (typeof result === 'string') {
                     throw new Error(result);
                 }
@@ -386,9 +387,11 @@ export class ConfigPrompter {
             guiOptions: {
                 type: 'login',
                 mandatory: true,
-                hint: t('prompts.passwordTooltip')
+                hint: t('prompts.passwordTooltip'),
+                applyDefaultWhenDirty: true
             },
             validate: async (value: string, answers: ConfigAnswers) => await this.validatePassword(value, answers),
+            default: '',
             when: (answers: ConfigAnswers) => showCredentialQuestion(answers, this.isAuthRequired),
             additionalMessages: () => {
                 if (!this.systemAdditionalMessage) {
@@ -783,21 +786,13 @@ export class ConfigPrompter {
      * loading the available applications.
      *
      * @param {string} system - The selected system.
-     * @param {ConfigAnswers} answers - The configuration answers provided by the user.
      * @returns An error message if validation fails, or true if the system selection is valid.
      */
-    private async validateSystem(system: string, answers: ConfigAnswers): Promise<string | boolean> {
+    private async validateSystem(system: string): Promise<string | boolean> {
         const validationResult = validateEmptyString(system);
         if (typeof validationResult === 'string') {
             return validationResult;
         }
-
-        const options = {
-            system,
-            client: undefined,
-            username: answers.username,
-            password: answers.password
-        };
 
         try {
             this.targetApps = [];
@@ -805,8 +800,25 @@ export class ConfigPrompter {
             this.selectedProjectType = undefined;
             this.selectedSystemType = undefined;
             this.supportedProject = undefined;
+            this.systemAdditionalMessage = undefined;
+            const options = {
+                system,
+                client: undefined
+            };
             this.abapProvider = await getConfiguredProvider(options, this.logger);
-            this.isAuthRequired = await this.systemLookup.getSystemRequiresAuth(system);
+            this.isAuthRequired = await isAuthRequired(system, this.logger);
+
+            if (this.isAuthRequired && !isAppStudio() && (await this.systemLookup.isBasicAuthConfigured(system))) {
+                // In VSCode we display the credentials prompts in case the system is configured with
+                // invalid credentials + a warning suggesting the user to check the credentials. In BAS
+                // we do to show the prompts for credentials, the generator stop with a validation error
+                // suggesting to check the destination configuration in BTP. This will make the ADP generator
+                // consistent with the Fiori generator in this use case.
+                this.systemAdditionalMessage = {
+                    message: t('warnings.authenticationFailedUpdateCredentialsMessage'),
+                    severity: Severity.information
+                };
+            }
 
             if (this.isAuthRequired) {
                 return true;
@@ -919,7 +931,7 @@ export class ConfigPrompter {
 
         this.systemVersion = checkSystemVersionPattern(version);
         this.publicVersions = await fetchPublicVersions(this.logger);
-        this.ui5Versions = await getRelevantVersions(version, this.isCustomerBase, this.publicVersions);
+        this.ui5Versions = await getRelevantVersions(version, this.isCustomerBase, this.publicVersions, this.logger);
     }
 
     /**
@@ -960,9 +972,8 @@ export class ConfigPrompter {
                 this.selectedProjectType = AdaptationProjectType.ON_PREMISE;
                 return;
             }
-
-            throw error;
         }
+        throw error;
     }
 
     /**

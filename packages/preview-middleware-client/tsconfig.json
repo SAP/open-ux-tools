@@ -2,8 +2,6 @@
   "extends": "../../tsconfig.json",
   "include": [
     "src",
-    "test",
-    "test/**/*.json",
     "types"
   ],
   "compilerOptions": {
@@ -16,7 +14,8 @@
     "allowJs": true,
     "strict": true,
     "strictPropertyInitialization": false,
-    "moduleResolution": "node",
+    "moduleResolution": "node10",
+    "ignoreDeprecations": "6.0",
     "rootDir": ".",
     "baseUrl": ".",
     "outDir": "dist",

@@ -1,5 +1,5 @@
 import { basename } from 'node:path';
-import type { DeployConfigOptions } from '../types';
+import type { DeployConfigOptions } from '../types/index.js';
 
 /**
  * Parses the target from the CLI args or the options.

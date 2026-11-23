@@ -1,9 +1,9 @@
 import { relative } from 'node:path';
-import type { I18nBundle } from '../../../src/types';
-export { getInput, getAst, getAllNormalizeFolderPath, getBase, getFileContent, getToken } from './setup';
+import type { I18nBundle } from '../../../src/types.js';
+export { getInput, getAst, getAllNormalizeFolderPath, getBase, getFileContent, getToken } from './setup.js';
 
-export { deserialize } from './deserialize-ast';
-export { serialize } from './serialize';
+export { deserialize } from './deserialize-ast.js';
+export { serialize } from './serialize.js';
 
 const pathSeparator = (uri: string) => uri.charAt(uri.search(/\\|\//));
 export const toUnifiedUri = (root: string, uris: (string | undefined)[]): string[] => {

@@ -1,0 +1,26 @@
+{
+	"name": "<%- name %>",
+	"version": "0.0.1",
+	"private": true,<%if(sapux){%>
+	"sapux": true,<%}%><%if(sapuxLayer){%>
+	"sapuxLayer": "<%- sapuxLayer %>",<%}%>
+	"description": "<%- description %>",
+	"keywords": [
+		"ui5",
+		"openui5",
+		"sapui5"
+	],
+	"main": "webapp/index.html",
+	"scripts": {
+		<%if(startCommand){%>"start": "<%- startCommand %>",<%}%><%if(startLocalCommand){%>
+		"start-local": "<%- startLocalCommand %>",<%}%><%if(startNoFlpCommand){%>
+		"start-noflp": "<%- startNoFlpCommand %>",<%}%><%if(startVariantsCommand){%>
+		"start-variants-management": "<%- startVariantsCommand %>",<%}%>
+		"build": "ui5 build -a --clean-dest --include-task=generateCachebusterInfo",<%if(enableEslint){%>
+		"lint": "eslint ./ --rulesdir ./node_modules/eslint-plugin-fiori-custom/lib/rules/",<%}%>
+		"deploy": "fiori verify",
+		"deploy-config": "fiori add deploy-config"<% if (runTasks) { runTasks.forEach(task => { %>,
+		"<%= task.name %>": "<%- task.command%>"<% })} %>
+	},
+	"devDependencies": <%- JSON.stringify(devDependencies, null, 8) %>
+}

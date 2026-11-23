@@ -307,7 +307,7 @@ $readonly-labels-opacity: 0.4;
                         display: flex;
                         flex-direction: row;
                         justify-content: flex-start;
-                        min-width: 87px;
+                        min-width: var(--flexible-table-actions-min-width);
                         border-left: 1px solid var(--vscode-editorWidget-border);
                         padding: 5px;
                         align-items: center;
@@ -319,6 +319,11 @@ $readonly-labels-opacity: 0.4;
                         &-divider {
                             margin: 0 10px;
                             height: 20px;
+                        }
+
+                        &-item-wrapper {
+                            display: flex;
+                            flex-direction: row;
                         }
                     }
                 }

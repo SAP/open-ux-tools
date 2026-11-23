@@ -4,7 +4,7 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import { getMinimumUI5Version, type Manifest } from '@sap-ux/project-access';
 import type { RequestHandler, NextFunction, Request, Response } from 'express';
 import type http from 'node:http';
-import type { ProxyConfig } from './types';
+import type { ProxyConfig } from './types.js';
 import {
     BOOTSTRAP_LINK,
     BOOTSTRAP_REPLACE_REGEX,
@@ -12,10 +12,10 @@ import {
     SANDBOX_REPLACE_REGEX,
     SANDBOX2_LINK,
     SANDBOX2_REPLACE_REGEX
-} from './constants';
+} from './constants.js';
 import type { Url } from 'node:url';
-import { t } from '../i18n';
-// eslint-disable-next-line sonarjs/no-implicit-dependencies
+import { t } from '../i18n.js';
+
 import type { ReaderCollection } from '@ui5/fs';
 import type { Socket } from 'node:net';
 
@@ -64,12 +64,14 @@ export const getCorporateProxyServer = (yamlProxyServer: string | undefined): st
     return (
         proxyFromArgs ||
         process.env.FIORI_TOOLS_PROXY ||
-        process.env.npm_config_proxy ||
-        process.env.npm_config_https_proxy ||
         process.env.http_proxy ||
         process.env.HTTP_PROXY ||
         process.env.https_proxy ||
         process.env.HTTPS_PROXY ||
+        process.env.all_proxy ||
+        process.env.ALL_PROXY ||
+        process.env.npm_config_proxy ||
+        process.env.npm_config_https_proxy ||
         yamlProxyServer
     );
 };
@@ -107,20 +109,23 @@ export function updateProxyEnv(proxyFromConfig?: string): void {
     });
 
     if (proxyFromArgs || process.env.FIORI_TOOLS_PROXY) {
-        process.env['npm_config_proxy'] = proxyFromArgs || process.env.FIORI_TOOLS_PROXY;
-        process.env['npm_config_https_proxy'] = proxyFromArgs || process.env.FIORI_TOOLS_PROXY;
+        process.env['http_proxy'] = proxyFromArgs || process.env.FIORI_TOOLS_PROXY;
+        process.env['https_proxy'] = proxyFromArgs || process.env.FIORI_TOOLS_PROXY;
     } else {
         const proxyFromEnv =
-            process.env.npm_config_proxy ||
-            process.env.npm_config_https_proxy ||
             process.env.http_proxy ||
             process.env.HTTP_PROXY ||
             process.env.https_proxy ||
-            process.env.HTTPS_PROXY;
+            process.env.HTTPS_PROXY ||
+            process.env.all_proxy ||
+            process.env.ALL_PROXY;
 
-        if (!proxyFromEnv && proxyFromConfig) {
-            process.env['npm_config_proxy'] = proxyFromConfig;
-            process.env['npm_config_https_proxy'] = proxyFromConfig;
+        // proxy-from-env@2 no longer reads npm_config_*; promote legacy .npmrc proxy into standard vars.
+        const legacyNpmProxy = process.env.npm_config_proxy || process.env.npm_config_https_proxy;
+        const fallback = proxyFromEnv ? undefined : legacyNpmProxy || proxyFromConfig;
+        if (fallback) {
+            process.env['http_proxy'] = fallback;
+            process.env['https_proxy'] = fallback;
         }
     }
 }

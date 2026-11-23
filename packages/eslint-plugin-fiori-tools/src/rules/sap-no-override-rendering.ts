@@ -5,7 +5,7 @@
  */
 
 import type { Rule, SourceCode } from 'eslint';
-import { contains } from '../utils/helpers';
+import { contains } from '../utils/helpers.js';
 
 // ------------------------------------------------------------------------------
 // Rule Disablement
@@ -24,7 +24,7 @@ import { contains } from '../utils/helpers';
 function uniquifyArray<T>(array: T[]): T[] {
     const a = array.concat();
     for (let i = 0; i < a.length; ++i) {
-        for (let j = i + 1; j < a.length; ) {
+        for (let j = i + 1; j < a.length;) {
             if (a[i] === a[j]) {
                 a.splice(j, 1);
             } else {

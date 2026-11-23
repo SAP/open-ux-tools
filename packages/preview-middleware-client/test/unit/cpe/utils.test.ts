@@ -1,5 +1,5 @@
 import { sapMock } from 'mock/window';
-import { getLibrary, getRuntimeControl } from '../../../src/cpe/utils';
+import { getLibrary, getRuntimeControl } from '../../../src/cpe/utils.js';
 
 describe('getRuntimeControl', () => {
     let overlayControl: any;

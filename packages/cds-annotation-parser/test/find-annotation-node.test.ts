@@ -1,8 +1,8 @@
 import { Position } from '@sap-ux/odata-annotation-core';
 
-import { parse } from '../src';
-import { findAnnotationNode, getNode, getAstNodes } from '../src/find-annotation-node';
-import { getAst } from './utils';
+import { parse } from '../src/index.js';
+import { findAnnotationNode, getNode, getAstNodes } from '../src/find-annotation-node.js';
+import { getAst } from './utils/index.js';
 
 declare const expect: jest.Expect;
 
@@ -400,6 +400,19 @@ describe('context resolver', () => {
                 includeDelimiterCharacters: false
             });
             expect(path).toStrictEqual('/items/items/0/value/properties/1/value/items/0');
+        });
+    });
+
+    describe('flattened structure', () => {
+        describe('basic', () => {
+            test('nested term', async () => {
+                const ast = await getAst('valid/struct/flattened');
+                const path = findAnnotationNode(ast, {
+                    position: Position.create(4, 4),
+                    includeDelimiterCharacters: false
+                });
+                expect(path).toStrictEqual('/value/flattenedExpressions/1');
+            });
         });
     });
 });

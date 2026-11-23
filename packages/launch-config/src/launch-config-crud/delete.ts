@@ -2,9 +2,9 @@ import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { join } from 'node:path';
 import { DirName } from '@sap-ux/project-access';
-import { LAUNCH_JSON_FILE } from '../types';
+import { LAUNCH_JSON_FILE } from '../types/index.js';
 import type { Editor } from 'mem-fs-editor';
-import { updateLaunchJSON } from './writer';
+import { updateLaunchJSON } from './writer.js';
 
 /**
  * Deletes existing launch config in launch.json file.

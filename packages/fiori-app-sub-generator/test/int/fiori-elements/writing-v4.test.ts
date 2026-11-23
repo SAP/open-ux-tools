@@ -1,13 +1,14 @@
-import * as projectAccess from '@sap-ux/project-access';
+import { jest } from '@jest/globals';
 import { TemplateTypeAttributes } from '@sap-ux/fiori-elements-writer';
 import '@sap-ux/jest-file-matchers';
 import { DatasourceType, OdataVersion } from '@sap-ux/odata-service-inquirer';
 import { copyFileSync, promises as fsPromise, mkdirSync, readdirSync } from 'node:fs';
 import 'jest-extended';
 import cloneDeep from 'lodash/cloneDeep';
-import { join } from 'node:path';
-import type { Project, Service, State } from '../../../src/types';
-import { FloorplanFE } from '../../../src/types';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import type { Project, Service, State } from '../../../src/types/index.js';
+import { FloorplanFE } from '../../../src/types/index.js';
 import {
     cleanTestDir,
     getTestData,
@@ -15,19 +16,23 @@ import {
     ignoreMatcherOpts,
     originalCwd,
     runWritingPhaseGen
-} from '../test-utils';
-import { baseTestProject, getExpectedOutputPath, v4EntityConfig, v4Service } from './test-utils';
+} from '../test-utils/index.js';
+import { baseTestProject, getExpectedOutputPath, v4EntityConfig, v4Service } from './test-utils.js';
 
-const appAccessMock = jest.spyOn(projectAccess, 'createApplicationAccess');
-appAccessMock.mockResolvedValue({} as any);
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
-jest.mock('@sap-ux/fiori-generator-shared', () => {
-    const fioriGenShared = jest.requireActual('@sap-ux/fiori-generator-shared');
-    return {
-        ...fioriGenShared,
-        sendTelemetry: jest.fn()
-    };
-});
+const actualProjectAccess = await import('@sap-ux/project-access');
+const actualFioriGenShared = await import('@sap-ux/fiori-generator-shared');
+
+jest.unstable_mockModule('@sap-ux/project-access', () => ({
+    ...actualProjectAccess,
+    createApplicationAccess: jest.fn().mockResolvedValue({})
+}));
+
+jest.unstable_mockModule('@sap-ux/fiori-generator-shared', () => ({
+    ...actualFioriGenShared,
+    sendTelemetry: jest.fn()
+}));
 
 describe('Generate v4 apps', () => {
     let testProjectName: string;
@@ -97,6 +102,45 @@ describe('Generate v4 apps', () => {
         cleanTestDir(join(testDir, testProjectName));
     });
 
+    it('ALP v4 SAPUI 1.120.4', async () => {
+        testProjectName = 'alp_v4_ui5_1_120_4';
+        expectedOutputPath = getExpectedOutputPath(testProjectName);
+        // ALP requires specific entity relationships so using a specific service
+        const alpServiceV4: Service = {
+            servicePath: '/sap/opu/odata4/sap/c_salesordermanage_srv/srvd/sap/c_salesordermanage_sd_aggregate/0001/',
+            host: 'https://sap-ux-mock-services-v4-alp.cfapps.us10.hana.ondemand.com',
+            version: OdataVersion.v4,
+            edmx: getTestData(fixturesPath, 'sales_order_manage_v4', 'metadata'),
+            annotations: [],
+            source: DatasourceType.odataServiceUrl
+        };
+
+        const testState: State = cloneDeep({
+            project: {
+                ...baseTestProject(testDir),
+                name: testProjectName,
+                ui5Version: '1.120.4' // ALP v4 restricted to 1.90 and above
+            } as Project,
+            floorplan: FloorplanFE.FE_ALP,
+            service: alpServiceV4,
+            entityRelatedConfig: {
+                mainEntity: {
+                    entitySetName: 'SalesOrderItem',
+                    entitySetType: 'SalesOrderItemType'
+                },
+                navigationEntity: {
+                    entitySetName: 'MaterialDetails',
+                    navigationPropertyName: '_MaterialDetails'
+                },
+                tableType: 'GridTable',
+                tableSelectionMode: 'None'
+            }
+        });
+        await runWritingPhaseGen(testState as Partial<State>);
+        expect(join(testDir, testProjectName)).toMatchFolder(getExpectedOutputPath(testProjectName), ignoreMatcherOpts);
+        cleanTestDir(join(testDir, testProjectName));
+    });
+
     it('LROP v4 - invalid UI5 version specified', async () => {
         testProjectName = 'lrop_v4';
         expectedOutputPath = getExpectedOutputPath(testProjectName);
@@ -113,6 +157,26 @@ describe('Generate v4 apps', () => {
         });
 
         await expect(() => runWritingPhaseGen(testState)).rejects.toThrow('ValidationError');
+        cleanTestDir(join(testDir, testProjectName));
+    });
+
+    it('LROP v4 - ui5 1.120.4', async () => {
+        testProjectName = 'lrop_v4_ui5_1_120_4';
+        expectedOutputPath = getExpectedOutputPath(testProjectName);
+
+        const testState: State = cloneDeep({
+            project: {
+                ...baseTestProject(testDir),
+                name: testProjectName,
+                ui5Version: '1.120.4'
+            } as Project,
+            floorplan: FloorplanFE.FE_LROP,
+            service: v4Service,
+            entityRelatedConfig: v4EntityConfig
+        });
+
+        await runWritingPhaseGen(testState);
+        expect(join(testDir, testProjectName)).toMatchFolder(getExpectedOutputPath(testProjectName), ignoreMatcherOpts);
         cleanTestDir(join(testDir, testProjectName));
     });
 

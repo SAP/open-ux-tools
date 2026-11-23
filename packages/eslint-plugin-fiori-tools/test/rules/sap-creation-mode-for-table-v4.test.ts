@@ -1,6 +1,6 @@
-import createTableRule from '../../src/rules/sap-creation-mode-for-table';
+import createTableRule from '../../src/rules/sap-creation-mode-for-table.js';
 import { RuleTester } from 'eslint';
-import { meta, languages } from '../../src/index';
+import { meta, languages } from '../../src/index.js';
 import {
     getAnnotationsAsXmlCode,
     getManifestAsCode,
@@ -9,7 +9,7 @@ import {
     V4_ANNOTATIONS_PATH,
     V4_MANIFEST,
     V4_MANIFEST_PATH
-} from '../test-helper';
+} from '../test-helper.js';
 
 const ruleTester = new RuleTester({
     plugins: { ['@sap-ux/eslint-plugin-fiori-tools']: { ...meta, languages } },
@@ -356,7 +356,7 @@ ruleTester.run(TEST_NAME, createTableRule, {
                 errors: [
                     {
                         message:
-                            'Invalid creationMode value \"InvalidMode\" for ResponsiveTable in Incident Flow section. The recommended value is \"InlineCreationRows\". Valid values are: InlineCreationRows, NewPage.'
+                            'Invalid `creationMode` value `InvalidMode` for ResponsiveTable in Incident Flow section. The recommended value is `InlineCreationRows`. Valid values are: `InlineCreationRows`, `NewPage`.'
                     }
                 ]
             },
@@ -436,7 +436,7 @@ ruleTester.run(TEST_NAME, createTableRule, {
                 errors: [
                     {
                         message:
-                            'Consider using \"InlineCreationRows\" for a better user experience instead of \"NewPage\".'
+                            'Consider using `InlineCreationRows` for a better user experience instead of `NewPage`.'
                     }
                 ]
             },
@@ -516,7 +516,7 @@ ruleTester.run(TEST_NAME, createTableRule, {
                 errors: [
                     {
                         message:
-                            'Invalid creationMode value "InlineCreationRows" for Tree Table in Incident Flow section. The recommended value is "Inline". Valid values are: Inline, NewPage, CreationDialog.'
+                            'Invalid `creationMode` value `InlineCreationRows` for Tree Table in Incident Flow section. The recommended value is `Inline`. Valid values are: `Inline`, `NewPage`, `CreationDialog`.'
                     }
                 ]
             },
@@ -595,7 +595,7 @@ ruleTester.run(TEST_NAME, createTableRule, {
                 ]),
                 errors: [
                     {
-                        message: 'Consider using "Inline" for a better user experience instead of "NewPage".'
+                        message: 'Consider using `Inline` for a better user experience instead of `NewPage`.'
                     }
                 ]
             },
@@ -658,7 +658,7 @@ ruleTester.run(TEST_NAME, createTableRule, {
                 errors: [
                     {
                         message:
-                            'Creation mode is not supported for analytical tables. Remove the createMode or creationMode property.'
+                            'Creation mode is not supported for analytical tables. Remove the `createMode` or `creationMode` property.'
                     }
                 ]
             },
@@ -738,7 +738,7 @@ ruleTester.run(TEST_NAME, createTableRule, {
                 errors: [
                     {
                         message:
-                            'Consider using "InlineCreationRows" for a better user experience instead of "NewPage".'
+                            'Consider using `InlineCreationRows` for a better user experience instead of `NewPage`.'
                     }
                 ]
             },
@@ -816,7 +816,7 @@ ruleTester.run(TEST_NAME, createTableRule, {
                 ]),
                 errors: [
                     {
-                        message: 'Consider using "Inline" for a better user experience instead of "CreationDialog".'
+                        message: 'Consider using `Inline` for a better user experience instead of `CreationDialog`.'
                     }
                 ]
             },
@@ -870,7 +870,7 @@ ruleTester.run(TEST_NAME, createTableRule, {
                 ]),
                 errors: [
                     {
-                        message: 'Consider adding creationMode at the application level for better user experience.'
+                        message: 'Consider adding `creationMode` at the application level for better user experience.'
                     }
                 ]
             },
@@ -925,7 +925,7 @@ ruleTester.run(TEST_NAME, createTableRule, {
                 ]),
                 errors: [
                     {
-                        message: 'Consider using "Inline" for a better user experience instead of "NewPage".'
+                        message: 'Consider using `Inline` for a better user experience instead of `NewPage`.'
                     }
                 ]
             },
@@ -980,7 +980,7 @@ ruleTester.run(TEST_NAME, createTableRule, {
                 errors: [
                     {
                         message:
-                            'Invalid creationMode value "InvalidMode" for ResponsiveTable. The recommended value is "InlineCreationRows". Valid values are: InlineCreationRows, NewPage.'
+                            'Invalid `creationMode` value `InvalidMode` for ResponsiveTable. The recommended value is `InlineCreationRows`. Valid values are: `InlineCreationRows`, `NewPage`.'
                     }
                 ]
             },
@@ -1067,7 +1067,7 @@ ruleTester.run(TEST_NAME, createTableRule, {
                 errors: [
                     {
                         message:
-                            'Consider using "InlineCreationRows" for a better user experience instead of "NewPage".'
+                            'Consider using `InlineCreationRows` for a better user experience instead of `NewPage`.'
                     }
                 ]
             },
@@ -1100,7 +1100,7 @@ ruleTester.run(TEST_NAME, createTableRule, {
                 ]),
                 errors: [
                     {
-                        message: 'Consider adding creationMode at the application level for better user experience.'
+                        message: 'Consider adding `creationMode` at the application level for better user experience.'
                     }
                 ]
             },
@@ -1209,11 +1209,11 @@ ruleTester.run(TEST_NAME, createTableRule, {
                 errors: [
                     {
                         message:
-                            'Invalid creationMode value "tableSettings" for ResponsiveTable in Incident Flow section. The recommended value is "InlineCreationRows". Valid values are: InlineCreationRows, NewPage.'
+                            'Invalid `creationMode` value `tableSettings` for ResponsiveTable in Incident Flow section. The recommended value is `InlineCreationRows`. Valid values are: `InlineCreationRows`, `NewPage`.'
                     },
                     {
                         message:
-                            'Invalid creationMode value "tableSettings" for Tree Table in Category section. The recommended value is "Inline". Valid values are: Inline, NewPage, CreationDialog.'
+                            'Invalid `creationMode` value `tableSettings` for Tree Table in Category section. The recommended value is `Inline`. Valid values are: `Inline`, `NewPage`, `CreationDialog`.'
                     }
                 ]
             },

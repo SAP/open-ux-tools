@@ -1,8 +1,10 @@
+import { jest } from '@jest/globals';
 import { create as createStorage } from 'mem-fs';
 import { promises as fsPromises } from 'node:fs';
 import { create, type Editor } from 'mem-fs-editor';
-import { join } from 'node:path';
-
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import type { Document as XmldomDocument, Element as XmldomElement } from '@xmldom/xmldom';
 import type {
     BuildingBlockConfig,
     Chart,
@@ -14,17 +16,39 @@ import type {
     CustomFilterField,
     CustomFormField,
     Action
-} from '../../src';
+} from '../../src/index.js';
 
-import { BuildingBlockType, generateBuildingBlock, getSerializedFileContent } from '../../src';
-import { BUILDING_BLOCK_CONFIG } from '../../src/building-block/processor';
-import * as testManifestContent from './sample/building-block/webapp/manifest.json';
-import { clearTestOutput, writeFilesForDebugging } from '../common';
-import { bindingContextAbsolute, type BindingContextType } from '../../src/building-block/types';
-import { i18nNamespaces, translate } from '../../src/i18n';
-import { Placement } from '../../src/common/types';
-import type { IdGeneratorFunction } from '../../src/common/file';
-import * as fileAccess from '@sap-ux/project-access/dist/file';
+import {
+    BuildingBlockType,
+    generateBuildingBlock,
+    getSerializedFileContent,
+    generateBuildingBlockAggregation
+} from '../../src/index.js';
+import { BUILDING_BLOCK_CONFIG, resolveAggregationPath } from '../../src/building-block/processor.js';
+import {
+    AGGREGATION_ID_KEYS,
+    buildAggregationIds,
+    getPageAggregationNames,
+    sortPageAggregationChildren,
+    ensureMissingAggregation
+} from '../../src/building-block/processAggregation.js';
+import testManifestContent from './sample/building-block/webapp/manifest.json';
+import { clearTestOutput, writeFilesForDebugging } from '../common/index.js';
+import { bindingContextAbsolute, type BindingContextType } from '../../src/building-block/types.js';
+import { i18nNamespaces, translate } from '../../src/i18n.js';
+import { Placement } from '../../src/common/types.js';
+import type { IdGeneratorFunction } from '../../src/common/file.js';
+import { findFilesByExtensionMock } from '../__mocks__/project-access-file.mjs';
+
+const testManifestV145 = {
+    ...testManifestContent,
+    'sap.ui5': {
+        ...testManifestContent['sap.ui5'],
+        dependencies: { ...testManifestContent['sap.ui5']?.dependencies, minUI5Version: '1.145.0' }
+    }
+};
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 describe('Building Blocks', () => {
     let fs: Editor;
@@ -41,15 +65,18 @@ describe('Building Blocks', () => {
     });
 
     beforeEach(async () => {
-        let item = 0;
         jest.requireActual('mem-fs-editor');
         fs = create(createStorage());
-        jest.spyOn(fileAccess, 'findFilesByExtension').mockResolvedValue([]);
-        generateId = jest.fn((baseId: string) => {
-            if (['Item', 'ButtonGroup'].includes(baseId)) {
-                return `${baseId}${item++}`;
+        findFilesByExtensionMock.mockResolvedValue([]);
+        generateId = jest.fn((baseId: string, validatedIds: string[] = []) => {
+            if (!validatedIds.includes(baseId)) {
+                return baseId;
             }
-            return `${baseId}`;
+            let counter = 1;
+            while (validatedIds.includes(`${baseId}${counter}`)) {
+                counter++;
+            }
+            return `${baseId}${counter}`;
         });
         testAppPath = join(testOutputRoot, `${Date.now()}`);
         fs.delete(testAppPath);
@@ -1089,6 +1116,291 @@ describe('Building Blocks', () => {
         );
         expect(fs.read(join(basePath, xmlViewFilePath))).toMatchSnapshot('generate-page-block');
         await writeFilesForDebugging(fs);
+    });
+
+    test('generate Page building block with full template inserts all 7 aggregations', async () => {
+        const aggregationPath = `/mvc:View/*[local-name()='Page']`;
+        const basePath = join(testAppPath, 'generate-page-block-full');
+        fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestV145));
+        fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
+
+        await generateBuildingBlock(
+            basePath,
+            {
+                viewOrFragmentPath: xmlViewFilePath,
+                aggregationPath,
+                buildingBlockData: {
+                    id: 'testPage',
+                    buildingBlockType: BuildingBlockType.Page,
+                    title: 'Test Page',
+                    templateType: 'full',
+                    generateId,
+                    aggregations: {
+                        breadcrumbs:
+                            '<m:Breadcrumbs>\n    <m:Link text="Home" press=".onBreadcrumbsPressHome" />\n    <m:Link text="Page 1" press=".onBreadcrumbsPressPage1" />\n    <m:Link text="Page 2" press=".onBreadcrumbsPressPage2" />\n</m:Breadcrumbs>',
+                        navigationActions:
+                            '<m:Button icon="sap-icon://full-screen" press=".onNavigationActionsFullScreen" type="Transparent" />',
+                        actions:
+                            '<m:Button text="Action 1" press=".onActionsClickAction1" type="Ghost" />\n    <m:Button text="Action 2" press=".onActionsClickAction2" type="Ghost" />'
+                    }
+                },
+                replace: true
+            },
+            fs
+        );
+
+        expect(fs.read(join(basePath, xmlViewFilePath))).toMatchSnapshot('generate-page-block-full');
+    });
+
+    test('generate Page building block with full template uses default content with IDs', async () => {
+        const aggregationPath = `/mvc:View/*[local-name()='Page']`;
+        const basePath = join(testAppPath, 'generate-page-block-full-defaults');
+        fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestV145));
+        fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
+
+        await generateBuildingBlock(
+            basePath,
+            {
+                viewOrFragmentPath: xmlViewFilePath,
+                aggregationPath,
+                buildingBlockData: {
+                    id: 'testPage',
+                    buildingBlockType: BuildingBlockType.Page,
+                    title: 'Test Page',
+                    templateType: 'full',
+                    generateId
+                },
+                replace: true
+            },
+            fs
+        );
+
+        expect(fs.read(join(basePath, xmlViewFilePath))).toMatchSnapshot('generate-page-block-full-defaults');
+    });
+
+    test('generate Page building block with full template generates default content with IDs for all aggregations', async () => {
+        const aggregationPath = `/mvc:View/*[local-name()='Page']`;
+        const basePath = join(testAppPath, 'generate-page-block-full-override');
+        fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestV145));
+        fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
+
+        await generateBuildingBlock(
+            basePath,
+            {
+                viewOrFragmentPath: xmlViewFilePath,
+                aggregationPath,
+                buildingBlockData: {
+                    id: 'testPage',
+                    buildingBlockType: BuildingBlockType.Page,
+                    title: 'Test Page',
+                    templateType: 'full',
+                    generateId
+                },
+                replace: true
+            },
+            fs
+        );
+
+        const viewContent = fs.read(join(basePath, xmlViewFilePath));
+        expect(viewContent).toContain('onBreadcrumbsPressHome');
+        expect(viewContent).toContain('onActionsClickAction1');
+    });
+
+    test('generate Page building block with basic template generates a minimal Page element and no controller', async () => {
+        const aggregationPath = `/mvc:View/*[local-name()='Page']`;
+        const basePath = join(testAppPath, 'generate-page-block-blank');
+        fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+        fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
+
+        await generateBuildingBlock(
+            basePath,
+            {
+                viewOrFragmentPath: xmlViewFilePath,
+                aggregationPath,
+                buildingBlockData: {
+                    id: 'testPage',
+                    buildingBlockType: BuildingBlockType.Page,
+                    templateType: 'basic',
+                    generateId
+                },
+                replace: true
+            },
+            fs
+        );
+
+        const viewContent = fs.read(join(basePath, xmlViewFilePath));
+        expect(viewContent).not.toContain('showFooter');
+        expect(viewContent).not.toContain('macros:breadcrumbs');
+        expect(viewContent).not.toContain('macros:footer');
+        expect(viewContent).not.toContain('macros:items');
+        expect(viewContent).not.toContain('IconTabBar');
+        expect(viewContent).not.toContain('IconTabFilter');
+        expect(fs.exists(join(basePath, 'webapp/ext/main/Main.controller.js'))).toBe(false);
+        expect(fs.exists(join(basePath, 'webapp/ext/main/Main.controller.ts'))).toBe(false);
+        expect(viewContent).toMatchSnapshot('generate-page-block-basic');
+    });
+
+    test('generate Page building block with full template throws if UI5 version is below 1.145.0', async () => {
+        const aggregationPath = `/mvc:View/*[local-name()='Page']`;
+        const basePath = join(testAppPath, 'generate-page-block-full-version-gate');
+        const manifestWithLowerUi5Version = {
+            ...testManifestContent,
+            'sap.ui5': {
+                ...testManifestContent['sap.ui5'],
+                dependencies: {
+                    ...testManifestContent['sap.ui5']?.dependencies,
+                    minUI5Version: '1.144.0'
+                }
+            }
+        };
+        fs.write(join(basePath, manifestFilePath), JSON.stringify(manifestWithLowerUi5Version));
+        fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
+        const t = translate(i18nNamespaces.buildingBlock, 'pageBuildingBlock.');
+
+        await expect(
+            generateBuildingBlock(
+                basePath,
+                {
+                    viewOrFragmentPath: xmlViewFilePath,
+                    aggregationPath,
+                    buildingBlockData: {
+                        id: 'testPage',
+                        buildingBlockType: BuildingBlockType.Page,
+                        templateType: 'full',
+                        generateId
+                    },
+                    replace: true
+                },
+                fs
+            )
+        ).rejects.toThrow(String(t('fullTemplateMinUi5VersionRequirement', { minUI5Version: '1.144.0' })));
+    });
+
+    test('generate Page building block with full template succeeds if UI5 version is missing (treated as latest)', async () => {
+        const aggregationPath = `/mvc:View/*[local-name()='Page']`;
+        const basePath = join(testAppPath, 'generate-page-block-full-no-version');
+        const manifestWithNoUi5Version = {
+            ...testManifestContent,
+            'sap.ui5': { dependencies: { libs: { 'sap.fe.core': {} } } }
+        };
+        fs.write(join(basePath, manifestFilePath), JSON.stringify(manifestWithNoUi5Version));
+        fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
+
+        await expect(
+            generateBuildingBlock(
+                basePath,
+                {
+                    viewOrFragmentPath: xmlViewFilePath,
+                    aggregationPath,
+                    buildingBlockData: {
+                        id: 'testPage',
+                        buildingBlockType: BuildingBlockType.Page,
+                        templateType: 'full',
+                        generateId
+                    },
+                    replace: true
+                },
+                fs
+            )
+        ).resolves.not.toThrow();
+    });
+
+    // Covers the snippet/preview path (getSerializedFileContent), which is separate from
+    // generateBuildingBlock and was the only full-Page code path left uncovered.
+    test('getSerializedFileContent for full Page building block includes sticky subheader IconTabBar', async () => {
+        const aggregationPath = `/mvc:View/*[local-name()='Page']`;
+        const basePath = join(testAppPath, 'serialize-page-block-full');
+        fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestV145));
+        fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
+
+        const codeSnippet = await getSerializedFileContent(
+            basePath,
+            {
+                viewOrFragmentPath: xmlViewFilePath,
+                aggregationPath,
+                buildingBlockData: {
+                    id: 'testPage',
+                    buildingBlockType: BuildingBlockType.Page,
+                    title: 'Test Page',
+                    templateType: 'full',
+                    generateId
+                }
+            },
+            fs
+        );
+
+        const content = codeSnippet.viewOrFragmentPath.content;
+        expect(content).toContain('stickySubheaderProvider="stickySubheaderBar"');
+        expect(content).toContain('<IconTabBar id="stickySubheaderBar"');
+        expect(codeSnippet.viewOrFragmentPath.filePathProps?.fileName).toBe('Main.view.xml');
+    });
+
+    test('full Page building block shares one collision-safe id between provider and IconTabBar', async () => {
+        const aggregationPath = `/mvc:View/*[local-name()='Page']`;
+        const basePath = join(testAppPath, 'generate-page-block-full-collision');
+        fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestV145));
+        fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
+        // Simulate a view that already contains a 'stickySubheaderBar' id so the generator suffixes it
+        const collisionGenerateId: IdGeneratorFunction = jest.fn((baseId: string) =>
+            baseId === 'stickySubheaderBar' ? 'stickySubheaderBar1' : baseId
+        );
+
+        await generateBuildingBlock(
+            basePath,
+            {
+                viewOrFragmentPath: xmlViewFilePath,
+                aggregationPath,
+                buildingBlockData: {
+                    id: 'testPage',
+                    buildingBlockType: BuildingBlockType.Page,
+                    title: 'Test Page',
+                    templateType: 'full',
+                    generateId: collisionGenerateId
+                },
+                replace: true
+            },
+            fs
+        );
+
+        const view = fs.read(join(basePath, xmlViewFilePath));
+        expect(view).toContain('stickySubheaderProvider="stickySubheaderBar1"');
+        expect(view).toContain('<IconTabBar id="stickySubheaderBar1"');
+        expect(view).not.toContain('"stickySubheaderBar"');
+    });
+
+    test('generateBuildingBlock creates missing macros:items aggregation before inserting content', async () => {
+        // View has <macros:Page> but no <macros:items> — ensureMissingAggregation must create it
+        const viewWithPageNoItems = `<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
+    xmlns:html="http://www.w3.org/1999/xhtml" controllerName="com.test.myApp.ext.main.Main"
+    xmlns:macros="sap.fe.macros">
+    <Page title="Main">
+        <content>
+            <macros:Page id="Page" title="cp" description="cp">
+            </macros:Page>
+        </content>
+    </Page>
+</mvc:View>`;
+        const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']/macros:Page/macros:items`;
+        const basePath = join(testAppPath, 'generate-bb-creates-missing-items');
+        fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+        fs.write(join(basePath, xmlViewFilePath), viewWithPageNoItems);
+
+        await generateBuildingBlock<FilterBar>(
+            basePath,
+            {
+                viewOrFragmentPath: xmlViewFilePath,
+                aggregationPath,
+                buildingBlockData: {
+                    id: 'FilterBar1',
+                    generateId,
+                    buildingBlockType: BuildingBlockType.FilterBar
+                }
+            },
+            fs
+        );
+
+        const viewContent = fs.read(join(basePath, xmlViewFilePath));
+        expect(viewContent).toMatchSnapshot('generate-bb-creates-missing-items');
     });
 
     test('throws error if aggregationPath not found', async () => {
@@ -3707,5 +4019,613 @@ describe('Building Blocks', () => {
             expect(viewContent).toMatchSnapshot();
             await writeFilesForDebugging(fs);
         });
+    });
+
+    describe('generateBuildingBlockAggregation', () => {
+        const pageViewContent = `<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
+    xmlns:macros="sap.fe.macros" controllerName="com.test.myApp.ext.main.Main">
+    <macros:Page id="Page" title="pageTitle">
+    </macros:Page>
+</mvc:View>`;
+
+        it('appends aggregation without id attribute on wrapper element', async () => {
+            const basePath = join(testAppPath, 'page-bb-agg');
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestV145));
+            fs.write(join(basePath, xmlViewFilePath), pageViewContent);
+
+            const result = await generateBuildingBlockAggregation(
+                basePath,
+                {
+                    viewPath: xmlViewFilePath,
+                    buildingBlockType: BuildingBlockType.Page,
+                    aggregationName: 'footer'
+                },
+                fs
+            );
+
+            const output = result.read(join(basePath, xmlViewFilePath));
+            expect(output).toContain('<macros:footer>');
+            expect(output).not.toContain('id="footer"');
+        });
+
+        it('does not append duplicate aggregation when it already exists in view', async () => {
+            const basePath = join(testAppPath, 'page-bb-agg-dup');
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestV145));
+            const viewWithExistingId = `<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
+    xmlns:macros="sap.fe.macros" controllerName="com.test.myApp.ext.main.Main">
+    <macros:Page id="Page" title="pageTitle">
+        <macros:footer id="footer"><OverflowToolbar /></macros:footer>
+    </macros:Page>
+</mvc:View>`;
+            fs.write(join(basePath, xmlViewFilePath), viewWithExistingId);
+            findFilesByExtensionMock.mockResolvedValue([join(basePath, xmlViewFilePath)]);
+
+            const result = await generateBuildingBlockAggregation(
+                basePath,
+                {
+                    viewPath: xmlViewFilePath,
+                    buildingBlockType: BuildingBlockType.Page,
+                    aggregationName: 'footer'
+                },
+                fs
+            );
+
+            const output = result.read(join(basePath, xmlViewFilePath));
+            expect(output).toMatchSnapshot();
+            expect(output).not.toContain('id="footer1"');
+        });
+
+        it('does not append duplicate breadcrumbs aggregation when it already exists in view', async () => {
+            const basePath = join(testAppPath, 'page-bb-agg-dup-breadcrumbs');
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestV145));
+            const viewWithBreadcrumbs = `<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
+    xmlns:macros="sap.fe.macros" controllerName="com.test.myApp.ext.main.Main">
+    <macros:Page id="Page" title="pageTitle">
+        <macros:breadcrumbs><Breadcrumbs /></macros:breadcrumbs>
+    </macros:Page>
+</mvc:View>`;
+            fs.write(join(basePath, xmlViewFilePath), viewWithBreadcrumbs);
+            findFilesByExtensionMock.mockResolvedValue([join(basePath, xmlViewFilePath)]);
+
+            const result = await generateBuildingBlockAggregation(
+                basePath,
+                {
+                    viewPath: xmlViewFilePath,
+                    buildingBlockType: BuildingBlockType.Page,
+                    aggregationName: 'breadcrumbs'
+                },
+                fs
+            );
+
+            const output = result.read(join(basePath, xmlViewFilePath));
+            expect(output).toMatchSnapshot();
+        });
+
+        it('appends children inside existing navigationActions container on second add', async () => {
+            const basePath = join(testAppPath, 'page-bb-agg-multi-nav');
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestV145));
+            const viewWithNav = `<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
+    xmlns:macros="sap.fe.macros" controllerName="com.test.myApp.ext.main.Main">
+    <macros:Page id="Page" title="pageTitle">
+        <macros:navigationActions><Button id="navigationActions_button" icon="sap-icon://full-screen" type="Transparent" /></macros:navigationActions>
+    </macros:Page>
+</mvc:View>`;
+            fs.write(join(basePath, xmlViewFilePath), viewWithNav);
+            findFilesByExtensionMock.mockResolvedValue([join(basePath, xmlViewFilePath)]);
+
+            const result = await generateBuildingBlockAggregation(
+                basePath,
+                {
+                    viewPath: xmlViewFilePath,
+                    buildingBlockType: BuildingBlockType.Page,
+                    aggregationName: 'navigationActions'
+                },
+                fs
+            );
+
+            const output = result.read(join(basePath, xmlViewFilePath));
+            // ONE container only — children are appended inside
+            expect(output).toMatchSnapshot();
+        });
+
+        it('appends children inside existing titleContent container on second add', async () => {
+            const basePath = join(testAppPath, 'page-bb-agg-multi-title');
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestV145));
+            const viewWithTitle = `<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
+    xmlns:macros="sap.fe.macros" controllerName="com.test.myApp.ext.main.Main">
+    <macros:Page id="Page" title="pageTitle">
+        <macros:titleContent><GenericTag id="titleContent_genericTag" text="Status" /></macros:titleContent>
+    </macros:Page>
+</mvc:View>`;
+            fs.write(join(basePath, xmlViewFilePath), viewWithTitle);
+            findFilesByExtensionMock.mockResolvedValue([join(basePath, xmlViewFilePath)]);
+
+            const result = await generateBuildingBlockAggregation(
+                basePath,
+                {
+                    viewPath: xmlViewFilePath,
+                    buildingBlockType: BuildingBlockType.Page,
+                    aggregationName: 'titleContent'
+                },
+                fs
+            );
+
+            const output = result.read(join(basePath, xmlViewFilePath));
+            expect(output).toMatchSnapshot();
+        });
+
+        it('appends children inside existing actions container on second add', async () => {
+            const basePath = join(testAppPath, 'page-bb-agg-multi-actions');
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestV145));
+            const viewWithActions = `<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
+    xmlns:macros="sap.fe.macros" controllerName="com.test.myApp.ext.main.Main">
+    <macros:Page id="Page" title="pageTitle">
+        <macros:actions>
+            <Button id="actions_button" text="Action 1" press=".onActionsClickAction1" type="Ghost"/>
+            <Button id="actions_button1" text="Action 2" press=".onActionsClickAction2" type="Ghost"/>
+        </macros:actions>
+    </macros:Page>
+</mvc:View>`;
+            fs.write(join(basePath, xmlViewFilePath), viewWithActions);
+            findFilesByExtensionMock.mockResolvedValue([join(basePath, xmlViewFilePath)]);
+
+            const result = await generateBuildingBlockAggregation(
+                basePath,
+                {
+                    viewPath: xmlViewFilePath,
+                    buildingBlockType: BuildingBlockType.Page,
+                    aggregationName: 'actions'
+                },
+                fs
+            );
+
+            const output = result.read(join(basePath, xmlViewFilePath));
+            expect(output).toMatchSnapshot();
+        });
+
+        it('appends children inside existing headerContent container on second add', async () => {
+            const basePath = join(testAppPath, 'page-bb-agg-multi-header');
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestV145));
+            const viewWithHeader = `<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
+    xmlns:macros="sap.fe.macros" controllerName="com.test.myApp.ext.main.Main">
+    <macros:Page id="Page" title="pageTitle">
+        <macros:headerContent><VBox id="headerContent_vbox"><Title id="headerContent_title" text="Page Title" /></VBox></macros:headerContent>
+    </macros:Page>
+</mvc:View>`;
+            fs.write(join(basePath, xmlViewFilePath), viewWithHeader);
+            findFilesByExtensionMock.mockResolvedValue([join(basePath, xmlViewFilePath)]);
+
+            const result = await generateBuildingBlockAggregation(
+                basePath,
+                {
+                    viewPath: xmlViewFilePath,
+                    buildingBlockType: BuildingBlockType.Page,
+                    aggregationName: 'headerContent'
+                },
+                fs
+            );
+
+            const output = result.read(join(basePath, xmlViewFilePath));
+            expect(output).toMatchSnapshot();
+        });
+
+        it('reorders existing aggregations into canonical PAGE_AGGREGATIONS order', async () => {
+            // Start with aggregations in wrong order: footer, actions, navigationActions
+            const basePath = join(testAppPath, 'page-bb-agg-sort');
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestV145));
+            const viewOutOfOrder = `<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
+    xmlns:macros="sap.fe.macros" controllerName="com.test.myApp.ext.main.Main">
+    <macros:Page id="Page" title="pageTitle">
+        <macros:footer id="footer"><OverflowToolbar /></macros:footer>
+        <macros:actions id="actions"><Button text="Act" /></macros:actions>
+    </macros:Page>
+</mvc:View>`;
+            fs.write(join(basePath, xmlViewFilePath), viewOutOfOrder);
+
+            // Adding navigationActions (index 1) should trigger a full sort
+            const result = await generateBuildingBlockAggregation(
+                basePath,
+                {
+                    viewPath: xmlViewFilePath,
+                    buildingBlockType: BuildingBlockType.Page,
+                    aggregationName: 'navigationActions'
+                },
+                fs
+            );
+
+            const output = result.read(join(basePath, xmlViewFilePath));
+            const navPos = output.indexOf('macros:navigationActions');
+            const actPos = output.indexOf('macros:actions');
+            const footPos = output.indexOf('macros:footer');
+            expect(navPos).toBeLessThan(actPos);
+            expect(actPos).toBeLessThan(footPos);
+        });
+
+        it('adds template comment as first child when Page has no existing aggregations', async () => {
+            const basePath = join(testAppPath, 'page-bb-agg-comment');
+            fs.write(join(basePath, xmlViewFilePath), pageViewContent);
+
+            const result = await generateBuildingBlockAggregation(
+                basePath,
+                {
+                    viewPath: xmlViewFilePath,
+                    buildingBlockType: BuildingBlockType.Page,
+                    aggregationName: 'items'
+                },
+                fs
+            );
+
+            const output = result.read(join(basePath, xmlViewFilePath));
+            expect(output).toContain('This is a sample template, event handlers should be added for implementation');
+            // Comment should appear before the aggregation element
+            const commentPos = output.indexOf('This is a sample template');
+            const itemsPos = output.indexOf('macros:items');
+            expect(commentPos).toBeLessThan(itemsPos);
+        });
+
+        it('does not add template comment when Page already has aggregation children', async () => {
+            const basePath = join(testAppPath, 'page-bb-agg-no-comment');
+            const viewWithExisting = `<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
+    xmlns:macros="sap.fe.macros" controllerName="com.test.myApp.ext.main.Main">
+    <macros:Page id="Page" title="pageTitle">
+        <macros:footer id="footer"><OverflowToolbar /></macros:footer>
+    </macros:Page>
+</mvc:View>`;
+            fs.write(join(basePath, xmlViewFilePath), viewWithExisting);
+
+            const result = await generateBuildingBlockAggregation(
+                basePath,
+                {
+                    viewPath: xmlViewFilePath,
+                    buildingBlockType: BuildingBlockType.Page,
+                    aggregationName: 'items'
+                },
+                fs
+            );
+
+            const output = result.read(join(basePath, xmlViewFilePath));
+            // Comment should not be added again if children already exist
+            expect(output.split('This is a sample template').length - 1).toBeLessThanOrEqual(1);
+        });
+
+        it('preserves template comment when reordering aggregations', async () => {
+            const basePath = join(testAppPath, 'page-bb-agg-sort-comment');
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestV145));
+            const viewWithComment = `<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
+    xmlns:macros="sap.fe.macros" controllerName="com.test.myApp.ext.main.Main">
+    <macros:Page id="Page" title="pageTitle">
+        <!--This is a sample template, event handlers should be added for implementation-->
+        <macros:footer id="footer"><OverflowToolbar /></macros:footer>
+        <macros:actions id="actions"><Button text="Act" /></macros:actions>
+    </macros:Page>
+</mvc:View>`;
+            fs.write(join(basePath, xmlViewFilePath), viewWithComment);
+
+            const result = await generateBuildingBlockAggregation(
+                basePath,
+                {
+                    viewPath: xmlViewFilePath,
+                    buildingBlockType: BuildingBlockType.Page,
+                    aggregationName: 'navigationActions'
+                },
+                fs
+            );
+
+            const output = result.read(join(basePath, xmlViewFilePath));
+            expect(output).toContain('This is a sample template, event handlers should be added for implementation');
+            // Comment should remain before all aggregation elements
+            const commentPos = output.indexOf('This is a sample template');
+            const navPos = output.indexOf('macros:navigationActions');
+            expect(commentPos).toBeLessThan(navPos);
+        });
+
+        it('wraps loose building blocks into macros:items when adding a named aggregation', async () => {
+            const basePath = join(testAppPath, 'page-bb-agg-wrap-loose');
+            fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestV145));
+            // View has a bare macros:Form under macros:Page — no macros:items wrapper yet
+            fs.write(
+                join(basePath, xmlViewFilePath),
+                `<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
+    xmlns:macros="sap.fe.macros" controllerName="com.test.myApp.ext.main.Main">
+    <macros:Page id="Page" title="cp" description="cp">
+        <macros:Form id="Form" metaPath="@com.sap.vocabularies.UI.v1.FieldGroup#formMacro" title="ff"/>
+    </macros:Page>
+</mvc:View>`
+            );
+
+            const result = await generateBuildingBlockAggregation(
+                basePath,
+                {
+                    viewPath: xmlViewFilePath,
+                    buildingBlockType: BuildingBlockType.Page,
+                    aggregationName: 'breadcrumbs'
+                },
+                fs
+            );
+
+            expect(result.read(join(basePath, xmlViewFilePath))).toMatchSnapshot('page-bb-agg-wraps-loose-into-items');
+        });
+    });
+});
+
+describe('resolveAggregationPath', () => {
+    test('leaves prefixed steps unchanged', () => {
+        expect(resolveAggregationPath('/mvc:View/macros:Page/macros:items')).toBe('/mvc:View/macros:Page/macros:items');
+    });
+
+    test('rewrites unprefixed steps to local-name() predicates', () => {
+        expect(resolveAggregationPath('/mvc:View/macros:Page/macros:items/IconTabBar/items/IconTabFilter')).toBe(
+            "/mvc:View/macros:Page/macros:items/*[local-name()='IconTabBar']/*[local-name()='items']/*[local-name()='IconTabFilter']"
+        );
+    });
+
+    test('handles mixed prefixed and unprefixed steps', () => {
+        expect(resolveAggregationPath('/mvc:View/Toolbar/macros:Table')).toBe(
+            "/mvc:View/*[local-name()='Toolbar']/macros:Table"
+        );
+    });
+
+    test('handles a single unprefixed step', () => {
+        expect(resolveAggregationPath('/View')).toBe("/*[local-name()='View']");
+    });
+
+    test('returns empty string unchanged', () => {
+        expect(resolveAggregationPath('')).toBe('');
+    });
+
+    test('is idempotent on already-rewritten paths', () => {
+        const path = "/mvc:View/*[local-name()='IconTabBar']";
+        expect(resolveAggregationPath(path)).toBe(path);
+    });
+
+    test('handles steps with hyphens and dots (valid XPath names)', () => {
+        expect(resolveAggregationPath('/mvc:View/my-element.1')).toBe("/mvc:View/*[local-name()='my-element.1']");
+    });
+});
+
+describe('getPageAggregationNames', () => {
+    test('returns undefined for non-Page building block types', () => {
+        expect(getPageAggregationNames({ buildingBlockType: BuildingBlockType.FilterBar } as never)).toBeUndefined();
+        expect(getPageAggregationNames({ buildingBlockType: BuildingBlockType.Chart } as never)).toBeUndefined();
+        expect(getPageAggregationNames({ buildingBlockType: BuildingBlockType.Table } as never)).toBeUndefined();
+    });
+
+    test('returns undefined for Page building block without full template type', () => {
+        expect(getPageAggregationNames({ buildingBlockType: BuildingBlockType.Page } as never)).toBeUndefined();
+    });
+
+    test('returns aggregation names array for Page building block with full template type', () => {
+        const result = getPageAggregationNames({
+            buildingBlockType: BuildingBlockType.Page,
+            templateType: 'full'
+        } as never);
+        expect(Array.isArray(result)).toBe(true);
+        expect(result!.length).toBeGreaterThan(0);
+    });
+});
+
+describe('sortPageAggregationChildren', () => {
+    async function makePageElement(innerXml: string): Promise<{ pageElement: XmldomElement }> {
+        const { DOMParser } = await import('@xmldom/xmldom');
+        const doc = new DOMParser().parseFromString(
+            `<macros:Page xmlns:macros="sap.fe.macros" xmlns="sap.m">${innerXml}</macros:Page>`,
+            'text/xml'
+        );
+        return { pageElement: doc.documentElement! };
+    }
+
+    test('preserves trailing comments (comments after last element)', async () => {
+        const { pageElement } = await makePageElement(
+            `<macros:items xmlns:macros="sap.fe.macros" /><macros:actions xmlns:macros="sap.fe.macros" /><!--trailing comment-->`
+        );
+        sortPageAggregationChildren(pageElement as never);
+        const serialized = pageElement.toString();
+        expect(serialized).toContain('trailing comment');
+    });
+
+    test('keeps inline comments attached to their following element after reordering', async () => {
+        const { pageElement } = await makePageElement(
+            `<macros:items xmlns:macros="sap.fe.macros" /><!--before actions--><macros:actions xmlns:macros="sap.fe.macros" />`
+        );
+        sortPageAggregationChildren(pageElement as never);
+        const serialized = pageElement.toString();
+        // Comment should still be present; actions appears before items after sort (actions index=3, items index=5)
+        expect(serialized).toContain('before actions');
+        const itemsPos = serialized.indexOf('macros:items');
+        const actionsPos = serialized.indexOf('macros:actions');
+        expect(actionsPos).toBeLessThan(itemsPos);
+    });
+
+    test('preserves non-whitespace text nodes in the ordering', async () => {
+        const { pageElement } = await makePageElement(
+            `<macros:items xmlns:macros="sap.fe.macros" />someText<macros:actions xmlns:macros="sap.fe.macros" />`
+        );
+        sortPageAggregationChildren(pageElement as never);
+        const serialized = pageElement.toString();
+        expect(serialized).toContain('someText');
+    });
+});
+
+describe('ensureMissingAggregation', () => {
+    async function makeDocument(xml: string): Promise<XmldomDocument> {
+        const { DOMParser } = await import('@xmldom/xmldom');
+        return new DOMParser().parseFromString(xml, 'text/xml');
+    }
+
+    test('returns early when parent path does not resolve to any node', async () => {
+        const doc = await makeDocument(
+            `<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns:macros="sap.fe.macros"><macros:Page /></mvc:View>`
+        );
+        // Parent path /mvc:View/macros:Page/macros:NonExistent does not exist, so parent path
+        // /mvc:View/macros:Page/macros:NonExistent/macros:missing has no resolvable parent.
+        // ensureMissingAggregation should return without throwing.
+        expect(() =>
+            ensureMissingAggregation(doc as never, '/mvc:View/macros:Page/macros:nonExistent/macros:missing')
+        ).not.toThrow();
+        // macros:missing should NOT have been created since parent doesn't exist
+        const result = doc.getElementsByTagNameNS('sap.fe.macros', 'missing');
+        expect(result.length).toBe(0);
+    });
+
+    test('does not create element when aggregation path already exists', async () => {
+        const doc = await makeDocument(
+            `<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns:macros="sap.fe.macros"><macros:Page><macros:items /></macros:Page></mvc:View>`
+        );
+        // The element already exists — ensureMissingAggregation should be a no-op
+        const countBefore = doc.getElementsByTagNameNS('sap.fe.macros', 'items').length;
+        ensureMissingAggregation(doc as never, '/mvc:View/macros:Page/macros:items');
+        expect(doc.getElementsByTagNameNS('sap.fe.macros', 'items').length).toBe(countBefore);
+    });
+});
+
+describe('getSerializedFileContent with Page building block', () => {
+    let fsLocal: Editor;
+    let testAppPathLocal: string;
+    let generateIdLocal: IdGeneratorFunction;
+    const manifestFilePath = 'webapp/manifest.json';
+    const xmlViewFilePath = 'webapp/ext/main/Main.view.xml';
+    const __dirnameLocal = dirname(fileURLToPath(import.meta.url));
+
+    const pageViewContent = `<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m"
+    xmlns:macros="sap.fe.macros" controllerName="com.test.myApp.ext.main.Main">
+    <macros:Page id="Page" title="pageTitle">
+    </macros:Page>
+</mvc:View>`;
+
+    const testManifestV145Local = {
+        ...testManifestContent,
+        'sap.ui5': {
+            ...testManifestContent['sap.ui5'],
+            dependencies: {
+                ...(testManifestContent['sap.ui5'] as Record<string, unknown>)?.['dependencies'],
+                minUI5Version: '1.145.0'
+            }
+        }
+    };
+
+    beforeEach(() => {
+        fsLocal = create(createStorage());
+        generateIdLocal = jest.fn((baseId: string, validatedIds: string[] = []) => {
+            if (!validatedIds.includes(baseId)) {
+                return baseId;
+            }
+            let counter = 1;
+            while (validatedIds.includes(`${baseId}${counter}`)) {
+                counter++;
+            }
+            return `${baseId}${counter}`;
+        });
+        testAppPathLocal = join(__dirnameLocal, `../test-output/unit/building-block/page-serial-${Date.now()}`);
+    });
+
+    test('generates serialized content for Page building block with full template type', async () => {
+        const basePath = join(testAppPathLocal, 'page-full-serial');
+        fsLocal.write(join(basePath, manifestFilePath), JSON.stringify(testManifestV145Local));
+        fsLocal.write(join(basePath, xmlViewFilePath), pageViewContent);
+
+        const result = await getSerializedFileContent(
+            basePath,
+            {
+                viewOrFragmentPath: xmlViewFilePath,
+                aggregationPath: `/mvc:View/*[local-name()='Page']`,
+                buildingBlockData: {
+                    id: 'testPage',
+                    buildingBlockType: BuildingBlockType.Page,
+                    title: 'Test Page',
+                    templateType: 'full',
+                    generateId: generateIdLocal
+                }
+            },
+            fsLocal
+        );
+
+        expect(result.viewOrFragmentPath).toBeDefined();
+        expect(result.viewOrFragmentPath.content).toContain('macros:Page');
+        expect(result.viewOrFragmentPath.filePathProps?.fileName).toBe('Main.view.xml');
+    });
+
+    test('generates serialized content for Page building block with full template type without viewOrFragmentPath', async () => {
+        const basePath = join(testAppPathLocal, 'page-full-serial-no-view');
+        fsLocal.write(join(basePath, manifestFilePath), JSON.stringify(testManifestV145Local));
+
+        const result = await getSerializedFileContent(
+            basePath,
+            {
+                viewOrFragmentPath: '',
+                aggregationPath: `/mvc:View/*[local-name()='Page']`,
+                buildingBlockData: {
+                    id: 'testPage',
+                    buildingBlockType: BuildingBlockType.Page,
+                    title: 'Test Page',
+                    templateType: 'full',
+                    generateId: generateIdLocal
+                }
+            },
+            fsLocal
+        );
+
+        expect(result.viewOrFragmentPath).toBeDefined();
+        expect(result.viewOrFragmentPath.content).toContain('macros:Page');
+        expect(result.viewOrFragmentPath.filePathProps?.fileName).toBeUndefined();
+    });
+});
+
+describe('generateBuildingBlockAggregation error cases', () => {
+    let fsLocal: Editor;
+    let testAppPathLocal: string;
+    const manifestFilePath = 'webapp/manifest.json';
+    const xmlViewFilePath = 'webapp/ext/main/Main.view.xml';
+    const __dirnameLocal = dirname(fileURLToPath(import.meta.url));
+
+    const testManifestV145Local = {
+        ...testManifestContent,
+        'sap.ui5': {
+            ...testManifestContent['sap.ui5'],
+            dependencies: {
+                ...(testManifestContent['sap.ui5'] as Record<string, unknown>)?.['dependencies'],
+                minUI5Version: '1.145.0'
+            }
+        }
+    };
+
+    beforeEach(() => {
+        fsLocal = create(createStorage());
+        testAppPathLocal = join(__dirnameLocal, `../test-output/unit/building-block/agg-errors-${Date.now()}`);
+    });
+
+    test('throws when buildingBlockType is not Page', async () => {
+        const basePath = join(testAppPathLocal, 'non-page-type');
+        fsLocal.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+        fsLocal.write(join(basePath, xmlViewFilePath), `<mvc:View xmlns:mvc="sap.ui.core.mvc" />`);
+
+        await expect(
+            generateBuildingBlockAggregation(
+                basePath,
+                {
+                    viewPath: xmlViewFilePath,
+                    buildingBlockType: BuildingBlockType.FilterBar as never,
+                    aggregationName: 'items'
+                },
+                fsLocal
+            )
+        ).rejects.toThrow(/unsupported building block type/);
+    });
+
+    test('throws when view does not contain a Page element', async () => {
+        const basePath = join(testAppPathLocal, 'no-page-element');
+        fsLocal.write(join(basePath, manifestFilePath), JSON.stringify(testManifestV145Local));
+        // View without macros:Page
+        fsLocal.write(
+            join(basePath, xmlViewFilePath),
+            `<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns:macros="sap.fe.macros"><Content /></mvc:View>`
+        );
+
+        await expect(
+            generateBuildingBlockAggregation(
+                basePath,
+                { viewPath: xmlViewFilePath, buildingBlockType: BuildingBlockType.Page, aggregationName: 'items' },
+                fsLocal
+            )
+        ).rejects.toThrow(/Page element.*not found/);
     });
 });

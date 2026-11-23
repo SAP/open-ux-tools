@@ -8,7 +8,7 @@ import {
     DEFAULT_MTA_DESTINATION,
     DESTINATION_CHOICE_NONE,
     DESTINATION_CHOICE_DIRECT_SERVICE_BINDING
-} from '../utils';
+} from '../utils/index.js';
 import type { Manifest } from '@sap-ux/project-access';
 import type { Editor } from 'mem-fs-editor';
 import type { CfSystemChoice } from '@sap-ux/cf-deploy-config-inquirer';
@@ -83,7 +83,8 @@ async function getCFSystemChoices(
         if (isCap) {
             const mtaConfig = await MtaConfig.newInstance(projectRoot);
             mtaDestinations = mtaConfig.getExposedDestinations();
-            if (mtaDestinations?.length) {
+            // Only offer to create a destination, if the service exists
+            if (mtaConfig.hasResource('destination')) {
                 // Add default option
                 choices.push({
                     name: t('cfGen.prompts.capInstanceBasedDest.name'),

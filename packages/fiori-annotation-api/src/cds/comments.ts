@@ -1,5 +1,5 @@
 import type { Range } from '@sap-ux/odata-annotation-core-types';
-import { isOldToken, type CompilerToken } from './cds-compiler-tokens';
+import { isOldToken, type CompilerToken } from './cds-compiler-tokens.js';
 
 export interface Comment {
     type: 'comment';

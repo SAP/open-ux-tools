@@ -1,0 +1,16 @@
+{
+	"d": {
+		"results": [
+			{
+				"DocumentInfoRecordDocType": "SQM",
+				"DocumentInfoRecordDocType_Text": "Simplified QM",
+				"LinkedSAPObject": "QFGEN"
+			},
+			{
+				"DocumentInfoRecordDocType": "SQM-2",
+				"DocumentInfoRecordDocType_Text": "Simplified QM-2",
+				"LinkedSAPObject": "QFGEN"
+			}
+		]
+	}
+}

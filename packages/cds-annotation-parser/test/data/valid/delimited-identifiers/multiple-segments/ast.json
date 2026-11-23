@@ -1,22 +1,31 @@
 {
-  "type": "annotation",
+  "type": "flattened-expression",
   "range": "[(0,0)..(0,11)]",
-  "term": {
-    "type": "path",
+  "path": {
+    "type": "flattened-path",
     "range": "[(0,0)..(0,11)]",
     "value": "abcd.fgh",
     "segments": [
       {
-        "type": "identifier",
+        "type": "flattened-annotation-segment",
         "range": "[(0,2)..(0,6)]",
-        "value": "abcd",
-        "quoted": true
+        "prefix": false,
+        "term": {
+          "type": "identifier",
+          "range": "[(0,2)..(0,6)]",
+          "value": "abcd",
+          "quoted": true
+        }
       },
       {
-        "type": "identifier",
+        "type": "flattened-property-segment",
         "range": "[(0,7)..(0,10)]",
-        "value": "fgh",
-        "quoted": true
+        "name": {
+          "type": "identifier",
+          "range": "[(0,7)..(0,10)]",
+          "value": "fgh",
+          "quoted": true
+        }
       }
     ],
     "separators": [

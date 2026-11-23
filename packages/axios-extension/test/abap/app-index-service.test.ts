@@ -1,10 +1,9 @@
-import { AppIndexService, createForAbap } from '../../src';
+import { jest } from '@jest/globals';
 import nock from 'nock';
 import appIndexMock from './mockResponses/appIndex.json';
-import type { AxiosError } from '../../src';
 import appInfoJsonMock from './mockResponses/ui5AppInfo.json';
 import type { ToolsLogger } from '@sap-ux/logger';
-import * as Logger from '@sap-ux/logger';
+import type { AxiosError } from '../../src/index.js';
 
 const loggerMock: ToolsLogger = {
     debug: jest.fn(),
@@ -12,7 +11,14 @@ const loggerMock: ToolsLogger = {
     warn: jest.fn(),
     error: jest.fn()
 } as Partial<ToolsLogger> as ToolsLogger;
-jest.spyOn(Logger, 'ToolsLogger').mockImplementation(() => loggerMock);
+
+const actualLogger = await import('@sap-ux/logger');
+jest.unstable_mockModule('@sap-ux/logger', () => ({
+    ...actualLogger,
+    ToolsLogger: jest.fn().mockImplementation(() => loggerMock)
+}));
+
+const { AppIndexService, createForAbap } = await import('../../src/index.js');
 
 describe('AppIndexService', () => {
     const server = 'https://sap.example';
@@ -31,21 +37,22 @@ describe('AppIndexService', () => {
 
     describe('search', () => {
         const provider = createForAbap(config);
-        const service: AppIndexService = provider.getAppIndex();
+        const service = provider.getAppIndex();
 
         beforeAll(() => {
             nock(server)
                 .get((path) => path.startsWith(AppIndexService.PATH))
-                .reply(200, (path) => {
+                .reply(200, (req: Request) => {
+                    const url = req.url;
                     let results: any[];
-                    if (!path.includes('?')) {
+                    if (!url.includes('?')) {
                         results = appIndexMock.results;
-                    } else if (path.includes('type=application')) {
+                    } else if (url.includes('type=application')) {
                         results = appIndexMock.results.filter((item) => item['sap.app/type'] === 'application');
                     } else {
                         results = [];
                     }
-                    if (path.includes('fields=url')) {
+                    if (url.includes('fields=url')) {
                         return { results };
                     } else {
                         return {
@@ -83,13 +90,13 @@ describe('AppIndexService', () => {
 
     describe('getIsManiFirstSupported', () => {
         const provider = createForAbap(config);
-        const service: AppIndexService = provider.getAppIndex();
+        const service = provider.getAppIndex();
 
         test('get is manifest first supported', async () => {
             nock.cleanAll();
             nock(server)
                 .get((path) => path.startsWith(`${AppIndexService.PATH}/ui5_app_mani_first_supported`))
-                .reply(200, (_path) => {
+                .reply(200, (_req: Request) => {
                     return appIndexMock['ui5_app_mani_first_supported'];
                 })
                 .persist();
@@ -110,13 +117,13 @@ describe('AppIndexService', () => {
                 fail('The function should have thrown an error.');
             } catch (error) {
                 expect(error).toBeDefined();
-                expect(error.message).toBe('Request failed with status code 404');
+                expect((error as Error).message).toBe('Request failed with status code 404');
             }
         });
     });
     describe('getAppInfo', () => {
         const provider = createForAbap(config);
-        const service: AppIndexService = provider.getAppIndex();
+        const service = provider.getAppIndex();
 
         test('get the app info', async () => {
             nock.cleanAll();
@@ -125,7 +132,7 @@ describe('AppIndexService', () => {
                 .reply(200, appInfoJsonMock)
                 .persist();
             const appInfo = await service.getAppInfo('ExampleApp');
-            expect(appInfo).toStrictEqual(appInfoJsonMock);
+            expect(appInfo).toEqual(appInfoJsonMock);
         });
 
         test('get app info fails, application not found', async () => {
@@ -140,7 +147,7 @@ describe('AppIndexService', () => {
                 fail('The function should have thrown an error.');
             } catch (error) {
                 expect(error).toBeDefined();
-                expect(error.message).toBe('Request failed with status code 404');
+                expect((error as Error).message).toBe('Request failed with status code 404');
             }
         });
 

@@ -1,5 +1,336 @@
 # @sap-ux-private/adaptation-editor-tests
 
+## 1.0.32
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade @playwright/test 1.60.0 → 1.65.1 to support Ubuntu 26.04 runners [[9dd7c8d](https://github.com/SAP/open-ux-tools/commit/9dd7c8da9094c7906c57198b58a394c366e758c5)]
+
+#### Workspace Updates
+
+- @sap-ux-private/playwright 1.0.8 → 1.0.9
+
+## 1.0.31
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.3.3 → 2.3.4
+
+## 1.0.30
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/yaml 1.0.2 → 1.0.3
+- @sap-ux-private/playwright 1.0.7 → 1.0.8
+- @sap-ux/project-access 2.3.2 → 2.3.3
+
+## 1.0.29
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.3.1 → 2.3.2
+
+## 1.0.28
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade dotenv 17.4.2 → 18.0.8 [[c12e096](https://github.com/SAP/open-ux-tools/commit/c12e096b48bd3ebc18afc8bcae5f9825974bb55c)]
+
+## 1.0.27
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-16
+
+#### Dependency Updates
+
+- Upgrade npm-run-all2 9.0.2 → 9.0.3 [[192bae1](https://github.com/SAP/open-ux-tools/commit/192bae152640fb51741f16d77402719d0dde0979)]
+
+#### Workspace Updates
+
+- @sap-ux/ui5-info 1.0.6 → 1.0.7
+- @sap-ux-private/playwright 1.0.6 → 1.0.7
+- @sap-ux/project-access 2.3.0 → 2.3.1
+
+## 1.0.26
+
+### Patch Changes
+
+#### Bug Fixes
+
+- Resolve npm audit vulnerabilities — adm-zip 0.6.1, sanitize-html 2.17.7, @xmldom/xmldom 0.9.12, @sap/approuter 23.0.0, qs 6.16.0; add pnpm-workspace.yaml overrides for browserslist, hono, js-yaml, smol-toml, sharp, stream-json, csv-parse, pacote, and others; upgrade @modelcontextprotocol/sdk to 1.32.1 (GHSA-6qxp-vccf-f47h) [[33b98a5](https://github.com/SAP/open-ux-tools/commit/33b98a54ec2f1e2d937cdcd068017c76cc230080)]
+
+## 1.0.25
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.2.2 → 2.3.0
+
+## 1.0.24
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.2.1 → 2.2.2
+
+## 1.0.23
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.2.0 → 2.2.1
+
+## 1.0.22
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.13 → 2.2.0
+
+## 1.0.21
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.12 → 2.1.13
+
+## 1.0.20
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.11 → 2.1.12
+
+## 1.0.19
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.10 → 2.1.11
+
+## 1.0.18
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.9 → 2.1.10
+
+## 1.0.17
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux-private/playwright 1.0.5 → 1.0.6
+- @sap-ux/project-access 2.1.8 → 2.1.9
+- @sap-ux/ui5-info 1.0.5 → 1.0.6
+
+## 1.0.16
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade adm-zip 0.5.17 → 0.6.0 [[e07b300](https://github.com/SAP/open-ux-tools/commit/e07b3009552002d60344dbd46fee5b957b054f03)]
+
+## 1.0.15
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-22
+
+#### Dependency Updates
+
+- Upgrade npm-run-all2 8.0.4 → 9.0.2 [[20a52ef](https://github.com/SAP/open-ux-tools/commit/20a52ef640141e4bcaa87482b44ce5049cbc2de1)]
+
+## 1.0.14
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.7 → 2.1.8
+
+## 1.0.13
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.6 → 2.1.7
+
+## 1.0.12
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux-private/playwright 1.0.4 → 1.0.5
+- @sap-ux/project-access 2.1.6 → 2.1.6
+- @sap-ux/ui5-info 1.0.4 → 1.0.5
+
+## 1.0.11
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-info 1.0.3 → 1.0.4
+- @sap-ux/project-access 2.1.5 → 2.1.6
+
+## 1.0.10
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Bulk upgrade of minor dependencies and devDependencies [[5ce779c](https://github.com/SAP/open-ux-tools/commit/5ce779c43ae81d9a4ed85414bfb6f0ca8f882afc)]
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.4 → 2.1.5
+- @sap-ux-private/playwright 1.0.3 → 1.0.4
+- @sap-ux/ui5-info 1.0.2 → 1.0.3
+- @sap-ux/yaml 1.0.1 → 1.0.2
+
+## 1.0.9
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.3 → 2.1.4
+
+## 1.0.8
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade patch-level dependencies [[aed328d](https://github.com/SAP/open-ux-tools/commit/aed328da8a5c93e226c58e4d7dc14c7c82756259)]
+
+#### Workspace Updates
+
+- @sap-ux-private/playwright 1.0.2 → 1.0.3
+- @sap-ux/ui5-info 1.0.1 → 1.0.2
+
+## 1.0.7
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.2 → 2.1.3
+
+## 1.0.6
+
+### Patch Changes
+
+- @sap-ux/project-access@2.1.2
+
+## 1.0.5
+
+### Patch Changes
+
+- Updated dependencies [fff7490]
+    - @sap-ux/project-access@2.1.1
+
+## 1.0.4
+
+### Patch Changes
+
+- Updated dependencies [d2b8d7b]
+- Updated dependencies [b326a9a]
+    - @sap-ux-private/playwright@1.0.2
+    - @sap-ux/project-access@2.1.0
+
+## 1.0.3
+
+### Patch Changes
+
+- Updated dependencies [21a3de7]
+    - @sap-ux/project-access@2.0.3
+    - @sap-ux-private/playwright@1.0.1
+    - @sap-ux/ui5-info@1.0.1
+    - @sap-ux/yaml@1.0.1
+
+## 1.0.2
+
+### Patch Changes
+
+- @sap-ux/project-access@2.0.2
+
+## 1.0.1
+
+### Patch Changes
+
+- Updated dependencies [aed799d]
+    - @sap-ux/project-access@2.0.1
+
+## 1.0.0
+
+### Major Changes
+
+- 32609a7: # Migration to ECMAScript Modules (ESM)
+
+    Packages in the SAP Open UX Tools monorepo have been migrated from CommonJS (CJS) to ECMAScript Modules (ESM) with NodeNext module resolution.
+
+    '@sap-ux/backend-proxy-middleware-cf' is experimental and will remain at major version 0.
+    '@sap-ux/generator-odata-downloader' is a top level yeoman generator and will remain as CJS until validation as ESM is done.
+
+    ## What Changed
+    - **Module System**: Most packages now use native ESM (`"type": "module"` in package.json)
+    - **TypeScript Configuration**: Updated to `module: "NodeNext"` and `moduleResolution: "NodeNext"`
+    - **Import Statements**: All relative imports now include explicit `.js` extensions (per ESM spec)
+    - **Build Output**: Generated JavaScript files are now ESM modules
+    - **Node.js Requirement**: Minimum Node.js version remains >=22.x
+
+    ### Jest Configuration (for Testing)
+
+    If your project tests code that imports these packages, update your Jest configuration:
+
+    ```js
+    export default {
+        extensionsToTreatAsEsm: ['.ts'],
+        transform: {
+            '^.+\\.ts$': ['ts-jest', { useESM: true }]
+        }
+    };
+    ```
+
+    And run Jest with: `NODE_OPTIONS='--experimental-vm-modules' jest`
+
+### Patch Changes
+
+- Updated dependencies [32609a7]
+    - @sap-ux/project-access@2.0.0
+    - @sap-ux-private/playwright@1.0.0
+    - @sap-ux/ui5-info@1.0.0
+    - @sap-ux/yaml@1.0.0
+
 ## 0.0.87
 
 ### Patch Changes

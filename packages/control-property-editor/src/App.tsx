@@ -4,14 +4,14 @@ import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { UIDialog, UILink, UIToggle } from '@sap-ux/ui-components';
 import type { Scenario } from '@sap-ux-private/control-property-editor-common';
-import { LeftPanel, RightPanel } from './panels';
-import { Toolbar } from './toolbar';
-import { useLocalStorage } from './use-local-storage';
-import type { RootState } from './store';
-import { useAppDispatch } from './store';
-import { changePreviewScale } from './slice';
-import { useWindowSize } from './use-window-size';
-import { DEFAULT_DEVICE_WIDTH, DEVICE_WIDTH_MAP } from './devices';
+import { LeftPanel, RightPanel } from './panels/index.js';
+import { Toolbar } from './toolbar/index.js';
+import { useLocalStorage } from './use-local-storage.js';
+import type { RootState } from './store.js';
+import { useAppDispatch } from './store.js';
+import { changePreviewScale } from './slice.js';
+import { useWindowSize } from './use-window-size.js';
+import { DEFAULT_DEVICE_WIDTH, DEVICE_WIDTH_MAP } from './devices.js';
 
 import './App.scss';
 import './Workarounds.scss';
@@ -55,7 +55,7 @@ export default function App(appProps: AppProps): ReactElement {
     const fitPreview = useSelector<RootState, boolean>((state) => state.fitPreview ?? false);
     const windowSize = useWindowSize();
     const containerRef = useCallback(
-        (node) => {
+        (node: HTMLElement | null) => {
             if (node === null) {
                 return;
             }

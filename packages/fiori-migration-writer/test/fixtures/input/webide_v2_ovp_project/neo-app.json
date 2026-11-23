@@ -1,0 +1,114 @@
+{
+  "welcomeFile": "index.html",
+  "routes": [
+    {
+      "path": "/sap/opu/odata",
+      "target": {
+        "type": "destination",
+        "name": "SAMPLE_BACKEND_815",
+        "entryPath": "/sap/opu/odata"
+      },
+      "description": "SAMPLE_BACKEND_815"
+    },
+    {
+      "path": "/sap/bc/lrep",
+      "target": {
+        "type": "destination",
+        "name": "SAMPLE_BACKEND_815",
+        "entryPath": "/sap/bc/lrep"
+      },
+      "description": "SAMPLE_BACKEND_815"
+    },
+    {
+      "path": "/resources",
+      "target": {
+        "type": "application",
+        "name": "sapui5preview",
+        "entryPath": "/resources"
+      },
+      "description": "SAPUI5 Resources"
+    },
+    {
+      "path": "/resources",
+      "target": {
+        "type": "service",
+        "name": "sapui5",
+        "preferLocal": true,
+        "entryPath": "/resources"
+      },
+      "description": "SAPUI5 Resources"
+    },
+    {
+      "path": "/sap/ui5/1/resources",
+      "target": {
+        "type": "service",
+        "name": "sapui5",
+        "preferLocal": true
+      },
+      "description": "SAPUI5 dist layer resources"
+    },
+    {
+      "path": "/webapp/resources",
+      "target": {
+        "type": "application",
+        "name": "sapui5preview",
+        "entryPath": "/resources"
+      },
+      "description": "SAPUI5 Resources"
+    },
+    {
+      "path": "/webapp/resources",
+      "target": {
+        "type": "service",
+        "name": "sapui5",
+        "entryPath": "/resources"
+      },
+      "description": "SAPUI5 Resources"
+    },
+    {
+      "path": "/webapp/test-resources",
+      "target": {
+        "type": "application",
+        "name": "sapui5preview",
+        "entryPath": "/test-resources"
+      },
+      "description": "SAPUI5 Test Resources"
+    },
+    {
+      "path": "/webapp/test-resources",
+      "target": {
+        "type": "service",
+        "name": "sapui5",
+        "entryPath": "/test-resources"
+      },
+      "description": "SAPUI5 Test Resources"
+    },
+    {
+      "path": "/test-resources",
+      "target": {
+        "type": "application",
+        "name": "sapui5preview",
+        "entryPath": "/test-resources"
+      },
+      "description": "SAPUI5 Test Resources"
+    },
+    {
+      "path": "/test-resources",
+      "target": {
+        "type": "service",
+        "name": "sapui5",
+        "entryPath": "/test-resources"
+      },
+      "description": "SAPUI5 Test Resources"
+    },
+    {
+      "path": "/",
+      "target": {
+        "type": "application",
+        "name": "flpsandbox",
+        "preferLocal": true
+      },
+      "description": "Subscribed Fiori LaunchPad"
+    }
+  ]
+}

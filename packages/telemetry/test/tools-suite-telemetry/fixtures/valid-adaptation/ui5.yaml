@@ -1,4 +1,4 @@
-specVersion: '3.0'
+specVersion: '4.0'
 metadata:
     name: adaptation.project
 type: application
@@ -9,6 +9,6 @@ customConfiguration:
     adp:
         safeMode: false
         support:
-            id: '@sap/generator-adaptation-project'
-            version: 1.1.57
-            toolsId: 421a7e6d-4507-4f66-9369-f80bdd3c6877
+            id: '@sap/generator-fiori'
+            version: 1.27.0
+            toolsId: 45047b14-f55b-47df-9669-68d28bf0d51b

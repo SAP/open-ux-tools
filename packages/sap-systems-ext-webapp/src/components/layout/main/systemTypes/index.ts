@@ -1,1 +1,1 @@
-export { SystemTypes } from './SystemTypes';
+export { SystemTypes } from './SystemTypes.js';

@@ -1,5 +1,5 @@
 import { extendWithOptions } from '@sap-ux/inquirer-common';
-import { promptNames, type UI5LibraryReferencePromptOptions } from '../../../src/types';
+import { promptNames, type UI5LibraryReferencePromptOptions } from '../../../src/types.js';
 
 describe('Prompt helpers', () => {
     test('extendWithOptions, `validate` prompt option specified', () => {

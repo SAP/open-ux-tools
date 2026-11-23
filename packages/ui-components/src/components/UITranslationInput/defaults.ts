@@ -1,4 +1,4 @@
-import type { TranslationInputStrings } from './UITranslationButton.types';
+import type { TranslationInputStrings } from './UITranslationButton.types.js';
 
 export const defaultTranslationInputStrings: TranslationInputStrings = {
     acceptButtonLabel: 'Substitute',

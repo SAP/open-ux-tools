@@ -1,4 +1,4 @@
-import { Transport } from '../../src/types';
+import { Transport } from '../../src/types.js';
 
 describe('Transport', () => {
     describe('copy()', () => {

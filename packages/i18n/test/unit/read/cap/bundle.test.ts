@@ -1,10 +1,11 @@
 import { promises } from 'node:fs';
-import { join } from 'node:path';
-import { getCapI18nBundle } from '../../../../src';
-import { replaceBundleWithUnifiedFileUri } from '../../helper';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { getCapI18nBundle } from '../../../../src/index.js';
+import { replaceBundleWithUnifiedFileUri } from '../../helper/index.js';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
-
+const __dirname = dirname(fileURLToPath(import.meta.url));
 const DATA_ROOT = join(__dirname, '..', '..', 'data');
 const PROJECT_ROOT = join(DATA_ROOT, 'project');
 const env = Object.freeze({

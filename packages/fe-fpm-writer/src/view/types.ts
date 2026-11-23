@@ -1,4 +1,4 @@
-import type { CustomElement, InternalCustomElement, Views, EventHandler } from '../common/types';
+import type { CustomElement, InternalCustomElement, Views, EventHandler } from '../common/types.js';
 
 export interface CustomView extends CustomElement, EventHandler {
     /**

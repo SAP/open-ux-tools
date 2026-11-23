@@ -1,7 +1,7 @@
 /**
  * Internal types, not exported for consumer use
  */
-import type { EntityConfig } from '../types';
+import type { EntityConfig } from '../types.js';
 
 /**
  * Internal interface used to write entity settings while maintaining a stable external interface

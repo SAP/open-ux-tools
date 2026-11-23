@@ -1,8 +1,8 @@
 import { DirectionalHint } from '@fluentui/react';
 import React from 'react';
-import { UiIcons } from '../Icons';
-import { UICallout } from '../UICallout';
-import { UIIcon } from '../UIIcon';
+import { UiIcons } from '../Icons.js';
+import { UICallout } from '../UICallout/index.js';
+import { UIIcon } from '../UIIcon/index.js';
 import './UIActionCallout.scss';
 
 export interface ActionCalloutProps {

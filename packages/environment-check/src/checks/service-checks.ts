@@ -1,5 +1,5 @@
 import type { AbapServiceProvider, ODataServiceInfo, AxiosRequestConfig } from '@sap-ux/axios-extension';
-import type { CatalogServiceResult, ResultMessage, Endpoint } from '../types';
+import type { CatalogServiceResult, ResultMessage, Endpoint } from '../types.js';
 import {
     AtoService,
     TransportChecksService,
@@ -10,9 +10,9 @@ import {
     createForDestination
 } from '@sap-ux/axios-extension';
 import { isAppStudio } from '@sap-ux/btp-utils';
-import { countNumberOfServices, getCircularReplacer, getServiceCountText } from '../formatter';
-import { getLogger } from '../logger';
-import { t } from '../i18n';
+import { countNumberOfServices, getCircularReplacer, getServiceCountText } from '../formatter.js';
+import { getLogger } from '../logger.js';
+import { t } from '../i18n.js';
 
 const catalogMessages = {
     401: (systemName: string, odataVersion: ODataVersion): string =>

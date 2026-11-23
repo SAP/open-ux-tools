@@ -2,7 +2,7 @@
 
 specVersion: "4.0"
 metadata:
-  name: testNameSpace.lropv2sapsystem
+  name: testnamespace.lropv2sapsystem
 type: application
 server:
   customMiddleware:
@@ -30,3 +30,8 @@ server:
       configuration:
         flp:
           theme: sap_fiori_3
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**

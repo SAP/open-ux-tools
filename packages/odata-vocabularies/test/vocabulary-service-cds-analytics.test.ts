@@ -1,4 +1,4 @@
-import { VocabularyService } from '../src/vocabulary-service';
+import { VocabularyService } from '../src/vocabulary-service.js';
 declare const expect: jest.Expect;
 
 const namespaceCdsVocabulary = 'com.sap.vocabularies.CDS.v1';

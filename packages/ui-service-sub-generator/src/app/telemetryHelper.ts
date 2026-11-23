@@ -1,7 +1,7 @@
 import { ObjectType } from '@sap-ux/ui-service-inquirer';
 import type { UiServiceAnswers } from '@sap-ux/ui-service-inquirer';
 import type { TelemetryProperties } from '@sap-ux/telemetry';
-import type { PromptOptions } from './types';
+import type { PromptOptions } from './types.js';
 
 /**
  * Get the telemetry data for the UI Service generator event.

@@ -1,21 +1,25 @@
 import { readFileSync } from 'node:fs';
-import { join, relative, posix } from 'node:path';
+import { dirname, join, posix, relative } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { createRequire } from 'node:module';
 import type { Linter } from 'eslint';
 import type { Plugin } from '@eslint/config-helpers';
 import babelParser from '@babel/eslint-parser';
 import typescriptEslint from '@typescript-eslint/eslint-plugin';
-import { rules } from './rules';
-import { FioriLanguage } from './language/fiori-language';
+import globals from 'globals';
+import { rules } from './rules/index.js';
+import { FioriLanguage } from './language/fiori-language.js';
 import { createSyncFn } from 'synckit';
 import type { getPathMappings } from '@sap-ux/project-access';
 import { uniformUrl } from '@sap-ux/fiori-annotation-api';
-export { DiagnosticCache } from './language/diagnostic-cache';
+export { DiagnosticCache } from './language/diagnostic-cache.js';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const require = createRequire(import.meta.url);
 
 // Use CommonJS require for modules with resolution issues
-// eslint-disable-next-line @typescript-eslint/no-require-imports
+
 const tsParser = require('@typescript-eslint/parser') as any;
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const globals = require('globals') as any;
 
 // Read package.json to get version
 const packageJson = JSON.parse(readFileSync(join(__dirname, '../package.json'), 'utf-8')) as {
@@ -29,7 +33,8 @@ const packageJson = JSON.parse(readFileSync(join(__dirname, '../package.json'), 
  */
 export const meta = {
     name: packageJson.name,
-    version: packageJson.version
+    version: packageJson.version,
+    namespace: '@sap-ux/fiori-tools'
 };
 
 /**
@@ -48,11 +53,7 @@ const fioriRules = rules as Plugin['rules'];
  * Contains plugin metadata, supported languages, rules, and processors.
  */
 const plugin: Plugin = {
-    meta: {
-        name: packageJson.name,
-        version: '0.0.1',
-        namespace: '@sap-ux/fiori-tools'
-    },
+    meta,
     languages,
     rules: fioriRules,
     processors: {}
@@ -354,11 +355,8 @@ const baseFioriToolsRules = {
     '@sap-ux/fiori-tools/sap-ui5-global-eval': 'warn',
     '@sap-ux/fiori-tools/sap-ui5-legacy-factories': 'warn',
     '@sap-ux/fiori-tools/sap-ui5-legacy-jquerysap-usage': 'warn',
-    '@sap-ux/fiori-tools/sap-usage-basemastercontroller': 'warn',
-    // Off rules (alphabetical)
-    '@sap-ux/fiori-tools/sap-browser-api-error': 'off',
-    '@sap-ux/fiori-tools/sap-no-window-alert': 'off',
-    '@sap-ux/fiori-tools/sap-ui5-no-private-prop': 'off'
+    '@sap-ux/fiori-tools/sap-ui5-no-private-prop': 'warn',
+    '@sap-ux/fiori-tools/sap-usage-basemastercontroller': 'warn'
 } as Linter.RulesRecord;
 
 const prodConfig: Linter.Config[] = [
@@ -385,8 +383,15 @@ const prodConfig: Linter.Config[] = [
 
         languageOptions: {
             parser: babelParser,
+            sourceType: 'module',
+            ecmaVersion: 'latest',
             parserOptions: {
-                requireConfigFile: false
+                requireConfigFile: false,
+                babelOptions: {
+                    parserOpts: {
+                        plugins: ['typescript']
+                    }
+                }
             },
             globals: globalsConfig
         },
@@ -404,8 +409,15 @@ const testConfig: Linter.Config[] = [
 
         languageOptions: {
             parser: babelParser,
+            sourceType: 'module',
+            ecmaVersion: 'latest',
             parserOptions: {
-                requireConfigFile: false
+                requireConfigFile: false,
+                babelOptions: {
+                    parserOpts: {
+                        plugins: ['typescript']
+                    }
+                }
             },
             globals: globalsConfig
         },
@@ -436,7 +448,7 @@ const typescriptConfig: Linter.Config[] = [
         ],
 
         plugins: {
-            '@typescript-eslint': typescriptEslint
+            '@typescript-eslint': typescriptEslint as unknown as Plugin
         },
 
         languageOptions: {
@@ -462,10 +474,10 @@ const typescriptConfig: Linter.Config[] = [
     }
 ];
 
-// Fiori language rules (for manifest.json, XML views, CDS files)
+// Fiori language rules (for manifest.json, XML, CDS annotations, .change files)
 const fioriLanguageConfig: Linter.Config[] = [
     {
-        files: ['**/manifest.json', '**/*.xml', '**/*.cds'],
+        files: ['**/manifest.json', '**/*.xml', '**/*.cds', '**/*.change'],
         language: '@sap-ux/fiori-tools/fiori',
         rules: {
             // fiori tools specific rules
@@ -483,7 +495,23 @@ const fioriLanguageConfig: Linter.Config[] = [
             '@sap-ux/fiori-tools/sap-table-personalization': 'warn',
             '@sap-ux/fiori-tools/sap-table-column-vertical-alignment': 'warn',
             '@sap-ux/fiori-tools/sap-no-data-field-intent-based-navigation': 'warn',
-            '@sap-ux/fiori-tools/sap-text-arrangement-hidden': 'warn'
+            '@sap-ux/fiori-tools/sap-no-path-hidden-on-interactive-columns': 'warn',
+            '@sap-ux/fiori-tools/sap-text-arrangement-hidden': 'warn',
+            '@sap-ux/fiori-tools/sap-no-live-mode': 'warn',
+            '@sap-ux/fiori-tools/sap-cloud-dev-adaptation-status': 'warn',
+            '@sap-ux/fiori-tools/sap-micro-chart-requires-navigation-entity': 'warn',
+            '@sap-ux/fiori-tools/sap-no-inline-delete-with-multiselect': 'warn',
+            '@sap-ux/fiori-tools/sap-field-group-in-table-type-restriction': 'warn',
+            '@sap-ux/fiori-tools/sap-no-single-facet-in-collection': 'warn',
+            '@sap-ux/fiori-tools/sap-no-deep-collection-facets': 'warn'
+        }
+    },
+    {
+        files: ['**/*.xml', '**/*.cds', '**/*.properties'],
+        ignores: ['dist/**/*'],
+        language: '@sap-ux/fiori-tools/fiori',
+        rules: {
+            '@sap-ux/fiori-tools/sap-no-comma-in-section-title': 'warn'
         }
     }
 ];
@@ -500,26 +528,40 @@ export const configs: Record<string, Linter.Config[]> = {
                 }
             }
         },
-        ...typescriptConfig,
         ...prodConfig,
-        ...testConfig
+        ...testConfig,
+        ...typescriptConfig
     ],
     'recommended-for-s4hana': [
         {
-            plugins: {
-                '@sap-ux/fiori-tools': {
-                    meta,
-                    languages,
-                    rules: fioriRules
-                }
-            }
+            plugins: { '@sap-ux/fiori-tools': { meta, languages, rules: fioriRules } }
         },
-        ...typescriptConfig,
         ...prodConfig,
         ...testConfig,
-        ...fioriLanguageConfig
+        ...typescriptConfig,
+        ...fioriLanguageConfig,
+        // S/4HANA-only rules
+        {
+            files: [`./${webappPathRelative}/**/*.js`, `./${webappPathRelative}/**/*.ts`],
+            rules: {
+                '@sap-ux/fiori-tools/sap-browser-api-error': 'warn',
+                '@sap-ux/fiori-tools/sap-concatenated-strings': 'warn',
+                '@sap-ux/fiori-tools/sap-controller-hook-bad-callback-signature': 'warn',
+                '@sap-ux/fiori-tools/sap-controller-hook-missing-callback-signature': 'error',
+                '@sap-ux/fiori-tools/sap-controller-hook-name-convention': 'error',
+                '@sap-ux/fiori-tools/sap-eslint-disable-count': 'warn',
+                '@sap-ux/fiori-tools/sap-no-console-log': 'error',
+                '@sap-ux/fiori-tools/sap-no-core-model-usage': 'warn',
+                '@sap-ux/fiori-tools/sap-no-upload': 'error',
+                '@sap-ux/fiori-tools/sap-not-localized': 'warn',
+                '@sap-ux/fiori-tools/sap-unescaped-write': 'warn'
+            } as Linter.RulesRecord
+        }
     ]
 };
 
-export { rules } from './rules';
+// Add configs to plugin so they are accessible via default import
+plugin.configs = configs;
+
+export { rules } from './rules/index.js';
 export default plugin;

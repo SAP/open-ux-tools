@@ -1,13 +1,34 @@
 import type { ServiceArtifacts } from '@sap-ux/fiori-annotation-api';
 import type { ODataVersionType } from '@sap-ux/odata-annotation-core';
 import type { Manifest, ProjectType } from '@sap-ux/project-access';
-import type { File, DocumentType, RemoteServiceFileWithToolsCache, RemoteFileWithLocalServiceCache } from '../types';
-import type { ServiceIndex } from './service';
+import type { File, DocumentType, RemoteServiceFileWithToolsCache, RemoteFileWithLocalServiceCache } from '../types.js';
+import type { ServiceIndex } from './service.js';
 
 export interface ParsedProject {
     projectType: ProjectType;
+    appRoot: string;
     apps: { [name: string]: ParsedApp };
     documents: { [uri: string]: DocumentType };
+}
+
+export interface FlexChange {
+    changeType: string;
+    content: {
+        property: string;
+        newValue: boolean;
+    };
+    selector: {
+        id: string;
+        type: string;
+    };
+    changeFileUri: string;
+}
+
+export type PropertyChangeConfig = { property: string; value: boolean; selector: string; changeFileUri: string };
+
+export interface I18nBundle {
+    uri: string;
+    entries: Record<string, string>;
 }
 
 export interface ParsedApp {
@@ -18,6 +39,8 @@ export interface ParsedApp {
      */
     manifestObject: Manifest;
     projectRootPath: string;
+    changes: FlexChange[];
+    i18nBundles: I18nBundle[];
 }
 
 export interface ParsedManifest {

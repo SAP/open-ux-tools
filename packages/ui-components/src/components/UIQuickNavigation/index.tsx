@@ -1,1 +1,1 @@
-export * from './UIQuickNavigation';
+export * from './UIQuickNavigation.js';

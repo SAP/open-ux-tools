@@ -8,11 +8,12 @@ import {
     ANNOTATION_GROUP_TYPE,
     ANNOTATION_TYPE,
     COLLECTION_TYPE,
+    FLATTENED_EXPRESSION_TYPE,
     RECORD_PROPERTY_TYPE,
     RECORD_TYPE
 } from '@sap-ux/cds-annotation-parser';
 
-import type { JsonPointer } from '../types';
+import type { JsonPointer } from '../types/index.js';
 import {
     DELETE_TARGET_CHANGE_TYPE,
     DELETE_ANNOTATION_CHANGE_TYPE,
@@ -39,7 +40,7 @@ import {
     DELETE_ANNOTATION_GROUP_ITEMS_CHANGE_TYPE,
     MOVE_COLLECTION_VALUE_CHANGE_TYPE,
     DELETE_RECORD_CHANGE_TYPE
-} from './change';
+} from './change.js';
 import type {
     Deletes,
     CDSDocumentChange,
@@ -48,11 +49,11 @@ import type {
     InsertAnnotation,
     MoveCollectionValue,
     DeleteRecord
-} from './change';
-import { getChildCount, type AstNode, type CDSDocument } from './document';
-import { getAstNodesFromPointer } from './pointer';
-import type { CompilerToken } from './cds-compiler-tokens';
-import { findLastTokenBeforePosition } from './cds-compiler-tokens';
+} from './change.js';
+import { getChildCount, type AstNode, type CDSDocument } from './document.js';
+import { getAstNodesFromPointer } from './pointer.js';
+import type { CompilerToken } from './cds-compiler-tokens.js';
+import { findLastTokenBeforePosition } from './cds-compiler-tokens.js';
 import { getElementAttribute } from '@sap-ux/odata-annotation-core';
 
 /**
@@ -288,7 +289,8 @@ class ChangePreprocessor {
     ): void {
         const childPointers = new Set([
             ...parent.properties.map((_, i) => `${parentPointer}/properties/${i}`),
-            ...(parent.annotations ?? []).map((_, i) => `${parentPointer}/annotations/${i}`)
+            ...(parent.annotations ?? []).map((_, i) => `${parentPointer}/annotations/${i}`),
+            ...(parent.flattenedExpressions ?? []).map((_, i) => `${parentPointer}/flattenedExpressions/${i}`)
         ]);
         for (const indexedValue of deletionMap[parentPointer]) {
             childPointers.delete(indexedValue.change.pointer);
@@ -409,7 +411,7 @@ class ChangePreprocessor {
         greatGrandParent: AstNode | undefined
     ): Deletes | undefined {
         const grandParentPointer = parentPointer.split('/').slice(0, -1).join('/');
-        if (grandParent.type === ANNOTATION_TYPE) {
+        if (grandParent.type === ANNOTATION_TYPE || grandParent.type === FLATTENED_EXPRESSION_TYPE) {
             if (greatGrandParent?.type === TARGET_TYPE || greatGrandParent?.type === ANNOTATION_GROUP_ITEMS_TYPE) {
                 return createDeleteAnnotationChange(grandParentPointer);
             } else {

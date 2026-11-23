@@ -4,7 +4,7 @@ import { parse } from '@xml-tools/parser';
 
 import type { MetadataElement } from '@sap-ux/odata-annotation-core-types';
 
-import { convertMetadataDocument, convertMetadataDocumentV2 } from '../../src/parser';
+import { convertMetadataDocument, convertMetadataDocumentV2 } from '../../src/parser/index.js';
 
 function parseV4(text: string): MetadataElement[] {
     const markup = `<?xml version="1.0" encoding="utf-8"?>

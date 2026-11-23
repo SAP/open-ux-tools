@@ -1,0 +1,29 @@
+{
+	"fileName": "id_1501490042326_73_propertyChange",
+	"fileType": "change",
+	"changeType": "propertyChange",
+	"reference": "i2d.qm.defect.records1.Component",
+	"packageName": "$TMP",
+	"content": {
+		"property": "visible",
+		"oldValue": true,
+		"newValue": "{= ${ui>/editable}}"
+	},
+	"selector": {
+		"id": "i2d.qm.defect.records1::sap.suite.ui.generic.template.ObjectPage.view.Details::C_DefectRecord--DefectDataFacet1_1::to_DefectCodeGroup::DefectCodeGroup_Text::GroupElement",
+		"type": "sap.ui.comp.smartform.GroupElement",
+		"idIsLocal": false
+	},
+	"layer": "VENDOR",
+	"texts": {},
+	"namespace": "apps/i2d.qm.defect.records1/changes/",
+	"creation": "2017-07-31T08:34:17.306Z",
+	"originalLanguage": "EN",
+	"conditions": {},
+	"context": "",
+	"support": {
+		"generator": "Change.createInitialFileContent",
+		"service": "",
+		"user": ""
+	}
+}

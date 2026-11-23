@@ -1,13 +1,15 @@
-import type { Annotations, ServiceProvider, ODataServiceInfo, ExternalService } from '@sap-ux/axios-extension';
+import type { Annotations, ExternalService, ServiceProvider, ODataServiceInfo } from '@sap-ux/axios-extension';
+
 import type { Destination } from '@sap-ux/btp-utils';
+import type { CapService } from '@sap-ux/cap-config-writer';
+import type { TableSelectionMode, TableType } from '@sap-ux/fiori-elements-writer';
 import type { CommonPromptOptions, YUIQuestion } from '@sap-ux/inquirer-common';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
-import type { BackendSystem } from '@sap-ux/store';
+import type { BackendSystem, BackendSystemFilter } from '@sap-ux/store';
 import type { ListChoiceOptions } from 'inquirer';
-import type { CapService } from '@sap-ux/cap-config-writer';
-import type { EntityAnswer, NavigationEntityAnswer } from './prompts/edmx/entity-helper';
-import type { TableSelectionMode, TableType } from '@sap-ux/fiori-elements-writer';
-import type { serviceUrlInternalPromptNames } from './prompts/datasources/service-url/types';
+import type { serviceUrlInternalPromptNames } from './prompts/datasources/service-url/types.js';
+import type { EntityAnswer, NavigationEntityAnswer } from './prompts/edmx/entity-helper.js';
+import type { PageTemplateType } from '@sap-ux/fe-fpm-writer';
 
 /**
  * This file contains types that are exported by the module and are needed for consumers using the APIs `prompt` and `getPrompts`.
@@ -181,6 +183,7 @@ export const EntityPromptNames = {
     navigationEntity: 'navigationEntity',
     filterEntitySet: 'filterEntitySet',
     addPageBuildingBlock: 'addPageBuildingBlock',
+    pageBuildingBlockLayout: 'pageBuildingBlockLayout',
     pageBuildingBlockTitle: 'pageBuildingBlockTitle',
     tableType: 'tableType',
     hierarchyQualifier: 'hierarchyQualifier',
@@ -204,9 +207,9 @@ export interface EntitySelectionAnswers {
  * Answers related to the Page Building Block prompt.
  */
 export interface PageBuildingBlockAnswers {
-    /** Indicates if a Page Building Block should be addedn*/
     [EntityPromptNames.addPageBuildingBlock]?: boolean;
-    /** The title for the Page Building Block, required if addPageBuildingBlock is true */
+    /** The layout type for the page building block. This is only applicable if addPageBuildingBlock is true. */
+    [EntityPromptNames.pageBuildingBlockLayout]?: PageTemplateType;
     [EntityPromptNames.pageBuildingBlockTitle]?: string;
 }
 
@@ -341,6 +344,11 @@ export type SystemSelectionPromptOptions = {
      * If true, the 'New System' option is not added to the system selection list. Default is false - the 'New System' option will be available.
      */
     hideNewSystem?: boolean;
+    /**
+     * Include systems specified by the backendSystemFilter see {@link BackendSystemFilter}.
+     * Defaults to { connectionType: ['abap_catalog', 'odata_service'] } if not provided.
+     */
+    backendSystemFilter?: BackendSystemFilter;
 };
 
 export type MetadataPromptOptions = {

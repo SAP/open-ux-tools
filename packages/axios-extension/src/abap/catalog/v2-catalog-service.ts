@@ -1,7 +1,7 @@
-import type { ODataServiceInfo, Annotations, FilterOptions, ServiceType } from './base';
-import { CatalogService } from './base';
-import { ODataVersion } from '../../base/odata-service';
-import { ODataRequestError } from '../../base/odata-request-error';
+import type { ODataServiceInfo, Annotations, FilterOptions, ServiceType } from './base.js';
+import { CatalogService } from './base.js';
+import { ODataVersion } from '../../base/odata-service.js';
+import { ODataRequestError } from '../../base/odata-request-error.js';
 
 const V2_CLASSIC_ENTITYSET = 'ServiceCollection';
 const V2_RECOMMENDED_ENTITYSET = 'RecommendedServiceCollection';

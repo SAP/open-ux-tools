@@ -1,7 +1,7 @@
-import type { Annotations, ODataServiceInfo, ServiceType } from './base';
-import { CatalogService } from './base';
-import { ODataVersion } from '../../base/odata-service';
-import { ODataRequestError } from '../../base/odata-request-error';
+import type { Annotations, ODataServiceInfo, ServiceType } from './base.js';
+import { CatalogService } from './base.js';
+import { ODataVersion } from '../../base/odata-service.js';
+import { ODataRequestError } from '../../base/odata-request-error.js';
 import { type Logger, ToolsLogger } from '@sap-ux/logger';
 
 const V4_RECOMMENDED_ENTITYSET = 'RecommendedServices';

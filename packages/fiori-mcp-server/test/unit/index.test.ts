@@ -1,4 +1,4 @@
-import { FioriFunctionalityServer } from '../../src/server';
+import { FioriFunctionalityServer } from '../../src/server.js';
 
 describe('index.ts', () => {
     it('should export FioriFunctionalityServer', () => {

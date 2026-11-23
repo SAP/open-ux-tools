@@ -1,31 +1,33 @@
 import type { ToolsLogger } from '@sap-ux/logger';
-import type { JsonInput } from '../../../src/app/types';
-import { getFirstArgAsString, parseJsonInput } from '../../../src/utils/parse-json-input';
+import type { JsonInput } from '../../../src/app/types.js';
+import { getFirstArg, parseJsonInput } from '../../../src/utils/parse-json-input.js';
 
 const logger = {
     debug: jest.fn()
 } as unknown as ToolsLogger;
 
-describe('getFirstArgAsString', () => {
+describe('getFirstArg', () => {
     it('should return the argument itself when passed as a string', () => {
-        expect(getFirstArgAsString('arg')).toEqual('arg');
+        expect(getFirstArg('arg')).toEqual('arg');
     });
 
     it('should return the first element in case of an array with arguments', () => {
-        expect(getFirstArgAsString(['arg1', 'arg2'])).toEqual('arg1');
-        expect(getFirstArgAsString([1, 2] as unknown as string[])).toEqual(1);
+        expect(getFirstArg(['arg1', 'arg2'])).toEqual('arg1');
+        expect(getFirstArg([1, 2])).toEqual(1);
     });
 
     it('should return empty string if the arguments parameter is not in the expected format', () => {
-        expect(getFirstArgAsString(null as unknown as string)).toEqual('');
-        expect(getFirstArgAsString(undefined as unknown as string)).toEqual('');
-        expect(getFirstArgAsString({} as unknown as string)).toEqual('');
+        expect(getFirstArg(null as unknown as string)).toEqual('');
+        expect(getFirstArg(undefined as unknown as string)).toEqual('');
+        expect(getFirstArg({} as unknown as string)).toEqual('');
     });
 });
 
 describe('parseJsonInput', () => {
-    it('should return undefined if invalid json string is passed', () => {
-        expect(parseJsonInput('invalid json', logger)).toBeUndefined();
+    it('should fail with reason "syntax" when the string is not valid json', () => {
+        for (const jsonString of ['invalid json', '{"targetEnv":"CF",', '   ']) {
+            expect(parseJsonInput(jsonString, logger)).toEqual({ ok: false, reason: 'syntax' });
+        }
     });
 
     it('should return the adp json input in case the json string matches the expected format', () => {
@@ -41,34 +43,64 @@ describe('parseJsonInput', () => {
             namespace: 'namespace'
         };
         const jsonString = JSON.stringify(jsonInput);
-        expect(parseJsonInput(jsonString, logger)).toEqual(jsonInput);
+        expect(parseJsonInput(jsonString, logger)).toEqual({ ok: true, input: jsonInput });
     });
 
-    it('should return undefined in case the json does NOT match the expected format', () => {
-        const invalidJsonInput = {
-            system: 'system'
-        };
-        const jsonString = JSON.stringify(invalidJsonInput);
-        expect(parseJsonInput(jsonString, logger)).toBeUndefined();
+    it('should fail with reason "abap-shape" when the json does NOT match the ABAP format', () => {
+        for (const invalidJsonInput of [null, [], {}, { system: 'system' }]) {
+            expect(parseJsonInput(JSON.stringify(invalidJsonInput), logger)).toEqual({
+                ok: false,
+                reason: 'abap-shape'
+            });
+        }
     });
 
-    it('should return the adp json input with keyUserChanges', () => {
+    it('should return the adp json input including optional id', () => {
         const jsonInput: JsonInput = {
             system: 'system',
             application: 'application',
-            keyUserChanges: [{ content: { fileName: 'id_123_propertyChange', changeType: 'propertyChange' } }]
+            id: '123.5'
         };
         const jsonString = JSON.stringify(jsonInput);
-        expect(parseJsonInput(jsonString, logger)).toEqual(jsonInput);
+        expect(parseJsonInput(jsonString, logger)).toEqual({ ok: true, input: jsonInput });
     });
 
-    it('should return undefined when keyUserChanges is invalid', () => {
-        const invalidJsonInput = {
+    it('should return valid input even when keyUserChanges is present in CLI json', () => {
+        const jsonString = JSON.stringify({
             system: 'system',
             application: 'application',
-            keyUserChanges: 'not an array'
+            keyUserChanges: [{ content: { fileName: 'id_123_propertyChange' } }]
+        });
+        expect(parseJsonInput(jsonString, logger)).toEqual({
+            ok: true,
+            input: expect.objectContaining({
+                system: 'system',
+                application: 'application'
+            })
+        });
+    });
+
+    it('should route to the CF shape when targetEnv is CF', () => {
+        const cfInput = {
+            targetEnv: 'CF',
+            application: 'base.app.id',
+            serviceInstanceName: 'my-live-instance',
+            projectName: 'app.variant'
         };
-        const jsonString = JSON.stringify(invalidJsonInput);
-        expect(parseJsonInput(jsonString, logger)).toBeUndefined();
+        expect(parseJsonInput(JSON.stringify(cfInput), logger)).toEqual({ ok: true, input: cfInput });
+    });
+
+    it('should fail with reason "cf-shape" for a CF targetEnv that fails CF validation', () => {
+        const invalidCf = {
+            targetEnv: 'CF',
+            application: 'base.app.id'
+            // missing serviceInstanceName
+        };
+        expect(parseJsonInput(JSON.stringify(invalidCf), logger)).toEqual({ ok: false, reason: 'cf-shape' });
+    });
+
+    it('should treat absent targetEnv as ABAP (backwards compatible)', () => {
+        const abapInput = { system: 'system', application: 'application' };
+        expect(parseJsonInput(JSON.stringify(abapInput), logger)).toEqual({ ok: true, input: abapInput });
     });
 });

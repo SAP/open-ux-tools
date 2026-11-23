@@ -1,13 +1,27 @@
 import type { MetadataElement } from '@sap-ux/odata-annotation-core';
-import type { ParsedService } from '../parser';
-import type { LinkerContext, ConfigurationBase, ConfigurationProperty } from './types';
-import { getParsedServiceByName } from '../utils';
-import type { AnnotationNode, FieldGroupNode, HeaderSectionNode, TableNode, TableSectionNode } from './annotations';
-import { collectTables, collectSections, collectHeaderSections } from './annotations';
+import type { ParsedService } from '../parser/index.js';
+import type { LinkerContext, ConfigurationBase, ConfigurationProperty } from './types.js';
+import { getParsedServiceByName } from '../utils.js';
+import type {
+    AnnotationNode,
+    ChartNode,
+    FieldGroupNode,
+    HeaderSectionNode,
+    TableNode,
+    TableSectionNode
+} from './annotations.js';
+import {
+    collectPageCharts,
+    collectTables,
+    collectSections,
+    collectHeaderSections,
+    getEntityForContextPath
+} from './annotations.js';
 
 export interface ApplicationSetting {
     createMode: string;
     disableStrictUomFiltering: boolean;
+    cloudDevAdaptationStatus: string;
 }
 
 export interface LinkedFeV4App extends ConfigurationBase<'fe-v4', ApplicationSetting> {
@@ -15,13 +29,17 @@ export interface LinkedFeV4App extends ConfigurationBase<'fe-v4', ApplicationSet
     pages: FeV4PageType[];
 }
 
-export interface FeV4ListReport extends ConfigurationBase<'list-report-page'> {
+export interface PageConfiguration {
+    liveMode?: boolean;
+}
+
+export interface FeV4ListReport extends ConfigurationBase<'list-report-page', PageConfiguration> {
     targetName: string;
     componentName: 'sap.fe.templates.ListReport';
     contextPath: string;
     entity: MetadataElement;
     tables: (Table | OrphanTable)[];
-    lookup: NodeLookup<Table | OrphanTable | FieldGroup>;
+    lookup: NodeLookup<Table | OrphanTable | FieldGroup | Chart>;
 }
 
 export interface FeV4ObjectPage extends ConfigurationBase<'object-page'> {
@@ -30,7 +48,7 @@ export interface FeV4ObjectPage extends ConfigurationBase<'object-page'> {
     contextPath: string;
     entity: MetadataElement;
     sections: Section[];
-    lookup: NodeLookup<Table | Section | FieldGroup>;
+    lookup: NodeLookup<Table | Section | FieldGroup | Chart>;
     header: {
         anchorBarVisible: ConfigurationProperty<boolean>;
         visible: ConfigurationProperty<boolean>;
@@ -68,6 +86,7 @@ export interface TableSettings {
 export type OrphanTable = ConfigurationBase<'orphan-table', TableSettings>;
 export type Table = AnnotationBasedNode<TableNode, TableSettings>;
 export type FieldGroup = AnnotationBasedNode<FieldGroupNode, {}>;
+export type Chart = AnnotationBasedNode<ChartNode, {}>;
 
 interface ManifestApplicationSettings {
     macros?: {
@@ -219,7 +238,7 @@ function getCreationModeValues(tableType?: string): string[] {
     return ['InlineCreationRows', 'NewPage'];
 }
 
-export type Node = Section | Table | OrphanTable | FieldGroup;
+export type Node = Section | Table | OrphanTable | FieldGroup | Chart;
 export type NodeLookup<T extends Node> = {
     [K in T['type']]?: Extract<T, { type: K }>[];
 };
@@ -265,11 +284,12 @@ export function runFeV4Linker(context: LinkerContext): LinkedFeV4App {
     if (!routingTargets) {
         return linkedApp;
     }
-    for (const [name, target] of Object.entries(routingTargets)) {
+    for (const [name, target] of Object.entries(routingTargets as Record<string, Target>)) {
         const settings = target.options?.settings;
-        const contextPath =
-            target.options?.settings?.contextPath ??
-            (target.options?.settings?.entitySet ? `/${target.options.settings.entitySet}` : undefined);
+        if (!settings) {
+            continue;
+        }
+        const contextPath = settings.contextPath ?? (settings.entitySet ? `/${settings.entitySet}` : undefined);
         if (!contextPath) {
             continue;
         }
@@ -285,43 +305,69 @@ export function runFeV4Linker(context: LinkerContext): LinkedFeV4App {
         const path = ['sap.ui5', 'routing', 'targets'];
         if (target.name === 'sap.fe.templates.ListReport') {
             linkListReport(context, linkedApp, path, name, contextPath, entity, target);
-        } else if (target.name === 'sap.fe.templates.ObjectPage' && entity.structuredType) {
-            const sections = collectSections('v4', entity.structuredType, mainService);
-
-            const page: FeV4ObjectPage = {
-                type: 'object-page',
-                targetName: name,
-                componentName: target.name,
-                contextPath,
-                entity: entity,
-                configuration: {},
-                sections: [],
-                lookup: {},
-                header: {
-                    anchorBarVisible: {
-                        values: [true, false],
-                        configurationPath: []
-                    },
-                    visible: {
-                        values: [true, false],
-                        configurationPath: []
-                    }
-                }
-            };
-            linkV4ObjectPageSections(page, path, name, sections, target);
-            linkObjectPageHeader(page, target);
-            linkedApp.pages.push(page);
+        } else if (target.name === 'sap.fe.templates.ObjectPage') {
+            linkObjectPage(linkedApp, path, name, contextPath, entity, target, mainService);
         }
     }
     return linkedApp;
 }
 
+/**
+ * Links a Fiori Elements V4 object page, collecting sections and charts.
+ *
+ * @param linkedApp - The linked app structure to push the page into
+ * @param path - Configuration path segments to the page
+ * @param name - The routing target name
+ * @param contextPath - The entity context path
+ * @param entity - The entity metadata element
+ * @param target - The routing target configuration
+ * @param mainService - The parsed OData service
+ */
+function linkObjectPage(
+    linkedApp: LinkedFeV4App,
+    path: string[],
+    name: string,
+    contextPath: string,
+    entity: MetadataElement,
+    target: Target,
+    mainService: ParsedService
+): void {
+    if (!entity.structuredType) {
+        return;
+    }
+    const sections = collectSections('v4', entity.structuredType, mainService);
+    const page: FeV4ObjectPage = {
+        type: 'object-page',
+        targetName: name,
+        componentName: 'sap.fe.templates.ObjectPage',
+        contextPath,
+        entity: entity,
+        configuration: {},
+        sections: [],
+        lookup: {},
+        header: {
+            anchorBarVisible: {
+                values: [true, false],
+                configurationPath: []
+            },
+            visible: {
+                values: [true, false],
+                configurationPath: []
+            }
+        }
+    };
+    linkV4ObjectPageSections(page, path, name, sections, target);
+    linkObjectPageHeader(page, target);
+    collectPageCharts(page, mainService);
+    linkedApp.pages.push(page);
+}
+
 interface Target {
+    name?: string;
     options?: {
         settings?: {
             entitySet?: string;
             contextPath?: string;
-
             controlConfiguration?: { [key: string]: TableConfiguration };
             content?: {
                 header?: {
@@ -329,6 +375,7 @@ interface Target {
                     visible?: boolean;
                 };
             };
+            liveMode?: boolean;
         };
     };
 }
@@ -385,6 +432,9 @@ function linkListReport(
     if (!mainService) {
         return;
     }
+    const liveMode = target.options?.settings?.liveMode;
+    const liveModePath = ['sap.ui5', 'routing', 'targets', name, 'options', 'settings', 'liveMode'];
+
     const tables = collectTables('v4', entityType, mainService);
 
     const page: FeV4ListReport = {
@@ -393,11 +443,18 @@ function linkListReport(
         componentName: 'sap.fe.templates.ListReport',
         contextPath,
         entity: entity,
-        configuration: {},
+        configuration: {
+            liveMode: {
+                configurationPath: liveModePath,
+                values: [true, false],
+                valueInFile: liveMode
+            }
+        },
         tables: [],
         lookup: {}
     };
     linkListReportTable(page, [...path, name], tables, target);
+    collectPageCharts(page, mainService);
     linkedApp.pages.push(page);
 }
 
@@ -416,40 +473,46 @@ function linkListReportTable(
     configuration: Target
 ): void {
     const controls: Record<string, Table | OrphanTable> = {};
+    const configurations = configuration.options?.settings?.controlConfiguration ?? {};
 
     for (const table of tables) {
-        const configurationKey = table.annotationPath;
+        let configurationKey: string = table.annotationPath;
+        if (!configurations[configurationKey]) {
+            // CAP configurationKey example: /Incidents/@com.sap.vocabularies.UI.v1.LineItem#test
+            const key = `${page.contextPath}/${configurationKey}`;
+            if (configurations[key]) {
+                configurationKey = key;
+            }
+        }
         const linkedTable = createTable(configurationKey, pathToPage, table);
         controls[`${linkedTable.type}|${configurationKey}`] = linkedTable;
     }
 
-    const configurations = configuration.options?.settings?.controlConfiguration ?? {};
     for (const [controlKey, controlConfiguration] of Object.entries(configurations)) {
         const tableControl = controls[`table|${controlKey}`];
         if (tableControl) {
-            if (tableControl.type === 'table') {
-                const tableType = controlConfiguration.tableSettings?.type;
-                tableControl.configuration.tableType.valueInFile = tableType;
-                const columnHeaderValue = controlConfiguration.tableSettings?.widthIncludingColumnHeader;
-                tableControl.configuration.widthIncludingColumnHeader.valueInFile = columnHeaderValue;
-                const disableCopyValue = controlConfiguration.tableSettings?.disableCopyToClipboard;
-                tableControl.configuration.disableCopyToClipboard.valueInFile = disableCopyValue;
-                const enableExportValue = controlConfiguration.tableSettings?.enableExport;
-                tableControl.configuration.enableExport.valueInFile = enableExportValue;
-                const enablePasteValue = controlConfiguration.tableSettings?.enablePaste;
-                tableControl.configuration.enablePaste.valueInFile = enablePasteValue;
-                const condensedTableLayoutValue = controlConfiguration.tableSettings?.condensedTableLayout;
-                tableControl.configuration.condensedTableLayout.valueInFile = condensedTableLayoutValue;
-                const creationModeValue = controlConfiguration.tableSettings?.creationMode?.name;
-                tableControl.configuration.creationMode.valueInFile = creationModeValue;
-                tableControl.configuration.creationMode.values = getCreationModeValues(tableType);
-                const personalization = controlConfiguration.tableSettings?.personalization;
-                tableControl.configuration.personalization.valueInFile = personalization;
-            }
+            // get properties valueInFile from manifest table config
+            const tableType = controlConfiguration.tableSettings?.type;
+            tableControl.configuration.tableType.valueInFile = tableType;
+            const columnHeaderValue = controlConfiguration.tableSettings?.widthIncludingColumnHeader;
+            tableControl.configuration.widthIncludingColumnHeader.valueInFile = columnHeaderValue;
+            const disableCopyValue = controlConfiguration.tableSettings?.disableCopyToClipboard;
+            tableControl.configuration.disableCopyToClipboard.valueInFile = disableCopyValue;
+            const enableExportValue = controlConfiguration.tableSettings?.enableExport;
+            tableControl.configuration.enableExport.valueInFile = enableExportValue;
+            const enablePasteValue = controlConfiguration.tableSettings?.enablePaste;
+            tableControl.configuration.enablePaste.valueInFile = enablePasteValue;
+            const condensedTableLayoutValue = controlConfiguration.tableSettings?.condensedTableLayout;
+            tableControl.configuration.condensedTableLayout.valueInFile = condensedTableLayoutValue;
+            const creationModeValue = controlConfiguration.tableSettings?.creationMode?.name;
+            tableControl.configuration.creationMode.valueInFile = creationModeValue;
+            tableControl.configuration.creationMode.values = getCreationModeValues(tableType);
+            const personalization = controlConfiguration.tableSettings?.personalization;
+            tableControl.configuration.personalization.valueInFile = personalization;
         } else {
             // no annotation definition found for this table, but configuration exists
-            const orphanedSection = createTable(controlKey, pathToPage);
-            controls[`${orphanedSection.type}|${controlKey}`] = orphanedSection;
+            const orphanTable = createTable(controlKey, pathToPage);
+            controls[`${orphanTable.type}|${controlKey}`] = orphanTable;
         }
     }
     for (const control of Object.values(controls)) {
@@ -599,69 +662,6 @@ function getEntity(settings: PageSettings, service: ParsedService): MetadataElem
 }
 
 /**
- * Resolves a metadata element from a context path string.
- *
- * @param contextPath - The context path (e.g., '/EntitySet/NavigationProperty')
- * @param service - The parsed OData service
- */
-function getEntityForContextPath(contextPath: string, service: ParsedService): MetadataElement | undefined {
-    if (!contextPath.startsWith('/')) {
-        return;
-    }
-    const path = contextPath.substring(1);
-    const [entityName, ...segments] = path.split('/');
-    if (!entityName) {
-        return;
-    }
-    const entity = service.index.entitySets[entityName];
-    if (!entity) {
-        return undefined;
-    }
-    const entityType = resolveNavigationProperties(entity, segments);
-
-    if (!entityType) {
-        const entityStructureType = service.index.entitySets[entityName]?.structuredType;
-        if (!entityStructureType) {
-            return;
-        }
-        const pageEntityType = service.artifacts.metadataService.getMetadataElement(entityStructureType);
-        if (!pageEntityType) {
-            return;
-        }
-        return resolveNavigationProperties(pageEntityType, segments);
-    }
-
-    return entityType;
-}
-
-/**
- * Resolves navigation properties along a path to find the target entity.
- *
- * @param root - The starting metadata element
- * @param segments - Array of navigation property names to traverse
- */
-function resolveNavigationProperties(root: MetadataElement, segments: string[]): MetadataElement | undefined {
-    if (segments.length === 0) {
-        return root;
-    }
-    let current = root;
-    for (const segment of segments) {
-        let found = false;
-        for (const child of current.content) {
-            if (child.name === segment) {
-                current = child;
-                found = true;
-                break;
-            }
-        }
-        if (!found) {
-            return undefined;
-        }
-    }
-    return current;
-}
-
-/**
  * Links application-level settings from manifest configuration for Fiori Elements V4.
  *
  * @param context - Linker context containing parsed application data
@@ -671,6 +671,7 @@ function linkApplicationSettings(context: LinkerContext): LinkedFeV4App {
     const config: ManifestApplicationSettings = context.app.manifestObject['sap.fe'] ?? {};
     const createMode = config.macros?.table?.defaultCreationMode;
     const disableStrictUomFiltering = config.app?.disableStrictUomFiltering;
+    const cloudDevAdaptationStatus = context.app.manifestObject['sap.fiori']?.cloudDevAdaptationStatus;
     const linkedApp: LinkedFeV4App = {
         type: 'fe-v4',
         pages: [],
@@ -684,6 +685,11 @@ function linkApplicationSettings(context: LinkerContext): LinkedFeV4App {
                 values: [true, false],
                 configurationPath: ['sap.fe', 'app', 'disableStrictUomFiltering'],
                 valueInFile: disableStrictUomFiltering
+            },
+            cloudDevAdaptationStatus: {
+                values: ['released', 'deprecated', 'obsolete'],
+                configurationPath: ['sap.fiori', 'cloudDevAdaptationStatus'],
+                valueInFile: cloudDevAdaptationStatus
             }
         }
     };

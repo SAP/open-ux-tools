@@ -1,9 +1,9 @@
 import type { Command } from 'commander';
 import { generateEslintConfig } from '@sap-ux/app-config-writer';
-import { getLogger, traceChanges, setLogLevelVerbose } from '../../tracing';
-import { validateBasePath } from '../../validation';
+import { getLogger, traceChanges, setLogLevelVerbose } from '../../tracing/index.js';
+import { validateBasePath } from '../../validation/index.js';
 import { getProjectType } from '@sap-ux/project-access';
-import { runNpmInstallCommand } from '../../common';
+import { runNpmInstallCommand } from '../../common/index.js';
 
 /**
  * Add the "add eslint config" command to a passed command.
@@ -65,7 +65,9 @@ async function addEslintConfig(
                 );
             } else {
                 logger.info(`Executing \`npm install\`.`);
-                runNpmInstallCommand(basePath, undefined, { logger });
+                runNpmInstallCommand(basePath, undefined, { logger }).catch(() => {
+                    // Error already logged by runNpmInstallCommand
+                });
             }
         }
     } catch (error) {

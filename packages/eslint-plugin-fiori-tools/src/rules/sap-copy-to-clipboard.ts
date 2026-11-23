@@ -1,12 +1,14 @@
-import type { FioriRuleDefinition } from '../types';
-import { COPY_TO_CLIPBOARD, type CopyToClipboard } from '../language/diagnostics';
-import { createFioriRule } from '../language/rule-factory';
+import type { FioriRuleDefinition } from '../types.js';
+import { COPY_TO_CLIPBOARD, type CopyToClipboard } from '../language/diagnostics.js';
+import { createFioriRule } from '../language/rule-factory.js';
 import type { MemberNode } from '@humanwhocodes/momoa';
-import type { FeV2PageType, Table as TableV2 } from '../project-context/linker/fe-v2';
-import type { ParsedApp } from '../project-context/parser';
-import type { FeV4PageType, Table as TableV4 } from '../project-context/linker/fe-v4';
-import { createJsonFixer } from '../language/rule-fixer';
-import { checkAppTablesConfiguration } from '../utils/helpers';
+import type { FeV2PageType, Table as TableV2 } from '../project-context/linker/fe-v2.js';
+import type { ParsedApp } from '../project-context/parser/index.js';
+import type { FeV4PageType, Table as TableV4 } from '../project-context/linker/fe-v4.js';
+import { createJsonFixer } from '../language/rule-fixer.js';
+import { checkAppTablesConfiguration, isV2Table } from '../utils/helpers.js';
+import { FioriJSONSourceCode } from '../language/json/source-code.js';
+import type { FioriChangeSourceCode } from '../language/change/source-code.js';
 
 const rule: FioriRuleDefinition = createFioriRule({
     ruleId: COPY_TO_CLIPBOARD,
@@ -19,12 +21,15 @@ const rule: FioriRuleDefinition = createFioriRule({
         },
         messages: {
             [COPY_TO_CLIPBOARD]:
-                'Copy To Clipboard in the {{sectionText}}table must be correctly configured. If not set, the "Copy" button is displayed'
+                '`{{property}}` in the {{sectionText}}table must not be set to `{{value}}`, because this will hide the "Copy" button'
         },
         fixable: 'code'
     },
 
     check(context) {
+        if (!(context.sourceCode instanceof FioriJSONSourceCode)) {
+            return [];
+        }
         const problems: CopyToClipboard[] = [];
 
         for (const [appKey, app] of Object.entries(context.sourceCode.projectContext.linkedModel.apps)) {
@@ -34,7 +39,11 @@ const rule: FioriRuleDefinition = createFioriRule({
                 continue;
             }
             for (const page of app.pages) {
-                problems.push(...(<CopyToClipboard[]>checkAppTablesConfiguration(page, parsedApp, checkConfiguration)));
+                problems.push(
+                    ...(<CopyToClipboard[]>(
+                        checkAppTablesConfiguration(page, parsedApp, context.sourceCode, checkConfiguration)
+                    ))
+                );
             }
         }
         return problems;
@@ -45,7 +54,9 @@ const rule: FioriRuleDefinition = createFioriRule({
                 node,
                 messageId: COPY_TO_CLIPBOARD,
                 data: {
-                    sectionText: diagnostic.pageSectionName ? `${diagnostic.pageSectionName} ` : ''
+                    sectionText: diagnostic.pageSectionName ? `${diagnostic.pageSectionName} ` : '',
+                    property: diagnostic.property,
+                    value: diagnostic.value
                 },
                 fix: createJsonFixer({
                     context,
@@ -59,18 +70,10 @@ const rule: FioriRuleDefinition = createFioriRule({
 
 /**
  *
- * @param table
- * @returns
- */
-function isV2Table(table: TableV2 | TableV4): table is TableV2 {
-    return 'copy' in (table as TableV2).configuration;
-}
-
-/**
- *
  * @param page
  * @param table
  * @param parsedApp
+ * @param sourceCode
  * @param problems
  * @param pageSectionName
  */
@@ -78,26 +81,35 @@ function checkConfiguration(
     page: FeV4PageType | FeV2PageType,
     table: TableV4 | TableV2,
     parsedApp: ParsedApp,
+    sourceCode: FioriJSONSourceCode | FioriChangeSourceCode,
     problems: CopyToClipboard[],
     pageSectionName?: string
 ): void {
     let config;
     let wrongValue = false;
-    if (isV2Table(table)) {
+    const isV2 = isV2Table(table);
+    if (isV2) {
         config = table.configuration.copy;
     } else {
         config = table.configuration.disableCopyToClipboard;
         wrongValue = true;
     }
     if (config?.valueInFile === wrongValue) {
+        if (!(sourceCode instanceof FioriJSONSourceCode)) {
+            return;
+        }
+        const node = sourceCode.getNode(sourceCode.ast.body, config.configurationPath);
         const copyIssue: CopyToClipboard | undefined = {
             type: COPY_TO_CLIPBOARD,
             pageName: page.targetName,
+            property: isV2 ? 'copy' : 'disableCopyToClipboard',
+            value: String(wrongValue),
             pageSectionName,
             manifest: {
                 uri: parsedApp.manifest.manifestUri,
                 object: parsedApp.manifestObject,
-                propertyPath: config.configurationPath
+                propertyPath: config.configurationPath,
+                loc: node.loc
             }
         };
         problems.push(copyIssue);

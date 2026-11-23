@@ -1,18 +1,20 @@
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
 import { readFile } from 'node:fs/promises';
-import { pathToFileURL } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
 import type { FoundFioriArtifacts, Manifest } from '@sap-ux/project-access';
 import { findFioriArtifacts, normalizePath } from '@sap-ux/project-access';
 
-import type { FeV2ListReport, FeV2ObjectPage, LinkedFeV2App } from '../../../src/project-context/linker/fe-v2';
-import { runFeV2Linker } from '../../../src/project-context/linker/fe-v2';
-import type { LinkerContext } from '../../../src/project-context/linker/types';
-import { ApplicationParser } from '../../../src/project-context/parser';
-import type { ManifestChange } from '../../test-helper';
-import { applyManifestChange, applyXmlAnnotationsChange } from '../../test-helper';
-import { getParsedServiceByName } from '../../../src/project-context/utils';
-import { collectSections } from '../../../src/project-context/linker/annotations';
+import type { FeV2ListReport, FeV2ObjectPage, LinkedFeV2App } from '../../../src/project-context/linker/fe-v2.js';
+import { runFeV2Linker } from '../../../src/project-context/linker/fe-v2.js';
+import type { LinkerContext } from '../../../src/project-context/linker/types.js';
+import { ApplicationParser } from '../../../src/project-context/parser/index.js';
+import type { ManifestChange } from '../../test-helper.js';
+import { applyManifestChange, applyXmlAnnotationsChange } from '../../test-helper.js';
+import { getParsedServiceByName } from '../../../src/project-context/utils.js';
+import { collectSections } from '../../../src/project-context/linker/annotations.js';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const parser = new ApplicationParser();
 
@@ -42,6 +44,12 @@ const XML_FACET_NO_ANNOTATION = `<Annotations Target="TECHED_ALP_SOA_SRV.SEPMRA_
                     </Collection>
                 </Annotation>
             </Annotations`;
+
+export const V2_SECOND_TABLE_ANNOTATION = `<Annotations Target="TECHED_ALP_SOA_SRV.Z_SEPMRA_SO_SALESORDERANALYSISType">
+                <Annotation Term="UI.LineItem" Qualifier="secondTable">
+                    <Collection/>
+                </Annotation>
+            </Annotations>`;
 
 describe('FE V2 Linker', () => {
     let artifacts: FoundFioriArtifacts;
@@ -80,7 +88,7 @@ describe('FE V2 Linker', () => {
             const newAnnotations = applyXmlAnnotationsChange(currentAnnotations, options.annotationsChange);
             testCache.set(uri, newAnnotations);
         }
-        const model = parser.parse('EDMXBackend', artifacts, testCache);
+        const model = parser.parse('EDMXBackend', artifacts, {}, root, testCache);
 
         const app = model.index.apps[Object.keys(model.index.apps)[0]];
         return {
@@ -88,6 +96,23 @@ describe('FE V2 Linker', () => {
             diagnostics: []
         };
     }
+
+    function findLRorALPPage(app: LinkedFeV2App, index = 0): FeV2ListReport {
+        let i = 0;
+        for (const page of app.pages) {
+            if (
+                page.componentName === 'sap.suite.ui.generic.template.ListReport' ||
+                page.componentName === 'sap.suite.ui.generic.template.AnalyticalListPage'
+            ) {
+                if (i === index) {
+                    return page;
+                }
+                i++;
+            }
+        }
+        throw new Error('No ListReport or AnalyticalList page found');
+    }
+
     function findObjectPage(app: LinkedFeV2App, index = 0): FeV2ObjectPage {
         let i = 0;
         for (const page of app.pages) {
@@ -102,6 +127,23 @@ describe('FE V2 Linker', () => {
     }
 
     describe('linkTableSettings', () => {
+        describe('page level - listReport page', () => {
+            test('table - only default table config collected', async () => {
+                const context = await setup({
+                    annotationsChange: V2_SECOND_TABLE_ANNOTATION
+                });
+                const result = runFeV2Linker(context);
+                const page = findLRorALPPage(result);
+                // Second table config not collected
+                const orphanTable = page.lookup['orphan-table'];
+                expect(orphanTable).toBeUndefined();
+                const table = page.lookup['table'];
+                expect(table).toHaveLength(1);
+                expect(
+                    (table![0].annotation as { annotation: { qualifier?: string } }).annotation?.qualifier
+                ).toBeUndefined();
+            });
+        });
         describe('application level', () => {
             test('createMode', async () => {
                 const context = await setup({
@@ -194,7 +236,7 @@ describe('FE V2 Linker', () => {
                 expect(table).toHaveLength(1);
                 expect(table![0].configuration.createMode).toMatchSnapshot();
             });
-            test('orphan-node', async () => {
+            test('orphan-section', async () => {
                 const context = await setup({
                     manifestChanges: [
                         {
@@ -274,6 +316,60 @@ describe('FE V2 Linker', () => {
                 const table = page.lookup['table'];
                 expect(table).toHaveLength(1);
                 expect(table![0].configuration.tableType).toMatchSnapshot();
+            });
+            test('inlineDelete', async () => {
+                const context = await setup({
+                    manifestChanges: [
+                        {
+                            path: [
+                                'sap.ui.generic.app',
+                                'pages',
+                                'AnalyticalListPage|Z_SEPMRA_SO_SALESORDERANALYSIS',
+                                'pages',
+                                'ObjectPage|Z_SEPMRA_SO_SALESORDERANALYSIS',
+                                'component',
+                                'settings',
+                                'sections',
+                                'to_Product::com.sap.vocabularies.UI.v1.LineItem',
+                                'tableSettings',
+                                'inlineDelete'
+                            ],
+                            value: true
+                        }
+                    ]
+                });
+                const result = runFeV2Linker(context);
+                const page = findObjectPage(result);
+                const table = page.lookup['table'];
+                expect(table).toHaveLength(1);
+                expect(table![0].configuration.inlineDelete).toMatchSnapshot();
+            });
+            test('multiSelect', async () => {
+                const context = await setup({
+                    manifestChanges: [
+                        {
+                            path: [
+                                'sap.ui.generic.app',
+                                'pages',
+                                'AnalyticalListPage|Z_SEPMRA_SO_SALESORDERANALYSIS',
+                                'pages',
+                                'ObjectPage|Z_SEPMRA_SO_SALESORDERANALYSIS',
+                                'component',
+                                'settings',
+                                'sections',
+                                'to_Product::com.sap.vocabularies.UI.v1.LineItem',
+                                'tableSettings',
+                                'multiSelect'
+                            ],
+                            value: true
+                        }
+                    ]
+                });
+                const result = runFeV2Linker(context);
+                const page = findObjectPage(result);
+                const table = page.lookup['table'];
+                expect(table).toHaveLength(1);
+                expect(table![0].configuration.multiSelect).toMatchSnapshot();
             });
         });
     });

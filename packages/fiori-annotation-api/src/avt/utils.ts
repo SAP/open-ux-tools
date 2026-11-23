@@ -5,8 +5,8 @@ import type {
     AnnotationWithOrigin,
     CollectionExpressionWithOrigins,
     RecordWithOrigins
-} from './annotations';
-import type { AVTNode } from './types';
+} from './annotations.js';
+import type { AVTNode } from './types.js';
 
 export interface NamespaceMap {
     // also add entries for namespaces to facilitate alias to namespace conversion

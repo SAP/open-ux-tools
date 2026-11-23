@@ -1,6 +1,6 @@
 import type { TargetKind, MetadataElement } from '@sap-ux/odata-annotation-core-types';
 
-import { MetadataService } from '../src';
+import { MetadataService } from '../src/index.js';
 
 function createTestService() {
     const metadataService = new MetadataService();

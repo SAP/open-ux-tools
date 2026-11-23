@@ -6,7 +6,7 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-import rule from '../../src/rules/sap-ui5-no-private-prop';
+import rule from '../../src/rules/sap-ui5-no-private-prop.js';
 import { RuleTester } from 'eslint';
 
 //------------------------------------------------------------------------------

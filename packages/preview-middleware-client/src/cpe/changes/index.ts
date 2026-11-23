@@ -1,1 +1,1 @@
-export { ChangeService } from './service';
+export { ChangeService } from './service.js';

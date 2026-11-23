@@ -1,6 +1,6 @@
 import { getHostEnvironment, hostEnvironment, type ILogWrapper } from '@sap-ux/fiori-generator-shared';
-import { t } from './i18n';
-import type { State } from '../types';
+import { t } from './i18n.js';
+import type { State } from '../types/index.js';
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 
 const FIORI_CACHE = '$fiori-cache';

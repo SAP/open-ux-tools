@@ -1,6 +1,6 @@
 import { join } from 'node:path';
-import { MtaConfig } from './mta';
-import { renderTemplateToDisk } from './template-renderer';
+import { MtaConfig } from './mta.js';
+import { renderTemplateToDisk } from './template-renderer.js';
 import {
     addXSSecurityConfig,
     getTemplatePath,
@@ -8,7 +8,7 @@ import {
     validateVersion,
     runCommand,
     toMtaModuleName as toMtaModuleNameUtil
-} from '../utils';
+} from '../utils.js';
 import {
     MTAVersion,
     MTADescription,
@@ -22,12 +22,18 @@ import {
     CDSHTML5RepoService,
     RouterModule,
     MAX_MTA_ID_LENGTH
-} from '../constants';
-import { waitForMtaFile } from './wait-for-mta';
-import { type MTABaseConfig, type CFBaseConfig, type CDSServiceType, type CAPConfig, RouterModuleType } from '../types';
-import LoggerHelper from '../logger-helper';
-import { sync } from 'hasbin';
-import { t } from '../i18n';
+} from '../constants.js';
+import { waitForMtaFile } from './wait-for-mta.js';
+import {
+    type MTABaseConfig,
+    type CFBaseConfig,
+    type CDSServiceType,
+    type CAPConfig,
+    RouterModuleType
+} from '../types/index.js';
+import LoggerHelper from '../logger-helper.js';
+import which from 'which';
+import { t } from '../i18n.js';
 import { type Editor } from 'mem-fs-editor';
 import { apiGetInstanceCredentials } from '@sap/cf-tools';
 import { FileName } from '@sap-ux/project-access';
@@ -99,7 +105,7 @@ export function createMTA(config: MTABaseConfig): void {
  */
 export function doesMTABinaryExist(): void {
     // CF Writer is dependent on the mta-lib library, which in turn relies on the mta executable being installed and available in the path
-    if (!sync(MTAExecutable)) {
+    if (!which.sync(MTAExecutable, { nothrow: true })) {
         throw new Error(MTABinNotFound);
     }
 }
@@ -110,7 +116,7 @@ export function doesMTABinaryExist(): void {
  */
 export function doesCDSBinaryExist(): void {
     // CF Writer is dependent on the cds library
-    if (!sync(CDSExecutable)) {
+    if (!which.sync(CDSExecutable, { nothrow: true })) {
         throw new Error(CDSBinNotFound);
     }
 }
@@ -166,12 +172,18 @@ async function createCAPMTAAppFrontend(config: CAPConfig, fs: Editor): Promise<v
         mtaVersion: config.mtaVersion ?? MTAVersion
     });
     // Add missing configurations
-    addXSSecurityConfig(config, fs, false);
+    addXSSecurityConfig(config, fs);
     LoggerHelper.logger?.debug(t('debug.mtaCreated', { mtaPath: config.mtaPath }));
 }
 
 /**
  * Add standalone app router to the target folder.
+ *
+ * If the mta.yaml already declares an `approuter.nodejs` module (for example the `.deploy/app-router`
+ * module scaffolded by newer `@sap/cds-dk` versions), no router module is appended and no router
+ * project files are scaffolded, avoiding a duplicate router project. Any explicitly requested
+ * connectivity or ABAP service is still wired to the existing router so those options are not silently
+ * dropped. Projects without an existing approuter continue to get a standalone router scaffolded as before.
  *
  * @param cfConfig Writer configuration
  * @param mtaInstance MTA configuration instance
@@ -179,13 +191,17 @@ async function createCAPMTAAppFrontend(config: CAPConfig, fs: Editor): Promise<v
  * @throws {Error} If service key retrieval fails for ABAP service binding
  */
 async function addStandaloneRouter(cfConfig: CFBaseConfig, mtaInstance: MtaConfig, fs: Editor): Promise<void> {
-    await mtaInstance.addStandaloneRouter(true);
+    const routerAdded = await mtaInstance.addStandaloneRouter(true);
     if (cfConfig.addConnectivityService) {
         await mtaInstance.addConnectivityResource();
     }
     const { abapServiceName, abapService } = cfConfig.abapServiceProvider ?? {};
     if (abapServiceName && abapService) {
         await mtaInstance.addAbapService(abapServiceName, abapService);
+    }
+    // An approuter already existed (e.g. CDS `.deploy/app-router`); skip scaffolding a duplicate router project
+    if (!routerAdded) {
+        return;
     }
 
     fs.copyTpl(getTemplatePath(`router/package.json`), join(cfConfig.mtaPath, `${RouterModule}/${FileName.Package}`));
@@ -255,4 +271,4 @@ export async function generateCAPMTA(config: CAPConfig, fs: Editor): Promise<voi
     }
 }
 
-export * from './mta';
+export * from './mta.js';

@@ -1,0 +1,19 @@
+######################################################
+#  Pipeline configuration file                       # 
+#                                                    #
+#  Make sure your yml file is syntactically correct  #
+#   http://www.yamllint.com/                         #
+#                                                    #
+#     maintain only the values you need !            #
+#                                                    #
+######################################################
+executeKarma:
+  pipelineMode:
+    ci:
+      execute: true
+      reportCodeCoverage: false
+    quality:
+      execute: false
+    voter:
+      execute: true
+      reportCodeCoverage: true

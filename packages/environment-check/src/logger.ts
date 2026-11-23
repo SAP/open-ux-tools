@@ -1,6 +1,6 @@
 import { ArrayTransport, ToolsLogger } from '@sap-ux/logger';
 import type { ArrayTransportLogEntry } from '@sap-ux/logger';
-import type { ILogger, ResultMessage, Severity } from './types';
+import type { ILogger, ResultMessage, Severity } from './types.js';
 
 /**
  * Logger to collect messages while performing checks

@@ -1,1 +1,1 @@
-export * from './UICheckbox';
+export * from './UICheckbox.js';

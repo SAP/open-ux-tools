@@ -1,21 +1,27 @@
+import { jest } from '@jest/globals';
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { join } from 'node:path';
 import type { ManifestNamespace } from '@sap-ux/project-access';
-import type { CustomPage } from '../../../src';
-import { generateCustomPage, validateBasePath } from '../../../src';
-import { FCL_ROUTER } from '../../../src/common/defaults';
-import { detectTabSpacing } from '../../../src/common/file';
-import { tabSizingTestCases } from '../../common';
+import type { CustomPage } from '../../../src/index.js';
+import { generateCustomPage, validateBasePath } from '../../../src/index.js';
+import { FCL_ROUTER } from '../../../src/common/defaults.js';
+import { detectTabSpacing } from '../../../src/common/file.js';
+import { tabSizingTestCases } from '../../common/index.js';
 import type { Logger } from '@sap-ux/logger';
-import { i18nNamespaces, translate } from '../../../src/i18n';
-import * as fileAccess from '@sap-ux/project-access/dist/file';
+import { i18nNamespaces, translate } from '../../../src/i18n.js';
+import { findFilesByExtensionMock } from '../../__mocks__/project-access-file.mjs';
+import {
+    PageTemplateType,
+    MIN_UI5_VERSION_PAGE_BUILDING_BLOCK,
+    MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT
+} from '../../../src/building-block/types.js';
 
 describe('CustomPage', () => {
     const testDir = '' + Date.now();
     let fs: Editor;
-    jest.spyOn(fileAccess, 'findFilesByExtension').mockResolvedValue([]);
+    findFilesByExtensionMock.mockResolvedValue([]);
     const testAppManifest = JSON.stringify(
         {
             'sap.app': {
@@ -328,7 +334,10 @@ describe('CustomPage', () => {
             await generateCustomPage(target, inputWithPageBuildingBlockTitle, fs, log);
 
             expect(log.warn).toHaveBeenCalledWith(
-                t('minUi5VersionRequirement', { minUI5Version: inputWithPageBuildingBlockTitle.minUI5Version })
+                t('minUi5VersionRequirement', {
+                    minUI5Version: inputWithPageBuildingBlockTitle.minUI5Version,
+                    minUi5VersionForPageBuildingBlock: MIN_UI5_VERSION_PAGE_BUILDING_BLOCK
+                })
             );
 
             // page macros should not be added
@@ -338,6 +347,86 @@ describe('CustomPage', () => {
             expect(viewXml).not.toContain('macros:Page');
             expect(viewXml).not.toContain('Test Page Title');
             expect(viewXml).toContain('<Page');
+        });
+
+        test('should generate a custom page with full layout page building block', async () => {
+            delete testManifestWithNoRouting['sap.ui5'].routing;
+            const target = join(testDir, 'single-page-no-fcl');
+            const inputWithFullLayout = {
+                ...input,
+                minUI5Version: '1.145',
+                pageBuildingBlockTitle: 'Test Page Title',
+                pageBuildingBlockTemplateType: PageTemplateType.Full
+            };
+            fs.writeJSON(join(target, 'webapp/manifest.json'), testManifestWithNoRouting);
+            await generateCustomPage(target, inputWithFullLayout, fs);
+
+            const viewXmlPath = join(target, 'webapp/ext/view/CustomPage.view.xml');
+            expect(fs.read(viewXmlPath)).toMatchSnapshot();
+        });
+
+        test('should log a warning when min ui5 version is not met for full layout page building block', async () => {
+            const target = join(testDir, 'single-page-no-fcl');
+            const t = translate(i18nNamespaces.buildingBlock, 'pageBuildingBlock.');
+            const inputWithFullLayout = {
+                ...input,
+                minUI5Version: '1.136',
+                pageBuildingBlockTitle: 'Test Page Title',
+                pageBuildingBlockTemplateType: PageTemplateType.Full
+            };
+            fs.writeJSON(join(target, 'webapp/manifest.json'), testManifestWithNoRouting);
+
+            const log = { warn: jest.fn() } as unknown as Logger;
+            await generateCustomPage(target, inputWithFullLayout, fs, log);
+
+            expect(log.warn).toHaveBeenCalledWith(
+                t('minUi5VersionRequirementFullLayout', {
+                    minUI5Version: inputWithFullLayout.minUI5Version,
+                    minUi5VersionForFullLayout: MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT
+                })
+            );
+
+            const viewXmlPath = join(target, 'webapp/ext/view/CustomPage.view.xml');
+            expect(fs.read(viewXmlPath)).toMatchSnapshot();
+        });
+
+        test('should use full layout when no ui5 version is specified with full layout page building block', async () => {
+            const target = join(testDir, 'single-page-no-fcl');
+            const inputWithFullLayoutNoVersion = {
+                ...input,
+                minUI5Version: undefined,
+                pageBuildingBlockTitle: 'Test Page Title',
+                pageBuildingBlockTemplateType: PageTemplateType.Full
+            };
+            fs.writeJSON(join(target, 'webapp/manifest.json'), testManifestWithNoRouting);
+
+            const log = { warn: jest.fn() } as unknown as Logger;
+            await generateCustomPage(target, inputWithFullLayoutNoVersion, fs, log);
+
+            expect(log.warn).not.toHaveBeenCalled();
+
+            const viewXmlPath = join(target, 'webapp/ext/view/CustomPage.view.xml');
+            expect(fs.read(viewXmlPath)).toMatchSnapshot();
+        });
+
+        test('should use full layout when latest ui5 version is specified with full layout page building block', async () => {
+            delete testManifestWithNoRouting['sap.ui5'].routing;
+            const target = join(testDir, 'single-page-no-fcl');
+            const inputWithFullLayoutLatest = {
+                ...input,
+                minUI5Version: 'latest',
+                pageBuildingBlockTitle: 'Test Page Title',
+                pageBuildingBlockTemplateType: PageTemplateType.Full
+            };
+            fs.writeJSON(join(target, 'webapp/manifest.json'), testManifestWithNoRouting);
+
+            const log = { warn: jest.fn() } as unknown as Logger;
+            await generateCustomPage(target, inputWithFullLayoutLatest, fs, log);
+
+            expect(log.warn).not.toHaveBeenCalled();
+
+            const viewXmlPath = join(target, 'webapp/ext/view/CustomPage.view.xml');
+            expect(fs.read(viewXmlPath)).toMatchSnapshot();
         });
     });
 
@@ -459,5 +548,127 @@ describe('CustomPage', () => {
         await generateCustomPage(target, minimalInput, fs);
         //check
         expect(fs.readJSON(join(target, 'webapp/manifest.json'))).toMatchSnapshot();
+    });
+
+    describe('generateCustomPage reuseExisting', () => {
+        const orphanedPageId = 'OrphanedCustomPage';
+        const reuseInput: CustomPage = {
+            name: orphanedPageId,
+            entity: 'Products',
+            id: orphanedPageId,
+            navigation: { sourcePage: 'TestObjectPage', navEntity: 'Products', navKey: true },
+            reuseExisting: true
+        };
+
+        const manifestWithOrphan = JSON.stringify(
+            {
+                'sap.app': { id: 'my.test.App' },
+                'sap.ui5': {
+                    dependencies: { libs: {} },
+                    routing: {
+                        routes: [{ pattern: ':?query:', name: 'TestObjectPage', target: 'TestObjectPage' }],
+                        targets: {
+                            TestObjectPage: {},
+                            [orphanedPageId]: {}
+                        }
+                    }
+                }
+            },
+            null,
+            2
+        );
+
+        test('throws when id is not provided', async () => {
+            const target = join(testDir, 'reuse-no-id');
+            fs.write(join(target, 'webapp/manifest.json'), manifestWithOrphan);
+
+            await expect(
+                generateCustomPage(target, { name: 'SomePage', entity: 'Products', reuseExisting: true }, fs)
+            ).rejects.toThrow('Invalid data. Navigation target page name is missing!');
+        });
+
+        test('throws when id is not found in manifest targets', async () => {
+            const target = join(testDir, 'reuse-missing-page');
+            fs.write(join(target, 'webapp/manifest.json'), manifestWithOrphan);
+
+            await expect(
+                generateCustomPage(target, { ...reuseInput, id: 'NonExistentPage', reuseExisting: true }, fs)
+            ).rejects.toThrow('Could not find existing target page NonExistentPage!');
+        });
+
+        test('removes existing navigation entry for the entity and returns early', async () => {
+            const manifestWithNav = JSON.parse(manifestWithOrphan);
+            manifestWithNav['sap.ui5'].routing.targets.TestObjectPage = {
+                options: {
+                    settings: {
+                        navigation: {
+                            Products: { detail: { route: 'OldProductsRoute' } }
+                        }
+                    }
+                }
+            };
+            const target = join(testDir, 'reuse-removes-nav');
+            fs.write(join(target, 'webapp/manifest.json'), JSON.stringify(manifestWithNav, null, 2));
+
+            await generateCustomPage(target, reuseInput, fs);
+
+            const manifest = fs.readJSON(join(target, 'webapp/manifest.json')) as any;
+            const navAfter = manifest['sap.ui5'].routing.targets.TestObjectPage.options.settings.navigation;
+            // old entry removed; extendJSON re-adds the new route via template
+            expect(navAfter.Products.detail.route).toBe(orphanedPageId);
+        });
+
+        test('does not write manifest for navigation deletion when no entry exists', async () => {
+            const target = join(testDir, 'reuse-no-nav-entry');
+            fs.write(join(target, 'webapp/manifest.json'), manifestWithOrphan);
+            const writeJSONSpy = jest.spyOn(fs, 'writeJSON');
+
+            await generateCustomPage(target, reuseInput, fs);
+
+            // No extra writeJSON for the navigation deletion guard
+            const guardWrites = writeJSONSpy.mock.calls.filter(
+                ([, content]) => !(content as any)?.['sap.ui5']?.routing?.routes?.length
+            );
+            expect(guardWrites).toHaveLength(0);
+            writeJSONSpy.mockRestore();
+        });
+
+        test('returns early without creating view or controller files', async () => {
+            const target = join(testDir, 'reuse-no-view');
+            fs.write(join(target, 'webapp/manifest.json'), manifestWithOrphan);
+
+            await generateCustomPage(target, reuseInput, fs);
+
+            const viewPath = join(target, `webapp/ext/view/${orphanedPageId}.view.xml`);
+            const controllerPath = join(target, `webapp/ext/view/${orphanedPageId}.controller.js`);
+            expect(fs.exists(viewPath)).toBe(false);
+            expect(fs.exists(controllerPath)).toBe(false);
+        });
+
+        test('returns the mem-fs editor instance', async () => {
+            const target = join(testDir, 'reuse-return');
+            fs.write(join(target, 'webapp/manifest.json'), manifestWithOrphan);
+
+            const result = await generateCustomPage(target, reuseInput, fs);
+
+            expect(result).toBe(fs);
+        });
+
+        test('does not render main target settings when reuseExisting is true', async () => {
+            const manifestWithCustomTarget = JSON.parse(manifestWithOrphan);
+            manifestWithCustomTarget['sap.ui5'].routing.targets[orphanedPageId] = {
+                type: 'Component',
+                id: orphanedPageId,
+                name: 'custom.Special.Page',
+                options: { settings: { contextPath: '/Products' } }
+            };
+            const target = join(testDir, 'reuse-no-target-overwrite');
+            fs.write(join(target, 'webapp/manifest.json'), JSON.stringify(manifestWithCustomTarget, null, 2));
+
+            await generateCustomPage(target, reuseInput, fs);
+
+            const manifest = fs.readJSON(join(target, 'webapp/manifest.json')) as any;
+            expect(manifest['sap.ui5'].routing.targets[orphanedPageId].name).toBe('custom.Special.Page');
+        });
     });
 });

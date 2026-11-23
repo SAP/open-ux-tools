@@ -22,8 +22,8 @@ describe('<UIToolbar />', () => {
             </UIToolbar>
         );
 
-        expect(document.querySelectorAll(selectors.toolbar).length).toEqual(1);
-        expect(document.querySelectorAll(selectors.column).length).toEqual(2);
+        expect(document.querySelectorAll(selectors.toolbar)).toHaveLength(1);
+        expect(document.querySelectorAll(selectors.column)).toHaveLength(2);
     });
 
     it('Render with custom attributes', () => {
@@ -39,7 +39,7 @@ describe('<UIToolbar />', () => {
             </UIToolbar>
         );
 
-        expect(document.querySelector(`${selectors.toolbar}[data-test="test value"]`)).not.toEqual(null);
-        expect(document.querySelector(`${selectors.column}[data-test2="test value"]`)).not.toEqual(null);
+        expect(document.querySelector(`${selectors.toolbar}[data-test="test value"]`)).not.toBeNull();
+        expect(document.querySelector(`${selectors.column}[data-test2="test value"]`)).not.toBeNull();
     });
 });

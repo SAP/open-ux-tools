@@ -1,6 +1,6 @@
 import type { Command } from 'commander';
-import { getLogger, traceChanges, setLogLevelVerbose } from '../../tracing';
-import { validateBasePath } from '../../validation';
+import { getLogger, traceChanges, setLogLevelVerbose } from '../../tracing/index.js';
+import { validateBasePath } from '../../validation/index.js';
 import { generatePreviewFiles } from '@sap-ux/preview-middleware';
 import { isAbsolute, join } from 'node:path';
 import { UI5Config } from '@sap-ux/ui5-config';

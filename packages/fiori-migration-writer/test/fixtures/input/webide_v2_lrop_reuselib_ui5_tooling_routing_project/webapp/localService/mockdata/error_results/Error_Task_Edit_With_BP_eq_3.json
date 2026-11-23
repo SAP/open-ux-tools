@@ -1,0 +1,31 @@
+{
+	"error": {
+		"code": "QTASK/012",
+		"message": {
+			"lang": "en",
+			"value": "0000000003 is not a valid processor"
+		},
+		"innererror": {
+			"application": {
+				"component_id": "QM-QN-DEF",
+				"service_namespace": "/SAP/",
+				"service_id": "QM_DEFECT_RECORD_SRV",
+				"service_version": "0001"
+			},
+			"transactionid": "94EEA58F4E630380E005A65E2A5BD265",
+			"timestamp": "20180205170000.4066950",
+			"Error_Resolution": {
+				"SAP_Transaction": "Run transaction /IWFND/ERROR_LOG on SAP Gateway hub system and search for entries with the timestamp above for more details",
+				"SAP_Note": "See SAP Note 1797736 for error analysis (https://service.sap.com/sap/support/notes/1797736)",
+				"Batch_SAP_Note": "See SAP Note 1869434 for details about working with $batch (https://service.sap.com/sap/support/notes/1869434)"
+			},
+			"errordetails": [{
+				"code": "QTASK/012",
+				"message": "0000000003 is not a valid processor",
+				"propertyref": "",
+				"severity": "error",
+				"target": "/#TRANSIENT#"
+			}]
+		}
+	}
+}

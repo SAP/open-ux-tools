@@ -6,7 +6,7 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-import rule from '../../src/rules/sap-no-location-usage';
+import rule from '../../src/rules/sap-no-location-usage.js';
 import { RuleTester } from 'eslint';
 
 //------------------------------------------------------------------------------

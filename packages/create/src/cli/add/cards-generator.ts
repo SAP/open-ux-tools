@@ -1,7 +1,7 @@
 import type { Command } from 'commander';
 import { enableCardGeneratorConfig } from '@sap-ux/app-config-writer';
-import { getLogger, traceChanges, setLogLevelVerbose } from '../../tracing';
-import { validateBasePath } from '../../validation';
+import { getLogger, traceChanges, setLogLevelVerbose } from '../../tracing/index.js';
+import { validateBasePath } from '../../validation/index.js';
 import { FileName } from '@sap-ux/project-access';
 
 /**

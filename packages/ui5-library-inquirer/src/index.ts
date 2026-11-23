@@ -1,8 +1,8 @@
 import { getUI5Versions, type UI5VersionFilterOptions } from '@sap-ux/ui5-info';
 import { type InquirerAdapter } from '@sap-ux/inquirer-common';
 import inquirer, { type Question } from 'inquirer';
-import { getQuestions } from './prompts';
-import type { UI5LibraryAnswers, UI5LibraryPromptOptions } from './types';
+import { getQuestions } from './prompts/index.js';
+import type { UI5LibraryAnswers, UI5LibraryPromptOptions } from './types.js';
 import autocomplete from 'inquirer-autocomplete-prompt';
 
 /**
@@ -54,5 +54,5 @@ async function prompt(promptOptions?: UI5LibraryPromptOptions, adapter?: Inquire
 
 export { getPrompts, prompt };
 
-export type { UI5LibraryAnswers, UI5LibraryPromptOptions } from './types';
+export type { UI5LibraryAnswers, UI5LibraryPromptOptions } from './types.js';
 export type { InquirerAdapter } from '@sap-ux/inquirer-common';

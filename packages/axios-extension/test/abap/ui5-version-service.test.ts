@@ -1,6 +1,6 @@
 import type { Logger } from '@sap-ux/logger';
 import type { AxiosRequestConfig } from 'axios';
-import { UI5VersionService } from '../../src/abap/ui5-version-service';
+import { UI5VersionService } from '../../src/abap/ui5-version-service.js';
 
 jest.mock('axios');
 

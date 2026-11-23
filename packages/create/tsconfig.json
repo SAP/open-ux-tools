@@ -2,7 +2,8 @@
   "extends": "../../tsconfig.json",
   "include": [
     "../../types/mem-fs-editor.d.ts",
-    "src"
+    "src",
+    "src/**/*.json"
   ],
   "compilerOptions": {
     "rootDir": "src",
@@ -31,6 +32,12 @@
       "path": "../cap-config-writer"
     },
     {
+      "path": "../feature-toggle"
+    },
+    {
+      "path": "../fiori-migration-writer"
+    },
+    {
       "path": "../flp-config-inquirer"
     },
     {
@@ -55,6 +62,9 @@
       "path": "../project-access"
     },
     {
+      "path": "../project-input-validator"
+    },
+    {
       "path": "../store"
     },
     {
@@ -62,6 +72,9 @@
     },
     {
       "path": "../ui5-config"
+    },
+    {
+      "path": "../ui5-test-writer"
     }
   ]
 }

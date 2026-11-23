@@ -1,1 +1,1 @@
-export * from './UILoader';
+export * from './UILoader.js';

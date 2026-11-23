@@ -1121,6 +1121,32 @@ Object {
         },
         Object {
           "artifactType": undefined,
+          "description": "Disables strict filtering. Strict filtering requires users to enter a single value in the unit of measure field when filtering for measure field values.",
+          "displayName": "Disable Strict Uom Filtering",
+          "name": "disableStrictUomFiltering",
+          "options": Array [
+            Object {
+              "key": undefined,
+              "text": "",
+            },
+            Object {
+              "key": true,
+              "text": "True",
+            },
+            Object {
+              "key": false,
+              "text": "False",
+            },
+          ],
+          "schemaPath": Array [
+            "settings",
+            "disableStrictUomFiltering",
+          ],
+          "type": "boolean",
+          "value": undefined,
+        },
+        Object {
+          "artifactType": undefined,
           "description": "Defines the title for the application.",
           "displayName": "Title",
           "name": "title",
@@ -5419,7 +5445,7 @@ Object {
                   "additionalText": undefined,
                   "annotationNodeId": undefined,
                   "children": Array [],
-                  "id": "outline-node-table-toolBar-actions-DataFieldForAction::-node",
+                  "id": "outline-node-table-toolBar-actions-DataFieldForAction-node",
                   "moveProps": Object {
                     "allowedChildTypes": undefined,
                     "allowedParents": undefined,
@@ -5430,7 +5456,7 @@ Object {
                     "table",
                     "toolBar",
                     "actions",
-                    "DataFieldForAction::",
+                    "DataFieldForAction",
                   ],
                   "properties": Array [
                     Object {
@@ -5456,7 +5482,7 @@ Object {
                         "table",
                         "toolBar",
                         "actions",
-                        "DataFieldForAction::",
+                        "DataFieldForAction",
                         "enableOnSelect",
                       ],
                       "type": "string",
@@ -5471,7 +5497,7 @@ Object {
                         "table",
                         "toolBar",
                         "actions",
-                        "DataFieldForAction::",
+                        "DataFieldForAction",
                         "overflowGroup",
                       ],
                       "type": "string",
@@ -5508,7 +5534,7 @@ Object {
                         "table",
                         "toolBar",
                         "actions",
-                        "DataFieldForAction::",
+                        "DataFieldForAction",
                         "priority",
                       ],
                       "type": "string",
@@ -5543,7 +5569,7 @@ Object {
                             "table",
                             "toolBar",
                             "actions",
-                            "DataFieldForAction::",
+                            "DataFieldForAction",
                             "afterExecution",
                             "navigateToInstance",
                           ],
@@ -5573,7 +5599,7 @@ Object {
                             "table",
                             "toolBar",
                             "actions",
-                            "DataFieldForAction::",
+                            "DataFieldForAction",
                             "afterExecution",
                             "enableAutoScroll",
                           ],
@@ -5585,7 +5611,7 @@ Object {
                         "table",
                         "toolBar",
                         "actions",
-                        "DataFieldForAction::",
+                        "DataFieldForAction",
                         "afterExecution",
                       ],
                       "type": "object",
@@ -5593,7 +5619,7 @@ Object {
                     },
                   ],
                   "text": "Set Status Booked",
-                  "title": undefined,
+                  "title": "DataFieldForAction",
                   "value": undefined,
                 },
               ],
@@ -6402,7 +6428,7 @@ Hidden: the column is neither available in the table nor in adaptation.",
           "value": undefined,
         },
         Object {
-          "artifactType": undefined,
+          "artifactType": "Manifest",
           "description": "Defines the personalization mode, currently only effective if variant management on page is either set to Page or Control.
 By default all table settings are enabled. You can change this for the different parts of the table by setting the properties \\"Column\\", \\"Sort\\" and \\"Filter\\" accordingly.
 Omitting a property is treated as false, this allows apps to avoid getting new features like grouping in upcoming releases.",
@@ -6687,7 +6713,7 @@ Omitting a property is treated as false, this allows apps to avoid getting new f
         },
         Object {
           "artifactType": "Manifest",
-          "description": "Mass editing allows end users to simultaneously change multiple objects that share the same editable properties.",
+          "description": "Mass edit allows users to simultaneously change multiple objects that share the same editable properties.",
           "displayName": "Enable Mass Edit",
           "name": "enableMassEdit",
           "options": Array [
@@ -6895,7 +6921,7 @@ Omitting a property is treated as false, this allows apps to avoid getting new f
           "properties": Array [
             Object {
               "artifactType": "Manifest",
-              "description": "Define how the changes using mass edit should be applied. The default mode for mass editing is 'ChangeSet' on the Object Page and 'Isolated' in the List Report.
+              "description": "Define how changes using mass edit are applied. The default mode for mass edit is 'ChangeSet' on object pages and 'Isolated' on list report pages.
 
 - ChangeSet: Grouped for all objects within the same request.
 - Isolated: Separately for each object (as an individual OData change set in the same request).",
@@ -6925,7 +6951,7 @@ Omitting a property is treated as false, this allows apps to avoid getting new f
             },
             Object {
               "artifactType": "Manifest",
-              "description": "The 'visibleFields' property lets you specify which fields are available in the mass edit dialog.",
+              "description": "The 'visibleFields' property lets you specify which fields are available in the mass edit dialog. If empty or undefined, all fields within the page appear in the edit dialog except for read-only fields and fields specified in 'Disabled Fields'.",
               "displayName": "visibleFields",
               "name": "visibleFields",
               "schemaPath": Array [
@@ -6938,7 +6964,7 @@ Omitting a property is treated as false, this allows apps to avoid getting new f
             },
             Object {
               "artifactType": "Manifest",
-              "description": "The 'ignoredFields' property lets you hide specific fields from the mass edit dialog, even if these fields are displayed in the table.",
+              "description": "The 'ignoredFields' property lets you hide specific fields from the mass edit dialog, even if these fields are displayed in the table. If empty or undefined, all fields within the page appear in the edit dialog except for fields specified in 'Visible Fields'. If 'Visible Fields' are defined, this field is ignored.",
               "displayName": "ignoredFields",
               "name": "ignoredFields",
               "schemaPath": Array [
@@ -7044,6 +7070,86 @@ If this is not set with a value, the default value is 'NewPage'.",
       ],
       "type": "string",
       "value": undefined,
+    },
+    Object {
+      "artifactType": "Manifest",
+      "description": "Inline edit allows users to directly edit a field or a group of fields in the active version without switching the entire object to draft. Inline edit supports the same features as the regular edit mode.",
+      "displayName": "Inline Edit",
+      "name": "inlineEdit",
+      "options": Array [
+        Object {
+          "key": undefined,
+          "text": "",
+        },
+        Object {
+          "key": true,
+          "text": "True",
+        },
+        Object {
+          "key": false,
+          "text": "False",
+        },
+      ],
+      "schemaPath": Array [
+        "inlineEdit",
+      ],
+      "type": "boolean",
+      "value": false,
+    },
+    Object {
+      "artifactType": undefined,
+      "description": "",
+      "displayName": "inlineEdit",
+      "name": "inlineEdit",
+      "properties": Array [
+        Object {
+          "artifactType": "Manifest",
+          "description": "Array of fields which are inline editable.
+If empty or undefined, all fields within the page are inline editable except for fields specified in 'Disabled Fields'.
+Each string may be a direct property, a navigation property, or a field group.",
+          "displayName": "enabledFields",
+          "name": "enabledFields",
+          "schemaPath": Array [
+            "inlineEdit",
+            "enabledFields",
+          ],
+          "type": "object",
+          "value": undefined,
+        },
+        Object {
+          "artifactType": "Manifest",
+          "description": "Array of fields which are not inline editable.
+If empty or undefined, all fields within the page are not inline editable except for those specified in 'Enabled Fields'.
+Each string may be a direct property, a navigation property, or a field group.",
+          "displayName": "disabledFields",
+          "name": "disabledFields",
+          "schemaPath": Array [
+            "inlineEdit",
+            "disabledFields",
+          ],
+          "type": "object",
+          "value": undefined,
+        },
+        Object {
+          "artifactType": "Manifest",
+          "description": "Array of arrays of fields which are edited inline together.
+Fields specified in 'Connected Fields' must not be included in 'Enabled Fields' or 'Disabled Fields'.
+May contain direct properties, navigation properties, or a field group.",
+          "displayName": "connectedFields",
+          "name": "connectedFields",
+          "schemaPath": Array [
+            "inlineEdit",
+            "connectedFields",
+          ],
+          "type": "object",
+          "value": undefined,
+        },
+      ],
+      "schemaPath": Array [
+        "inlineEdit",
+      ],
+      "type": "object",
+      "value": false,
     },
   ],
   "root": true,

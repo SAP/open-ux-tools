@@ -1,8 +1,8 @@
 import type { Editor } from 'mem-fs-editor';
 
-import { ChangeType } from '../../../types';
-import type { IWriter, ComponentUsagesData, ComponentUsagesDataWithLibrary } from '../../../types';
-import { parseStringToObject, getChange, writeChangeToFolder } from '../../../base/change-utils';
+import { ChangeType } from '../../../types.js';
+import type { IWriter, ComponentUsagesData, ComponentUsagesDataWithLibrary } from '../../../types.js';
+import { parseStringToObject, getChange, writeChangeToFolder } from '../../../base/change-utils.js';
 
 /**
  * Handles the creation and writing of component usages data changes for a project.

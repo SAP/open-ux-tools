@@ -1,6 +1,6 @@
 import { dirname, join, relative, basename } from 'node:path';
-import type { DebugOptions, WorkspaceHandlerInfo } from '../types';
-import { formatCwd, getLaunchJsonPath, isFolderInWorkspace, handleAppsNotInWorkspace } from './helpers';
+import type { DebugOptions, WorkspaceHandlerInfo } from '../types/index.js';
+import { formatCwd, getLaunchJsonPath, isFolderInWorkspace, handleAppsNotInWorkspace } from './helpers.js';
 
 /**
  * Handles the case where an unsaved workspace is open and the user creates an app in a folder outside of the workspace.

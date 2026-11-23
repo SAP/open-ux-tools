@@ -1,5 +1,5 @@
 import type { Editor } from 'mem-fs-editor';
-import type { ReaderCollection } from '@ui5/fs'; // eslint-disable-line sonarjs/no-implicit-dependencies
+import type { ReaderCollection } from '@ui5/fs';
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join, isAbsolute, relative, basename, dirname } from 'node:path';
 
@@ -15,7 +15,7 @@ import {
     getAppType
 } from '@sap-ux/project-access';
 
-import type { DescriptorVariant, AdpPreviewConfig, UI5YamlCustomTaskConfiguration } from '../types';
+import type { DescriptorVariant, AdpPreviewConfig, UI5YamlCustomTaskConfiguration } from '../types.js';
 
 const ADP_CLOUD_PROJECT_BUILD_TASK_NAME = 'app-variant-bundler-build';
 
@@ -48,15 +48,21 @@ export async function updateVariant(basePath: string, variant: DescriptorVariant
 /**
  * Checks if FLP configuration changes exist in the manifest.appdescr_variant.
  *
- * This function determines whether there are changes of type `appdescr_app_changeInbound`
- * or `appdescr_app_addNewInbound` present in the content of the descriptor variant.
+ * This function determines whether there are changes of type `appdescr_app_setInbounds`,
+ * `appdescr_app_changeInbound`, or `appdescr_app_addNewInbound` present in the content of the
+ * descriptor variant. `appdescr_app_setInbounds` is the change type written by the current
+ * cloud-ADP FLP configuration writer; `appdescr_app_changeInbound` and `appdescr_app_addNewInbound`
+ * are retained for variants written by older versions of the tooling.
  *
  * @param {DescriptorVariant} variant - The descriptor variant object to check for FLP configuration changes.
- * @returns {Promise<boolean>} Returns `true` if FLP configuration changes exist, otherwise `false`.
+ * @returns {boolean} Returns `true` if FLP configuration changes exist, otherwise `false`.
  */
 export function flpConfigurationExists(variant: DescriptorVariant): boolean {
     return variant.content?.some(
-        ({ changeType }) => changeType === 'appdescr_app_changeInbound' || changeType === 'appdescr_app_addNewInbound'
+        ({ changeType }) =>
+            changeType === 'appdescr_app_setInbounds' ||
+            changeType === 'appdescr_app_changeInbound' ||
+            changeType === 'appdescr_app_addNewInbound'
     );
 }
 
@@ -289,4 +295,27 @@ export async function getBaseAppId(basePath: string): Promise<string> {
     } catch (error) {
         throw new Error(`Failed to get app ID: ${(error as Error).message}`);
     }
+}
+
+/** Default prefix used when no `dirName` is passed to {@link getDefaultProjectName}. */
+const DEFAULT_PROJECT_PREFIX = 'app.variant';
+
+/**
+ * Returns a non-colliding project directory name under `basePath`.
+ * Follows the `generator-adp` convention: `app.variant` → `app.variant2` → `app.variant3` …
+ *
+ * @param basePath Base directory to check for existing project folders.
+ * @param dirName Base name prefix; defaults to `"app.variant"`.
+ * @returns The first name in the sequence that does not yet exist on disk.
+ */
+export function getDefaultProjectName(basePath: string, dirName: string = DEFAULT_PROJECT_PREFIX): string {
+    let newDir = dirName;
+    let index = 1;
+
+    while (existsSync(join(basePath, newDir))) {
+        index++;
+        newDir = `${dirName}${index}`;
+    }
+
+    return newDir;
 }

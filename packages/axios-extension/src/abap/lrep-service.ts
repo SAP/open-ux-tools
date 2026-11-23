@@ -5,10 +5,10 @@ import { URLSearchParams } from 'node:url';
 import type { Logger } from '@sap-ux/logger';
 import { LogLevel } from '@sap-ux/logger';
 import type { ManifestNamespace } from '@sap-ux/project-access';
-import { isAxiosError } from '../base/odata-request-error';
-import type { Service } from '../base/service-provider';
-import { logError } from './message';
-import type { TransportConfig } from './ui5-abap-repository-service';
+import { isAxiosError } from '../base/odata-request-error.js';
+import type { Service } from '../base/service-provider.js';
+import { logError } from './message.js';
+import type { TransportConfig } from './ui5-abap-repository-service.js';
 import qs from 'qs';
 
 export type Manifest = ManifestNamespace.SAPJSONSchemaForWebApplicationManifestFile & { [key: string]: unknown };
@@ -140,7 +140,18 @@ export interface TextTranslation {
 export type KeyUserTextTranslations = Record<string, TextTranslation>;
 
 export interface KeyUserChangeContent {
-    content: Record<string, unknown>;
+    content: {
+        contexts?: {
+            role?: string[];
+        };
+        content?: {
+            contexts?: {
+                role?: string[];
+            };
+            [key: string]: unknown;
+        };
+        [key: string]: unknown;
+    };
     texts?: KeyUserTextTranslations;
 }
 

@@ -5,26 +5,26 @@ import ComponentContainer from 'sap/ui/core/ComponentContainer';
 import type {
     QuickActionActivationContext,
     QuickActionDefinitionGroup
-} from '../../../cpe/quick-actions/quick-action-definition';
-import { QuickActionDefinitionRegistry } from '../../../cpe/quick-actions/registry';
+} from '../../../cpe/quick-actions/quick-action-definition.js';
+import { QuickActionDefinitionRegistry } from '../../../cpe/quick-actions/registry.js';
 
-import { AddControllerToPageQuickAction } from '../common/add-controller-to-page';
+import { AddControllerToPageQuickAction } from '../common/add-controller-to-page.js';
 
-import { ToggleClearFilterBarQuickAction } from './lr-toggle-clear-filter-bar';
-import { ChangeTableColumnsQuickAction } from './change-table-columns';
-import { AddHeaderFieldQuickAction } from '../common/op-add-header-field';
-import { AddCustomSectionQuickAction } from '../common/op-add-custom-section';
-import { AddTableActionQuickAction } from '../fe-v2/create-table-action';
-import { AddTableCustomColumnQuickAction } from './create-table-custom-column';
-import { AddPageActionQuickAction } from '../common/create-page-action';
-import { EnableTableFilteringQuickAction } from './lr-enable-table-filtering';
-import { ToggleSemanticDateRangeFilterBar } from './lr-enable-semantic-date-range-filter-bar';
-import { EnableTableEmptyRowModeQuickAction } from './op-enable-empty-row-mode';
-import { AddNewAnnotationFile } from '../common/add-new-annotation-file';
-import { EnableObjectPageVariantManagementQuickAction } from './op-enable-variant-management';
-import { EnableListReportVariantManagementQuickAction } from './lr-enable-variant-management';
-import { AddNewSubpage } from '../fe-v2/add-new-subpage';
-import { ChangeTableActionsQuickAction } from './change-table-actions';
+import { ToggleClearFilterBarQuickAction } from './lr-toggle-clear-filter-bar.js';
+import { ChangeTableColumnsQuickAction } from './change-table-columns.js';
+import { AddHeaderFieldQuickAction } from '../common/op-add-header-field.js';
+import { AddCustomSectionQuickAction } from '../common/op-add-custom-section.js';
+import { AddTableActionQuickAction } from '../fe-v2/create-table-action.js';
+import { AddTableCustomColumnQuickAction } from './create-table-custom-column.js';
+import { AddPageActionQuickAction } from '../common/create-page-action.js';
+import { EnableTableFilteringQuickAction } from './lr-enable-table-filtering.js';
+import { ToggleSemanticDateRangeFilterBar } from './lr-enable-semantic-date-range-filter-bar.js';
+import { EnableTableEmptyRowModeQuickAction } from './op-enable-empty-row-mode.js';
+import { AddNewAnnotationFile } from '../common/add-new-annotation-file.js';
+import { EnableObjectPageVariantManagementQuickAction } from './op-enable-variant-management.js';
+import { EnableListReportVariantManagementQuickAction } from './lr-enable-variant-management.js';
+import { AddNewSubpage } from '../fe-v2/add-new-subpage.js';
+import { ChangeTableActionsQuickAction } from './change-table-actions.js';
 type PageName = 'listReport' | 'objectPage' | 'analyticalListPage';
 
 const OBJECT_PAGE_TYPE = 'sap.suite.ui.generic.template.ObjectPage.view.Details';

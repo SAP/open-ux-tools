@@ -1,0 +1,20 @@
+{
+    "ERROR_FAILED_TO_GET_PROJECT_INFO": "Cannot determine the project info for the selected project.",
+    "ERROR_FLOOR_PLAN_NOT_SUPPORTED": "The {{floorPlan}} floorplan is not supported for migration. Please choose a compatible floorplan.",
+    "ERROR_NOT_SUITABLE_FOR_MIGRATION": "This project type is not supported for migration. Please choose a compatible project.",
+    "SUCCESSFULLY_MIGRATED_MSG": "Project migrated.",
+    "MIGRATION_COL_INFO": "Application Information",
+    "MIGRATION_NO_BACKEND_URL": "An update is required to add a back-end URL in the YAML files to preview the application locally. For more information, click here.",
+    "MISSING_METADATA_CONFIG": "The project is missing a local copy of the service metadata which is required for SAP Fiori tools. To launch the Service Manager and sync with the back end to update the local metadata, click here.",
+    "TYPESCRIPT_STRICT_MODE_WARNING": "Project configured with TypeScript. If type errors occur, this may be due to a version upgrade. Review the TypeScript version in the `package.json` file.",
+    "MISSING_MANIFEST_UI5_SECTION": "The project `manifest.json` file is missing the `sap.ui5` section. This can cause issues when using this project with SAP Fiori tools.",
+    "ERROR_READING_FILE": "An error occurred reading the {{filename}} file.",
+    "ERROR_SYNTAX": "A syntax error occurred.",
+    "ERROR_SYNTAX_FILENAME": "A syntax error occurred in {{filename}}. Ensure the file is valid.",
+    "ERROR_PERMISSION": "A permission error occurred. Ensure your project files are accessible.",
+    "ERROR_PERMISSION_FILE": "A permission error occurred in {{filename}}. Ensure the file is accessible.",
+    "DEBUG_LOG_MSG_LOGGING_LEVEL_CONFIGURED": "Logging level configured to {{logLevel}}.",
+    "ERROR_COMMAND_FAILED": "The command failed due to an error. Please try again.",
+    "COMMAND_FAILED_WITH_ERROR": "The {{command}} command failed with the {{errorCode}} error code. Please try again.",
+    "ERROR_CODE_RETURNED": "The {{errorCode}} error code returned from the {{command}} command. Error: {{stack}}"
+}

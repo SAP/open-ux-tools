@@ -1,0 +1,408 @@
+import prompts from 'prompts';
+import type { BackendSystem } from '@sap-ux/store';
+import { SystemType, AuthenticationType, ConnectionType, isSystemNameInUse } from '@sap-ux/store';
+import { validateClient, validateUrl } from '@sap-ux/project-input-validator';
+import { t } from '../../i18n.js';
+
+/**
+ * Error thrown when user cancels credential clearing operation.
+ */
+export class ClearCredentialsCancelledError extends Error {
+    constructor() {
+        super('Clear credentials cancelled');
+        this.name = 'ClearCredentialsCancelledError';
+    }
+}
+
+/**
+ * Checks if a string is empty or contains only whitespace.
+ *
+ * @param value - The value to check
+ * @returns true if empty, false otherwise
+ */
+function isEmptyString(value: string): boolean {
+    return !value || !/\S/.test(value);
+}
+
+/**
+ * Validates that a string is not empty after trimming whitespace.
+ *
+ * @param value - The value to validate
+ * @returns True if valid, error message otherwise
+ */
+function validateNonEmpty(value: string): true | string {
+    return isEmptyString(value) ? t('systemPrompts.validation.fieldRequired') : true;
+}
+
+/**
+ * Validates that a URL is in correct format.
+ *
+ * @param value - The URL to validate
+ * @returns True if valid, error message otherwise
+ */
+function validateUrlField(value: string): true | string {
+    const nonEmptyCheck = validateNonEmpty(value);
+    if (nonEmptyCheck !== true) {
+        return nonEmptyCheck;
+    }
+
+    const result = validateUrl(value);
+    if (result === true) {
+        return true;
+    }
+    return typeof result === 'string' ? result : t('systemPrompts.validation.invalidUrl');
+}
+
+/**
+ * Validates that a client number is in correct format (empty or 3-digit number).
+ *
+ * @param value - The client number to validate
+ * @returns True if valid, error message otherwise
+ */
+function validateClientField(value: string): true | string {
+    const result = validateClient(value);
+    // validateClient returns true | string
+    return result === true ? true : String(result);
+}
+
+/**
+ * Validates that a system name is unique (not already in use).
+ *
+ * @param value - The system name to validate
+ * @param excludeSystem - Optional system to exclude from check (for updates)
+ * @returns True if valid, error message otherwise
+ */
+async function validateSystemNameUniqueness(value: string, excludeSystem?: BackendSystem): Promise<true | string> {
+    const nonEmptyCheck = validateNonEmpty(value);
+    if (nonEmptyCheck !== true) {
+        return nonEmptyCheck;
+    }
+
+    try {
+        const isTaken = await isSystemNameInUse(value);
+        // Allow keeping the same name when updating (case-insensitive)
+        if (excludeSystem && isTaken) {
+            const isSameName = excludeSystem.name.trim().toLowerCase() === value.trim().toLowerCase();
+            if (isSameName) {
+                return true;
+            }
+        }
+        if (isTaken) {
+            return t('systemPrompts.validation.systemNameExists', { name: value });
+        }
+        return true;
+    } catch (error) {
+        // Catch and convert service errors to validation messages to prevent duplicate names
+        console.error('Error checking system name uniqueness:', error);
+        return t('systemPrompts.validation.checkNameFailed');
+    }
+}
+
+/**
+ * Prompts for complete system configuration, filling in any missing fields.
+ *
+ * @param partial - Partial system configuration with some fields already provided
+ * @param partial.name - System display name
+ * @param partial.url - System URL
+ * @param partial.client - SAP client (optional)
+ * @param partial.systemType - System type
+ * @param partial.authenticationType - Authentication type
+ * @param partial.connectionType - Connection type
+ * @param partial.username - Username for basic auth
+ * @param partial.password - Password for basic auth
+ * @param partial.skipCredentialsPrompt - skip credential prompts entirely
+ * @returns Complete system configuration with all required fields
+ */
+export async function promptForSystemConfig(partial: {
+    name?: string;
+    url?: string;
+    client?: string;
+    systemType?: string;
+    authenticationType?: string;
+    connectionType?: string;
+    username?: string;
+    password?: string;
+    skipCredentialsPrompt?: boolean;
+}): Promise<{
+    name: string;
+    url: string;
+    client?: string;
+    systemType: SystemType;
+    authenticationType: AuthenticationType;
+    connectionType: ConnectionType;
+    username?: string;
+    password?: string;
+}> {
+    const questions: prompts.PromptObject[] = [];
+
+    if (!partial.name) {
+        questions.push({
+            type: 'text',
+            name: 'name',
+            message: t('systemPrompts.prompts.systemName'),
+            validate: (value: string) => validateSystemNameUniqueness(value)
+        });
+    }
+
+    if (!partial.url) {
+        questions.push({
+            type: 'text',
+            name: 'url',
+            message: t('systemPrompts.prompts.systemUrl'),
+            validate: validateUrlField
+        });
+    }
+
+    if (partial.client === undefined) {
+        questions.push({
+            type: 'text',
+            name: 'client',
+            message: t('systemPrompts.prompts.sapClient'),
+            validate: validateClientField
+        });
+    }
+
+    if (!partial.systemType) {
+        questions.push({
+            type: 'select',
+            name: 'systemType',
+            message: t('systemPrompts.prompts.systemType'),
+            choices: Object.values(SystemType).map((type) => ({ title: type, value: type }))
+        });
+    }
+
+    if (!partial.authenticationType) {
+        questions.push({
+            type: 'select',
+            name: 'authenticationType',
+            message: t('systemPrompts.prompts.authenticationType'),
+            choices: Object.values(AuthenticationType).map((type) => ({ title: type, value: type }))
+        });
+    }
+
+    if (!partial.connectionType) {
+        questions.push({
+            type: 'select',
+            name: 'connectionType',
+            message: t('systemPrompts.prompts.connectionType'),
+            choices: Object.values(ConnectionType).map((type) => ({ title: type, value: type }))
+        });
+    }
+
+    // Prompt for basic questions first
+    const answers = questions.length > 0 ? await prompts(questions as any) : {};
+
+    // Determine final authenticationType (from partial or answers)
+    const finalAuthType = partial.authenticationType || answers.authenticationType;
+
+    // Only prompt for credentials if:
+    // 1. skipCredentialsPrompt flag is NOT set, AND
+    // 2. authenticationType is 'basic' (other types don't use username/password)
+    const shouldPromptCredentials = !partial.skipCredentialsPrompt && finalAuthType === 'basic';
+
+    // Display informational message for re-entrance ticket authentication
+    if (finalAuthType === 'reentranceTicket') {
+        console.log(t('systemPrompts.prompts.reentranceTicketNote'));
+    }
+
+    const credentialQuestions: prompts.PromptObject[] = [];
+
+    if (shouldPromptCredentials && partial.username === undefined) {
+        credentialQuestions.push({
+            type: 'text',
+            name: 'username',
+            message: t('systemPrompts.prompts.username')
+        });
+    }
+
+    if (shouldPromptCredentials && partial.password === undefined) {
+        credentialQuestions.push({
+            type: 'password',
+            name: 'password',
+            message: t('systemPrompts.prompts.password')
+        });
+    }
+
+    const credentialAnswers = credentialQuestions.length > 0 ? await prompts(credentialQuestions as any) : {};
+
+    return {
+        name: partial.name || answers.name,
+        url: partial.url || answers.url,
+        client: partial.client ?? (answers.client || undefined),
+        systemType: (partial.systemType || answers.systemType) as SystemType,
+        authenticationType: finalAuthType as AuthenticationType,
+        connectionType: (partial.connectionType || answers.connectionType) as ConnectionType,
+        username: partial.username ?? (credentialAnswers?.username || undefined),
+        password: partial.password ?? (credentialAnswers?.password || undefined)
+    };
+}
+
+/**
+ * Prompts for system identifier (URL and optional client).
+ *
+ * @param partial - Partial identifier with some fields already provided
+ * @param partial.url
+ * @param partial.client
+ * @returns System identifier with URL and optional client
+ */
+export async function promptForSystemIdentifier(partial: { url?: string; client?: string }): Promise<{
+    url: string;
+    client?: string;
+}> {
+    const questions: prompts.PromptObject[] = [];
+
+    if (!partial.url) {
+        questions.push({
+            type: 'text',
+            name: 'url',
+            message: t('systemPrompts.prompts.systemUrl'),
+            validate: validateUrlField
+        });
+    }
+
+    // Only prompt for client if URL is also being prompted (fully interactive mode)
+    // When URL is provided via flag, skip client prompt - let smart lookup handle multiple matches
+    if (!partial.url && partial.client === undefined) {
+        questions.push({
+            type: 'text',
+            name: 'client',
+            message: t('systemPrompts.prompts.sapClient'),
+            validate: validateClientField
+        });
+    }
+
+    const answers = questions.length > 0 ? await prompts(questions as any) : {};
+
+    return {
+        url: partial.url || answers.url,
+        client: partial.client ?? (answers.client || undefined)
+    };
+}
+
+/**
+ * Prompts user to select which fields they want to update.
+ *
+ * @param existing - Existing system configuration
+ * @returns Array of field names to update
+ */
+export async function promptForUpdateFields(existing: BackendSystem): Promise<string[]> {
+    const answer = await prompts({
+        type: 'multiselect',
+        name: 'fields',
+        message: t('systemPrompts.updateFields.selectPrompt'),
+        choices: [
+            {
+                title: t('systemPrompts.updateFields.nameLabel', { name: existing.name }),
+                value: 'name'
+            },
+            {
+                title: t('systemPrompts.updateFields.usernameLabel', {
+                    username: existing.username || t('systemPrompts.updateFields.usernameNone')
+                }),
+                value: 'username'
+            },
+            { title: t('systemPrompts.updateFields.passwordLabel'), value: 'password' },
+            { title: t('systemPrompts.updateFields.clearCredentialsLabel'), value: 'clearCredentials' }
+        ],
+        min: 1
+    });
+
+    if (!answer.fields || answer.fields.length === 0) {
+        throw new Error(t('systemPrompts.updateFields.minOneRequired'));
+    }
+
+    return answer.fields;
+}
+
+/**
+ * Prompts for new values for the specified fields.
+ *
+ * @param fields - Array of field names to prompt for
+ * @param existing - Existing system configuration
+ * @returns Object with new values for the specified fields
+ */
+export async function promptForFieldUpdates(
+    fields: string[],
+    existing: BackendSystem
+): Promise<Record<string, unknown>> {
+    // Track if clearCredentials was requested
+    const clearCredentialsRequested = fields.includes('clearCredentials');
+
+    // Handle clearCredentials separately - it doesn't need a prompt, only confirmation
+    if (clearCredentialsRequested) {
+        const answer = await prompts({
+            type: 'confirm',
+            name: 'confirmClear',
+            message: t('systemPrompts.updateFields.clearCredentialsConfirm'),
+            initial: false
+        });
+
+        if (!answer.confirmClear) {
+            throw new ClearCredentialsCancelledError();
+        }
+
+        // Remove clearCredentials from fields to process
+        fields = fields.filter((f) => f !== 'clearCredentials');
+        if (fields.length === 0) {
+            return { clearCredentials: true };
+        }
+    }
+
+    const questions = fields
+        .map((field) => {
+            switch (field) {
+                case 'name':
+                    return {
+                        type: 'text',
+                        name: 'name',
+                        message: t('systemPrompts.updateFields.newNamePrompt'),
+                        initial: existing.name,
+                        validate: (value: string) => validateSystemNameUniqueness(value, existing)
+                    };
+                case 'username':
+                    return {
+                        type: 'text',
+                        name: 'username',
+                        message: t('systemPrompts.updateFields.newUsernamePrompt'),
+                        initial: existing.username || '',
+                        validate: validateNonEmpty
+                    };
+                case 'password':
+                    return {
+                        type: 'password',
+                        name: 'password',
+                        message: t('systemPrompts.updateFields.newPasswordPrompt'),
+                        validate: validateNonEmpty
+                    };
+                default:
+                    return null;
+            }
+        })
+        .filter((q) => q !== null);
+
+    const result = await prompts(questions as any);
+
+    // Add clearCredentials flag if it was originally selected
+    if (clearCredentialsRequested) {
+        result.clearCredentials = true;
+    }
+
+    return result;
+}
+
+/**
+ * Prompts for confirmation before removing a system.
+ *
+ * @param systemName - Name or identifier of the system to remove
+ * @returns True if user confirms, false otherwise
+ */
+export async function promptForRemoveConfirmation(systemName: string): Promise<boolean> {
+    const answer = await prompts({
+        type: 'confirm',
+        name: 'confirm',
+        message: t('systemPrompts.removeConfirmation.prompt', { systemName }),
+        initial: false
+    });
+
+    return answer.confirm === true;
+}

@@ -3,16 +3,16 @@ import FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import ObjectPageLayout from 'sap/uxap/ObjectPageLayout';
 import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 
-import { QuickActionContext, SimpleQuickActionDefinition } from '../../cpe/quick-actions/quick-action-definition';
-import { pageHasControlId } from '../../cpe/quick-actions/utils';
-import { getControlById } from '../../utils/core';
-import { DialogFactory, DialogNames } from '../dialog-factory';
-import { EnablementValidatorResult } from './enablement-validator';
-import { getTextBundle } from '../../i18n';
-import { SimpleQuickActionDefinitionBase } from './simple-quick-action-base';
-import { DIALOG_ENABLEMENT_VALIDATOR } from './dialog-enablement-validator';
-import { PageDescriptorV2 } from '../controllers/AddSubpage.controller';
-import { PageDescriptorV4 } from '../controllers/types';
+import { QuickActionContext, SimpleQuickActionDefinition } from '../../cpe/quick-actions/quick-action-definition.js';
+import { pageHasControlId } from '../../cpe/quick-actions/utils.js';
+import { getControlById } from '../../utils/core.js';
+import { DialogFactory, DialogNames } from '../dialog-factory.js';
+import { EnablementValidatorResult } from './enablement-validator.js';
+import { getTextBundle } from '../../i18n.js';
+import { SimpleQuickActionDefinitionBase } from './simple-quick-action-base.js';
+import { DIALOG_ENABLEMENT_VALIDATOR } from './dialog-enablement-validator.js';
+import { PageDescriptorV2 } from '../controllers/AddSubpage.controller.js';
+import { PageDescriptorV4 } from '../controllers/types.js';
 
 export const ADD_NEW_OBJECT_PAGE_ACTION = 'add-new-subpage';
 const CONTROL_TYPES = ['sap.f.DynamicPage', 'sap.uxap.ObjectPageLayout'];

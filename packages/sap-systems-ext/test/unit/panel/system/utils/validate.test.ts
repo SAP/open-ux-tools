@@ -3,12 +3,14 @@ import { initI18n } from '../../../../../src/utils';
 import { SystemPanelViewType } from '../../../../../src/utils/constants';
 
 const systemServiceGetAllMock = jest.fn();
+const isSystemNameInUseMock = jest.fn();
 
 jest.mock('@sap-ux/store', () => ({
     ...jest.requireActual('@sap-ux/store'),
     getService: jest.fn().mockImplementation(() => ({
         getAll: systemServiceGetAllMock
-    }))
+    })),
+    isSystemNameInUse: (...args: any[]) => isSystemNameInUseMock(...args)
 }));
 
 describe('Test the panel action utils', () => {
@@ -71,16 +73,12 @@ describe('Test the panel action utils', () => {
 
     describe('validateSystemName', () => {
         it('should return true for a valid system name', async () => {
-            systemServiceGetAllMock.mockResolvedValue([
-                { name: 'Existing System 1', url: 'https://existing.com', systemType: 'OnPrem' }
-            ]);
+            isSystemNameInUseMock.mockResolvedValue(false);
             expect(await validateSystemName('New System 1 ', 'New System')).toBe(true);
         });
 
         it('should return error message when creating a new system and the same name already exists in the store', async () => {
-            systemServiceGetAllMock.mockResolvedValue([
-                { name: 'Existing System 1', url: 'https://existing.com', systemType: 'OnPrem' }
-            ]);
+            isSystemNameInUseMock.mockResolvedValue(true);
 
             await expect(
                 validateSystemName('Existing System 1 ', 'New System', SystemPanelViewType.Create)
@@ -88,9 +86,7 @@ describe('Test the panel action utils', () => {
         });
 
         it('should return error message when importing a new system and the same name already exists in the store', async () => {
-            systemServiceGetAllMock.mockResolvedValue([
-                { name: 'Existing System 1', url: 'https://existing.com', systemType: 'OnPrem' }
-            ]);
+            isSystemNameInUseMock.mockResolvedValue(true);
 
             await expect(
                 validateSystemName('Existing System 1 ', 'New System', SystemPanelViewType.Import)
@@ -98,10 +94,7 @@ describe('Test the panel action utils', () => {
         });
 
         it('should return error message when editing an existing system and the new name matches another system in the store', async () => {
-            systemServiceGetAllMock.mockResolvedValue([
-                { name: 'Existing System 1', url: 'https://existing.com', systemType: 'OnPrem' },
-                { name: 'Existing System 2', url: 'https://existing2.com', systemType: 'OnPrem' }
-            ]);
+            isSystemNameInUseMock.mockResolvedValue(true);
 
             await expect(
                 validateSystemName('Existing System 2 ', 'Existing System 1', SystemPanelViewType.View)
@@ -109,9 +102,7 @@ describe('Test the panel action utils', () => {
         });
 
         it('should return true when viewing a system and they have the same name (case insensitive)', async () => {
-            systemServiceGetAllMock.mockResolvedValue([
-                { name: 'existing system 1', url: 'https://existing.com', systemType: 'OnPrem' }
-            ]);
+            isSystemNameInUseMock.mockResolvedValue(true);
             expect(await validateSystemName('Existing System 1', 'existing system 1', SystemPanelViewType.View)).toBe(
                 true
             );

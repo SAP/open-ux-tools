@@ -13,12 +13,17 @@ import {
     getAddDeployConfigPrompt,
     getAddFlpConfigPrompt,
     getEnableVirtualEndpoints
-} from './prompts1';
-import { getShowAdvancedPrompt, getUI5ThemePrompt, getEnableEsLintPrompt, getSkipAnnotationsPrompt } from './prompts2';
+} from './prompts1.js';
+import {
+    getShowAdvancedPrompt,
+    getUI5ThemePrompt,
+    getEnableEsLintPrompt,
+    getSkipAnnotationsPrompt
+} from './prompts2.js';
 import { validateFioriAppProjectFolder } from '@sap-ux/project-input-validator';
-import { promptNames } from '../types';
-import { hidePrompts } from './prompt-helpers';
-import type { UI5ApplicationAnswers, UI5ApplicationPromptOptions, UI5ApplicationQuestion } from '../types';
+import { promptNames } from '../types.js';
+import { hidePrompts } from './prompt-helpers.js';
+import type { UI5ApplicationAnswers, UI5ApplicationPromptOptions, UI5ApplicationQuestion } from '../types.js';
 import type { UI5Version } from '@sap-ux/ui5-info';
 import type { CdsUi5PluginInfo } from '@sap-ux/project-access';
 
@@ -72,7 +77,7 @@ export async function getQuestions(
             isCapProject
         ),
         [promptNames.addFlpConfig]: getAddFlpConfigPrompt(promptOptions?.addFlpConfig),
-        [promptNames.enableVirtualEndpoints]: getEnableVirtualEndpoints(capCdsInfo),
+        [promptNames.enableVirtualEndpoints]: getEnableVirtualEndpoints(),
         [promptNames.showAdvanced]: getShowAdvancedPrompt(),
         [promptNames.ui5Theme]: getUI5ThemePrompt(),
         [promptNames.enableEslint]: getEnableEsLintPrompt(),

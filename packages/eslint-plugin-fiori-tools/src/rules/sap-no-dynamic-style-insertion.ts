@@ -12,7 +12,7 @@ import {
     createIsDocument,
     createIsDocumentObject,
     createRememberDocument
-} from '../utils/helpers';
+} from '../utils/helpers.js';
 
 // ------------------------------------------------------------------------------
 // Rule Disablement

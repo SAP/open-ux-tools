@@ -1,4 +1,4 @@
-export { buildAst } from './ast';
+export { buildAst } from './ast.js';
 
 export {
     EMPTY_VALUE_TYPE,
@@ -24,6 +24,15 @@ export {
     INCORRECT_EXPRESSION_TYPE,
     CORRECT_EXPRESSION_TYPE,
     EXPRESSION_TYPES,
+    FLATTENED_EXPRESSION_TYPE,
+    FLATTENED_PATH_TYPE,
+    FLATTENED_ANNOTATION_SEGMENT_TYPE,
+    FLATTENED_PROPERTY_SEGMENT_TYPE,
+    nodeRange,
+    isContainer
+} from './annotation-ast-nodes.js';
+
+export type {
     Expression,
     UnsupportedOperatorExpression,
     IncorrectExpression,
@@ -52,15 +61,18 @@ export {
     Assignment,
     Separator,
     NarrowAnnotationNode,
-    nodeRange,
-    isContainer
-} from './annotation-ast-nodes';
+    FlattenedExpression,
+    FlattenedPath,
+    FlattenedPathSegment,
+    FlattenedAnnotationSegment,
+    FlattenedPropertySegment
+} from './annotation-ast-nodes.js';
 
-export { arePositionsEqual, copyPosition, copyRange, areRangesEqual } from './range';
+export { arePositionsEqual, copyPosition, copyRange, areRangesEqual } from './range.js';
 
 export {
     operatorMap,
     positionIsInExpressionWhiteSpace,
     getEdmOperatorMap,
     containsIncorrectExpressions
-} from './expressions';
+} from './expressions.js';

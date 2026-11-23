@@ -1,12 +1,37 @@
+import { jest } from '@jest/globals';
 import { create, type Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
-import {
-    ensurePreviewMiddlewareDependency,
-    updateVariantsCreationScript
-} from '../../../src/preview-config/package-json';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { ToolsLogger } from '@sap-ux/logger';
-import * as variantsConfig from '../../../src/variants-config/generateVariantsConfig';
+import chalk from 'chalk';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+jest.unstable_mockModule('chalk', () => ({
+    default: chalk,
+    cyan: (s: string) => s,
+    yellow: (s: string) => s,
+    red: (s: string) => s,
+    green: (s: string) => s,
+    blue: (s: string) => s,
+    bold: (s: string) => s,
+    dim: (s: string) => s
+}));
+
+const mockPrompt = jest.fn() as jest.Mock;
+const mockPromptsModule = Object.assign(mockPrompt, { prompt: mockPrompt, inject: jest.fn() });
+jest.unstable_mockModule('prompts', () => ({
+    default: mockPromptsModule
+}));
+
+const mockGenerateVariantsConfig = jest.fn() as jest.Mock;
+jest.unstable_mockModule('../../../src/variants-config/generateVariantsConfig', () => ({
+    generateVariantsConfig: mockGenerateVariantsConfig
+}));
+
+const { ensurePreviewMiddlewareDependency, updateVariantsCreationScript } =
+    await import('../../../src/preview-config/package-json.js');
 
 describe('package-json', () => {
     const logger = new ToolsLogger();
@@ -53,13 +78,11 @@ describe('package-json', () => {
             };
             fs.write(join(variousConfigsPath, 'package.json'), JSON.stringify(packageJson));
 
-            const getAllUi5YamlFileNamesMock = jest
-                .spyOn(variantsConfig, 'generateVariantsConfig')
-                .mockResolvedValue(fs);
+            mockGenerateVariantsConfig.mockResolvedValue(fs);
 
             await updateVariantsCreationScript(fs, variousConfigsPath, logger);
 
-            expect(getAllUi5YamlFileNamesMock).toHaveBeenCalledTimes(1);
+            expect(mockGenerateVariantsConfig).toHaveBeenCalledTimes(1);
         });
 
         test('update variants creation script - no', async () => {
@@ -73,13 +96,11 @@ describe('package-json', () => {
             };
             fs.write(join(variousConfigsPath, 'package.json'), JSON.stringify(packageJson));
 
-            const getAllUi5YamlFileNamesMock = jest
-                .spyOn(variantsConfig, 'generateVariantsConfig')
-                .mockResolvedValue(fs);
+            mockGenerateVariantsConfig.mockResolvedValue(fs);
 
             await updateVariantsCreationScript(fs, variousConfigsPath, logger);
 
-            expect(getAllUi5YamlFileNamesMock).not.toHaveBeenCalled();
+            expect(mockGenerateVariantsConfig).not.toHaveBeenCalled();
         });
     });
 });

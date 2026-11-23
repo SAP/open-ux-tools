@@ -6,10 +6,10 @@ import type {
     AttributeName,
     DiagnosticSeverity,
     Range
-} from '.';
-import type { Facets, Constraints } from './types';
-import type { MultilineType } from './annotation-file';
-import type { TextEdit } from './language-server';
+} from './index.js';
+import type { Facets, Constraints } from './types/index.js';
+import type { MultilineType } from './annotation-file.js';
+import type { TextEdit } from './language-server.js';
 
 /**
  * hold all type information required for checking a value

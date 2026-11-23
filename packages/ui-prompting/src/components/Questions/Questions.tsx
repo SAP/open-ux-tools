@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import type { Answers } from 'inquirer';
-import { Question } from '../Question/Question';
+import { Question } from '../Question/Question.js';
 import {
     formatDomId,
     getDependantQuestions,
@@ -10,8 +10,8 @@ import {
     useDynamicQuestionsEffect,
     useId,
     useRequestedChoices
-} from '../../utilities';
-import { QuestionGroup } from '../QuestionGroup';
+} from '../../utilities/index.js';
+import { QuestionGroup } from '../QuestionGroup/index.js';
 import type {
     PromptQuestion,
     ValidationResults,
@@ -19,9 +19,9 @@ import type {
     AnswerValue,
     DynamicChoices,
     TranslationProps
-} from '../../types';
-import { PromptsLayoutType } from '../../types';
-import { TranslationProvider } from '../../context/TranslationContext';
+} from '../../types.js';
+import { PromptsLayoutType } from '../../types.js';
+import { TranslationProvider } from '../../context/TranslationContext.js';
 import type { TranslationEntry } from '@sap-ux/ui-components';
 
 import './Questions.scss';
@@ -150,6 +150,7 @@ export const Questions = (props: QuestionsProps) => {
             <TranslationProvider
                 bundle={translationProps.bundle}
                 onEvent={translationProps.onEvent}
+                translationInputProps={translationProps.translationInputProps}
                 pendingQuestions={translationProps.pendingQuestions}>
                 <div className="prompt-entries">
                     {layoutType === PromptsLayoutType.MultiColumn && groups?.length

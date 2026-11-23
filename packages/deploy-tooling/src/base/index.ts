@@ -1,3 +1,3 @@
-export * from './config';
-export * from './deploy';
-export * from './prompt';
+export * from './config.js';
+export * from './deploy.js';
+export * from './prompt.js';

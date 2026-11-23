@@ -5,10 +5,10 @@ import type RTAOutlineService from 'sap/ui/rta/command/OutlineService';
 import type { ExternalAction } from '@sap-ux-private/control-property-editor-common';
 import { outlineChanged } from '@sap-ux-private/control-property-editor-common';
 
-import { getError } from '../../utils/error';
-import { ChangeService } from '../changes';
-import { ControlTreeIndex } from '../types';
-import { transformNodes } from './nodes';
+import { getError } from '../../utils/error.js';
+import { ChangeService } from '../changes/index.js';
+import { ControlTreeIndex } from '../types.js';
+import { transformNodes } from './nodes.js';
 
 export const OUTLINE_CHANGE_EVENT = 'OUTLINE_CHANGED';
 

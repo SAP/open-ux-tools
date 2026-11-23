@@ -1,5 +1,9 @@
-import { join } from 'node:path';
-import * as utils from '../../../src/variants-config/utils';
+import { jest } from '@jest/globals';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import * as utils from '../../../src/variants-config/utils.js';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 describe('utils', () => {
     const basePath = join(__dirname, '../../fixtures/variants-config');

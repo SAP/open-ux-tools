@@ -9,25 +9,47 @@ import {
     SUPPORTED_PROTOCOL_VERSIONS,
     type CallToolResult
 } from '@modelcontextprotocol/sdk/types.js';
-import packageJson from '../package.json';
+import { PACKAGE_VERSION } from './package-info.js';
 import {
     docSearch,
     listFioriApps,
     listFunctionalities,
     getFunctionalityDetails,
     executeFunctionality,
-    tools
-} from './tools';
-import { TelemetryHelper, unknownTool, type TelemetryData } from './telemetry';
-import { TELEMETRY_MCP_SERVER_INITIALIZED, TELEMETRY_MCP_LIST_TOOLS } from './constant';
+    listSapSystems,
+    downloadODataServiceMetadata,
+    generateFioriAppOData,
+    generateFioriAppCap,
+    generateAdaptationProject,
+    openAdaptationEditor,
+    adpControllerExtension,
+    runRtaWorkflowStep,
+    readODataMetadataAdp,
+    lookupUi5Documentation,
+    tools,
+    adpToolNames,
+    downloadBaseApp
+} from './tools/index.js';
+import { stopBrowser } from './tools/run-rta-workflow-step/browser/index.js';
+import { TelemetryHelper, unknownTool, type TelemetryData } from './telemetry/index.js';
+import { TELEMETRY_MCP_SERVER_INITIALIZED, TELEMETRY_MCP_LIST_TOOLS } from './constant.js';
 import type {
     ExecuteFunctionalityInput,
     GetFunctionalityDetailsInput,
     DocSearchInput,
     ListFioriAppsInput,
-    ListFunctionalitiesInput
-} from './types';
-import { logger } from './utils/logger';
+    ListFunctionalitiesInput,
+    DownloadODataServiceMetadataInput,
+    GenerateAdaptationProjectInput,
+    OpenAdaptationEditorInput,
+    AdpControllerExtensionInput,
+    RunRtaWorkflowStepInput,
+    DownloadAppResourcesInput,
+    LookupUi5DocumentationInput,
+    ReadODataMetadataInput
+} from './types/index.js';
+import type { GeneratorConfigOData, GeneratorConfigCAP } from './tools/schemas/index.js';
+import { logger } from './utils/logger.js';
 
 type ToolArgs =
     | DocSearchInput
@@ -35,10 +57,27 @@ type ToolArgs =
     | ListFunctionalitiesInput
     | GetFunctionalityDetailsInput
     | ExecuteFunctionalityInput
+    | DownloadODataServiceMetadataInput
+    | GeneratorConfigOData
+    | GeneratorConfigCAP
+    | GenerateAdaptationProjectInput
+    | OpenAdaptationEditorInput
+    | AdpControllerExtensionInput
+    | RunRtaWorkflowStepInput
+    | ReadODataMetadataInput
+    | DownloadAppResourcesInput
+    | LookupUi5DocumentationInput
     | Record<string, unknown>;
 
 const FALLBACK_PROTOCOL_VERSION = '2024-11-05';
 
+/**
+ * Picks a protocol version to report back: the requested one if supported, else
+ * the fallback, else the newest supported version.
+ *
+ * @param requested Protocol version the client asked for.
+ * @returns The negotiated protocol version.
+ */
 function negotiateProtocolVersion(requested: string): string {
     if (SUPPORTED_PROTOCOL_VERSIONS.includes(requested)) {
         return requested;
@@ -67,7 +106,7 @@ export class FioriFunctionalityServer {
         this.server = new Server(
             {
                 name: 'fiori-mcp',
-                version: packageJson.version,
+                version: PACKAGE_VERSION,
                 icons: [
                     {
                         src: 'https://raw.githubusercontent.com/SAP/open-ux-tools/main/packages/fiori-mcp-server/assets/icon.svg',
@@ -97,10 +136,13 @@ export class FioriFunctionalityServer {
      */
     private setupErrorHandling(): void {
         this.server.onerror = (error): void => logger.error(`[MCP Error] ${error}`);
-        process.on('SIGINT', async () => {
+        const shutdown = async (): Promise<void> => {
+            await stopBrowser();
             await this.server.close();
             process.exit(0);
-        });
+        };
+        process.on('SIGINT', shutdown);
+        process.on('SIGTERM', shutdown);
     }
 
     /**
@@ -136,8 +178,76 @@ export class FioriFunctionalityServer {
                 },
                 serverInfo: {
                     name: 'fiori-mcp',
-                    version: packageJson.version
-                }
+                    version: PACKAGE_VERSION
+                },
+                instructions: `
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🚨🚨🚨 STOP - READ THIS BEFORE CALLING ANY TOOLS 🚨🚨🚨
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+YOU ARE CONNECTED TO: SAP Fiori MCP Server
+
+MANDATORY PROTOCOL - NO EXCEPTIONS:
+1. Call tools/list FIRST in every session
+2. Read the inputSchema for EVERY tool before calling it
+3. Use ONLY the properties defined in inputSchema
+4. DO NOT add extra properties, notes, or wrapper objects
+
+IF YOU SKIP THESE STEPS:
+❌ Your tool call will FAIL
+❌ User's task will FAIL
+❌ You will waste tokens and time
+❌ You are violating the MCP protocol
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+## CORRECT Tool Call Workflow
+
+✅ Step 1: Call tools/list
+✅ Step 2: Examine inputSchema of the tool you need
+✅ Step 3: Construct parameters using ONLY properties from inputSchema
+✅ Step 4: Call the tool
+
+## INCORRECT Workflow (DO NOT DO THIS)
+
+❌ Assume you know the schema from training data
+❌ Skip reading inputSchema
+❌ Add properties not in inputSchema
+❌ Wrap parameters in extra objects
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+## Modifying an existing SAP Fiori application (3-step workflow)
+
+When the user wants to modify an existing Fiori app, you MUST follow these steps in order:
+
+1. **list_functionality** (Step 1) — Call with the absolute path to the Fiori app. Returns all supported modification operations and their functionalityIds.
+2. **get_functionality_details** (Step 2) — Call with a functionalityId from Step 1. Returns the exact parameters required for the modification.
+3. **execute_functionality** (Step 3) — Call with the parameters from Step 2 to apply the modification.
+
+Never skip steps or guess functionalityIds. Never use a functionalityId as a tool name.
+
+## Generating a new SAP Fiori application
+
+- For OData/non-CAP projects: use \`generate_fiori_app_odata\`
+  - BEFORE CALLING: Read its inputSchema from tools/list
+  - REQUIRED top-level properties: floorplan, project
+  - OPTIONAL top-level properties: service, entityConfig
+  - DO NOT add: config, metadata, NOTE, or any other properties
+
+- For CAP projects: use \`generate_fiori_app_cap\`
+  - BEFORE CALLING: Read its inputSchema from tools/list
+
+- If a SAP system or service URL is involved, call \`download_odata_service_metadata\` first and pass ALL fields it returns into the generator config.
+
+## Other available tools
+
+- \`list_sap_systems\` — list available SAP backends/destinations
+- \`list_fiori_apps\` — discover existing Fiori apps in a directory
+- \`search_docs\` — search Fiori Elements, SAPUI5, and annotation documentation
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+`
             };
         });
 
@@ -164,7 +274,7 @@ export class FioriFunctionalityServer {
                     mcpClientName: this.mcpClientName,
                     mcpClientVersion: this.mcpClientVersion
                 };
-                if ('functionalityId' in args) {
+                if (args && 'functionalityId' in args) {
                     const { functionalityId } = args;
                     const shouldPrefixWithPropertyChange =
                         Array.isArray(functionalityId) && functionalityId.length >= 1;
@@ -177,12 +287,49 @@ export class FioriFunctionalityServer {
 
                 logger.debug(`Executing tool: ${name} with arguments: ${JSON.stringify(args)}`);
 
+                if (adpToolNames.has(name) && process.env.SAP_FIORI_MCP_ADP_TOOLS !== 'true') {
+                    throw new Error(`Tool ${name} is disabled. Set SAP_FIORI_MCP_ADP_TOOLS=true to enable ADP tools.`);
+                }
+
                 switch (name) {
                     case 'search_docs':
                         result = await docSearch(args as DocSearchInput, true);
                         break;
                     case 'list_fiori_apps':
                         result = await listFioriApps(args as ListFioriAppsInput);
+                        break;
+                    case 'list_sap_systems':
+                        result = await listSapSystems();
+                        break;
+                    case 'download_odata_service_metadata':
+                        result = await downloadODataServiceMetadata(args as DownloadODataServiceMetadataInput);
+                        break;
+                    case 'generate_fiori_app_odata':
+                        result = await generateFioriAppOData(args as GeneratorConfigOData);
+                        break;
+                    case 'generate_fiori_app_cap':
+                        result = await generateFioriAppCap(args as GeneratorConfigCAP);
+                        break;
+                    case 'generate_adaptation_project':
+                        result = await generateAdaptationProject(args as GenerateAdaptationProjectInput);
+                        break;
+                    case 'open_adaptation_editor':
+                        result = await openAdaptationEditor(args as OpenAdaptationEditorInput);
+                        break;
+                    case 'adp_controller_extension':
+                        result = await adpControllerExtension(args as AdpControllerExtensionInput);
+                        break;
+                    case 'run_rta_workflow_step':
+                        result = await runRtaWorkflowStep(args as RunRtaWorkflowStepInput);
+                        break;
+                    case 'read_odata_metadata_adp':
+                        result = await readODataMetadataAdp(args as ReadODataMetadataInput);
+                        break;
+                    case 'download_base_app_adp':
+                        result = await downloadBaseApp(args as DownloadAppResourcesInput);
+                        break;
+                    case 'lookup_ui5_documentation':
+                        result = await lookupUi5Documentation(args as LookupUi5DocumentationInput);
                         break;
                     case 'list_functionality':
                         result = await listFunctionalities(args as ListFunctionalitiesInput);
@@ -196,9 +343,7 @@ export class FioriFunctionalityServer {
                     default:
                         // Do not pass telemetryProperties to unknownTool
                         await TelemetryHelper.sendTelemetry(unknownTool, {}, (args as any)?.appPath);
-                        throw new Error(
-                            `Unknown tool: ${name}. Try one of: list_fiori_apps, list_functionality, get_functionality_details, execute_functionality.`
-                        );
+                        throw new Error(`Unknown tool: ${name}. Try one of: ${tools.map((t) => t.name).join(', ')}.`);
                 }
                 await TelemetryHelper.sendTelemetry(name, telemetryProperties, (args as any)?.appPath);
                 const convertedResult = this.convertResultToCallToolResult(result);
@@ -268,7 +413,7 @@ export class FioriFunctionalityServer {
         const transport = new StdioServerTransport();
         await this.server.connect(transport);
         logger.info(
-            `SAP Fiori - Model Context Protocol (MCP) server (@sap-ux/fiori-mcp-server@${packageJson.version}) running on stdio`
+            `SAP Fiori - Model Context Protocol (MCP) server (@sap-ux/fiori-mcp-server@${PACKAGE_VERSION}) running on stdio`
         );
         // The remaining (slow) telemetry init runs fire-and-forget after transport.connect() so it
         // never blocks the MCP handshake. This is required for Claude Desktop's built-in Node runner,

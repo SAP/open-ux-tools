@@ -1,0 +1,61 @@
+{
+      "welcomeFile": "index.html",
+          "routes": [{
+        "path": "/resources/sap/fin/central/lib",
+        "target": {
+                        "type": "destination",
+                        "name": "BACKEND_DUMMY",
+                        "entryPath": "/sap/bc/ui5_ui5/sap/FIN_LIB/sap/fin/central/lib"
+        },
+        "description": "Fiori Reuse Library - Central sFIN Library"
+    }, 
+    
+    {
+        "path": "/sap/opu/odata",
+        "target": {
+                        "type": "destination",
+                        "name": "BACKEND_DUMMY",
+                        "entryPath": "/sap/opu/odata"
+        },
+        "description": "Target OData system "
+    },
+    
+    {
+        "path": "/",
+        "target": {
+                        "type": "application",
+                        "name": "parentneoapp",
+                        "preferLocal": true
+        },
+        "description": "Parent neo-app.json"
+   },
+
+    {
+      "path": "/src/main/webapp/test-resources",
+      "target": {
+        "type": "service",
+        "name": "sapui5",
+        "entryPath": "/test-resources"
+      },
+      "description": " SAPUI5 Test Resources"
+    },
+    {
+      "path": "/resources",
+      "target": {
+        "type": "service",
+        "name": "sapui5",
+        "entryPath": "/resources"
+      },
+      "description": "SAPUI5 Resources"
+    },
+    {
+      "path": "/test-resources",
+      "target": {
+        "type": "service",
+        "name": "sapui5",
+        "entryPath": "/test-resources"
+      },
+      "description": "SAPUI5 Test Resources"
+    }
+  ]
+}

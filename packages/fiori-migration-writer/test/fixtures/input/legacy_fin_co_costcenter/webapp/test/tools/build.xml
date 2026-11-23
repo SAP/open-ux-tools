@@ -1,0 +1,111 @@
+<project name="JSUnit" basedir=".">
+
+	<taskdef classpath="${test_classpath}" name="junit" classname="org.apache.tools.ant.taskdefs.optional.junit.JUnitTask"/>
+
+	<property name="jsunit.testpage.url" value="${jsunit.url}?testpage=${jsunit.testpage}&amp;autoRun=true&amp;submitResults=${jsunit.submit.results}"/>
+	<property name="jscoverage.testpage.url" value="${jsunit.url}?testpage=${jscoverage.testpage}&amp;autoRun=true&amp;submitResults=${jsunit.submit.results}"/>
+
+	<echo></echo>
+	<echo message="Build Environment Information:"></echo>
+	<echo message="================================"></echo>
+	<echo message="project_home: ">${project_home}</echo>
+	<echo message="project_version ">${project_version}</echo>
+	<echo message="compile_classpath ">${compile_classpath}</echo>
+	<echo message="runtime_classpath ">${runtime_classpath}</echo>
+	<echo message="test_classpath ">${test_classpath}</echo>
+	<echo message="plugin_classpath ">${plugin_classpath}</echo>
+
+	<echo></echo>
+	<echo message="SAPUI5 jsunit-tests properties:"></echo>
+	<echo message="================================"></echo>
+	<echo message="jsunit.testpage: ">${jsunit.testpage}</echo>
+	<echo message="jsunit.url: ">${jsunit.url}</echo>
+	<echo message="jsunit.testpage.url: ">${jsunit.testpage.url}</echo>
+	<echo message="jscoverage.testpage.url: ">${jscoverage.testpage.url}</echo>
+	<echo message="jsunit.remote.machine.urls: ">${jsunit.remote.machine.urls}</echo>
+	<echo message="jsunit.submit.results: ">${jsunit.submit.results}</echo>
+	<echo message="jsunit.port: ">${jsunit.port}</echo>
+	<echo message="jsunit.logs.directory: ">${jsunit.logs.directory}</echo>
+	<echo message="jsunit.browser.file.names: ">${jsunit.browser.file.names}</echo>
+	<echo message="jsunit.timeout: ">${jsunit.timeout}</echo>
+	<echo message="jscoverage.browser.file.name: ">${jscoverage.browser.file.name}</echo>
+	<echo message="surefire.reports.directory: ">${surefire.reports.directory}</echo>
+	<echo message="jscoverage.reports.directory: ">${jscoverage.reports.directory}</echo>
+	<echo></echo>
+
+	<target name="standalone_test" description="Runs JsUnit tests on the local machine as configured by the url and browserfilenames properties">
+		<junit showoutput="false" haltonerror="false" haltonfailure="false">
+			<formatter type="plain" usefile="false"/>
+			<classpath path="${test_classpath}"/>
+			<!-- <sysproperty key="java.util.logging.config.file" value="${loggingPropertiesFile}"/> -->
+			<sysproperty key="browserFileNames" value="${jsunit.browser.file.names}"/>
+			<sysproperty key="description" value="JSUnit Test Execution"/>
+			<sysproperty key="closeBrowsersAfterTestRuns" value="true"/>
+			<sysproperty key="logsDirectory" value="${jsunit.logs.directory}"/>
+			<sysproperty key="port" value="${jsunit.port}"/>
+			<sysproperty key="resourceBase" value=""/>
+			<sysproperty key="timeoutSeconds" value="${jsunit.timeout}"/>
+			<sysproperty key="url" value="${jsunit.testpage.url}"/>
+			<!-- test name="net.jsunit.StandaloneTest"/ -->
+			<test name="com.sap.ui5.jsunit.StandaloneTest"/>
+		</junit>
+	</target>
+
+	<target name="distributed_test" description="Runs JsUnit tests on remote machines">
+		<junit showoutput="true" haltonerror="false" haltonfailure="false">
+			<classpath path="${test_classpath}"/>
+			<sysproperty key="remoteMachineURLs" value="${jsunit.remote.machine.urls}"/>
+			<test name="net.jsunit.DistributedTest"/>
+		</junit>
+	</target>
+
+	<target name="rename_tests" description="Renames the test results after the test run to fit to Sonar naming conventions">
+		<mkdir dir="${surefire.reports.directory}"/>
+		<xslt basedir="${jsunit.logs.directory}" destdir="${surefire.reports.directory}" style="${basedir}/tools/jsunit_to_junit.xsl">
+			<include name="JSTEST-*.xml" />
+			<exclude name="TEST-*.xml" />
+			<mapper type="glob" from="JSTEST-*.xml" to="TEST-*.xml" />
+		</xslt>
+		<move todir="${jsunit.logs.directory}" includeemptydirs="false">
+			<fileset dir="${jsunit.logs.directory}" excludes="JSUNIT-TEST-*.xml"/>
+			<mapper type="glob" from="JSTEST-*.xml" to="JSUNIT-TEST-*.xml"/>
+		</move>
+	</target>
+
+	<target name="jscoverage_test" description="Runs JsUnit/JsCoverage tests on the local machine as configured by the url and browserfilenames properties">
+
+		<!-- 
+			copy sources which should be measured from src/main/webapp/resources 
+			into the target/jscoverage/sources/resources
+		-->		
+<!--    
+        <copy todir="${basedir}/target/jscoverage/sources/resources" verbose="true">
+			<fileset dir="../../../../controls/src/main/uilib" />
+		</copy>	
+-->
+<!--   
+		<copy todir="${basedir}/target/jscoverage/sources/resources" verbose="true">
+			<fileset dir="../../../src/main/resources" />
+		</copy>	
+-->		
+	
+	
+		<!-- execute the jscoverage tests -->
+		<junit showoutput="false" haltonerror="false" haltonfailure="false">
+			<formatter type="plain" usefile="false"/>
+			<classpath path="${test_classpath}"/>
+			<sysproperty key="browserFileNames" value="${jscoverage.browser.file.name}"/>
+			<sysproperty key="description" value="JSUnit/JSCoverage Test Execution"/>
+			<sysproperty key="closeBrowsersAfterTestRuns" value="true"/>
+			<sysproperty key="logsDirectory" value="${jsunit.logs.directory}"/>
+			<sysproperty key="port" value="${jsunit.port}"/>
+			<sysproperty key="resourceBase" value=""/>
+			<sysproperty key="timeoutSeconds" value="${jsunit.timeout}"/>
+			<sysproperty key="url" value="${jscoverage.testpage.url}&amp;pageloadtimeout=120&amp;setuppagetimeout=120"/>
+			<sysproperty key="jscoverage.reports.directory" value="${jscoverage.reports.directory}"/>
+			<test name="com.sap.ui5.jsunit.StandaloneTest"/>
+		</junit>
+
+	</target>
+
+</project>

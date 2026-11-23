@@ -1,7 +1,7 @@
 import ZipFile from 'adm-zip';
-// eslint-disable-next-line sonarjs/no-implicit-dependencies
+
 import type { ReaderCollection } from '@ui5/fs';
-// eslint-disable-next-line sonarjs/no-implicit-dependencies
+
 import type { MiddlewareUtils } from '@ui5/server';
 import type { NextFunction, Request, Response, Router, RequestHandler } from 'express';
 
@@ -15,15 +15,17 @@ import type {
     MergedAppDescriptor
 } from '@sap-ux/axios-extension';
 
-import RoutesHandler from './routes-handler';
-import OvpRoutesHandler from './ovp-routes-handler';
+import RoutesHandler from './routes-handler.js';
+import OvpRoutesHandler from './ovp-routes-handler.js';
 import type {
     AdpPreviewConfig,
+    AdpPreviewConfigWithTarget,
+    AdpPreviewConfigWithBuildPath,
     CommonChangeProperties,
     DescriptorVariant,
     OperationType,
     CommonAdditionalChangeInfoProperties
-} from '../types';
+} from '../types.js';
 import type { Editor } from 'mem-fs-editor';
 import {
     addAnnotationFile,
@@ -35,9 +37,10 @@ import {
     moduleNameContentMap,
     tryFixChange,
     isV4DescriptorChange
-} from './change-handler';
-import { addCustomFragment } from './descriptor-change-handler';
-import { getExistingAdpProjectType } from '../base/helper';
+} from './change-handler.js';
+import { addCustomFragment } from './descriptor-change-handler.js';
+import { getExistingAdpProjectType, readManifestFromBuildPath } from '../base/helper.js';
+import { getPreviewManifest } from '../base/project-builder.js';
 import path from 'node:path';
 declare global {
     // false positive, const can't be used here https://github.com/eslint/eslint/issues/15896
@@ -92,6 +95,15 @@ export class AdpPreview {
     }
 
     /**
+     * @returns `true` when the preview was initialized for a Cloud Foundry adaptation
+     * project that serves a pre-built bundle from `cfBuildPath`. CF mode skips the
+     * backend descriptor merge, so callers must avoid touching `descriptor`/`resources`.
+     */
+    get isCloudFoundry(): boolean {
+        return 'cfBuildPath' in this.config;
+    }
+
+    /**
      * @returns a list of resources required to the adaptation project as well as the original app.
      */
     get resources(): {
@@ -118,10 +130,17 @@ export class AdpPreview {
     }
 
     /**
-     * @returns {AdaptationProjectType | undefined} The project type.
+     * @returns The project type.
      */
     get projectType(): AdaptationProjectType | undefined {
         return this.projectTypeValue;
+    }
+
+    /**
+     * @returns the ABAP service provider used to connect to the backend, or undefined if not initialized or in CF build mode.
+     */
+    get serviceProvider(): AbapServiceProvider | undefined {
+        return this.provider;
     }
 
     /**
@@ -146,14 +165,15 @@ export class AdpPreview {
      * @returns {Promise<UI5FlexLayer>} The UI5 flex layer for which editing is enabled.
      */
     async init(descriptorVariant: DescriptorVariant): Promise<UI5FlexLayer> {
-        if ('cfBuildPath' in this.config) {
+        if (this.isCloudFoundry) {
             return this.initCfBuildMode(descriptorVariant);
         }
 
+        const config = this.config as AdpPreviewConfigWithTarget;
         this.descriptorVariantId = descriptorVariant.id;
         this.provider = await createAbapServiceProvider(
-            this.config.target,
-            { ignoreCertErrors: this.config.ignoreCertErrors },
+            config.target,
+            { ignoreCertErrors: config.ignoreCertErrors },
             true,
             this.logger
         );
@@ -179,6 +199,16 @@ export class AdpPreview {
         this.descriptorVariantId = descriptorVariant.id;
         this.projectTypeValue = undefined;
         this.routesHandler = new RoutesHandler(this.project, this.util, {} as AbapServiceProvider, this.logger);
+
+        const config = this.config as AdpPreviewConfigWithBuildPath;
+        const manifest = readManifestFromBuildPath(config.cfBuildPath) as MergedAppDescriptor['manifest'];
+        this.mergedDescriptor = {
+            name: descriptorVariant.id,
+            url: '/',
+            manifest,
+            asyncHints: { libs: [], components: [] }
+        };
+
         return descriptorVariant.layer;
     }
 
@@ -187,10 +217,15 @@ export class AdpPreview {
      * The descriptor is refreshed only if the global flag is set to true.
      */
     async sync(): Promise<void> {
-        if ('cfBuildPath' in this.config) {
+        if (!global.__SAP_UX_MANIFEST_SYNC_REQUIRED__ && this.mergedDescriptor) {
             return;
         }
-        if (!global.__SAP_UX_MANIFEST_SYNC_REQUIRED__ && this.mergedDescriptor) {
+        if (this.isCloudFoundry) {
+            this.mergedDescriptor.manifest = await getPreviewManifest(
+                this.util.getProject().getRootPath(),
+                this.project
+            );
+            global.__SAP_UX_MANIFEST_SYNC_REQUIRED__ = false;
             return;
         }
         if (!this.lrep || !this.descriptorVariantId) {
@@ -208,6 +243,24 @@ export class AdpPreview {
     }
 
     /**
+     * Sync the merged descriptor and send its manifest.json as the response.
+     *
+     * Rewrites `ui5://<namespace>/` to absolute paths in the manifest so that
+     * FLP Sandbox 2.0's CDM does not map enhanceWith bundleUrls to the backend.
+     * Uses descriptorVariantId (from manifest.appdescr_variant) — the manifest's ui5:// URLs
+     * are built from the variant id, whereas mergedDescriptor.name is the base app reference.
+     *
+     * @param res outgoing response object
+     */
+    private async sendManifest(res: Response): Promise<void> {
+        await this.sync();
+        res.status(200);
+        const ui5Prefix = `ui5://${(this.descriptorVariantId ?? this.mergedDescriptor.name).replaceAll('.', '/')}/`;
+        const manifest = JSON.stringify(this.descriptor.manifest, undefined, 2).replaceAll(ui5Prefix, '/');
+        res.send(manifest);
+    }
+
+    /**
      * Proxy for the merged application manifest.json and blocking of preload files.
      *
      * @param req incoming request
@@ -216,11 +269,17 @@ export class AdpPreview {
      */
     async proxy(req: Request, res: Response, next: NextFunction): Promise<void> {
         if (req.path === '/manifest.json') {
-            await this.sync();
-            res.status(200);
-            res.send(JSON.stringify(this.descriptor.manifest, undefined, 2));
+            await this.sendManifest(res);
         } else if (req.path === '/Component-preload.js') {
             res.status(404).send();
+        } else if (req.path.startsWith('/i18n/') && req.path.endsWith('.properties')) {
+            // Without this branch, the generic file-exists check below would 302 to
+            // the ADP's local i18n.properties whenever one exists, shadowing the
+            // base app's complete bundle. Explicitly pass i18n .properties requests
+            // through so the base app's bundle is served instead. Covers the default
+            // bundle, locale variants, and per-page bundles
+            // (/i18n/ListReport/<entity>/i18n.properties). See changeset for details.
+            next();
         } else {
             // check if the requested file exists in the file system (replace .js with .* for typescript)
             const files = await this.project.byGlob(req.path.replace('.js', '.*'));
@@ -230,6 +289,21 @@ export class AdpPreview {
             } else {
                 next();
             }
+        }
+    }
+
+    /**
+     * CF build mode proxy that intercepts manifest.json requests and delegates everything else to the next middleware.
+     *
+     * @param req incoming request
+     * @param res outgoing response object
+     * @param next next middleware that is to be called if the request cannot be handled
+     */
+    async cfProxy(req: Request, res: Response, next: NextFunction): Promise<void> {
+        if (req.path === '/manifest.json') {
+            await this.sendManifest(res);
+        } else {
+            next();
         }
     }
 

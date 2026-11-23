@@ -1,0 +1,10 @@
+<core:FragmentDefinition xmlns="sap.m" xmlns:core="sap.ui.core" xmlns:footerbar="sap.ushell.ui.footerbar">
+	<ActionSheet id="shareSheet" placement="VerticalPreferedBottom">
+		<buttons>
+			<Button id="shareEmailButton" icon="sap-icon://email" press="onShareEmailPressed" text="{share>/emailButtonText}" />
+			<Button id="shareJamButton" icon="sap-icon://share-2" press="onShareInJamPress" text="{share>/jamButtonText}" visible="{share>/jamVisible}" />
+			<footerbar:AddBookmarkButton press="onBeforePressBookmark" id="bookmarkButton" text="{share>/bookmarkButtonText}" title="{share>/bookmarkTitle}"
+				subtitle="{share>/bookmarkSubtitle}" tileIcon="{share>/bookmarkIcon}" customUrl="{share>/bookmarkCustomUrl}" />
+		</buttons>
+	</ActionSheet>
+</core:FragmentDefinition>

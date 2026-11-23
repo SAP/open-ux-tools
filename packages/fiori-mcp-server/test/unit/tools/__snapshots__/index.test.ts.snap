@@ -16,13 +16,9 @@ Object {
         },
         Object {
           "items": Object {
-            "anyOf": Array [
-              Object {
-                "type": "string",
-              },
-              Object {
-                "type": "number",
-              },
+            "type": Array [
+              "string",
+              "number",
             ],
           },
           "type": "array",
@@ -68,13 +64,9 @@ Object {
         },
         Object {
           "items": Object {
-            "anyOf": Array [
-              Object {
-                "type": "string",
-              },
-              Object {
-                "type": "number",
-              },
+            "type": Array [
+              "string",
+              "number",
             ],
           },
           "type": "array",
@@ -120,13 +112,9 @@ Object {
         },
         Object {
           "items": Object {
-            "anyOf": Array [
-              Object {
-                "type": "string",
-              },
-              Object {
-                "type": "number",
-              },
+            "type": Array [
+              "string",
+              "number",
             ],
           },
           "type": "array",
@@ -163,13 +151,9 @@ Object {
         },
         Object {
           "items": Object {
-            "anyOf": Array [
-              Object {
-                "type": "string",
-              },
-              Object {
-                "type": "number",
-              },
+            "type": Array [
+              "string",
+              "number",
             ],
           },
           "type": "array",
@@ -382,6 +366,7 @@ Object {
   "properties": Object {
     "appPath": Object {
       "description": "Path to the root folder of the Fiori application (where package.json and ui5.yaml reside) if one exists or to the current directory. Path should be an absolute path.",
+      "minLength": 1,
       "type": "string",
     },
   },
@@ -413,13 +398,9 @@ Object {
               },
               Object {
                 "items": Object {
-                  "anyOf": Array [
-                    Object {
-                      "type": "string",
-                    },
-                    Object {
-                      "type": "number",
-                    },
+                  "type": Array [
+                    "string",
+                    "number",
                   ],
                 },
                 "type": "array",

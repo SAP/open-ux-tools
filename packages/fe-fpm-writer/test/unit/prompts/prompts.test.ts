@@ -1,12 +1,31 @@
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
-import { PromptsType, PromptsAPI, BuildingBlockType } from '../../../src';
-import type { TablePromptsAnswer, SupportedGeneratorAnswers, BuildingBlockTypePromptsAnswer } from '../../../src';
+import { jest } from '@jest/globals';
 import type { ChoiceOptions } from 'inquirer';
-import * as projectAccess from '@sap-ux/project-access';
-import { createIdGenerator } from '../../../src/common/file';
+import type { getMinimumUI5Version } from '@sap-ux/project-access';
+import type {
+    TablePromptsAnswer,
+    SupportedGeneratorAnswers,
+    BuildingBlockTypePromptsAnswer
+} from '../../../src/index.js';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+const actualProjectAccess = await import('@sap-ux/project-access');
+const originalGetMinimumUI5Version: typeof getMinimumUI5Version = actualProjectAccess.getMinimumUI5Version;
+const mockGetMinimumUI5Version = jest.fn<typeof getMinimumUI5Version>((...args) =>
+    originalGetMinimumUI5Version(...args)
+);
+jest.unstable_mockModule('@sap-ux/project-access', () => ({
+    ...actualProjectAccess,
+    getMinimumUI5Version: mockGetMinimumUI5Version
+}));
+
+const { PromptsType, PromptsAPI, BuildingBlockType } = await import('../../../src/index.js');
+const { createIdGenerator } = await import('../../../src/common/file.js');
 
 describe('Prompts', () => {
     let fs: Editor;
@@ -52,6 +71,30 @@ describe('Prompts', () => {
     test('getPageBuildingBlockPrompts', async () => {
         const questionnair = await promptsAPI.getPrompts(PromptsType.Page);
         expect(questionnair).toMatchSnapshot();
+    });
+
+    test('getPageBuildingBlockPrompts - templateType question hidden and defaulted to basic when UI5 version < 1.145.0', async () => {
+        mockGetMinimumUI5Version.mockReturnValueOnce('1.144.0');
+        const questionnair = await promptsAPI.getPrompts(PromptsType.Page);
+        const templateTypeQuestion = questionnair.questions.find((q) => q.name === 'buildingBlockData.templateType');
+        expect(templateTypeQuestion).toBeUndefined();
+        expect(questionnair.initialAnswers?.buildingBlockData?.templateType).toBe('basic');
+    });
+
+    test('getPageBuildingBlockPrompts - templateType question shown when UI5 version >= 1.145.0', async () => {
+        mockGetMinimumUI5Version.mockReturnValueOnce('1.145.0');
+        const questionnair = await promptsAPI.getPrompts(PromptsType.Page);
+        const templateTypeQuestion = questionnair.questions.find((q) => q.name === 'buildingBlockData.templateType');
+        expect(templateTypeQuestion).toBeDefined();
+        expect(questionnair.initialAnswers?.buildingBlockData?.templateType).toBeUndefined();
+    });
+
+    test('getPageBuildingBlockPrompts - templateType question shown when UI5 version is missing (treated as latest)', async () => {
+        mockGetMinimumUI5Version.mockReturnValueOnce(undefined as unknown as string);
+        const questionnair = await promptsAPI.getPrompts(PromptsType.Page);
+        const templateTypeQuestion = questionnair.questions.find((q) => q.name === 'buildingBlockData.templateType');
+        expect(templateTypeQuestion).toBeDefined();
+        expect(questionnair.initialAnswers?.buildingBlockData?.templateType).toBeUndefined();
     });
 
     test('getRichTextEditorBuildingBlockPrompts', async () => {
@@ -286,27 +329,27 @@ describe('Prompts', () => {
         });
 
         test.each(types)('Type "%s", get code snippet, min ui5Version = 1.96.25', async (type: PromptsType) => {
-            jest.spyOn(projectAccess, 'getMinimumUI5Version').mockReturnValueOnce('1.96.25');
+            mockGetMinimumUI5Version.mockReturnValueOnce('1.96.25');
             const result = await promptsAPI.getCodeSnippets(type, answers[type] as SupportedGeneratorAnswers);
             expect(result.viewOrFragmentPath.content).toMatchSnapshot();
             expect(result.viewOrFragmentPath.filePathProps?.fileName).toBe('Main.view.xml');
         });
 
         test.each(types)('Type "%s", get code snippet, min ui5Version = 1.97.0', async (type: PromptsType) => {
-            jest.spyOn(projectAccess, 'getMinimumUI5Version').mockReturnValueOnce('1.97.0');
+            mockGetMinimumUI5Version.mockReturnValueOnce('1.97.0');
             const result = await promptsAPI.getCodeSnippets(type, answers[type] as SupportedGeneratorAnswers);
             expect(result.viewOrFragmentPath.content).toMatchSnapshot();
             expect(result.viewOrFragmentPath.filePathProps?.fileName).toBe('Main.view.xml');
         });
         test.each(types)('Type "%s", get code snippet, min ui5Version = 1.97.35', async (type: PromptsType) => {
-            jest.spyOn(projectAccess, 'getMinimumUI5Version').mockReturnValueOnce('1.97.35');
+            mockGetMinimumUI5Version.mockReturnValueOnce('1.97.35');
             const result = await promptsAPI.getCodeSnippets(type, answers[type] as SupportedGeneratorAnswers);
             expect(result.viewOrFragmentPath.content).toMatchSnapshot();
             expect(result.viewOrFragmentPath.filePathProps?.fileName).toBe('Main.view.xml');
         });
 
         test.each(types)('Type "%s", get code snippet, min ui5Version is undefined', async (type: PromptsType) => {
-            jest.spyOn(projectAccess, 'getMinimumUI5Version').mockReturnValueOnce(undefined);
+            mockGetMinimumUI5Version.mockReturnValueOnce(undefined);
             const result = await promptsAPI.getCodeSnippets(type, answers[type] as SupportedGeneratorAnswers);
             expect(result.viewOrFragmentPath.content).toMatchSnapshot();
             expect(result.viewOrFragmentPath.filePathProps?.fileName).toBe('Main.view.xml');

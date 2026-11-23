@@ -1,7 +1,7 @@
-import type { EntityKey } from '.';
-import type { AuthenticationType, ConnectionType, SystemType } from '../types';
-import { getSensitiveDataProperties, sensitiveData, serializable } from '../decorators';
-import { hasAnyValue } from '../utils';
+import type { EntityKey } from './index.js';
+import type { AuthenticationType, ConnectionType, SystemType } from '../types.js';
+import { getSensitiveDataProperties, sensitiveData, serializable } from '../decorators/index.js';
+import { hasAnyValue } from '../utils/index.js';
 
 export class BackendSystem {
     @serializable public readonly name: string;

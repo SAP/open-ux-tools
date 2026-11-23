@@ -37,9 +37,7 @@
                         <PropertyValue Property="ChartType" EnumMember="UI.ChartType/Column"/>
                         <PropertyValue Property="Dimensions">
                             <Collection>
-                                <PropertyPath>
-                                    DeliveryMonth
-                                </PropertyPath>
+                                <PropertyPath>DeliveryMonth</PropertyPath>
                             </Collection>
                         </PropertyValue>
                         <PropertyValue Property="DimensionAttributes">
@@ -52,9 +50,7 @@
                         </PropertyValue>
                         <PropertyValue Property="Measures">
                             <Collection>
-                                <PropertyPath>
-                                    Revenue
-                                </PropertyPath>
+                                <PropertyPath>Revenue</PropertyPath>
                             </Collection>
                         </PropertyValue>
                         <PropertyValue Property="MeasureAttributes">
@@ -369,15 +365,9 @@
                 </Annotation>
                 <Annotation Term="UI.SelectionFields">
                     <Collection>
-                        <PropertyPath>
-                            to_ProductStock/StockAvailability
-                        </PropertyPath>
-                        <PropertyPath>
-                            to_PriceRange/PriceClassification
-                        </PropertyPath>
-                        <PropertyPath>
-                            to_ProductCategory/MainProductCategory
-                        </PropertyPath>
+                        <PropertyPath>to_ProductStock/StockAvailability</PropertyPath>
+                        <PropertyPath>to_PriceRange/PriceClassification</PropertyPath>
+                        <PropertyPath>to_ProductCategory/MainProductCategory</PropertyPath>
                     </Collection>
                 </Annotation>
             </Annotations>

@@ -1,17 +1,17 @@
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
-import type { CustomHeaderSection, CustomSection, InternalCustomSection, CustomSubSection } from './types';
+import type { CustomHeaderSection, CustomSection, InternalCustomSection, CustomSubSection } from './types.js';
 import { join } from 'node:path';
 import { render } from 'ejs';
-import { validateVersion, validateBasePath } from '../common/validate';
-import type { CustomElement, Manifest } from '../common/types';
-import { setCommonDefaults, getDefaultFragmentContentData } from '../common/defaults';
-import { applyEventHandlerConfiguration } from '../common/event-handler';
-import { copyTpl, extendJSON, type IdGeneratorFunction, createIdGenerator } from '../common/file';
-import { getTemplatePath } from '../templates';
+import { validateVersion, validateBasePath } from '../common/validate.js';
+import type { CustomElement, Manifest } from '../common/types.js';
+import { setCommonDefaults, getDefaultFragmentContentData } from '../common/defaults.js';
+import { applyEventHandlerConfiguration } from '../common/event-handler.js';
+import { copyTpl, extendJSON, type IdGeneratorFunction, createIdGenerator } from '../common/file.js';
+import { getTemplatePath } from '../templates.js';
 import { coerce, gte } from 'semver';
-import { getManifest } from '../common/utils';
+import { getManifest } from '../common/utils.js';
 
 type CustomSectionUnion = CustomHeaderSection | CustomSection | CustomSubSection;
 

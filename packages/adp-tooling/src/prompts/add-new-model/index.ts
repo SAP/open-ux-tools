@@ -14,9 +14,9 @@ import { listDestinations, isOnPremiseDestination, isAppStudio } from '@sap-ux/b
 import { Severity, MessageType, type IMessageSeverity, type AppWizard } from '@sap-devx/yeoman-ui-types';
 import type { ToolsLogger } from '@sap-ux/logger';
 
-import { t } from '../../i18n';
-import { getChangesByType } from '../../base/change-utils';
-import { getBtpDestinations } from '../../cf/services/destinations';
+import { t } from '../../i18n.js';
+import { getChangesByType } from '../../base/change-utils.js';
+import { getBtpDestinations } from '../../cf/services/destinations.js';
 import {
     ChangeType,
     NamespacePrefix,
@@ -28,9 +28,9 @@ import {
     FlexLayer,
     type XsApp,
     type XsAppRoute
-} from '../../types';
-import { isCFEnvironment } from '../../base/cf';
-import { getAdpConfig } from '../../base/helper';
+} from '../../types.js';
+import { isCFEnvironment } from '../../base/cf.js';
+import { getAdpConfig } from '../../base/helper.js';
 import {
     validateEmptyString,
     validateEmptySpaces,

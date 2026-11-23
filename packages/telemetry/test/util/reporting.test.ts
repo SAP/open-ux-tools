@@ -1,31 +1,39 @@
-import { reportRuntimeError, reportEnableTelemetryOnOff } from '../../src/base/utils/reporting';
-import { EventName } from '../../src';
-import type { EventTelemetry } from 'applicationinsights/out/Declarations/Contracts';
+import { jest } from '@jest/globals';
 
 const spyTrackEvent = jest.fn();
+const spyTelemetryClientConstructor = jest.fn();
+const mockConnectionString = 'InstrumentationKey=test-key;IngestionEndpoint=example/;LiveEndpoint=example;';
 
-jest.mock('applicationinsights', () => {
+jest.unstable_mockModule('../../src/base/client/index.js', () => ({
+    ClientFactory: {
+        buildConnectionString: jest.fn().mockReturnValue(mockConnectionString)
+    }
+}));
+
+jest.unstable_mockModule('applicationinsights', () => {
     class TelemetryClient {
         public config: any;
-        public channel: any;
-        public addTelemetryProcessor: any;
+        public context: any;
+        public setUseDiskRetryCaching: any;
         public trackEvent: any;
 
-        constructor() {
+        constructor(connectionString: string) {
+            spyTelemetryClientConstructor(connectionString);
             this.config = {
                 samplingPercentage: 0
             };
-            this.channel = {
-                setUseDiskRetryCaching: jest.fn()
-            };
-            this.addTelemetryProcessor = (fn: any) => {
-                fn({ tags: {} });
-            };
-            this.trackEvent = (event: EventTelemetry) => spyTrackEvent(event);
+            this.context = { tags: {} };
+            this.setUseDiskRetryCaching = jest.fn();
+            this.trackEvent = (event: any) => spyTrackEvent(event);
         }
     }
     return { TelemetryClient };
 });
+
+const { reportRuntimeError, reportEnableTelemetryOnOff } = await import('../../src/base/utils/reporting.js');
+const { EventName } = await import('../../src/index.js');
+const { ClientFactory } = await import('../../src/base/client/index.js');
+const { TelemetrySettings } = await import('../../src/base/config-state.js');
 
 let telemetrySetting: string | undefined;
 
@@ -111,5 +119,10 @@ describe('Error reporting', () => {
             name: EventName.TELEMETRY_SETTINGS_INIT_FAILED,
             properties: { message: '' }
         });
+    });
+
+    it('should create TelemetryClient using connection string from ClientFactory.buildConnectionString', () => {
+        expect(ClientFactory.buildConnectionString).toHaveBeenCalledWith(TelemetrySettings.azureInstrumentationKey);
+        expect(spyTelemetryClientConstructor).toHaveBeenCalledWith(mockConnectionString);
     });
 });

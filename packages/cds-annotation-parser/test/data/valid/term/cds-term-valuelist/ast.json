@@ -1,0 +1,77 @@
+{
+  "type": "annotation",
+  "range": "[(0,0)..(0,28)]",
+  "term": {
+    "type": "path",
+    "range": "[(0,0)..(0,16)]",
+    "value": "ValueList.entity",
+    "segments": [
+      {
+        "type": "identifier",
+        "range": "[(0,0)..(0,9)]",
+        "value": "ValueList",
+        "quoted": false
+      },
+      {
+        "type": "identifier",
+        "range": "[(0,10)..(0,16)]",
+        "value": "entity",
+        "quoted": false
+      }
+    ],
+    "separators": [
+      {
+        "type": "separator",
+        "range": "[(0,9)..(0,10)]",
+        "value": ".",
+        "escaped": false
+      }
+    ]
+  },
+  "originalTerm": {
+    "type": "path",
+    "range": "[(0,0)..(0,16)]",
+    "value": "ValueList.entity",
+    "segments": [
+      {
+        "type": "identifier",
+        "range": "[(0,0)..(0,9)]",
+        "value": "ValueList",
+        "quoted": false
+      },
+      {
+        "type": "identifier",
+        "range": "[(0,10)..(0,16)]",
+        "value": "entity",
+        "quoted": false
+      }
+    ],
+    "separators": [
+      {
+        "type": "separator",
+        "range": "[(0,9)..(0,10)]",
+        "value": ".",
+        "escaped": false
+      }
+    ]
+  },
+  "colon": {
+    "type": "token",
+    "range": "[(0,16)..(0,17)]",
+    "value": ":"
+  },
+  "value": {
+    "type": "path",
+    "range": "[(0,18)..(0,28)]",
+    "value": "SomeEntity",
+    "segments": [
+      {
+        "type": "identifier",
+        "range": "[(0,18)..(0,28)]",
+        "value": "SomeEntity",
+        "quoted": false
+      }
+    ],
+    "separators": []
+  }
+}

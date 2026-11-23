@@ -6,7 +6,7 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-import rule from '../../src/rules/sap-no-localstorage';
+import rule from '../../src/rules/sap-no-localstorage.js';
 import { RuleTester } from 'eslint';
 
 //------------------------------------------------------------------------------

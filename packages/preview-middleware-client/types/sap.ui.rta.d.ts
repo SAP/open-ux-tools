@@ -60,7 +60,9 @@ declare module 'sap/ui/rta/command/FlexCommand' {
             };
             setModuleName(moduleName: string): void;
         };
-        getPreparedChange(): Change<ChangeContentType>;
+        // This may return heterogeneous collection so it is wrong to 
+        // use the generic type when the method returns an array of changes.
+        getPreparedChange(): Change<ChangeContentType> | Change<unknown>[];
         getCommands(): FlexCommand[];
     }
 
@@ -105,7 +107,6 @@ declare module 'sap/ui/rta/plugin/ExtendControllerPlugin' {
         constructor(_: Arguments) {}
     }
 }
-
 
 declare module 'sap/ui/rta/command/CommandFactory' {
     import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
@@ -172,7 +173,7 @@ declare module 'sap/ui/fl/FakeLrepConnector' {
             fileName: string,
             kind: 'delete' | 'create',
             change?: T,
-            additionalChangeInfo?: U,
+            additionalChangeInfo?: U
         ) => void;
         static enableFakeConnector: () => void;
     }
@@ -212,6 +213,13 @@ declare module 'sap/ui/rta/RuntimeAuthoring' {
                             settings?: {
                                 contextPath?: string;
                                 entitySet?: string;
+                                navigation?: {
+                                    [navProperty: string]: {
+                                        detail?: {
+                                            route?: string
+                                        }
+                                    }
+                                }
                             };
                         };
                     }
@@ -225,9 +233,9 @@ declare module 'sap/ui/rta/RuntimeAuthoring' {
             flexEnabled?: boolean;
             componentUsages?: {
                 [key: string]: {
-                    name?: string
-                }
-            }
+                    name?: string;
+                };
+            };
         };
         'sap.ui.generic.app': {
             [key: string]: string;
@@ -389,11 +397,14 @@ declare module 'sap/ui/rta/service/Action' {
          * Action name
          */
         text: string;
+        /**
+         * Submenu entries in case the action opens a submenu (e.g. variant switch).
+         * Each entry's `id` is the target key passed back via the execute payload.
+         */
+        submenu?: Array<Pick<ActionObject, 'id' | 'icon' | 'enabled' | 'text'>>;
     };
     export type ActionService = {
-        get: (controlId: string) => Promise<ActionObject[]>;
-        get: (controlIds: string[]) => Promise<ActionObject[]>;
-        execute: (controlId: string, actionId: string) => Promise<void>;
-        execute: (controlIds: string[], actionId: string) => Promise<void>;
+        get: (controlIds: string | string[]) => Promise<ActionObject[]>;
+        execute: (controlIds: string | string[], actionId: string, payload?: object) => Promise<void>;
     };
 }

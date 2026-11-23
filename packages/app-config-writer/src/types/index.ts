@@ -1,3 +1,3 @@
-export * from './smartLinks';
-export * from './variantsConfig';
-export * from './navigation';
+export * from './smartLinks.js';
+export * from './variantsConfig.js';
+export * from './navigation.js';

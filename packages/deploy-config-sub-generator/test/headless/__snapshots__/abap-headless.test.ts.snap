@@ -61,6 +61,7 @@ builder:
           transport: $TMP
         exclude:
           - /test/
+          - /localService/
 "
 `;
 
@@ -126,6 +127,7 @@ builder:
           transport: TEST_TR
         exclude:
           - /test/
+          - /localService/
 "
 `;
 
@@ -182,7 +184,7 @@ builder:
       configuration:
         target:
           url: https://example.abap.backend:44300
-          client: '100'
+          scp: true
         app:
           name: ZTESTREPO
           description: Testing headless ABAP deployment
@@ -190,6 +192,7 @@ builder:
           transport: TR123
         exclude:
           - /test/
+          - /localService/
 "
 `;
 
@@ -254,5 +257,6 @@ builder:
           transport: TR123
         exclude:
           - /test/
+          - /localService/
 "
 `;

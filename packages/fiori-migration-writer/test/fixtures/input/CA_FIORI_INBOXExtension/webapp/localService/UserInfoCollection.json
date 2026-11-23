@@ -1,0 +1,251 @@
+[{
+	"Address": {
+		"Street": "Street 1",
+		"StreetNumber": "StreetNumber 1",
+		"City": "City 1",
+		"PostalCode": "PostalCode 1",
+		"State": "State 1",
+		"Country": "Country 1"
+	},
+	"SAP__Origin": "SAP__Origin 1",
+	"UniqueName": "UniqueName 1",
+	"DisplayName": "DisplayName 1",
+	"FirstName": "FirstName 1",
+	"LastName": "LastName 1",
+	"Company": "Company 1",
+	"Department": "Department 1",
+	"Email": "Email 1",
+	"WorkPhone": "WorkPhone 1",
+	"MobilePhone": "MobilePhone 1",
+	"HomePhone": "HomePhone 1",
+	"mime_type": "mime_type 1",
+	"__metadata": {
+		"uri": "UserInfoCollection(SAP__Origin='SAP__Origin 1',UniqueName='UniqueName 1')",
+		"type": "TASKPROCESSING.UserInfo"
+	}
+}, {
+	"Address": {
+		"Street": "Street 2",
+		"StreetNumber": "StreetNumber 2",
+		"City": "City 2",
+		"PostalCode": "PostalCode 2",
+		"State": "State 2",
+		"Country": "Country 2"
+	},
+	"SAP__Origin": "SAP__Origin 2",
+	"UniqueName": "UniqueName 2",
+	"DisplayName": "DisplayName 2",
+	"FirstName": "FirstName 2",
+	"LastName": "LastName 2",
+	"Company": "Company 2",
+	"Department": "Department 2",
+	"Email": "Email 2",
+	"WorkPhone": "WorkPhone 2",
+	"MobilePhone": "MobilePhone 2",
+	"HomePhone": "HomePhone 2",
+	"mime_type": "mime_type 2",
+	"__metadata": {
+		"uri": "UserInfoCollection(SAP__Origin='SAP__Origin 2',UniqueName='UniqueName 2')",
+		"type": "TASKPROCESSING.UserInfo"
+	}
+}, {
+	"Address": {
+		"Street": "Street 3",
+		"StreetNumber": "StreetNumber 3",
+		"City": "City 3",
+		"PostalCode": "PostalCode 3",
+		"State": "State 3",
+		"Country": "Country 3"
+	},
+	"SAP__Origin": "SAP__Origin 3",
+	"UniqueName": "UniqueName 3",
+	"DisplayName": "DisplayName 3",
+	"FirstName": "FirstName 3",
+	"LastName": "LastName 3",
+	"Company": "Company 3",
+	"Department": "Department 3",
+	"Email": "Email 3",
+	"WorkPhone": "WorkPhone 3",
+	"MobilePhone": "MobilePhone 3",
+	"HomePhone": "HomePhone 3",
+	"mime_type": "mime_type 3",
+	"__metadata": {
+		"uri": "UserInfoCollection(SAP__Origin='SAP__Origin 3',UniqueName='UniqueName 3')",
+		"type": "TASKPROCESSING.UserInfo"
+	}
+}, {
+	"Address": {
+		"Street": "Street 4",
+		"StreetNumber": "StreetNumber 4",
+		"City": "City 4",
+		"PostalCode": "PostalCode 4",
+		"State": "State 4",
+		"Country": "Country 4"
+	},
+	"SAP__Origin": "SAP__Origin 4",
+	"UniqueName": "UniqueName 4",
+	"DisplayName": "DisplayName 4",
+	"FirstName": "FirstName 4",
+	"LastName": "LastName 4",
+	"Company": "Company 4",
+	"Department": "Department 4",
+	"Email": "Email 4",
+	"WorkPhone": "WorkPhone 4",
+	"MobilePhone": "MobilePhone 4",
+	"HomePhone": "HomePhone 4",
+	"mime_type": "mime_type 4",
+	"__metadata": {
+		"uri": "UserInfoCollection(SAP__Origin='SAP__Origin 4',UniqueName='UniqueName 4')",
+		"type": "TASKPROCESSING.UserInfo"
+	}
+}, {
+	"Address": {
+		"Street": "Street 5",
+		"StreetNumber": "StreetNumber 5",
+		"City": "City 5",
+		"PostalCode": "PostalCode 5",
+		"State": "State 5",
+		"Country": "Country 5"
+	},
+	"SAP__Origin": "SAP__Origin 5",
+	"UniqueName": "UniqueName 5",
+	"DisplayName": "DisplayName 5",
+	"FirstName": "FirstName 5",
+	"LastName": "LastName 5",
+	"Company": "Company 5",
+	"Department": "Department 5",
+	"Email": "Email 5",
+	"WorkPhone": "WorkPhone 5",
+	"MobilePhone": "MobilePhone 5",
+	"HomePhone": "HomePhone 5",
+	"mime_type": "mime_type 5",
+	"__metadata": {
+		"uri": "UserInfoCollection(SAP__Origin='SAP__Origin 5',UniqueName='UniqueName 5')",
+		"type": "TASKPROCESSING.UserInfo"
+	}
+}, {
+	"Address": {
+		"Street": "Street 6",
+		"StreetNumber": "StreetNumber 6",
+		"City": "City 6",
+		"PostalCode": "PostalCode 6",
+		"State": "State 6",
+		"Country": "Country 6"
+	},
+	"SAP__Origin": "SAP__Origin 6",
+	"UniqueName": "UniqueName 6",
+	"DisplayName": "DisplayName 6",
+	"FirstName": "FirstName 6",
+	"LastName": "LastName 6",
+	"Company": "Company 6",
+	"Department": "Department 6",
+	"Email": "Email 6",
+	"WorkPhone": "WorkPhone 6",
+	"MobilePhone": "MobilePhone 6",
+	"HomePhone": "HomePhone 6",
+	"mime_type": "mime_type 6",
+	"__metadata": {
+		"uri": "UserInfoCollection(SAP__Origin='SAP__Origin 6',UniqueName='UniqueName 6')",
+		"type": "TASKPROCESSING.UserInfo"
+	}
+}, {
+	"Address": {
+		"Street": "Street 7",
+		"StreetNumber": "StreetNumber 7",
+		"City": "City 7",
+		"PostalCode": "PostalCode 7",
+		"State": "State 7",
+		"Country": "Country 7"
+	},
+	"SAP__Origin": "SAP__Origin 7",
+	"UniqueName": "UniqueName 7",
+	"DisplayName": "DisplayName 7",
+	"FirstName": "FirstName 7",
+	"LastName": "LastName 7",
+	"Company": "Company 7",
+	"Department": "Department 7",
+	"Email": "Email 7",
+	"WorkPhone": "WorkPhone 7",
+	"MobilePhone": "MobilePhone 7",
+	"HomePhone": "HomePhone 7",
+	"mime_type": "mime_type 7",
+	"__metadata": {
+		"uri": "UserInfoCollection(SAP__Origin='SAP__Origin 7',UniqueName='UniqueName 7')",
+		"type": "TASKPROCESSING.UserInfo"
+	}
+}, {
+	"Address": {
+		"Street": "Street 8",
+		"StreetNumber": "StreetNumber 8",
+		"City": "City 8",
+		"PostalCode": "PostalCode 8",
+		"State": "State 8",
+		"Country": "Country 8"
+	},
+	"SAP__Origin": "SAP__Origin 8",
+	"UniqueName": "UniqueName 8",
+	"DisplayName": "DisplayName 8",
+	"FirstName": "FirstName 8",
+	"LastName": "LastName 8",
+	"Company": "Company 8",
+	"Department": "Department 8",
+	"Email": "Email 8",
+	"WorkPhone": "WorkPhone 8",
+	"MobilePhone": "MobilePhone 8",
+	"HomePhone": "HomePhone 8",
+	"mime_type": "mime_type 8",
+	"__metadata": {
+		"uri": "UserInfoCollection(SAP__Origin='SAP__Origin 8',UniqueName='UniqueName 8')",
+		"type": "TASKPROCESSING.UserInfo"
+	}
+}, {
+	"Address": {
+		"Street": "Street 9",
+		"StreetNumber": "StreetNumber 9",
+		"City": "City 9",
+		"PostalCode": "PostalCode 9",
+		"State": "State 9",
+		"Country": "Country 9"
+	},
+	"SAP__Origin": "SAP__Origin 9",
+	"UniqueName": "UniqueName 9",
+	"DisplayName": "DisplayName 9",
+	"FirstName": "FirstName 9",
+	"LastName": "LastName 9",
+	"Company": "Company 9",
+	"Department": "Department 9",
+	"Email": "Email 9",
+	"WorkPhone": "WorkPhone 9",
+	"MobilePhone": "MobilePhone 9",
+	"HomePhone": "HomePhone 9",
+	"mime_type": "mime_type 9",
+	"__metadata": {
+		"uri": "UserInfoCollection(SAP__Origin='SAP__Origin 9',UniqueName='UniqueName 9')",
+		"type": "TASKPROCESSING.UserInfo"
+	}
+}, {
+	"Address": {
+		"Street": "Street 10",
+		"StreetNumber": "StreetNumber 10",
+		"City": "City 10",
+		"PostalCode": "PostalCode 10",
+		"State": "State 10",
+		"Country": "Country 10"
+	},
+	"SAP__Origin": "SAP__Origin 10",
+	"UniqueName": "UniqueName 10",
+	"DisplayName": "DisplayName 10",
+	"FirstName": "FirstName 10",
+	"LastName": "LastName 10",
+	"Company": "Company 10",
+	"Department": "Department 10",
+	"Email": "Email 10",
+	"WorkPhone": "WorkPhone 10",
+	"MobilePhone": "MobilePhone 10",
+	"HomePhone": "HomePhone 10",
+	"mime_type": "mime_type 10",
+	"__metadata": {
+		"uri": "UserInfoCollection(SAP__Origin='SAP__Origin 10',UniqueName='UniqueName 10')",
+		"type": "TASKPROCESSING.UserInfo"
+	}
+}]

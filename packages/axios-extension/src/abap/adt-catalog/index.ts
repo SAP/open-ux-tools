@@ -1,3 +1,3 @@
-export * from './adt-catalog-service';
-export * from './services';
-export * from './generators';
+export * from './adt-catalog-service.js';
+export * from './services/index.js';
+export * from './generators/index.js';

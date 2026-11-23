@@ -8,7 +8,7 @@ import type { BackendSystem } from '@sap-ux/store';
 import type { AbapTarget, DestinationAbapTarget, UrlAbapTarget } from '@sap-ux/system-access';
 import { ClientFactory } from '@sap-ux/telemetry';
 import type { ListChoiceOptions } from 'inquirer';
-import { t } from '../i18n';
+import { t } from '../i18n.js';
 
 /**
  * Get the business objects.

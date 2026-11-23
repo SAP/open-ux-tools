@@ -4,8 +4,8 @@ import { create } from 'mem-fs-editor';
 import type { Editor } from 'mem-fs-editor';
 import type { Choice, PromptObject } from 'prompts';
 import type { Manifest } from '@sap-ux/project-access';
-import { getODataSources, getMainServiceDataSource } from '../app-info';
-import { t } from '..';
+import { getODataSources, getMainServiceDataSource } from '../app-info.js';
+import { t } from '../index.js';
 
 /**
  * Return the list of questions to configure mockserver.

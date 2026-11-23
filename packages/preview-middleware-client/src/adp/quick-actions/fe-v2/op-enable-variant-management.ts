@@ -3,13 +3,13 @@ import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import type {
     QuickActionContext,
     NestedQuickActionDefinition
-} from '../../../cpe/quick-actions/quick-action-definition';
-import { TableQuickActionDefinitionBase } from '../table-quick-action-base';
-import { SMART_TABLE_TYPE } from '../control-types';
+} from '../../../cpe/quick-actions/quick-action-definition.js';
+import { TableQuickActionDefinitionBase } from '../table-quick-action-base.js';
+import { SMART_TABLE_TYPE } from '../control-types.js';
 
 import type { NestedQuickActionChild } from '@sap-ux-private/control-property-editor-common';
-import { areManifestChangesSupported, prepareManifestChange } from './utils';
-import { preprocessActionExecution } from './create-table-custom-column';
+import { areManifestChangesSupported, prepareManifestChange } from './utils.js';
+import { preprocessActionExecution } from './create-table-custom-column.js';
 import type SmartTableExtended from 'sap/ui/comp/smarttable';
 
 export const ENABLE_VARIANT_MANAGEMENT_IN_TABLES_CHARTS = 'enable-variant-management-in-tables-charts';

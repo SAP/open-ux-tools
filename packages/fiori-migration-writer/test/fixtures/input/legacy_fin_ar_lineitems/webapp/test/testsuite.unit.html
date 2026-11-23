@@ -1,0 +1,50 @@
+<!DOCTYPE HTML>
+<html>
+<!--  For QUnit documentation, see https://qunitjs.com/ -->
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+<title>Manage Customer Line Items QUnit Testsuite fin.ar.lineitems.display</title>
+<script id="sap-ui-bootstrap" src="../resources/sap-ui-core.js" data-sap-ui-evt-oninit="main();"
+    data-sap-ui-theme="sap_platinum" data-sap-ui-libs="sap.ui.commons"
+    data-sap-ui-resourceroots='{"fin.ar.lineitems.display.test": "./"}'>
+ 
+</script>
+<script type="text/javascript">
+function main() {
+	sap.ui.getCore().attachInitEvent(function() {
+		// sapui5 blocks the system from scrolling!
+		$("html").css("overflow","initial");
+		
+	});
+}
+</script>
+<link rel="stylesheet" href="../resources/sap/ui/thirdparty/qunit.css" type="text/css" media="screen" />
+<script type="text/javascript" src="../resources/sap/ui/thirdparty/qunit.js"></script>
+<script type="text/javascript" src="../resources/sap/ui/qunit/qunit-junit.js"></script>
+<script type="text/javascript" src="../resources/sap/ui/qunit/QUnitUtils.js"></script>
+<!-- SINON JS SUPPORT START -->
+ 
+<script type="text/javascript"
+    src="../resources/sap/ui/thirdparty/sinon.js"></script>
+<!--[if IE]>
+  <script type="text/javascript" src="../resources/sap/ui/thirdparty/sinon.ie.js"></script>
+  <![endif]-->
+<script type="text/javascript"
+    src="../resources/sap/ui/thirdparty/sinon-qunit.js"></script>
+ 
+<!-- SINON JS SUPPORT END -->
+
+<script type="text/javascript" src="testsuite/unit.infra.js"></script>
+
+<!-- Testsuite -->
+<script type="text/javascript" src="testsuite/unit.js"></script>
+ 
+</head>
+ 
+<body>
+    <div id="qunit"></div>
+    <!-- [TODO: add additional html content here] -->
+</body>
+
+</html>

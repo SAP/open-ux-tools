@@ -1,2 +1,2 @@
-export * from './prompts';
-export * from './prompt-helper';
+export * from './prompts.js';
+export * from './prompt-helper.js';

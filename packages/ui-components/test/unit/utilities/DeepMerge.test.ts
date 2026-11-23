@@ -1,4 +1,4 @@
-import { deepMerge } from '../../../src/utilities/DeepMerge';
+import { deepMerge } from '../../../src/utilities/DeepMerge.js';
 
 describe('deepMerge', () => {
     test('do not mutate parameters', () => {

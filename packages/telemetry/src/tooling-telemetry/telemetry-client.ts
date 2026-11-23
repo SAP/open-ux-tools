@@ -1,8 +1,8 @@
-import { ApplicationInsightClient } from '../base/client/azure-appinsight-client';
-import type { SampleRate, TelemetryMeasurements, TelemetryProperties } from '../base/types';
-import type { TelemetryHelperProperties, TelemetryEvent, CommonTelemetryProperties } from './types';
-import { processToolsSuiteTelemetry } from '.';
-import { localDatetimeToUTC } from '../base/utils/date';
+import { ApplicationInsightClient } from '../base/client/azure-appinsight-client.js';
+import type { SampleRate, TelemetryMeasurements, TelemetryProperties } from '../base/types/index.js';
+import type { TelemetryHelperProperties, TelemetryEvent, CommonTelemetryProperties } from './types.js';
+import { processToolsSuiteTelemetry } from './index.js';
+import { localDatetimeToUTC } from '../base/utils/date.js';
 
 /**
  *

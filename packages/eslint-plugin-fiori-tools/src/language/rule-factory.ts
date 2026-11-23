@@ -1,19 +1,22 @@
 import type { RuleContext, RulesMeta, RuleVisitor } from '@eslint/core';
-import type { FioriLanguageOptions, FioriSourceCode, Node } from './fiori-language';
+import type { FioriLanguageOptions, FioriSourceCode, Node } from './fiori-language.js';
 import { JSONSourceCode } from '@eslint/json';
-import type { FioriJSONSourceCode } from './json/source-code';
+import { FioriJSONSourceCode } from './json/source-code.js';
 import type { AnyNode, MemberNode } from '@humanwhocodes/momoa';
-import { FioriXMLSourceCode } from './xml/source-code';
+import { FioriXMLSourceCode } from './xml/source-code.js';
 import type { XMLAstNode, XMLToken } from '@xml-tools/ast';
-import type { FioriRuleDefinition } from '../types';
-import { FioriAnnotationSourceCode } from './annotations/source-code';
+import type { FioriRuleDefinition } from '../types.js';
+import { FioriAnnotationSourceCode } from './annotations/source-code.js';
 import type { AnyNode as AnyAnnotationNode } from '@sap-ux/odata-annotation-core';
-import { DiagnosticCache } from './diagnostic-cache';
-import type { Diagnostic } from './diagnostics';
-import type { DeepestExistingPathResult } from '../utils/helpers';
-import { findDeepestExistingPath } from '../utils/helpers';
+import { DiagnosticCache } from './diagnostic-cache.js';
+import type { Diagnostic } from './diagnostics.js';
+import type { DeepestExistingPathResult } from '../utils/helpers.js';
+import { findDeepestExistingPath } from '../utils/helpers.js';
 import { pathToFileURL } from 'node:url';
 import { normalizePath } from '@sap-ux/project-access';
+import { FioriChangeSourceCode } from './change/source-code.js';
+import { FioriI18nSourceCode } from './i18n/source-code.js';
+import type { I18nNode } from './i18n/source-code.js';
 
 /**
  * Rule context type for JSON-based rules.
@@ -58,15 +61,31 @@ export type AnnotationRuleContext<MessageIds extends string, RuleOptions extends
 }>;
 
 /**
+ * Rule context type for i18n .properties-based rules.
+ *
+ * @template MessageIds - Union type of message IDs used in the rule
+ * @template RuleOptions - Array type of rule option values
+ */
+export type I18nRuleContext<MessageIds extends string, RuleOptions extends unknown[]> = RuleContext<{
+    LangOptions: FioriLanguageOptions;
+    Code: FioriI18nSourceCode;
+    RuleOptions: RuleOptions;
+    Node: I18nNode;
+    MessageIds: MessageIds;
+}>;
+
+/**
  * Creates a Fiori rule that can operate on multiple files in a Fiori application.
  *
  * @param param0 - Rule definition.
  * @param param0.ruleId
  * @param param0.meta
  * @param param0.createJsonVisitorHandler
+ * @param param0.createChangeVisitorHandler
  * @param param0.createJson
  * @param param0.createXml
  * @param param0.createAnnotations
+ * @param param0.createI18n
  * @param param0.check
  * @returns A Fiori rule definition.
  */
@@ -80,9 +99,11 @@ export function createFioriRule<
     meta,
     check,
     createJsonVisitorHandler,
+    createChangeVisitorHandler,
     createJson,
     createXml,
-    createAnnotations
+    createAnnotations,
+    createI18n
 }: {
     ruleId: T;
     meta?: RulesMeta<MessageIds, RuleOptions, ExtRuleDocs>;
@@ -90,6 +111,10 @@ export function createFioriRule<
         context: JSONRuleContext<MessageIds, RuleOptions>,
         validationResult: Extract<Diagnostic, { type: T }>[]
     ) => RuleVisitor;
+    createChangeVisitorHandler?: (
+        context: JSONRuleContext<MessageIds, RuleOptions>,
+        diagnostic: Extract<Diagnostic, { type: T }>
+    ) => (node: MemberNode) => void;
     createJsonVisitorHandler?: (
         context: JSONRuleContext<MessageIds, RuleOptions>,
         diagnostic: Extract<Diagnostic, { type: T }>,
@@ -101,6 +126,10 @@ export function createFioriRule<
     ) => RuleVisitor;
     createAnnotations?: (
         context: AnnotationRuleContext<MessageIds, RuleOptions>,
+        validationResult: Extract<Diagnostic, { type: T }>[]
+    ) => RuleVisitor;
+    createI18n?: (
+        context: I18nRuleContext<MessageIds, RuleOptions>,
         validationResult: Extract<Diagnostic, { type: T }>[]
     ) => RuleVisitor;
     check: (
@@ -131,7 +160,15 @@ export function createFioriRule<
                 DiagnosticCache.addMessages(uri, ruleId, cachedDiagnostics);
             }
             const sourceCode = context.sourceCode;
-            if (sourceCode instanceof JSONSourceCode && createJsonVisitorHandler) {
+            if (sourceCode instanceof FioriChangeSourceCode && createChangeVisitorHandler) {
+                return createChangeVisitor(
+                    sourceCode,
+                    cachedDiagnostics,
+                    context as JSONRuleContext<MessageIds, RuleOptions>,
+                    createChangeVisitorHandler
+                );
+            }
+            if (sourceCode instanceof FioriJSONSourceCode && createJsonVisitorHandler) {
                 return createJsonVisitorWithMatchers(
                     sourceCode,
                     cachedDiagnostics,
@@ -147,6 +184,9 @@ export function createFioriRule<
             }
             if (context.sourceCode instanceof FioriAnnotationSourceCode && createAnnotations) {
                 return createAnnotations(context as AnnotationRuleContext<MessageIds, RuleOptions>, cachedDiagnostics);
+            }
+            if (context.sourceCode instanceof FioriI18nSourceCode && createI18n) {
+                return createI18n(context as I18nRuleContext<MessageIds, RuleOptions>, cachedDiagnostics);
             }
             return {};
         }
@@ -196,4 +236,32 @@ function createJsonVisitorWithMatchers<
         }
     }
     return matchers;
+}
+
+/**
+ * Creates a FlexChange rule visitor for applicable diagnostics.
+ *
+ * @param sourceCode
+ * @param cachedDiagnostics
+ * @param context
+ * @param createChangeVisitorHandler
+ */
+function createChangeVisitor<MessageIds extends string, RuleOptions extends unknown[], T extends Diagnostic['type']>(
+    sourceCode: FioriChangeSourceCode,
+    cachedDiagnostics: Extract<Diagnostic, { type: T }>[],
+    context: JSONRuleContext<MessageIds, RuleOptions>,
+    createChangeVisitorHandler: (
+        context: JSONRuleContext<MessageIds, RuleOptions>,
+        diagnostic: Extract<Diagnostic, { type: T }>
+    ) => (node: MemberNode) => void
+): RuleVisitor {
+    // Find the diagnostic applicable to the .change file. Always a single property value issue in one file.
+    const applicableDiagnostics = cachedDiagnostics.find(
+        (diagnostic) => (diagnostic as any).changeFileUri === sourceCode.uri
+    );
+    if (!applicableDiagnostics) {
+        return {};
+    }
+    const path = 'Member[name.value="content"] > Object > Member[name.value="newValue"]'; // Always the same path to new value
+    return { [path]: createChangeVisitorHandler(context, applicableDiagnostics) };
 }

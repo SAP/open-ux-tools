@@ -1,14 +1,15 @@
 sap.ui.define([
     "sap/fe/test/JourneyRunner",
-	"testNameSpace/fpmv4/test/integration/pages/TravelMain"
-], function (JourneyRunner, TravelMain) {
+	"testnamespace/fpmv4/test/integration/pages/TravelMain.gen"
+], function (JourneyRunner, TravelMainGenerated) {
     'use strict';
 
-    var runner = new JourneyRunner({
-        launchUrl: sap.ui.require.toUrl('testNameSpace/fpmv4') + '/test/flpSandbox.html#testNameSpacefpmv4-tile',
+    const runner = new JourneyRunner({
+        launchUrl: sap.ui.require.toUrl('testnamespace/fpmv4') + '/test/flpSandbox.html#testnamespacefpmv4-tile',
         pages: {
-			onTheTravelMain: TravelMain
+			onTheTravelMainGenerated: TravelMainGenerated
         },
+        opaConfig: { autoWait: true },
         async: true
     });
 

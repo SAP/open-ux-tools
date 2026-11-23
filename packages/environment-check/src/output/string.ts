@@ -1,5 +1,5 @@
-import type { EnvironmentCheckResult } from '../types';
-import { toolsExtensionListVSCode } from '../types';
+import type { EnvironmentCheckResult } from '../types.js';
+import { toolsExtensionListVSCode } from '../types.js';
 
 /**
  * Formats the environment check results into a string for copying.

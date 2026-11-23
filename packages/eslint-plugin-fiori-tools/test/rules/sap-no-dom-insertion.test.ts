@@ -6,7 +6,7 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-import rule from '../../src/rules/sap-no-dom-insertion';
+import rule from '../../src/rules/sap-no-dom-insertion.js';
 import { RuleTester } from 'eslint';
 
 //------------------------------------------------------------------------------

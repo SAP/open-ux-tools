@@ -4,9 +4,24 @@ import type { AbapTarget } from '@sap-ux/ui5-config';
 import type { AuthenticationType } from '@sap-ux/store';
 import type { AxiosRequestConfig, ProviderConfiguration } from '@sap-ux/axios-extension';
 
-import { SystemLookup } from '../source';
+import { SystemLookup } from '../source/index.js';
 
 export type RequestOptions = AxiosRequestConfig & Partial<ProviderConfiguration>;
+
+/**
+ * Error thrown when no system details can be found for a given system identifier.
+ */
+export class SystemNotFoundError extends Error {
+    /**
+     * Creates a new SystemNotFoundError.
+     *
+     * @param {string} system - The system identifier (URL or system name) that could not be resolved.
+     */
+    constructor(system: string) {
+        super(`No system details found for system: ${system}`);
+        this.name = 'SystemNotFoundError';
+    }
+}
 
 /**
  * Determines the ABAP target configuration based on the running environment and system details.
@@ -38,7 +53,7 @@ export async function getProviderConfig(
         const details = await systemLookup.getSystemByName(system);
 
         if (!details) {
-            throw new Error(`No system details found for system: ${system}`);
+            throw new SystemNotFoundError(system);
         }
 
         config = {

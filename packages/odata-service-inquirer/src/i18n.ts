@@ -2,7 +2,7 @@ import { addi18nResourceBundle as addInquirerCommonTexts } from '@sap-ux/inquire
 import { addi18nResourceBundle as addProjectInputValidatorTexts } from '@sap-ux/project-input-validator';
 import type { i18n as i18nNext, TOptions } from 'i18next';
 import i18next from 'i18next';
-import translations from './translations/odata-service-inquirer.i18n.json';
+import translations from './translations/odata-service-inquirer.i18n.json' with { type: 'json' };
 
 const odataServiceInquirerNamespace = 'odata-service-inquirer';
 export const defaultProjectNumber = 1;
@@ -15,22 +15,10 @@ export async function initI18nOdataServiceInquirer(): Promise<void> {
         lng: 'en',
         fallbackLng: 'en',
         missingInterpolationHandler: () => '',
-        interpolation: {
-            format: function (value, format?: string) {
-                // OData version formatter
-                if (format === 'odataVersionFormatter') {
-                    return value ? ` V${value}` : '';
-                }
-
-                // If we have a value add a colon before outputting
-                if (format === 'addMsgWithColonFormatter') {
-                    return value ? `: ${value}` : '';
-                }
-                return value;
-            }
-        },
-        showSupportNotice: false
+        interpolation: { escapeValue: false }
     });
+    i18n.services.formatter?.add('odataVersionFormatter', (value: string) => (value ? ` V${value}` : ''));
+    i18n.services.formatter?.add('addMsgWithColonFormatter', (value: string) => (value ? `: ${value}` : ''));
     i18n.addResourceBundle('en', odataServiceInquirerNamespace, translations);
     // add other bundles that are used in consumed modules
     addInquirerCommonTexts();
@@ -51,6 +39,4 @@ export function t(key: string, options?: TOptions): string {
     return (i18n.t as (key: string, opts?: TOptions) => string)(key, options);
 }
 
-initI18nOdataServiceInquirer().catch(() => {
-    // Needed for lint
-});
+void initI18nOdataServiceInquirer().catch(() => undefined);

@@ -3,7 +3,7 @@ import React from 'react';
 import { Icon } from '@fluentui/react';
 import { UICallout, UICalloutContentPadding, UiIcons } from '@sap-ux/ui-components';
 import { useTranslation } from 'react-i18next';
-import { defaultFontSize } from './constants';
+import { defaultFontSize } from './constants.js';
 
 export interface ClipboardProps {
     label: string;

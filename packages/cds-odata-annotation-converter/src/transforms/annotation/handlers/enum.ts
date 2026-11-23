@@ -4,8 +4,8 @@ import { copyRange, ENUM_TYPE, nodeRange } from '@sap-ux/cds-annotation-parser';
 import type { Element, Range } from '@sap-ux/odata-annotation-core-types';
 import { createElementNode, createTextNode, Edm } from '@sap-ux/odata-annotation-core-types';
 
-import type { NodeHandler } from '../handler';
-import type { VisitorState } from '../visitor-state';
+import type { NodeHandler } from '../handler.js';
+import type { VisitorState } from '../visitor-state.js';
 
 /**
  * Delimiter between two enum values, used for flags

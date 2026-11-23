@@ -1,5 +1,5 @@
-import type { PageDef } from '../../../../../src/tools/functionalities/page/types';
-import { generatePageId } from '../../../../../src/tools/functionalities/page/utils';
+import type { PageDef } from '../../../../../src/tools/functionalities/page/types.js';
+import { generatePageId } from '../../../../../src/tools/functionalities/page/utils.js';
 import { FioriElementsVersion } from '@sap/ux-specification/dist/types/src';
 
 describe('page utils', () => {

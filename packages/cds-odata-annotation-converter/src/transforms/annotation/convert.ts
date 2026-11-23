@@ -1,10 +1,10 @@
 import type { Assignment } from '@sap-ux/cds-annotation-parser';
 import type { ExtendedDiagnostic, Element, PositionPointer, Range } from '@sap-ux/odata-annotation-core-types';
 
-import { VisitorState } from './visitor-state';
-import { visitor } from './visitor';
-import type { ToTermsOptions } from '../types';
-import { findNode } from './find-node';
+import { VisitorState } from './visitor-state.js';
+import { visitor } from './visitor.js';
+import type { ToTermsOptions } from '../types.js';
+import { findNode } from './find-node.js';
 
 export interface AnnotationConversionResult {
     terms: Element[];
@@ -36,10 +36,14 @@ export function convertAnnotation(assignment: Assignment, options: ToTermsOption
 
     if (assignment.type === 'annotation-group') {
         state.pushContext({
-            groupName: assignment.name.value
+            groupName: assignment.name.value,
+            groupNameRange: assignment.name.range
         });
     }
-    const nodes = assignment.type === 'annotation' ? [assignment] : assignment.items.items;
+    const nodes =
+        assignment.type === 'annotation' || assignment.type === 'flattened-expression'
+            ? [assignment]
+            : assignment.items.items;
 
     for (const item of nodes) {
         const context = { ...state.context };

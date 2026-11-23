@@ -5,18 +5,18 @@ import { useDispatch, useSelector } from 'react-redux';
 import type { UITextInputProps } from '@sap-ux/ui-components';
 import { UITextInput } from '@sap-ux/ui-components';
 
-import { changeProperty } from '../../slice';
+import { changeProperty } from '../../slice.js';
 
-import type { PropertyInputProps } from './types';
-import { isExpression, InputType } from './types';
-import { setCachedValue } from './propertyValuesCache';
+import type { PropertyInputProps } from './types.js';
+import { isExpression, InputType } from './types.js';
+import { setCachedValue } from './propertyValuesCache.js';
 
 import './Properties.scss';
 import { reportTelemetry, FLOAT_VALUE_TYPE, INTEGER_VALUE_TYPE } from '@sap-ux-private/control-property-editor-common';
 import './SapUiIcon.scss';
-import { IconValueHelp } from './IconValueHelp';
+import { IconValueHelp } from './IconValueHelp.js';
 import type { IconDetails } from '@sap-ux-private/control-property-editor-common';
-import type { RootState } from '../../store';
+import type { RootState } from '../../store.js';
 
 /**
  * React element for string editor in property panel.

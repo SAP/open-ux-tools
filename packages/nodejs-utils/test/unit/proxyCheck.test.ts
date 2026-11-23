@@ -1,4 +1,4 @@
-import { validateProxySettings } from '../../src/proxyCheck';
+import { validateProxySettings } from '../../src/proxyCheck.js';
 
 describe('Proxy check', () => {
     // Store original environment variables

@@ -1,6 +1,6 @@
 import React from 'react';
-import { PromptsType } from './utils';
-import { BuildingBlockQuestions } from './BuildingBlock';
+import { PromptsType } from './utils/index.js';
+import { BuildingBlockQuestions } from './BuildingBlock.js';
 
 export default { title: 'Building Blocks/Chart' };
 

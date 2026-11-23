@@ -7,15 +7,6 @@ Array [
     "functionalityId": "add-page",
   },
   Object {
-    "description": "Creates (generates) a new SAP Fiori UI application within an existing CAP project.
-                To populate parameters, you **MUST** use the ***CDS MCP*** to search the model for service definitions, entities, associations, and UI annotations.
-                As a fallback, only if no such tool is available, you should manually read and parse all .cds files in the projectPath to extract this information.
-                The data obtained from either method must then be formatted into a JSON object and passed as the parameters.
-                The configuration **MUST** be a valid JSON object corresponding to the inputSchema of the tool.
-                The configuration **MUST** be based on the project files in the projectPath.",
-    "functionalityId": "generate-fiori-ui-application-cap",
-  },
-  Object {
     "description": "Remove existing fiori elements page from the application",
     "functionalityId": "delete-page",
   },
@@ -24,36 +15,8 @@ Array [
     "functionalityId": "create-controller-extension",
   },
   Object {
-    "description": "Creates (generates) a new SAP Fiori UI application within an existing project (RAP or other non-CAP). Steps:
-
-        1. Crucially, you must first construct the appGenConfig JSON argument.
-            - If the user has not provided a valid servicePath and host (URL) of the OData service they want to use, you **MUST** ask for it.
-
-            - If the user provided a reference to a SAP system (name, host or full URL), or provided a full URL as a service,
-                you **MUST** try to retrieve the service's metadata using the \\"fetch-service-metadata\\" functionality with \\"execute_functionality\\" tool.
-                This tool will store the metadata EDMX file in the user selected folder as metadata.xml for the next step,
-                and provide you with service's host, servicePath and client, needed for the appGenConfig JSON argument.
-
-                **IMPORTANT**: If the service requires authentication, and it does not belong to a SAP system previously mentioned by the user, you MUST NOT ask the user for credentials!
-                Instead, ask them to store the SAP system first and then repeat the request.
-                Avoid using curl or similar tools to fetch the metadata yourself, as this may expose user credentials in logs.
-
-        2. Once the metadata EDMX is stored as metadata.xml (either from the \\"fetch-service-metadata\\" functionality or your own GET request),
-            you can parse the metadata.xml file to understand the data model structure, entities, and associations.
-
-        3. After that, you can proceed to generate the SAP Fiori UI application based on the parsed metadata and the user's requirements.
-            **IMPORTANT**: Before calling the functionality \\"generate-fiori-ui-application\\",
-            you must ensure that the appGenConfig JSON argument is properly constructed and matches the functionality's input parameters!",
-    "functionalityId": "generate-fiori-ui-application",
-  },
-  Object {
-    "description": "(Used by 'generate-fiori-ui-application' functionality).
-        Retrieves a list of user stored SAP Systems and matches the name, host or a URL to the sapSystemQuery provided by the user.
-        Then retrieves the metadata of a specific SAP service using the matched SAP system and servicePath provided by the user.
-        (if the user provided a full URL - pass the whole URL as sapSystemQuery parameter and just the path as servicePath).
-        Finally, it stores the fetched metadata in the appPath folder as metadata.xml,
-        and returns service details: host, servicePath, client and metadataFilePath.",
-    "functionalityId": "fetch-service-metadata",
+    "description": "Inserts a SAP Fiori elements building block (FilterBar, Chart, Field, Form, Page, Table, RichTextEditor, or an aggregation child: CustomColumn, Action, CustomFilterField, CustomFormField, RichTextEditorButtonGroups) into an existing view or fragment XML file. For FilterBar, Table, Form, Chart: the required annotation shell (com.sap.vocabularies.UI.v1.SelectionFields, com.sap.vocabularies.UI.v1.LineItem, com.sap.vocabularies.UI.v1.FieldGroup, com.sap.vocabularies.UI.v1.Chart) is written automatically to the app annotation file — you do NOT need to check or read the annotation file first. If the annotation already exists it will not be duplicated. Call execute_functionality exactly once per building block — do NOT retry or call it again after a successful result. If the user request is ambiguous (e.g. multiple elements of the same type exist at the same level — such as two macros:Table or two macros:FilterBar in the same parent — and the target is unclear), ask the user to clarify by id (e.g. \\"which table — Table or Table1?\\") before calling execute_functionality. Do NOT read any files to resolve ambiguity. Use search_docs with a building block type name (e.g. \\"FilterBar building block\\", \\"Table building block\\") to retrieve full property documentation from bb_macro_api.md before populating buildingBlockData. Types requiring UI5 >= 1.117.0: RichTextEditor, RichTextEditorButtonGroups. Types requiring UI5 >= 1.136.0: Page (basic). Types requiring UI5 >= 1.145.0: Page (full layout). All building blocks require an OData V4 service. Other building block types (FilterBar, Chart, CustomFilterField, CustomFormField, Field, Form, Table, CustomColumn, Action) have no specific minimum UI5 version beyond the application baseline. Chart: on UI5 < 1.97 the chart is always generated with contextPath applied. RichTextEditor and RichTextEditorButtonGroups must be placed in a fragment file (custom section), NOT in a view file. If the app has no fragment files, tell the user: \\"RichTextEditor can only be added to a custom section fragment. Please create a custom section fragment first, then ask again.\\" When adding RichTextEditorButtonGroups to a RichTextEditor that already has button groups, always call get_functionality_details again first to get the current aggregationPath — do not reuse a path from a previous call. Page building block must be placed in a custom page view file (.view.xml), NOT in a fragment file. If the app has no custom page view files, tell the user: \\"Page building block can only be added to a custom page view. Please create a custom page view first, then ask again.\\" Only one macros:Page element is allowed per view. If a macros:Page already exists in the view, do NOT add another — instead add building blocks (e.g. Table, FilterBar) inside it using the XPath that points to the macros:Page items aggregation. When adding a Page building block, always use the XPath that is a direct child of /mvc:View as aggregationPath (e.g. /mvc:View/Page) — never use a deeper path like /mvc:View/Page/content. That direct-child-of-/mvc:View rule is ONLY for the Page building block itself. Any OTHER building block (Table, FilterBar, Chart, Form, Field) added to a custom page view that already contains a Page must be inserted INTO the Page's content aggregation — pick the deepest offered XPath ending in the Page content (e.g. /mvc:View/*[local-name()='Page']/*[local-name()='content']), never the bare /mvc:View. The Page layout is chosen with the \\"templateType\\" property (allowed values: \\"full\\" = generate all aggregations, \\"basic\\" = minimal self-closing macros:Page) — the field is \\"templateType\\", not \\"template\\". The Form building block uses the \\"title\\" property for its visible title (not \\"header\\"). Aggregation child types (CustomColumn, Action, CustomFilterField, CustomFormField, RichTextEditorButtonGroups) insert into a parent macro aggregation — their aggregationPath must point to the parent macro element (CustomColumn → Table, Action → Table, CustomFilterField → FilterBar, CustomFormField → Form, RichTextEditorButtonGroups → RichTextEditorWithMetadata). For aggregation children: if the user specifies a position (before/after a specific existing column/field), pass anchor and placement as TOP-LEVEL properties of buildingBlockData — anchor: \\"<existingElementKey>\\", placement: \\"Before\\"|\\"After\\" (do NOT nest them inside a position object) — the anchor value is the key attribute of the existing element in the XML. Keys are always kebab-case derived from the existing element title text (e.g. \\"Test Header\\" → key=\\"test-header\\", \\"Product Name\\" → key=\\"product-name\\"), so you can derive the anchor without reading the file. Otherwise omit anchor/placement and the column/field is appended at the end. The visible title of a CustomColumn goes in the \\"header\\" property; CustomFilterField and CustomFormField use \\"label\\"; an Action uses \\"key\\" (a kebab-case identifier) for its id and \\"text\\" for its button label — do NOT put the identifier in the generic \\"id\\" field. Fragment and event handler options for aggregation children (CustomColumn, Action, CustomFilterField, CustomFormField, RichTextEditorButtonGroups): (1) New fragment, no handler — omit embededFragment entirely; a new fragment file is created automatically. (2) New fragment, with handler — set embededFragment.eventHandler to true (auto-generates a standalone .js handler named after the fragment with a default onPress function) or { fileName: \\"MyHandler\\", fnName: \\"myFn\\" } (auto-generates a standalone .js handler with a specific name and function). Do NOT create handler files manually. (3) Existing fragment, no handler — set embededFragment.name to the existing fragment file name; no handler is generated. (4) Existing fragment, with handler — set embededFragment.name to the existing fragment file name and embededFragment.eventHandler to { fileName: \\"ExistingHandler\\", fnName: \\"myFn\\" }. For NEW fragments (cases 1 and 2), if the user gives the fragment a name, set embededFragment.name to that name so the generated fragment file is created with it — do NOT put the fragment name in the generic \\"id\\" field; if embededFragment.name is omitted the file name is derived automatically. Ask the user which case applies before calling execute_functionality if it is unclear. Action handler options: (1) New handler file, new function — set embeddedAction.eventHandler to { fileName: \\"MyHandler\\", fnName: \\"myFn\\" }. The tool creates the file automatically. (2) Existing handler file, new function — set embeddedAction.name to the existing file and embeddedAction.eventHandler to { fileName: \\"ExistingFile\\", fnName: \\"newFn\\" }. The tool wires the XML but does NOT append the function to the existing file. After execute_functionality, you MUST manually append the new function to the handler .js file — this is the only case where manual handler editing is required; the \\"Do NOT create handler files manually\\" rule in the fragment guide does not apply to Action case (2). (3) Existing handler file, existing function — set embeddedAction.name to the existing file and embeddedAction.eventHandler to { fileName: \\"ExistingFile\\", fnName: \\"existingFn\\" }. The function already exists — no file editing needed. RichTextEditorButtonGroups (buildingBlockType \\"rich-text-editor-button-groups\\"): buildingBlockData must contain a \\"buttonGroups\\" ARRAY — one element per toolbar group: buttonGroups: [{ name: \\"<groupName>\\", buttons: \\"<comma-separated button ids>\\" }, ...]. Each element has \\"name\\" (the group name) and \\"buttons\\" (a single comma-separated string, e.g. \\"bold,italic,underline\\"). Do NOT pass a flat top-level { name, buttons } object or a top-level \\"buttons\\" field — always wrap every group inside the buttonGroups array, even when adding a single group. Adding button groups REWRITES the entire set from the array you pass — it does NOT append to existing groups. So when the target RichTextEditor ALREADY has button groups and you are adding more, first read the current fragment file to list the existing groups (their name + buttons), then pass ALL groups together — existing plus new — in the buttonGroups array, using the macros:RichTextEditorWithMetadata element as the aggregationPath. This is the one case where reading the fragment first is expected. FilterBar wiring: add the FilterBar first (note its id), then when adding the Table pass buildingBlockData.filterBar set to that id. If the Table already exists and needs linking, edit the view XML directly to add filterBar=\\"<filterBarId>\\" to the macros:Table element. metaPath format for metaPath building blocks (Table, FilterBar, Chart, Form) — never set contextPath, always leave it unset: (1) Relative binding (navigation property as value source, e.g. \\"to_Booking\\"): metaPath=\\"<navProp>/@<annotation>#<qualifier>\\" — no leading slash. Example: metaPath=\\"to_Booking/@com.sap.vocabularies.UI.v1.LineItem#tableMacro\\". (2) Absolute binding (entity set as value source, e.g. \\"Booking\\"): metaPath=\\"/<entitySet>/@<annotation>#<qualifier>\\" — leading slash. Example: metaPath=\\"/Booking/@com.sap.vocabularies.UI.v1.SelectionFields#filterBarMacro1\\". The same relative/absolute rule applies to a Chart: absolute binding is metaPath=\\"/<entitySet>/@com.sap.vocabularies.UI.v1.Chart#<qualifier>\\" (leading slash, e.g. \\"/Booking/@com.sap.vocabularies.UI.v1.Chart#bookingChart\\") — never a bare \\"@...Chart\\" with no entity segment. Always include a unique #qualifier in the metaPath (e.g. #filterBarMacro, #tableMacro, #bookingChart) — an unqualified annotation term can collide with an existing default (unqualified) annotation already present on the same entity in the backend metadata, in which case the auto-written annotation shell is skipped.",
+    "functionalityId": "add-building-block",
   },
   Object {
     "description": "Represents a prefix that is prepended in front of the viewName",
@@ -88,6 +51,13 @@ Array [
     "functionalityId": Array [
       "settings",
       "enableLazyLoading",
+    ],
+  },
+  Object {
+    "description": "Disables strict filtering. Strict filtering requires users to enter a single value in the unit of measure field when filtering for measure field values.",
+    "functionalityId": Array [
+      "settings",
+      "disableStrictUomFiltering",
     ],
   },
   Object {
@@ -207,6 +177,47 @@ To ensure a consistent experience, set this and 'Stay On Current Page After Save
     ],
   },
   Object {
+    "description": "Inline edit allows users to directly edit a field or a group of fields in the active version without switching the entire object to draft. Inline edit supports the same features as the regular edit mode.",
+    "functionalityId": Array [
+      "TravelList",
+      "inlineEdit",
+    ],
+  },
+  Object {
+    "description": "inlineEdit",
+    "functionalityId": Array [
+      "TravelList",
+      "inlineEdit",
+    ],
+  },
+  Object {
+    "description": "Array of fields which are inline editable.
+If empty or undefined, all fields within the page are inline editable except for fields specified in 'Disabled Fields'.
+Each string may be a direct property, a navigation property, or a field group.",
+    "functionalityId": Array [
+      "inlineEdit",
+      "enabledFields",
+    ],
+  },
+  Object {
+    "description": "Array of fields which are not inline editable.
+If empty or undefined, all fields within the page are not inline editable except for those specified in 'Enabled Fields'.
+Each string may be a direct property, a navigation property, or a field group.",
+    "functionalityId": Array [
+      "inlineEdit",
+      "disabledFields",
+    ],
+  },
+  Object {
+    "description": "Array of arrays of fields which are edited inline together.
+Fields specified in 'Connected Fields' must not be included in 'Enabled Fields' or 'Disabled Fields'.
+May contain direct properties, navigation properties, or a field group.",
+    "functionalityId": Array [
+      "inlineEdit",
+      "connectedFields",
+    ],
+  },
+  Object {
     "description": "Allows you to hide the filter bar.",
     "functionalityId": Array [
       "TravelList",
@@ -320,7 +331,7 @@ Omitting a property is treated as false, this allows apps to avoid getting new f
     ],
   },
   Object {
-    "description": "Mass editing allows end users to simultaneously change multiple objects that share the same editable properties.",
+    "description": "Mass edit allows users to simultaneously change multiple objects that share the same editable properties.",
     "functionalityId": Array [
       "TravelList",
       "table",
@@ -400,7 +411,7 @@ Omitting a property is treated as false, this allows apps to avoid getting new f
     ],
   },
   Object {
-    "description": "Define how the changes using mass edit should be applied. The default mode for mass editing is 'ChangeSet' on the Object Page and 'Isolated' in the List Report.
+    "description": "Define how changes using mass edit are applied. The default mode for mass edit is 'ChangeSet' on object pages and 'Isolated' on list report pages.
 
 - ChangeSet: Grouped for all objects within the same request.
 - Isolated: Separately for each object (as an individual OData change set in the same request).",
@@ -411,7 +422,7 @@ Omitting a property is treated as false, this allows apps to avoid getting new f
     ],
   },
   Object {
-    "description": "The 'visibleFields' property lets you specify which fields are available in the mass edit dialog.",
+    "description": "The 'visibleFields' property lets you specify which fields are available in the mass edit dialog. If empty or undefined, all fields within the page appear in the edit dialog except for read-only fields and fields specified in 'Disabled Fields'.",
     "functionalityId": Array [
       "table",
       "enableMassEdit",
@@ -419,7 +430,7 @@ Omitting a property is treated as false, this allows apps to avoid getting new f
     ],
   },
   Object {
-    "description": "The 'ignoredFields' property lets you hide specific fields from the mass edit dialog, even if these fields are displayed in the table.",
+    "description": "The 'ignoredFields' property lets you hide specific fields from the mass edit dialog, even if these fields are displayed in the table. If empty or undefined, all fields within the page appear in the edit dialog except for fields specified in 'Visible Fields'. If 'Visible Fields' are defined, this field is ignored.",
     "functionalityId": Array [
       "table",
       "enableMassEdit",
@@ -587,7 +598,7 @@ If this is not set with a value, the default value is 'NewPage'.",
       "table",
       "toolBar",
       "actions",
-      "DataFieldForAction::",
+      "DataFieldForAction",
       "enableOnSelect",
     ],
   },
@@ -598,7 +609,7 @@ If this is not set with a value, the default value is 'NewPage'.",
       "table",
       "toolBar",
       "actions",
-      "DataFieldForAction::",
+      "DataFieldForAction",
       "overflowGroup",
     ],
   },
@@ -609,7 +620,7 @@ If this is not set with a value, the default value is 'NewPage'.",
       "table",
       "toolBar",
       "actions",
-      "DataFieldForAction::",
+      "DataFieldForAction",
       "priority",
     ],
   },
@@ -620,7 +631,7 @@ If this is not set with a value, the default value is 'NewPage'.",
       "table",
       "toolBar",
       "actions",
-      "DataFieldForAction::",
+      "DataFieldForAction",
       "afterExecution",
     ],
   },
@@ -630,7 +641,7 @@ If this is not set with a value, the default value is 'NewPage'.",
       "table",
       "toolBar",
       "actions",
-      "DataFieldForAction::",
+      "DataFieldForAction",
       "afterExecution",
       "navigateToInstance",
     ],
@@ -641,7 +652,7 @@ If this is not set with a value, the default value is 'NewPage'.",
       "table",
       "toolBar",
       "actions",
-      "DataFieldForAction::",
+      "DataFieldForAction",
       "afterExecution",
       "enableAutoScroll",
     ],

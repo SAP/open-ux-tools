@@ -1,10 +1,10 @@
-const jestCLI = require('jest'); // eslint-disable-line sonarjs/no-implicit-dependencies
+const jestCLI = require('jest');
 const UI5DOMEnvironment = require('../../src');
 describe('Custom environment', () => {
     it('Can be created', async () => {
         let failed = false;
         try {
-            await jestCLI.run('--detectOpenHandles --config jest-ui5.config.js', process.cwd());
+            await jestCLI.run('--detectOpenHandles --config jest-ui5.config.mjs', process.cwd());
         } catch {
             failed = true;
         }

@@ -23,6 +23,6 @@ The following patterns are not ot considered warnings:
 sap.m.MessageToast.show('This is a warning!');
 ```
 
-## Bug report
+## Bug Report
 
 In case you think the finding is a false positive, open a Github issue [here](https://github.com/SAP/open-ux-tools/issues).

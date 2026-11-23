@@ -1,4 +1,4 @@
-import type { ParamCheck, Parameter, ParameterOptions, ParameterRules } from '../types';
+import type { ParamCheck, Parameter, ParameterOptions, ParameterRules } from '../types.js';
 
 const defaultParamCheck = { shouldApply: false, value: undefined };
 const rules: ParameterRules = {

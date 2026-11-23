@@ -1,6 +1,6 @@
 import type { Position } from '@sap-ux/text-document-utils';
 
-import type { AnnotationNode, AnnotationNodeType } from './transformer/annotation-ast-nodes';
+import type { AnnotationNode, AnnotationNodeType } from './transformer/annotation-ast-nodes.js';
 import {
     ANNOTATION_GROUP_TYPE,
     COLLECTION_TYPE,
@@ -19,8 +19,9 @@ import {
     CORRECT_EXPRESSION_TYPE,
     UNSUPPORTED_OPERATOR_EXPRESSION_TYPE,
     INCORRECT_EXPRESSION_TYPE,
-    OPERATOR_TYPE
-} from './transformer';
+    OPERATOR_TYPE,
+    FLATTENED_EXPRESSION_TYPE
+} from './transformer/index.js';
 import { positionContained } from '@sap-ux/odata-annotation-core';
 
 const LEAF_NODE_TYPES = new Set([
@@ -59,12 +60,13 @@ class PositionVisitor {
         this.createNodeHandler(ANNOTATION_GROUP_TYPE, ['name', 'items'], []);
         this.createNodeHandler(ANNOTATION_GROUP_ITEMS_TYPE, [], ['items']);
         this.createNodeHandler(ANNOTATION_TYPE, ['term', 'value'], []);
-        this.createNodeHandler(RECORD_TYPE, [], ['properties', 'annotations']);
+        this.createNodeHandler(RECORD_TYPE, [], ['properties', 'annotations', 'flattenedExpressions']);
         this.createNodeHandler(RECORD_PROPERTY_TYPE, ['name', 'value'], []);
         this.createNodeHandler(COLLECTION_TYPE, [], ['items']);
         this.createNodeHandler(CORRECT_EXPRESSION_TYPE, [], ['operators', 'operands']);
         this.createNodeHandler(INCORRECT_EXPRESSION_TYPE, [], ['operators', 'operands']);
         this.createNodeHandler(UNSUPPORTED_OPERATOR_EXPRESSION_TYPE, [], ['operators', 'operands']);
+        this.createNodeHandler(FLATTENED_EXPRESSION_TYPE, ['value'], []);
     }
 
     /**
@@ -108,6 +110,9 @@ class PositionVisitor {
             segment = ''
         ): VisitorReturnValue => {
             for (const propertyName of scalarProperties) {
+                if (!(node as unknown as { [key: string]: AnnotationNode })[propertyName]) {
+                    continue;
+                }
                 const children = this.visit(
                     (node as unknown as { [key: string]: AnnotationNode })[propertyName],
                     options,

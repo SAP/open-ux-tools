@@ -120,7 +120,28 @@ npx --yes @sap-ux/create@latest convert eslint-config --help
 
 |   Since   | Rule | Description | Recommended | Recommended for S/4HANA |
 |:---------:|------|-------------|:-----------:|:-----------------------:|
-|  new      | [sap-description-column-label](docs/rules/sap-description-column-label.md) | Ensures that the description (text) property referenced via `Common.Text` has a meaningful `Common.Label` — not a generic value such as `"Name"` or `"Description"`, and not the same label as the ID property. | | ✅ |
+|  new  | [sap-browser-api-error](docs/rules/sap-browser-api-error.md) | Detect errors for forbidden usages of `(window.)document` APIs. | | ✅ |
+|  new  | [sap-concatenated-strings](docs/rules/sap-concatenated-strings.md) | Detect string concatenation in localization setter methods. | | ✅ |
+|  new  | [sap-controller-hook-bad-callback-signature](docs/rules/sap-controller-hook-bad-callback-signature.md) | Detect malformed callback signatures in controller hook JSDoc. | | ✅ |
+|  new  | [sap-controller-hook-missing-callback-signature](docs/rules/sap-controller-hook-missing-callback-signature.md) | Ensure controller hooks have a `@callback` signature in their JSDoc. | | ✅ |
+|  new  | [sap-controller-hook-name-convention](docs/rules/sap-controller-hook-name-convention.md) | Ensure controller hook callback names follow the `ext` naming convention. | | ✅ |
+|  new  | [sap-eslint-disable-count](docs/rules/sap-eslint-disable-count.md) | Report detected uses of `eslint-disable` comments. | | ✅ |
+|  new  | [sap-no-inline-delete-with-multiselect](docs/rules/sap-no-inline-delete-with-multiselect.md) | Ensures that `inlineDelete` and `multiselect` are not both enabled in the same table settings, as they are mutually exclusive and will cause the application to fail. | | ✅ |
+|  new  | [sap-no-console-log](docs/rules/sap-no-console-log.md) | Detect usage of `console.log` and related console methods. | | ✅ |
+|  new  | [sap-no-core-model-usage](docs/rules/sap-no-core-model-usage.md) | Detect usage of `getModel()` and `setModel()` on `sap.ui.getCore()`. | | ✅ |
+|  new  | [sap-no-upload](docs/rules/sap-no-upload.md) | Detect usage of `sap.ca.ui.FileUpload` and `sap.ca.ui.AddPicture` controls. | | ✅ |
+|  new  | [sap-not-localized](docs/rules/sap-not-localized.md) | Ensure strings passed to localization setter methods are not hardcoded. | | ✅ |
+|  new  | [sap-unescaped-write](docs/rules/sap-unescaped-write.md) | Detect unescaped `write()` calls in UI5 renderers (potential XSS). | | ✅ |
+|  10.17.0  | [sap-micro-chart-requires-navigation-entity](docs/rules/sap-micro-chart-requires-navigation-entity.md) | Ensures that micro chart measures and dimensions reference properties using a 1:n navigation entity path. | | ✅ |
+|  10.16.0  | [sap-no-inline-delete-with-multiselect](docs/rules/sap-no-inline-delete-with-multiselect.md) | Ensures that `inlineDelete` and `multiselect` are not both enabled in the same table settings, as they are mutually exclusive and will cause the application to fail. | | ✅ |
+|  10.15.0  | [sap-no-comma-in-section-title](docs/rules/sap-no-comma-in-section-title.md) | Ensures that section and subsection titles in object pages for SAP Fiori elements applications do not contain commas. | | ✅ |
+|  10.14.0  | [sap-no-path-hidden-on-interactive-columns](docs/rules/sap-no-path-hidden-on-interactive-columns.md) | A `UI.Hidden` annotation with a dynamic path must not be used on sortable or filterable columns. | | ✅ |
+|  10.12.0  | [sap-field-group-in-table-type-restriction](docs/rules/sap-field-group-in-table-type-restriction.md) | Ensures `UI.FieldGroup` is not used in a `GridTable`, `AnalyticalTable`, or `TreeTable`, because it is only supported in a `ResponsiveTable`. | | ✅ |
+|  10.11.0  | [sap-no-deep-collection-facets](docs/rules/sap-no-deep-collection-facets.md) | Ensures `UI.CollectionFacet` elements are not nested at third level or deeper. | | ✅ |
+|  10.10.0  | [sap-no-single-facet-in-collection](docs/rules/sap-no-single-facet-in-collection.md) | Ensures `UI.CollectionFacet` is not used when it contains only a single `UI.ReferenceFacet`. | | ✅ |
+|  10.8.0   | [sap-cloud-dev-adaptation-status](docs/rules/sap-cloud-dev-adaptation-status.md) | Ensures that `cloudDevAdaptationStatus` is defined in the `sap.fiori` section of the `manifest.json` file. | | ✅ |
+|  10.7.6   | [sap-no-live-mode](docs/rules/sap-no-live-mode.md) | Ensures that live mode is not enabled. | | ✅ |
+|  10.2.0   | [sap-description-column-label](docs/rules/sap-description-column-label.md) | Ensures that the description text property referenced using the `Common.Text` annotation has a meaningful `Common.Label` annotation. It must not be a generic value such as "Name" or "Description", and not the same label as the `ID` property. | | ✅ |
 |  9.12.0   | [sap-text-arrangement-hidden](docs/rules/sap-text-arrangement-hidden.md) | Ensures that the text property referenced by a `UI.TextArrangement` annotation using the `Common.Text` annotation is not hidden by the `UI.Hidden` annotation | | ✅ |
 |  9.11.0   | [sap-no-data-field-intent-based-navigation](docs/rules/sap-no-data-field-intent-based-navigation.md) | Ensures neither `DataFieldForIntentBasedNavigation` nor `DataFieldWithIntentBasedNavigation` are used in tables or form fields in SAP Fiori elements applications. | | ✅ |
 |  9.10.0   | [sap-condensed-table-layout](docs/rules/sap-condensed-table-layout.md) | Requires `condensedTableLayout` to be enabled when using a grid table, analytical table, or tree table. | | ✅ |
@@ -128,15 +149,14 @@ npx --yes @sap-ux/create@latest convert eslint-config --help
 |   9.8.0   | [sap-table-personalization](docs/rules/sap-table-personalization.md) | Ensures that all table `personalization` options are enabled in the OData V4 applications. | | ✅ |
 |   9.7.0   | [sap-anchor-bar-visible](docs/rules/sap-anchor-bar-visible.md) | Anchor Bar Visible should not be set to false in manifest settings for object page headers (except form entry object pages). | | ✅ |
 |   9.5.0   | [sap-table-column-vertical-alignment](docs/rules/sap-table-column-vertical-alignment.md) | Ensures `tableColumnVerticalAlignment` Configuration for Responsive Type Tables in SAP Fiori Elements applications | | ✅ |
-|   9.4.0   | [sap-enable-export](docs/rules/sap-enable-export.md) | Ensures that the export to Excel functionality in any OData V4 applications tables is available | | ✅ |
-|   9.4.0   | [sap-enable-paste](docs/rules/sap-enable-paste.md) | Ensures that the paste functionality in any OData V4 applications tables is available | | ✅ |
+|   9.4.0   | [sap-enable-export](docs/rules/sap-enable-export.md) | Ensures that the export to Excel functionality for tables in OData V4 and OData V2 applications is enabled | | ✅ |
+|   9.4.0   | [sap-enable-paste](docs/rules/sap-enable-paste.md) | Ensures that the paste functionality for tables in OData V4 and OData V2 applications is enabled | | ✅ |
 |   9.3.1   | [sap-state-preservation-mode](docs/rules/sap-state-preservation-mode.md) | Ensures Valid `statePreservationMode` Configuration in SAP Fiori Elements | | ✅ |
 |   9.1.0   | [sap-copy-to-clipboard](docs/rules/sap-copy-to-clipboard.md) | Ensures that the copy functionality in any table is enabled. "Copy" button is shown by default. | | ✅ |
 |   9.1.0   | [sap-creation-mode-for-table](docs/rules/sap-creation-mode-for-table.md) | Validates that the table creation mode (`createMode` in OData V2 and `creationMode` in OData V4) is correctly configured to ensure an optimal user experience when creating new table entries. | | ✅ |
 |   9.1.0   | [sap-flex-enabled](docs/rules/sap-flex-enabled.md) | Ensures that the `flexEnabled` property is set to `true` in the `sap.ui5` section of the `manifest.json` file for applications using UI5 version 1.56 or higher. | | ✅ |
 |   9.1.0   | [sap-width-including-column-header](docs/rules/sap-width-including-column-header.md) | Ensures that small tables (less than six columns) have the `widthIncludingColumnHeader` property set to `true` for better calculation of column width. | | ✅ |
 |   9.0.0   | [sap-bookmark-performance](docs/rules/sap-bookmark-performance.md) | Ensure the correct usage of the auto-refresh interval options for `sap.ushell.ui.footerbar.AddBookmarkButton`. | ✅ | ✅ |
-|   9.0.0   | [sap-browser-api-error](docs/rules/sap-browser-api-error.md) | Detect forbidden usages of `(window.)document` APIs. | | |
 |   9.0.0   | [sap-browser-api-warning](docs/rules/sap-browser-api-warning.md) | Detect warnings for usages of `(window.)document` APIs. | ✅ | ✅ |
 |   9.0.0   | [sap-cross-application-navigation](docs/rules/sap-cross-application-navigation.md) | Do not use a static list of cross-application navigation targets. | ✅ | ✅ |
 |   9.0.0   | [sap-forbidden-window-property](docs/rules/sap-forbidden-window-property.md) | Detect the definition of global properties in the `window` object. | ✅ | ✅ |
@@ -149,7 +169,6 @@ npx --yes @sap-ux/create@latest convert eslint-config --help
 |   9.0.0   | [sap-no-dynamic-style-insertion](docs/rules/sap-no-dynamic-style-insertion.md) | Detect the usage of `document.styleSheets` (dynamic style insertion). | ✅ | ✅ |
 |   9.0.0   | [sap-no-element-creation](docs/rules/sap-no-element-creation.md) | Detect direct element creation. | ✅ | ✅ |
 |   9.0.0   | [sap-no-encode-file-service](docs/rules/sap-no-encode-file-service.md) | Detect the usage of `/sap/bc/ui2/encode_file`. | ✅ | ✅ |
-|   9.0.0   | [sap-no-event-prop](docs/rules/sap-no-event-prop.md) | Flag use of private members from `sap.ui.base.Event`. Use `sap-no-ui5base-prop` instead. | | |
 |   9.0.0   | [sap-no-exec-command](docs/rules/sap-no-exec-command.md) | Detect the usage of `execCommand`. | ✅ | ✅ |
 |   9.0.0   | [sap-no-global-define](docs/rules/sap-no-global-define.md) | Detect the definition of global properties in the `window` object. | ✅ | ✅ |
 |   9.0.0   | [sap-no-global-event](docs/rules/sap-no-global-event.md) | Detect the global event handling override. | ✅ | ✅ |
@@ -172,15 +191,12 @@ npx --yes @sap-ux/create@latest convert eslint-config --help
 |   9.0.0   | [sap-no-sessionstorage](docs/rules/sap-no-sessionstorage.md) | Detect the usage of `sessionStorage`. | ✅ | ✅ |
 |   9.0.0   | [sap-no-ui5-prop-warning](docs/rules/sap-no-ui5-prop-warning.md) | Flag use of private members of the `sap.ui.model.odata.v2.ODataModel`. | ✅ | ✅ |
 |   9.0.0   | [sap-no-ui5base-prop](docs/rules/sap-no-ui5base-prop.md) | Flag use of private members from `sap.ui.base` classes. | ✅ | ✅ |
-|   9.0.0   | [sap-no-ui5eventprovider-prop](docs/rules/sap-no-ui5eventprovider-prop.md) | Detect private property usage of `sap.ui.base.EventProvider`. Use `sap-no-ui5base-prop` instead. | | |
-|   9.0.0   | [sap-no-ui5odatamodel-prop](docs/rules/sap-no-ui5odatamodel-prop.md) | Detect private property usage of the UI5 OData model. Use `sap-no-ui5base-prop` instead. | | |
-|   9.0.0   | [sap-no-window-alert](docs/rules/sap-no-window-alert.md) | Flag use of `window.alert`. | | |
 |   9.0.0   | [sap-opa5-autowait-true](docs/rules/sap-opa5-autowait-true.md) | Check if `autowait` is `true` in `Opa5.extendConfig`. | ✅ | ✅ |
 |   9.0.0   | [sap-timeout-usage](docs/rules/sap-timeout-usage.md) | Detect `setTimeout` usage with a value greater than zero. | ✅ | ✅ |
 |   9.0.0   | [sap-ui5-forms](docs/rules/sap-ui5-forms.md) | Detect invalid content for `SimpleForm`, `Form`, and `SmartForm`. | ✅ | ✅ |
 |   9.0.0   | [sap-ui5-global-eval](docs/rules/sap-ui5-global-eval.md) | Detect the usage of `globalEval()` and `eval()`. | ✅ | ✅ |
 |   9.0.0   | [sap-ui5-legacy-factories](docs/rules/sap-ui5-legacy-factories.md) | Detect legacy UI5 factories that lead to synchronous loading. | ✅ | ✅ |
 |   9.0.0   | [sap-ui5-legacy-jquerysap-usage](docs/rules/sap-ui5-legacy-jquerysap-usage.md) | Detect legacy `jQuery.sap` usage. | ✅ | ✅ |
-|   9.0.0   | [sap-ui5-no-private-prop](docs/rules/sap-ui5-no-private-prop.md) | Detect the usage of private properties and functions of UI5 elements. | | |
+|   9.0.0   | [sap-ui5-no-private-prop](docs/rules/sap-ui5-no-private-prop.md) | Detect the usage of private properties and functions of UI5 elements. | ✅ | ✅ |
 |   9.0.0   | [sap-usage-basemastercontroller](docs/rules/sap-usage-basemastercontroller.md) | Detect the usage of the deprecated `BaseMasterController`. | ✅ | ✅ |
 </div>

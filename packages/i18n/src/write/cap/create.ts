@@ -1,9 +1,9 @@
 import { join } from 'node:path';
-import type { CdsEnvironment, NewI18nEntry } from '../../types';
-import { getI18nConfiguration, getCapI18nFolder } from '../../utils';
-import { tryAddJsonTexts } from './json';
-import { tryAddCsvTexts } from './csv';
-import { tryAddPropertiesTexts } from './properties';
+import type { CdsEnvironment, NewI18nEntry } from '../../types.js';
+import { getI18nConfiguration, getCapI18nFolder } from '../../utils/index.js';
+import { tryAddJsonTexts } from './json.js';
+import { tryAddCsvTexts } from './csv.js';
+import { tryAddPropertiesTexts } from './properties.js';
 import type { Editor } from 'mem-fs-editor';
 
 /**

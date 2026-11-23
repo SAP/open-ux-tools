@@ -1,12 +1,12 @@
-import type { FioriElementsApp, LROPSettings } from '../types';
-import { TemplateType } from '../types';
+import type { FioriElementsApp, LROPSettings } from '../types.js';
+import { TemplateType } from '../types.js';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { OdataService } from '@sap-ux/odata-service-writer';
 import type { Editor } from 'mem-fs-editor';
 import { join } from 'node:path';
 import { render } from 'ejs';
 import semVer from 'semver';
-import type { ManifestEntitySettings } from './types';
+import type { ManifestEntitySettings } from './types.js';
 
 /**
  * Extend the manifest.json file passed via the fs reference with the template and settings specified.

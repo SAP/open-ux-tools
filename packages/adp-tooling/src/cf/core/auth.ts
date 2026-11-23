@@ -2,7 +2,7 @@ import { cfGetAuthToken } from '@sap/cf-tools';
 
 import type { ToolsLogger } from '@sap-ux/logger';
 
-import type { CfConfig } from '../../types';
+import type { CfConfig } from '../../types.js';
 
 /**
  * Check if the external login is enabled.

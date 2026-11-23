@@ -13,7 +13,7 @@ describe('flp/initCdm', () => {
     });
 
     test('ensure that ushell config is set properly', async () => {
-        await import('../../../src/flp/initCdm');
+        await import('../../../src/flp/initCdm.js');
 
         expect((window as unknown as Window)['sap-ushell-config']).toMatchSnapshot();
     });
@@ -24,13 +24,13 @@ describe('flp/initCdm', () => {
         scriptElement.dataset.basePath = '/myapp';
         documentMock.getElementById.mockReturnValue(scriptElement);
 
-        await import('../../../src/flp/initCdm');
+        await import('../../../src/flp/initCdm.js');
 
         const config = (window as unknown as Window)['sap-ushell-config'] as Record<string, unknown>;
         expect((config['ushell'] as any).homeApp.component.url).toBe('/myapp/preview/client/flp/homepage');
     });
 
     test('ensure that homepage component is defined', async () => {
-        expect(await import('../../../src/flp/homepage/Component')).toBeDefined();
+        expect(await import('../../../src/flp/homepage/Component.js')).toBeDefined();
     });
 });

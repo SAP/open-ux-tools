@@ -1,5 +1,5 @@
-import { isMTAInstalled, promptNames, t } from '../utils';
-import type { Target } from '../types';
+import { isMTAInstalled, promptNames, t } from '../utils/index.js';
+import type { Target } from '../types/index.js';
 import type { Question, ListQuestion } from 'inquirer';
 
 /**

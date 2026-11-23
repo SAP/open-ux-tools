@@ -32,3 +32,8 @@ server:
         backend:
           - path: /sap
             url: http://localhost
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**

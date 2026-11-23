@@ -6,7 +6,7 @@ import View from 'sap/ui/core/mvc/View';
 import type Selector from 'sap/ui/fl/Selector';
 import JsControlTreeModifier from 'sap/ui/core/util/reflection/JsControlTreeModifier';
 import Log from 'sap/base/Log';
-import { getError } from './error';
+import { getError } from './error.js';
 
 /**
  * Gets Component by id.

@@ -1,6 +1,6 @@
 import VersionInfo from 'sap/ui/VersionInfo';
 import Log from 'sap/base/Log';
-import { sendInfoCenterMessage } from './info-center-message';
+import { sendInfoCenterMessage } from './info-center-message.js';
 import { MessageBarType } from '@sap-ux-private/control-property-editor-common';
 
 type SingleVersionInfo =

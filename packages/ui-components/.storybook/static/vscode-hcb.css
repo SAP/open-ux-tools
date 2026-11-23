@@ -108,6 +108,7 @@
     --vscode-button-separator: rgba(255, 255, 255, 0.4);
     --vscode-button-border: #6fc3df;
     --vscode-button-secondaryForeground: #ffffff;
+    --vscode-button-secondaryBorder: #6fc3df;
     --vscode-checkbox-background: #000000;
     --vscode-checkbox-selectBackground: #0c141f;
     --vscode-checkbox-foreground: #ffffff;

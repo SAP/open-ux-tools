@@ -1,9 +1,9 @@
 import type { FileBrowserQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
-import { t } from '../../../i18n';
-import type { MetadataPromptOptions, OdataServiceAnswers } from '../../../types';
-import { promptNames } from '../../../types';
-import { validateMetadataFile } from './validators';
-import { PromptState } from '../../../utils';
+import { t } from '../../../i18n.js';
+import type { MetadataPromptOptions, OdataServiceAnswers } from '../../../types.js';
+import { promptNames } from '../../../types.js';
+import { validateMetadataFile } from './validators.js';
+import { PromptState } from '../../../utils/index.js';
 
 /**
  * Returns the metadata file question based on the provided @type{MetadataPromptOptions}.

@@ -1,0 +1,7 @@
+{
+  "name": "app-with-nested-lib",
+  "version": "1.0.0",
+  "devDependencies": {
+    "@sap-ux/ui5-tooling": "^1.0.0"
+  }
+}

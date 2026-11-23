@@ -23,7 +23,13 @@ export enum ColumnControlType {
     UICombobox,
     UIBooleanSelect
 }
-export { CheckboxVisibility, SelectionMode, Selection, DetailsListLayoutMode, IDropdownOption } from '@fluentui/react';
+export {
+    CheckboxVisibility,
+    SelectionMode,
+    Selection,
+    DetailsListLayoutMode,
+    type IDropdownOption
+} from '@fluentui/react';
 
 export type UIDocument = { [key: string]: any };
 export type UIColumn = IColumn & {

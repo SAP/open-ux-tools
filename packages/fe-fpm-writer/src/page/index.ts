@@ -1,16 +1,6 @@
-import type { CustomPage, ObjectPage, ListReport, Navigation } from './types';
-import { validatePageConfig } from './common';
-import { generate as generateCustomPage } from './custom';
-import { generate as generateObjectPage } from './object';
-import { generate as generateListReport } from './list';
-
-export {
-    validatePageConfig,
-    generateCustomPage,
-    generateObjectPage,
-    generateListReport,
-    CustomPage,
-    ObjectPage,
-    ListReport,
-    Navigation
-};
+export { type CustomPage, type ObjectPage, type ListReport, type Navigation } from './types.js';
+export { validatePageConfig } from './common.js';
+export { generate as generateCustomPage } from './custom.js';
+export { generate as generateObjectPage } from './object.js';
+export { generate as generateListReport } from './list.js';
+export { generate as generateOutboundNavigation, deleteOutboundNavigation } from './outboundNavigation.js';

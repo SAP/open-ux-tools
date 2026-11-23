@@ -1,9 +1,9 @@
 import type { Editor } from 'mem-fs-editor';
-import type { ReuseLibConfig } from './types';
+import type { ReuseLibConfig } from './types.js';
 import { UI5Config, type ServeStaticPath } from '@sap-ux/ui5-config';
 import { getWebappPath, type Manifest } from '@sap-ux/project-access';
 import { join, relative } from 'node:path';
-import { yamlFiles, ManifestReuseType } from './constants';
+import { yamlFiles, ManifestReuseType } from './constants.js';
 
 /**
  * Updates manifest with references for the chosen reuse libs.

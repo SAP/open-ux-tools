@@ -1,0 +1,16 @@
+{
+  "d": {
+    "results": [
+      {
+        "__metadata": {
+          "id": "C_DefectRecordCodeVH(DefectCodeGroup='QM-M',DefectCode='1')",
+          "uri": "C_DefectRecordCodeVH(DefectCodeGroup='QM-M',DefectCode='1')",
+          "type": "QM_DEFECT_RECORD_SRV.C_DefectRecordCodeVHType"
+        },
+        "DefectCodeGroup": "QM-M",
+        "DefectCode": "1",
+        "DefectCodeText": "Dimension"
+      }
+    ]
+  }
+}

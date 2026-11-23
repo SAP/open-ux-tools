@@ -6,8 +6,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 import chalk from 'chalk';
 import { diff } from 'jest-diff';
-import type { MatcherIgnore } from '../types';
-import type { FileMatcherOptions } from './types';
+import type { MatcherIgnore } from '../types.js';
+import type { FileMatcherOptions } from './types.js';
 import filenamify from 'filenamify';
 
 const removedValueToken = '--IGNORED-VALUE--';

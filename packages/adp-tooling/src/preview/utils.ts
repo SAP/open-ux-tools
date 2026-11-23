@@ -1,5 +1,5 @@
 import { DirName } from '@sap-ux/project-access';
-import type { AppDescriptorV4Change } from '../types';
+import type { AppDescriptorV4Change } from '../types.js';
 import { join } from 'node:path';
 
 /**

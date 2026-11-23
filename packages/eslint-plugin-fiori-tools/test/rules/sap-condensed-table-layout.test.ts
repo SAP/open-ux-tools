@@ -1,6 +1,6 @@
 import { RuleTester } from 'eslint';
-import condensedTableLayoutRule from '../../src/rules/sap-condensed-table-layout';
-import { meta, languages } from '../../src/index';
+import condensedTableLayoutRule from '../../src/rules/sap-condensed-table-layout.js';
+import { meta, languages } from '../../src/index.js';
 import {
     getAnnotationsAsXmlCode,
     getManifestAsCode,
@@ -12,7 +12,7 @@ import {
     V4_MANIFEST_PATH,
     V2_MANIFEST,
     V2_MANIFEST_PATH
-} from '../test-helper';
+} from '../test-helper.js';
 
 const ruleTester = new RuleTester({
     plugins: { ['@sap-ux/eslint-plugin-fiori-tools']: { ...meta, languages } },

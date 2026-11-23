@@ -1,2 +1,2 @@
-export { ExternalActionBtns } from './ExternalActionBtns';
-export { SystemActionBtns } from './SystemActionBtns';
+export { ExternalActionBtns } from './ExternalActionBtns.js';
+export { SystemActionBtns } from './SystemActionBtns.js';

@@ -1,5 +1,5 @@
-import type { BackendSystem } from '../entities/backend-system';
-import { SystemType } from '../types';
+import type { BackendSystem } from '../entities/backend-system.js';
+import { SystemType } from '../types.js';
 
 /**
  * Determines the backend system type based on the authentication type and service keys (defaults to OnPrem).

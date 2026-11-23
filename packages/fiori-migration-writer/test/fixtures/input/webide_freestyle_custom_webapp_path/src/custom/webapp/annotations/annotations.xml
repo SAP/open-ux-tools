@@ -1,0 +1,15 @@
+<edmx:Edmx xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx" Version="4.0">
+	<edmx:Reference Uri="/sap/opu/odata/SAP/FAR_CUSTOMER_LINE_ITEMS/$metadata"/>
+	<edmx:Reference Uri="https://wiki.scn.sap.com/wiki/download/attachments/448470968/UI.xml?api=v2">
+		<edmx:Include Alias="UI" Namespace="com.sap.vocabularies.UI.v1"/>
+	</edmx:Reference>
+	<edmx:Reference Uri="https://wiki.scn.sap.com/wiki/download/attachments/448470974/Common.xml?api=v2">
+		<edmx:Include Alias="Common" Namespace="com.sap.vocabularies.Common.v1"/>
+	</edmx:Reference>
+	<edmx:DataServices>
+		<Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="fin.central.listreport.reuse">
+			<Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="FAR_CUSTOMER_LINE_ITEMS.Item">
+			</Annotations>
+		</Schema>
+	</edmx:DataServices>
+</edmx:Edmx>

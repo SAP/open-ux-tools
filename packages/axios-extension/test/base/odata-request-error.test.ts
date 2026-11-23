@@ -1,5 +1,5 @@
-import type { ODataError } from '../../src/base/odata-request-error';
-import { ODataRequestError } from '../../src/base/odata-request-error';
+import type { ODataError } from '../../src/base/odata-request-error.js';
+import { ODataRequestError } from '../../src/base/odata-request-error.js';
 
 describe('ODataRequestError', () => {
     const error: ODataError = {

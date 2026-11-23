@@ -5,7 +5,7 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-import rule from '../../src/rules/sap-opa5-autowait-true';
+import rule from '../../src/rules/sap-opa5-autowait-true.js';
 import { RuleTester } from 'eslint';
 
 //------------------------------------------------------------------------------

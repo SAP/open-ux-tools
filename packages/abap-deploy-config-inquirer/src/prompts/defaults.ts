@@ -1,12 +1,12 @@
-import { DEFAULT_PACKAGE_ABAP } from '../constants';
-import { PromptState } from './prompt-state';
+import { DEFAULT_PACKAGE_ABAP } from '../constants.js';
+import { PromptState } from './prompt-state.js';
 import {
     PackageInputChoices,
     TargetSystemType,
     TransportChoices,
     type AbapSystemChoice,
     type PackagePromptOptions
-} from '../types';
+} from '../types.js';
 
 /**
  * Determines the default target system from the abap system choices.

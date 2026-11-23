@@ -2,7 +2,7 @@ import * as React from 'react';
 import { render } from '@testing-library/react';
 import { TranslationInput } from '../../../src/components';
 import type { TranslationInputProps } from '../../../src/components';
-import { TranslationProvider } from '../../../src/context/TranslationContext';
+import { TranslationProvider, useTranslation } from '../../../src/context/TranslationContext';
 import type { TranslationProviderProps } from '../../../src/context/TranslationContext';
 import { acceptI18nCallout, clickI18nButton, isI18nLoading } from '../utils';
 import { TRANSLATE_EVENT_SHOW, TRANSLATE_EVENT_UPDATE } from '../../../src/types';
@@ -39,6 +39,30 @@ describe('TranslationProvider', () => {
 
     afterEach(() => {
         jest.clearAllMocks();
+    });
+
+    it('updates the focus restoration setting in the context', () => {
+        const Consumer = () => {
+            const { translationInputProps } = useTranslation();
+            return (
+                <span data-testid="focus-setting">{String(translationInputProps?.preventFocusRestoreOnAccept)}</span>
+            );
+        };
+        const { getByTestId, rerender } = render(
+            <TranslationProvider {...translationProps}>
+                <Consumer />
+            </TranslationProvider>
+        );
+        expect(getByTestId('focus-setting').textContent).toBe('undefined');
+
+        for (const preventFocusRestoreOnAccept of [true, false]) {
+            rerender(
+                <TranslationProvider {...translationProps} translationInputProps={{ preventFocusRestoreOnAccept }}>
+                    <Consumer />
+                </TranslationProvider>
+            );
+            expect(getByTestId('focus-setting').textContent).toBe(String(preventFocusRestoreOnAccept));
+        }
     });
 
     it('Render translation input without value - trigger i18n entry creation', () => {

@@ -1,1 +1,1 @@
-export * from './UIModal';
+export * from './UIModal.js';

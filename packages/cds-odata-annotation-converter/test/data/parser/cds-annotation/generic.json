@@ -1,0 +1,16 @@
+[
+    {
+        "type": "element",
+        "range": "[(0,0)..(0,22)]",
+        "name": "Annotation",
+        "attributes": {
+            "Term": {
+                "type": "attribute",
+                "name": "Term",
+                "value": "CDS.CdsPersistenceExists",
+                "valueRange": "[(0,0)..(0,22)]"
+            }
+        },
+        "content": []
+    }
+]

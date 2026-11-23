@@ -1,0 +1,34 @@
+{
+	"fileName": "id_1512560743970_100_propertyChange",
+	"fileType": "change",
+	"changeType": "propertyChange",
+	"reference": "i2d.qm.defect.records1.Component",
+	"packageName": "$TMP",
+	"content": {
+		"property": "visible",
+		"newValue": false
+	},
+	"selector": {
+		"id": "i2d.qm.defect.records1::sap.suite.ui.generic.template.ListReport.view.ListReport::C_DefectRecord--deleteEntry",
+		"type": "sap.m.Button",
+		"idIsLocal": false
+	},
+	"layer": "VENDOR",
+	"texts": {},
+	"namespace": "apps/i2d.qm.defect.records1/changes/",
+	"creation": "2017-12-06T11:45:48.275Z",
+	"originalLanguage": "EN",
+	"conditions": {},
+	"context": "",
+	"support": {
+		"generator": "Change.createInitialFileContent",
+		"service": "",
+		"user": "",
+		"sapui5Version": "1.50.6"
+	},
+	"dependentSelector": {},
+	"validAppVersions": {
+		"creation": "${project.version}",
+		"from": "${project.version}"
+	}
+}

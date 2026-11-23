@@ -2,19 +2,27 @@
   "extends": "../../tsconfig.json",
   "include": [
     "../../types/mem-fs-editor.d.ts",
+    "../../types/ui5.d.ts",
     "src",
     "src/**/*.json"
   ],
   "compilerOptions": {
     "rootDir": "src",
-    "outDir": "dist"
+    "outDir": "dist",
+    "isolatedModules": false
   },
   "references": [
+    {
+      "path": "../adp-tooling"
+    },
     {
       "path": "../axios-extension"
     },
     {
       "path": "../btp-utils"
+    },
+    {
+      "path": "../fe-fpm-writer"
     },
     {
       "path": "../feature-toggle"
@@ -35,22 +43,40 @@
       "path": "../nodejs-utils"
     },
     {
+      "path": "../odata-annotation-core"
+    },
+    {
       "path": "../odata-annotation-core-types"
     },
     {
       "path": "../odata-entity-model"
     },
     {
+      "path": "../odata-service-writer"
+    },
+    {
       "path": "../project-access"
     },
     {
+      "path": "../project-input-validator"
+    },
+    {
       "path": "../store"
+    },
+    {
+      "path": "../system-access"
     },
     {
       "path": "../telemetry"
     },
     {
       "path": "../text-document-utils"
+    },
+    {
+      "path": "../ui5-config"
+    },
+    {
+      "path": "../ui5-info"
     }
   ]
 }

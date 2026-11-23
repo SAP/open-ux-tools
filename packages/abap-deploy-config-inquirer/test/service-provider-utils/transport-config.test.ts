@@ -1,18 +1,22 @@
+import { jest } from '@jest/globals';
 import type { AtoSettings } from '@sap-ux/axios-extension';
 import { TenantType } from '@sap-ux/axios-extension';
-import { t } from '../../src/i18n';
-import { getTransportConfigInstance } from '../../src/service-provider-utils';
-import { AbapServiceProviderManager } from '../../src/service-provider-utils/abap-service-provider';
-import LoggerHelper from '../../src/logger-helper';
 import { AxiosError } from 'axios';
-import { addi18nResourceBundle } from '@sap-ux/inquirer-common';
 
-jest.mock('../../src/service-provider-utils/abap-service-provider', () => ({
-    ...jest.requireActual('../../src/service-provider-utils/abap-service-provider'),
-    AbapServiceProviderManager: { getOrCreateServiceProvider: jest.fn(), deleteExistingServiceProvider: jest.fn() }
+const mockGetOrCreateServiceProvider = jest.fn() as jest.Mock;
+const mockDeleteExistingServiceProvider = jest.fn() as jest.Mock;
+
+jest.unstable_mockModule('../../src/service-provider-utils/abap-service-provider', () => ({
+    AbapServiceProviderManager: {
+        getOrCreateServiceProvider: mockGetOrCreateServiceProvider,
+        deleteExistingServiceProvider: mockDeleteExistingServiceProvider
+    }
 }));
 
-const mockGetOrCreateServiceProvider = AbapServiceProviderManager.getOrCreateServiceProvider as jest.Mock;
+const { t } = await import('../../src/i18n.js');
+const { getTransportConfigInstance } = await import('../../src/service-provider-utils/transport-config.js');
+const LoggerHelper = (await import('../../src/logger-helper.js')).default;
+const { addi18nResourceBundle } = await import('@sap-ux/inquirer-common');
 
 describe('getTransportConfigInstance', () => {
     it('should return the dummy instance of TransportConfig', async () => {
@@ -199,7 +203,11 @@ describe('getTransportConfigInstance', () => {
             t('warnings.certificateError', { url: 'https://example.com', error: 'self signed certificate' })
         );
         expect(loggerSpyDebug).toHaveBeenCalledWith(
-            t('errors.debugAbapTargetSystem', { url: 'https://example.com', error: 'self signed certificate' })
+            t('errors.debugAbapTargetSystem', {
+                method: 'init',
+                url: 'https://example.com',
+                error: 'self signed certificate'
+            })
         );
         expect(loggerSpyInfo).toHaveBeenCalledWith(
             expect.stringContaining('https://ga.support.sap.com/dtp/viewer/index.html#/tree/3046/actions/53643')

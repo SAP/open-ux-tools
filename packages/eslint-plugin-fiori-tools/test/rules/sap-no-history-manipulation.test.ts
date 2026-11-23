@@ -6,7 +6,7 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-import rule from '../../src/rules/sap-no-history-manipulation';
+import rule from '../../src/rules/sap-no-history-manipulation.js';
 import { RuleTester } from 'eslint';
 
 //------------------------------------------------------------------------------

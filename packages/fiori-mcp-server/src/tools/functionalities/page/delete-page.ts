@@ -4,12 +4,12 @@ import type {
     FunctionalityHandlers,
     GetFunctionalityDetailsInput,
     GetFunctionalityDetailsOutput
-} from '../../../types';
-import { Application } from './application';
-import { SapuxFtfsFileIO, getServiceName } from '../../../page-editor-api';
-import { convertToSchema, resolveApplication, validateWithSchema } from '../../../utils';
-import { DELETE_PAGE } from '../../../constant';
-import { buildPageDeletionSchema } from './schema';
+} from '../../../types/index.js';
+import { Application } from './application.js';
+import { SapuxFtfsFileIO, getServiceName } from '../../../page-editor-api/index.js';
+import { convertToSchema, resolveApplication, validateWithSchema } from '../../../utils/index.js';
+import { DELETE_PAGE } from '../../../constant.js';
+import { buildPageDeletionSchema } from './schema.js';
 
 export const DELETE_PAGE_FUNCTIONALITY: GetFunctionalityDetailsOutput = {
     functionalityId: DELETE_PAGE,

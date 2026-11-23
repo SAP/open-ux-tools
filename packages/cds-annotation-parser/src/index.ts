@@ -1,6 +1,6 @@
 import type { Position } from '@sap-ux/text-document-utils';
-import { parse as cdsAnnotationParser } from './parser';
-import { buildAst } from './transformer';
+import { parse as cdsAnnotationParser } from './parser/index.js';
+import { buildAst } from './transformer/index.js';
 
 export const parse = (text: string, startPosition?: Position) => {
     const { cst, tokens } = cdsAnnotationParser(text);
@@ -31,6 +31,17 @@ export {
     MULTI_LINE_STRING_LITERAL_TYPE,
     SEPARATOR_TYPE,
     IDENTIFIER_TYPE,
+    FLATTENED_EXPRESSION_TYPE,
+    FLATTENED_PATH_TYPE,
+    FLATTENED_ANNOTATION_SEGMENT_TYPE,
+    FLATTENED_PROPERTY_SEGMENT_TYPE,
+    operatorMap,
+    positionIsInExpressionWhiteSpace,
+    containsIncorrectExpressions,
+    getEdmOperatorMap
+} from './transformer/index.js';
+
+export type {
     Record,
     Node,
     AnnotationValue,
@@ -43,10 +54,6 @@ export {
     UnsupportedOperatorExpression,
     IncorrectExpression,
     CorrectExpression,
-    operatorMap,
-    positionIsInExpressionWhiteSpace,
-    containsIncorrectExpressions,
-    getEdmOperatorMap,
     StringLiteral,
     Path,
     EmptyValue,
@@ -63,10 +70,20 @@ export {
     Assignment,
     Separator,
     NarrowAnnotationNode,
+    FlattenedExpression,
+    FlattenedPath,
+    FlattenedPathSegment,
+    FlattenedAnnotationSegment,
+    FlattenedPropertySegment
+} from './transformer/index.js';
+
+export {
+    arePositionsEqual,
+    copyPosition,
+    copyRange,
+    areRangesEqual,
     nodeRange,
     isContainer
-} from './transformer';
-
-export { arePositionsEqual, copyPosition, copyRange, areRangesEqual } from './transformer';
-export { ReservedProperties, isReservedProperty } from './constants';
-export { findAnnotationNode, getNode, getAstNodes } from './find-annotation-node';
+} from './transformer/index.js';
+export { ReservedProperties, isReservedProperty } from './constants.js';
+export { findAnnotationNode, getNode, getAstNodes } from './find-annotation-node.js';

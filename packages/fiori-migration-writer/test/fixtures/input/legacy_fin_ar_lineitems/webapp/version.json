@@ -1,0 +1,8 @@
+{ "application": "${project.artifactId}",
+  "version": "${project.version}",
+  "buildNumber": "${env.BUILD_NUMBER}",
+  "buildId": "${env.BUILD_ID}",
+  "branch": "${env.GIT_BRANCH}",
+  "revision": "${env.GIT_COMMIT}",
+  "GitURL": "${env.GIT_URL}"
+}

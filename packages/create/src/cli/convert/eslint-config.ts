@@ -1,8 +1,8 @@
 import type { Command } from 'commander';
-import { getLogger, setLogLevelVerbose, traceChanges } from '../../tracing';
-import { validateBasePath } from '../../validation';
+import { getLogger, setLogLevelVerbose, traceChanges } from '../../tracing/index.js';
+import { validateBasePath } from '../../validation/index.js';
 import { convertEslintConfig as migrateEslintConfig } from '@sap-ux/app-config-writer';
-import { runNpmInstallCommand } from '../../common';
+import { runNpmInstallCommand } from '../../common/index.js';
 import { execNpmCommand } from '@sap-ux/project-access';
 import { join } from 'node:path';
 
@@ -82,7 +82,9 @@ async function convertEslintConfig(
                     });
                     logger.info('npm uninstall completed successfully.');
                     logger.info(`Executing \`npm install\`.`);
-                    runNpmInstallCommand(basePath, undefined, { logger });
+                    runNpmInstallCommand(basePath, undefined, { logger }).catch(() => {
+                        // Error already logged by runNpmInstallCommand
+                    });
                 } catch (error) {
                     logger.error(`npm command failed. '${(error as Error).message}'`);
                 }

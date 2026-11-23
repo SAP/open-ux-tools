@@ -11,9 +11,10 @@ import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import { randomUUID } from 'node:crypto';
 import osName from 'os-name';
-import { version } from '../../package.json';
-import { logger } from '../utils/logger';
-import { t } from '../i18n';
+import packageJson from '../../package.json' with { type: 'json' };
+const { version } = packageJson;
+import { logger } from '../utils/logger.js';
+import { t } from '../i18n.js';
 
 export const mcpServerName = '@sap-ux/fiori-mcp-server';
 export const unknownTool = 'unknown-tool';

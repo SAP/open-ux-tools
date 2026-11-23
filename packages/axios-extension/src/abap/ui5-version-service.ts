@@ -1,6 +1,6 @@
 import type { Logger } from '@sap-ux/logger';
 import { Axios } from 'axios';
-import type { Service } from 'base/service-provider';
+import type { Service } from '../base/service-provider.js';
 
 /**
  * Stores the version of the UI5 framework.

@@ -5,9 +5,9 @@ export {
     MinCdsPluginUi5Version,
     MinCdsVersion,
     fioriToolsDirectory
-} from './constants';
-export { getFilePaths, findFilesByExtension } from './file';
-export { normalizePath } from './path';
+} from './constants.js';
+export { getFilePaths, findFilesByExtension } from './file/index.js';
+export { normalizePath } from './path/index.js';
 export {
     addPackageDevDependency,
     clearCdsModuleCache,
@@ -39,6 +39,7 @@ export {
     getSpecificationPath,
     getI18nPropertiesPaths,
     getI18nBundles,
+    createI18nEntriesAtPath,
     getMinUI5VersionFromManifest,
     getMinUI5VersionAsArray,
     getMinimumUI5Version,
@@ -47,7 +48,6 @@ export {
     getMockDataPath,
     getNodeModulesPath,
     getPathMappings,
-    type PathMappings,
     getProject,
     getProjectType,
     getWebappPath,
@@ -69,11 +69,12 @@ export {
     getMainService,
     getGlobalCdsHomePath,
     isUI5IdUnique,
-    getUsedEntitiesFromManifest
-} from './project';
-export type { UsedEntity } from './project';
-export { execNpmCommand } from './command/npm-command';
-export * from './types';
-export { checkDependencies, getReuseLibs } from './library';
-export { findRecursiveHierarchyKey, getTableCapabilitiesByEntitySet } from './odata';
-export { hasDependency } from './project';
+    getUsedEntitiesFromManifest,
+    resolveApplicationTitle
+} from './project/index.js';
+export type { UsedEntity } from './project/index.js';
+export { execNpmCommand } from './command/npm-command.js';
+export * from './types/index.js';
+export { checkDependencies, getReuseLibs } from './library/index.js';
+export { findRecursiveHierarchyKey, getTableCapabilitiesByEntitySet } from './odata/index.js';
+export { hasDependency } from './project/index.js';

@@ -5,9 +5,9 @@ import { hostEnvironment, type HostEnvironmentId } from '@sap-ux/fiori-generator
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import { XMLParser } from 'fast-xml-parser';
 import type { ListChoiceOptions } from 'inquirer';
-import { t } from '../i18n';
-import LoggerHelper from '../prompts/logger-helper';
-import { PromptState } from './prompt-state';
+import { t } from '../i18n.js';
+import LoggerHelper from '../prompts/logger-helper.js';
+import { PromptState } from './prompt-state.js';
 import { convert } from '@sap-ux/annotation-converter';
 import { parse } from '@sap-ux/edmx-parser';
 import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';

@@ -1,0 +1,208 @@
+# `UI.CollectionFacet` Should Not Be Nested at Third Level or Deeper (`sap-no-deep-collection-facets`)
+
+SAP Fiori elements does not consider `UI.CollectionFacet` content that is nested at the third level or deeper within the `UI.Facets` annotation. This rule detects deeply nested collection facets and recommends reorganizing the facet structure to use a maximum of two nesting levels.
+
+## Rule Details
+
+This rule checks `UI.Facets` annotations on object pages and identifies any `UI.CollectionFacet` records that appear at the third level of nesting or deeper. SAP Fiori elements supports up to two levels of `UI.CollectionFacet` nesting:
+
+- **Level 1** (direct children of `UI.Facets`): ✅ Supported
+- **Level 2** (children of level 1 `UI.CollectionFacet`): ✅ Supported  
+- **Level 3 and deeper**: ❌ Not considered by SAP Fiori elements
+
+### Warning Message
+
+```
+UI.CollectionFacet at level 3 or deeper is not considered by SAP Fiori elements. Reorganize your facet structure to use a maximum of two levels.
+```
+
+### The following patterns are considered warnings:
+
+**Three-level nesting:**
+
+```xml
+<Annotations Target="IncidentService.Incidents">
+    <Annotation Term="UI.Facets">
+        <Collection>
+            <Record Type="UI.CollectionFacet">
+                <PropertyValue Property="ID" String="Level1"/>
+                <PropertyValue Property="Facets">
+                    <Collection>
+                        <Record Type="UI.CollectionFacet">
+                            <PropertyValue Property="ID" String="Level2"/>
+                            <PropertyValue Property="Facets">
+                                <Collection>
+                                    <!-- ❌ Level 3 CollectionFacet - WARNING -->
+                                    <Record Type="UI.CollectionFacet">
+                                        <PropertyValue Property="ID" String="Level3"/>
+                                        <PropertyValue Property="Facets">
+                                            <Collection>
+                                                <Record Type="UI.ReferenceFacet">
+                                                    <PropertyValue Property="Target" AnnotationPath="@UI.FieldGroup#Details"/>
+                                                </Record>
+                                            </Collection>
+                                        </PropertyValue>
+                                    </Record>
+                                </Collection>
+                            </PropertyValue>
+                        </Record>
+                    </Collection>
+                </PropertyValue>
+            </Record>
+        </Collection>
+    </Annotation>
+</Annotations>
+```
+
+**CAP CDS:**
+
+```cds
+annotate service.Incidents with @(
+    UI.Facets : [
+        {
+            $Type : 'UI.CollectionFacet',
+            ID    : 'Level1',
+            Facets: [
+                {
+                    $Type : 'UI.CollectionFacet',
+                    ID    : 'Level2',
+                    Facets: [
+                        // ❌ Level 3 CollectionFacet - WARNING
+                        {
+                            $Type : 'UI.CollectionFacet',
+                            ID    : 'Level3',
+                            Facets: [
+                                {
+                                    $Type : 'UI.ReferenceFacet',
+                                    Target: '@UI.FieldGroup#Details'
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+);
+```
+
+### The following patterns are not considered warnings:
+
+**Two-level nesting (maximum supported depth):**
+
+```xml
+<Annotations Target="IncidentService.Incidents">
+    <Annotation Term="UI.Facets">
+        <Collection>
+            <Record Type="UI.CollectionFacet">
+                <PropertyValue Property="ID" String="Level1"/>
+                <PropertyValue Property="Facets">
+                    <Collection>
+                        <!-- ✅ Level 2 CollectionFacet - OK -->
+                        <Record Type="UI.CollectionFacet">
+                            <PropertyValue Property="ID" String="Level2"/>
+                            <PropertyValue Property="Facets">
+                                <Collection>
+                                    <Record Type="UI.ReferenceFacet">
+                                        <PropertyValue Property="Target" AnnotationPath="@UI.FieldGroup#Details"/>
+                                    </Record>
+                                </Collection>
+                            </PropertyValue>
+                        </Record>
+                    </Collection>
+                </PropertyValue>
+            </Record>
+        </Collection>
+    </Annotation>
+</Annotations>
+```
+
+**Single-level facets:**
+
+```xml
+<Annotations Target="IncidentService.Incidents">
+    <Annotation Term="UI.Facets">
+        <Collection>
+            <!-- ✅ Direct ReferenceFacets - OK -->
+            <Record Type="UI.ReferenceFacet">
+                <PropertyValue Property="ID" String="Details"/>
+                <PropertyValue Property="Target" AnnotationPath="@UI.FieldGroup#Details"/>
+            </Record>
+            <Record Type="UI.ReferenceFacet">
+                <PropertyValue Property="ID" String="Address"/>
+                <PropertyValue Property="Target" AnnotationPath="@UI.FieldGroup#Address"/>
+            </Record>
+        </Collection>
+    </Annotation>
+</Annotations>
+```
+
+## How to Fix
+
+Reorganize your facet structure to flatten deeply nested `UI.CollectionFacet` records. Consider one of the following approaches:
+
+- **Remove unnecessary nesting:** If a `UI.CollectionFacet` contains only one child, replace it with a direct `UI.ReferenceFacet`.
+
+- **Flatten the hierarchy:** Move nested content up to a higher level by combining or reorganizing sections.
+
+- **Use side-by-side facets:** Place facets at the same level rather than nesting them deeply.
+
+**Before (three levels: violation):**
+
+```xml
+<Record Type="UI.CollectionFacet">
+    <PropertyValue Property="ID" String="Outer"/>
+    <PropertyValue Property="Facets">
+        <Collection>
+            <Record Type="UI.CollectionFacet">
+                <PropertyValue Property="ID" String="Middle"/>
+                <PropertyValue Property="Facets">
+                    <Collection>
+                        <Record Type="UI.CollectionFacet">
+                            <PropertyValue Property="ID" String="Inner"/>
+                            <PropertyValue Property="Facets">
+                                <Collection>
+                                    <Record Type="UI.ReferenceFacet">
+                                        <PropertyValue Property="Target" AnnotationPath="@UI.FieldGroup#Details"/>
+                                    </Record>
+                                </Collection>
+                            </PropertyValue>
+                        </Record>
+                    </Collection>
+                </PropertyValue>
+            </Record>
+        </Collection>
+    </PropertyValue>
+</Record>
+```
+
+**After (two levels: correct):**
+
+```xml
+<Record Type="UI.CollectionFacet">
+    <PropertyValue Property="ID" String="Outer"/>
+    <PropertyValue Property="Facets">
+        <Collection>
+            <Record Type="UI.CollectionFacet">
+                <PropertyValue Property="ID" String="Middle"/>
+                <PropertyValue Property="Facets">
+                    <Collection>
+                        <!-- Flattened: use ReferenceFacet directly -->
+                        <Record Type="UI.ReferenceFacet">
+                            <PropertyValue Property="Target" AnnotationPath="@UI.FieldGroup#Details"/>
+                        </Record>
+                    </Collection>
+                </PropertyValue>
+            </Record>
+        </Collection>
+    </PropertyValue>
+</Record>
+```
+
+## Bug Report
+
+If you encounter any problems, open a [GitHub issue](https://github.com/SAP/open-ux-tools/issues).
+
+## Further Reading
+
+- [Defining and Configuring Sections](https://ui5.sap.com/#/topic/facfea09018d4376acaceddb7e3f03b6)

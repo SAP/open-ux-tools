@@ -16,11 +16,11 @@ import JSONModel from 'sap/ui/model/json/JSONModel';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
 import { MessageBarType } from '@sap-ux-private/control-property-editor-common';
-import { getError } from '../../utils/error';
-import { sendInfoCenterMessage } from '../../utils/info-center-message';
-import { getFragments } from '../api-handler';
-import { ExtensionPointData, ExtensionPointInfo } from '../extension-point';
-import BaseDialog from './BaseDialog.controller';
+import { getError } from '../../utils/error.js';
+import { sendInfoCenterMessage } from '../../utils/info-center-message.js';
+import { getFragments } from '../api-handler.js';
+import { ExtensionPointData, ExtensionPointInfo } from '../extension-point.js';
+import BaseDialog from './BaseDialog.controller.js';
 
 type ExtensionPointModel = JSONModel & {
     getProperty(sPath: '/newFragmentName'): string;

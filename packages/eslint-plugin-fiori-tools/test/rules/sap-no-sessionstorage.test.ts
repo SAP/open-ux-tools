@@ -6,7 +6,7 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-import rule from '../../src/rules/sap-no-sessionstorage';
+import rule from '../../src/rules/sap-no-sessionstorage.js';
 import { RuleTester } from 'eslint';
 
 //------------------------------------------------------------------------------

@@ -2,7 +2,7 @@ import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { Mta } from '@sap/mta-lib';
 import { FileName } from '@sap-ux/project-access';
-import { t } from '../i18n';
+import { t } from '../i18n.js';
 
 export interface WaitForMtaOptions {
     /** Maximum time to wait in milliseconds. Default: 5000 */

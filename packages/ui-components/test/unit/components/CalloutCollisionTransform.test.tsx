@@ -32,11 +32,13 @@ describe('CalloutCollisionTransform', () => {
     let preventDismissOnEventSpy: jest.SpyInstance;
 
     beforeEach(() => {
+        jest.useFakeTimers({ legacyFakeTimers: true });
         resetTransformationSpy = jest.spyOn(CalloutCollisionTransform.prototype, 'resetTransformation');
         preventDismissOnEventSpy = jest.spyOn(CalloutCollisionTransform.prototype, 'preventDismissOnEvent');
     });
 
     afterEach(() => {
+        jest.useRealTimers();
         jest.clearAllMocks();
     });
 
@@ -205,7 +207,7 @@ describe('CalloutCollisionTransform', () => {
         }
     ];
 
-    const simulateTransformationAtempt = async (testCase: TestCase): Promise<void> => {
+    const simulateTransformationAtempt = (testCase: TestCase): void => {
         const { source, target, container, callout, boundHeight, noActions } = testCase;
         // Prepare sizes
         bboxMaps = {};
@@ -219,14 +221,14 @@ describe('CalloutCollisionTransform', () => {
         render(<Dialog hideButtons={noActions} />);
         const opener = screen.getByTitle('Opener test1');
         opener.click();
-        // Async appeareance
-        await new Promise((resolve) => setTimeout(resolve, 1));
+        // Flush Fluent UI portal rendering timers
+        jest.runOnlyPendingTimers();
     };
 
     for (const testCase of testCases) {
-        it(`applyTransformation - ${testCase.name}`, async () => {
+        it(`applyTransformation - ${testCase.name}`, () => {
             const { result } = testCase;
-            await simulateTransformationAtempt(testCase);
+            simulateTransformationAtempt(testCase);
             const containerElement: HTMLElement | null = document.querySelector(`.${classNames.container}`);
             if (result.containerStyles) {
                 const styles: { [key: string]: string | null } = {};
@@ -245,12 +247,11 @@ describe('CalloutCollisionTransform', () => {
     }
 
     for (const testCase of [applyTransformationCase, noTransformationCase]) {
-        it(`resetTransformation - ${testCase.name}`, async () => {
-            await simulateTransformationAtempt(testCase);
+        it(`resetTransformation - ${testCase.name}`, () => {
+            simulateTransformationAtempt(testCase);
             resetTransformationSpy.mockClear();
             document.body.click();
-            // Async appeareance
-            await new Promise((resolve) => setTimeout(resolve, 1));
+            jest.runOnlyPendingTimers();
             const containerElement: HTMLElement | null = document.querySelector(`.${classNames.container}`);
             expect(containerElement?.style['position']).toEqual('');
             expect(resetTransformationSpy).toHaveBeenCalledTimes(1);
@@ -276,12 +277,11 @@ describe('CalloutCollisionTransform', () => {
         }
     ];
     for (const testCase of preventDismissTestCases) {
-        it(`preventDismissOnEvent - ${testCase.name}`, async () => {
-            await simulateTransformationAtempt(applyTransformationCase);
+        it(`preventDismissOnEvent - ${testCase.name}`, () => {
+            simulateTransformationAtempt(applyTransformationCase);
             resetTransformationSpy.mockClear();
             testCase.approach();
-            // Async appeareance
-            await new Promise((resolve) => setTimeout(resolve, 1));
+            jest.runOnlyPendingTimers();
             expect(preventDismissOnEventSpy.mock.results[0].value).toEqual(testCase.result);
         });
     }

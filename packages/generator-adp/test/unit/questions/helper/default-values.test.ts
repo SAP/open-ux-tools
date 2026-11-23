@@ -1,23 +1,24 @@
-import { existsSync } from 'node:fs';
+import { jest } from '@jest/globals';
 
-import {
-    getDefaultNamespace,
-    getDefaultProjectName,
-    getDefaultVersion
-} from '../../../../src/app/questions/helper/default-values';
+const mockExistsSync = jest.fn<typeof realFs.existsSync>();
+const mockReaddirSync = jest.fn<typeof realFs.readdirSync>();
 
-jest.mock('fs', () => ({
-    ...jest.requireActual('fs'),
-    readdirSync: jest.fn(),
-    existsSync: jest.fn()
+const realFs = await import('node:fs');
+jest.unstable_mockModule('node:fs', () => ({
+    ...realFs,
+    existsSync: mockExistsSync,
+    readdirSync: mockReaddirSync
 }));
 
-jest.mock('@sap-ux/adp-tooling', () => ({
-    ...jest.requireActual('@sap-ux/adp-tooling'),
+const realAdpTooling = await import('@sap-ux/adp-tooling');
+jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
+    ...realAdpTooling,
     validateUI5VersionExists: jest.fn().mockResolvedValue(true)
 }));
 
-const existsSyncMock = existsSync as jest.Mock;
+const { generateBusinessSolutionName, getDefaultNamespace, getDefaultVersion, resolveProjectName } =
+    await import('../../../../src/app/questions/helper/default-values.js');
+const { getDefaultProjectName } = await import('@sap-ux/adp-tooling');
 
 describe('generateValidNamespace', () => {
     const projectName = 'app.variant1';
@@ -40,11 +41,39 @@ describe('getDefaultProjectName', () => {
     });
 
     it('should return "app.variant1" if no matching project directories exist', () => {
-        existsSyncMock.mockReturnValueOnce(true).mockReturnValueOnce(false);
+        mockExistsSync.mockReturnValueOnce(true).mockReturnValueOnce(false);
 
         const defaultName = getDefaultProjectName(testPath);
 
         expect(defaultName).toBe('app.variant2');
+    });
+});
+
+describe('resolveProjectName', () => {
+    const testPath = 'home/projects';
+
+    afterEach(() => {
+        jest.restoreAllMocks();
+    });
+
+    it('should return the requested name verbatim when provided', () => {
+        expect(resolveProjectName(testPath, 'app.variant.cf')).toBe('app.variant.cf');
+    });
+
+    it('should fall back to the derived default when no name is requested', () => {
+        mockExistsSync.mockReturnValueOnce(true).mockReturnValueOnce(false);
+
+        expect(resolveProjectName(testPath)).toBe('app.variant2');
+    });
+});
+
+describe('generateBusinessSolutionName', () => {
+    it('should return a "solution-" prefixed name with 10 hex characters', () => {
+        expect(generateBusinessSolutionName()).toMatch(/^solution-[0-9a-f]{10}$/);
+    });
+
+    it('should return a different value on each call', () => {
+        expect(generateBusinessSolutionName()).not.toBe(generateBusinessSolutionName());
     });
 });
 

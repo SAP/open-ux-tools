@@ -1,14 +1,15 @@
 sap.ui.define([
     "sap/fe/test/JourneyRunner",
-	"testNameSpace/feopv4cap/test/integration/pages/BooksObjectPage"
-], function (JourneyRunner, BooksObjectPage) {
+	"testnamespace/feopv4cap/test/integration/pages/BooksObjectPage.gen"
+], function (JourneyRunner, BooksObjectPageGenerated) {
     'use strict';
 
-    var runner = new JourneyRunner({
-        launchUrl: sap.ui.require.toUrl('testNameSpace/feopv4cap') + '/test/flpSandbox.html#testNameSpacefeopv4cap-tile',
+    const runner = new JourneyRunner({
+        launchUrl: sap.ui.require.toUrl('testnamespace/feopv4cap') + '/test/flpSandbox.html#testnamespacefeopv4cap-tile',
         pages: {
-			onTheBooksObjectPage: BooksObjectPage
+			onTheBooksObjectPageGenerated: BooksObjectPageGenerated
         },
+        opaConfig: { autoWait: true },
         async: true
     });
 

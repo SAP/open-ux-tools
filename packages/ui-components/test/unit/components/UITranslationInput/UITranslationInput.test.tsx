@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { initIcons } from '../../../../src/components';
 import {
     UITranslationInput,
@@ -35,7 +35,7 @@ describe('<UITranslationInput />', () => {
     const clickI18nButton = (expectCallout = true) => {
         const openBtn = document.querySelector(selectors.button) as HTMLElement;
         fireEvent.click(openBtn);
-        expect(document.querySelectorAll(selectors.callout).length).toEqual(expectCallout ? 1 : 0);
+        expect(document.querySelectorAll(selectors.callout)).toHaveLength(expectCallout ? 1 : 0);
     };
 
     const acceptCallout = (id: string): void => {
@@ -68,11 +68,11 @@ describe('<UITranslationInput />', () => {
                 value={'dummy'}
             />
         );
-        expect(container.querySelectorAll(selectors.input).length).toEqual(1);
-        expect(container.querySelectorAll(selectors.button).length).toEqual(1);
-        expect(container.querySelectorAll(getButtonIdSelector(id, false)).length).toEqual(1);
-        expect(container.querySelectorAll(getButtonIdSelector(id, true)).length).toEqual(0);
-        expect(container.querySelectorAll(`.${customClassName}`).length).toEqual(0);
+        expect(container.querySelectorAll(selectors.input)).toHaveLength(1);
+        expect(container.querySelectorAll(selectors.button)).toHaveLength(1);
+        expect(container.querySelectorAll(getButtonIdSelector(id, false))).toHaveLength(1);
+        expect(container.querySelectorAll(getButtonIdSelector(id, true))).toHaveLength(0);
+        expect(container.querySelectorAll(`.${customClassName}`)).toHaveLength(0);
 
         rerender(
             <UITranslationInput
@@ -84,7 +84,7 @@ describe('<UITranslationInput />', () => {
                 i18nPrefix={''}
             />
         );
-        expect(container.querySelectorAll(`.${customClassName}`).length).toEqual(1);
+        expect(container.querySelectorAll(`.${customClassName}`)).toHaveLength(1);
     });
 
     const testCases = [
@@ -178,7 +178,7 @@ describe('<UITranslationInput />', () => {
             clickI18nButton();
             acceptCallout(id);
             // Check if callout closed
-            expect(document.querySelectorAll(selectors.callout).length).toEqual(0);
+            expect(document.querySelectorAll(selectors.callout)).toHaveLength(0);
             // Check if callbacks executed
             if (result.create) {
                 expect(onCreateNewEntryMock).toHaveBeenCalledTimes(1);
@@ -259,15 +259,15 @@ describe('<UITranslationInput />', () => {
             expect(onCreateNewEntryMock).toHaveBeenCalledTimes(0);
             expect(onChangeMock).toHaveBeenCalledTimes(0);
             expect(onUpdateValueMock).toHaveBeenCalledTimes(0);
-            expect(container.querySelectorAll(getButtonIdSelector(id, false)).length).toEqual(0);
-            expect(container.querySelectorAll(getButtonIdSelector(id, true)).length).toEqual(1);
+            expect(container.querySelectorAll(getButtonIdSelector(id, false))).toHaveLength(0);
+            expect(container.querySelectorAll(getButtonIdSelector(id, true))).toHaveLength(1);
             expect(onShowExistingEntryMock).toHaveBeenCalledTimes(1);
             expect(onShowExistingEntryMock).toHaveBeenCalledWith({
                 'key': { 'value': result.entry.key },
                 'value': { 'value': result.entry.value }
             });
             // Check title
-            expect(container.querySelector(`${selectors.input} input`)?.getAttribute('title')).toEqual(null);
+            expect(container.querySelector(`${selectors.input} input`)?.getAttribute('title')).toBeNull();
             expect(
                 container.querySelector(`${selectors.input} ${selectors.inputField}`)?.getAttribute('title')
             ).toEqual(result.title);
@@ -285,8 +285,8 @@ describe('<UITranslationInput />', () => {
                 value={' '}
             />
         );
-        expect(container.querySelectorAll(selectors.input).length).toEqual(1);
-        expect(container.querySelectorAll(selectors.button).length).toEqual(0);
+        expect(container.querySelectorAll(selectors.input)).toHaveLength(1);
+        expect(container.querySelectorAll(selectors.button)).toHaveLength(0);
     });
 
     test('Test "disabled" property', () => {
@@ -369,12 +369,42 @@ describe('<UITranslationInput />', () => {
                 />
             );
             clickI18nButton();
-            expect(document.querySelectorAll(selectors.callout).length).toEqual(1);
+            expect(document.querySelectorAll(selectors.callout)).toHaveLength(1);
             rejectCallout(id);
-            expect(document.querySelectorAll(selectors.callout).length).toEqual(0);
+            expect(document.querySelectorAll(selectors.callout)).toHaveLength(0);
         });
 
         test('Click outside of callout', async () => {
+            jest.useFakeTimers();
+            try {
+                render(
+                    <UITranslationInput
+                        id={id}
+                        entries={entries}
+                        allowedPatterns={[TranslationTextPattern.SingleBracketBinding]}
+                        defaultPattern={TranslationTextPattern.SingleBracketBinding}
+                        i18nPrefix={'i18n'}
+                        value={'new value'}
+                    />
+                );
+                clickI18nButton();
+                expect(document.querySelectorAll(selectors.callout)).toHaveLength(1);
+                // Advance timers so FluentUI Callout registers its dismiss listener (setTimeout 0)
+                jest.runAllTimers();
+                const outsideEl = document.createElement('div');
+                document.body.appendChild(outsideEl);
+                outsideEl.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }));
+                jest.runAllTimers();
+                await waitFor(() => expect(document.querySelectorAll(selectors.callout)).toHaveLength(0));
+            } finally {
+                jest.useRealTimers();
+                document.body.querySelector('div:not([id]):not([class])')?.remove();
+            }
+        });
+    });
+
+    describe('Focus restore on dismiss', () => {
+        const renderForFocus = (preventFocusRestoreOnAccept?: boolean, value = 'new value') => {
             render(
                 <UITranslationInput
                     id={id}
@@ -382,14 +412,38 @@ describe('<UITranslationInput />', () => {
                     allowedPatterns={[TranslationTextPattern.SingleBracketBinding]}
                     defaultPattern={TranslationTextPattern.SingleBracketBinding}
                     i18nPrefix={'i18n'}
-                    value={'new value'}
+                    value={value}
+                    onCreateNewEntry={jest.fn()}
+                    preventFocusRestoreOnAccept={preventFocusRestoreOnAccept}
                 />
             );
+        };
+
+        test('does not restore focus to the trigger when preventFocusRestoreOnAccept is true', () => {
+            renderForFocus(true);
+            const triggerBtn = document.querySelector(selectors.button) as HTMLElement;
+            triggerBtn.focus();
             clickI18nButton();
-            expect(document.querySelectorAll(selectors.callout).length).toEqual(1);
-            await new Promise((resolve) => setTimeout(resolve, 1));
-            fireEvent.click(document.body);
-            expect(document.querySelectorAll(selectors.callout).length).toEqual(0);
+            const confirmBtn = document.querySelector(`#${id}-i18n-button-action-confirm`) as HTMLElement;
+            confirmBtn.focus();
+            fireEvent.click(confirmBtn);
+            expect(document.querySelectorAll(selectors.callout)).toHaveLength(0);
+            // Focus must NOT be pulled back to the trigger; otherwise it would steal focus from a
+            // host dialog (e.g. a VS Code QuickPick) opened in response and close it.
+            expect(document.activeElement).not.toBe(triggerBtn);
+        });
+
+        test('restores focus to the trigger on cancel even when preventFocusRestoreOnAccept is true', () => {
+            renderForFocus(true);
+            const triggerBtn = document.querySelector(selectors.button) as HTMLElement;
+            triggerBtn.focus();
+            clickI18nButton();
+            const cancelBtn = document.querySelector(`#${id}-i18n-button-action-cancel`) as HTMLElement;
+            cancelBtn.focus();
+            fireEvent.click(cancelBtn);
+            expect(document.querySelectorAll(selectors.callout)).toHaveLength(0);
+            // Cancelling must always restore focus regardless of the prop.
+            expect(document.activeElement).toBe(triggerBtn);
         });
     });
 
@@ -473,10 +527,10 @@ describe('<UITranslationInput />', () => {
             );
 
             clickI18nButton();
-            expect(document.querySelectorAll(selectors.invertedCalloutThemeInput).length).toEqual(
+            expect(document.querySelectorAll(selectors.invertedCalloutThemeInput)).toHaveLength(
                 expectedInverted ? 1 : 0
             );
-            expect(document.querySelectorAll(selectors.invertedCalloutThemeCallout).length).toEqual(
+            expect(document.querySelectorAll(selectors.invertedCalloutThemeCallout)).toHaveLength(
                 expectedInverted ? 1 : 0
             );
         }

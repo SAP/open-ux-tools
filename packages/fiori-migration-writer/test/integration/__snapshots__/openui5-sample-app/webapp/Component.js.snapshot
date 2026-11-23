@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Migration Integration Tests Special Cases should migrate openui5-sample-app 1`] = `
+"sap.ui.define(['sap/ui/core/UIComponent', 'sap/ui/core/ComponentSupport'], function (UIComponent) {
+    'use strict';
+    return UIComponent.extend('sap.ui.demo.todo.Component', {
+        metadata: {
+            manifest: 'json'
+        }
+    });
+});
+"
+`;

@@ -1,6 +1,6 @@
 import type { BackendSystem } from '@sap-ux/store';
 import type { IActionCalloutDetail } from '@sap-ux/ui-components';
-import type { ConnectionStatus } from '../system';
+import type { ConnectionStatus } from '../system.js';
 
 /**
  * Actions fired from the extension host to the webview.

@@ -1,0 +1,14 @@
+{
+  "name": "com.example.ui5.library",
+  "version": "1.0.0",
+  "description": "Standalone UI5 library for testing library migration",
+  "private": true,
+  "scripts": {
+    "build": "ui5 build",
+    "start": "ui5 serve"
+  },
+  "devDependencies": {
+    "@sap/ux-ui5-tooling": "^1.33.0",
+    "@ui5/cli": "^3.0.0"
+  }
+}

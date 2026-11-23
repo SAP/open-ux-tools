@@ -13,7 +13,7 @@ import type {
     Package,
     Manifest,
     AnnotationFile
-} from '../types';
+} from '../types/index.js';
 
 import {
     getI18nBundles,
@@ -21,18 +21,19 @@ import {
     createCapI18nEntries,
     createManifestI18nEntries,
     createUI5I18nEntries,
-    createAnnotationI18nEntries
-} from './i18n';
+    createAnnotationI18nEntries,
+    createI18nEntriesAtPath
+} from './i18n/index.js';
 
-import { getProject } from './info';
-import { findAllApps } from './search';
+import { getProject } from './info.js';
+import { findAllApps } from './search.js';
 
 import type { Editor } from 'mem-fs-editor';
-import { readFile, readJSON, updateManifestJSON, updatePackageJSON } from '../file';
-import { FileName } from '../constants';
-import { getSpecification } from './specification';
-import { readFlexChanges } from './flex-changes';
-import { readCapServiceMetadataEdmx } from './cap';
+import { readFile, readJSON, updateManifestJSON, updatePackageJSON } from '../file/index.js';
+import { FileName } from '../constants.js';
+import { getSpecification } from './specification.js';
+import { readFlexChanges } from './flex-changes.js';
+import { readCapServiceMetadataEdmx } from './cap.js';
 
 /**
  *
@@ -145,6 +146,18 @@ class ApplicationAccessImp implements ApplicationAccess {
     }
 
     /**
+     * Maintains new translation entries at a specific i18n properties file path.
+     * Use this when the target file is already known (e.g. chosen by the user from a picker).
+     *
+     * @param filePath absolute path to the target `.properties` file
+     * @param newEntries translation entries to write
+     * @returns boolean or exception
+     */
+    createI18nEntriesAtPath(filePath: string, newEntries: NewI18nEntry[]): Promise<boolean> {
+        return createI18nEntriesAtPath(this.project.root, filePath, newEntries, this.options?.fs);
+    }
+
+    /**
      * Return the application id of this app, which is the relative path from the project root
      * to the app root.
      *
@@ -186,7 +199,7 @@ class ApplicationAccessImp implements ApplicationAccess {
      * @returns - instance of @sap/ux-specification
      */
     async getSpecification<T>(): Promise<T> {
-        return getSpecification(this.app.appRoot);
+        return getSpecification(this.app.appRoot, { memFs: this.options?.fs });
     }
 
     /**

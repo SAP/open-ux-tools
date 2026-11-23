@@ -1,11 +1,16 @@
 import { convert } from '@sap-ux/annotation-converter';
-import type { Annotations, ServiceProvider } from '@sap-ux/axios-extension';
+import type { Annotations } from '@sap-ux/axios-extension';
 import { isAbapEnvironmentOnBtp, isAppStudio } from '@sap-ux/btp-utils';
 import type { CapRuntime, CapService } from '@sap-ux/cap-config-writer';
 import { checkCdsUi5PluginEnabled, getAppLaunchText } from '@sap-ux/cap-config-writer';
 import { parse } from '@sap-ux/edmx-parser';
 import type { TemplateType as FETemplateType } from '@sap-ux/fiori-elements-writer';
 import { TemplateTypeAttributes } from '@sap-ux/fiori-elements-writer';
+import {
+    PageTemplateType,
+    MIN_UI5_VERSION_PAGE_BUILDING_BLOCK,
+    MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT
+} from '@sap-ux/fe-fpm-writer';
 import { writeApplicationInfoSettings } from '@sap-ux/fiori-tools-settings';
 import type { DebugOptions, FioriOptions } from '@sap-ux/launch-config';
 import { createLaunchConfig } from '@sap-ux/launch-config';
@@ -22,11 +27,11 @@ import { isCapJavaProject, toReferenceUri } from '@sap-ux/project-access';
 import type { Editor } from 'mem-fs-editor';
 import { basename, join } from 'node:path';
 import { v4 as uuidV4 } from 'uuid';
-import type { GenerateLaunchConfigOptions, Service } from '../types';
-import { ApiHubType, SapSystemSourceType, FloorplanFE, minUi5VersionForPageBuildingBlock } from '../types';
-import { minSupportedUi5Version, minSupportedUi5VersionV4 } from '../types/constants';
-import { type Floorplan, FloorplanAttributes, FloorplanFF } from '../types/external';
-import { t } from './i18n';
+import type { GenerateLaunchConfigOptions, Service } from '../types/index.js';
+import { ApiHubType, SapSystemSourceType, FloorplanFE } from '../types/index.js';
+import { minSupportedUi5Version, minSupportedUi5VersionV4 } from '../types/constants.js';
+import { type Floorplan, FloorplanAttributes, FloorplanFF } from '../types/external.js';
+import { t } from './i18n.js';
 import { getBackendSystemType } from '@sap-ux/store';
 
 /**
@@ -82,7 +87,7 @@ export function getRequiredOdataVersion(floorplan: Floorplan): OdataVersion | un
 
 /**
  * Gets the minimum supported UI5 version for the specified OData version, floorplan, and entity configuration.
- * For FPM floorplans with page building blocks, enforces a minimum version of 1.136.0.
+ * For FPM floorplans with page building blocks, enforces a minimum version based on layout type.
  *
  * @param version - The OData version.
  * @param floorplan - The floorplan type.
@@ -95,7 +100,9 @@ export function getMinSupportedUI5Version(
     entityRelatedConfig?: Partial<EntityRelatedAnswers>
 ): string {
     if (floorplan === FloorplanFE.FE_FPM && entityRelatedConfig?.addPageBuildingBlock) {
-        return minUi5VersionForPageBuildingBlock;
+        return entityRelatedConfig.pageBuildingBlockLayout === PageTemplateType.Full
+            ? MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT
+            : MIN_UI5_VERSION_PAGE_BUILDING_BLOCK;
     }
 
     let minUI5Version: string | undefined;
@@ -316,27 +323,5 @@ export async function getAnnotations(
     }
 }
 
-/**
- * Restore the loggers for the service provider if they are missing.
- * This is necessary because the service provider may have been serialized and deserialized, which can lead to missing loggers which contain circular refs.
- * Not doing this will result in the loggers being undefined when trying to access them, and calling services will throw.
- *
- * @param logger - The logger instance to be restored.
- * @param serviceProvider - The service provider object that may have missing loggers.
- * @returns The service provider with restored loggers.
- */
-export function restoreServiceProviderLoggers(
-    logger: Logger,
-    serviceProvider?: ServiceProvider
-): ServiceProvider | undefined {
-    // Restore the loggers if missing.
-    for (const service in (serviceProvider as any)?.services) {
-        if ((serviceProvider as any).services?.[service].log && !(serviceProvider as any).services[service].log.info) {
-            (serviceProvider as any).services[service].log = logger;
-        }
-    }
-    if (serviceProvider?.log && !serviceProvider.log.info) {
-        serviceProvider.log = logger;
-    }
-    return serviceProvider;
-}
+/** @deprecated Import directly from `@sap-ux/fiori-generator-shared` instead. */
+export { restoreServiceProviderLoggers } from '@sap-ux/fiori-generator-shared';

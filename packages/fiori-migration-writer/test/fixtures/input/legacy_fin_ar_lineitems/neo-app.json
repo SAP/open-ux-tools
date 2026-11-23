@@ -1,0 +1,113 @@
+{
+  "welcomeFile": "src/main/webapp/noShellIndex.html",
+  "routes": [
+    {
+      "path": "/sap/opu/odata",
+      "target": {
+        "type": "destination",
+        "name": "BACKEND_DUMMY",
+        "entryPath": "/sap/opu/odata"
+      },
+      "description": "Target OData system"
+    },
+    {
+      "path": "/src/main/webapp/resources/sap/fin/arp/lib/lineitems",
+      "target": {
+        "type": "application",
+        "name": "finarpliblineitems",
+        "preferLocal": true
+      },
+      "description": "fin.arp.lib.lineitems (Web IDE)"
+    },
+    {
+      "path": "/resources/sap/fin/arp/lib/lineitems",
+      "target": {
+        "type": "application",
+        "name": "finarpliblineitems",
+        "preferLocal": true
+      },
+      "description": "fin.arp.lib.lineitems"
+    },
+    {
+      "path": "/src/main/webapp/resources/sap/fin/central/lib",
+      "target": {
+        "type": "application",
+        "name": "sapfincentrallib",
+        "preferLocal": true
+      },
+      "description": "sap.fin.central.lib (Web IDE)"
+    },
+    {
+      "path": "/resources/sap/fin/central/lib",
+      "target": {
+        "type": "application",
+        "name": "sapfincentrallib",
+        "preferLocal": true
+      },
+      "description": "sap.fin.central.lib"
+    },
+    {
+      "path": "/",
+      "target": {
+        "type": "application",
+        "name": "parentneoapp",
+        "preferLocal": true
+      },
+      "description": "Parent neo-app.json"
+    },
+    {
+      "path": "/src/main/webapp/resources",
+      "target": {
+        "type": "application",
+        "name": "sapui5preview",
+        "entryPath": "/resources"
+      },
+      "description": "SAPUI5 Resources"
+    },
+    {
+      "path": "/src/main/webapp/resources",
+      "target": {
+        "type": "service",
+        "name": "sapui5",
+        "entryPath": "/resources"
+      },
+      "description": "SAPUI5 Resources"
+    },
+    {
+      "path": "/src/test/resources",
+      "target": {
+        "type": "application",
+        "name": "sapui5preview",
+        "entryPath": "/resources"
+      },
+      "description": "SAPUI5 Resources"
+    },
+    {
+      "path": "/src/test/resources",
+      "target": {
+        "type": "service",
+        "name": "sapui5",
+        "entryPath": "/resources"
+      },
+      "description": "SAPUI5 Resources"
+    },
+    {
+      "path": "/src/main/webapp/test-resources",
+      "target": {
+        "type": "application",
+        "name": "sapui5preview",
+        "entryPath": "/test-resources"
+      },
+      "description": "SAPUI5 Test Resources"
+    },
+    {
+      "path": "/src/main/webapp/test-resources",
+      "target": {
+        "type": "service",
+        "name": "sapui5",
+        "entryPath": "/test-resources"
+      },
+      "description": "SAPUI5 Test Resources"
+    }
+  ]
+}

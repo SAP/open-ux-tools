@@ -1,6 +1,6 @@
-import type { LaunchConfig } from '../../src';
-import { convertOldLaunchConfigToFioriRun, generateNewFioriLaunchConfig } from '../../src';
-import { TestPaths } from '../test-data/utils';
+import type { LaunchConfig } from '../../src/index.js';
+import { convertOldLaunchConfigToFioriRun, generateNewFioriLaunchConfig } from '../../src/index.js';
+import { TestPaths } from '../test-data/utils.js';
 
 describe('modify', () => {
     const runnableId = JSON.stringify({

@@ -4,11 +4,7 @@ import type { DatasourceType } from '@sap-ux/odata-service-inquirer';
 export type EventName = 'GENERATION_SUCCESS' | 'GENERATION_INSTALL_FAIL' | 'GENERATION_WRITING_FAIL';
 
 export type LaunchSource =
-    | 'Headless'
-    | 'CapServiceAdaptor'
-    | 'MtaLaunchAdaptor'
-    | 'LCAPServiceAdaptor'
-    | 'ServiceCenterAdaptor';
+    'Headless' | 'CapServiceAdaptor' | 'MtaLaunchAdaptor' | 'LCAPServiceAdaptor' | 'ServiceCenterAdaptor';
 
 export type TelemetrySapSystemType = 'SCP' | 'CF' | 'ABAP';
 

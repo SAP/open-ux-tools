@@ -3,8 +3,8 @@ import { v4 as uuidv4 } from 'uuid';
 
 import type { Manifest } from '@sap-ux/project-access';
 
-import { RESOURCE_BUNDLE_TEXT, TRANSLATION_UUID_TEXT, BASE_I18N_DESCRIPTION, MAIN_I18N_PATH } from '../..';
-import { FlexLayer, type ResourceModel, type SapModel } from '../../types';
+import { RESOURCE_BUNDLE_TEXT, TRANSLATION_UUID_TEXT, BASE_I18N_DESCRIPTION, MAIN_I18N_PATH } from '../../index.js';
+import { FlexLayer, type ResourceModel, type SapModel } from '../../types.js';
 
 /**
  * Generates an internationalization description string for a specific layer within an application.
@@ -94,7 +94,8 @@ export function getI18nModels(
 
     const models = manifest['sap.ui5']?.models ?? {};
 
-    return Object.entries(models).reduce((acc, [key, ui5Model]) => {
+    return Object.entries(models).reduce((acc, [key, value]) => {
+        const ui5Model = value as SapModel;
         if (ui5Model?.type === 'sap.ui.model.resource.ResourceModel') {
             const content = getI18nDescription(layer, title);
             const path = extractResourceModelPath(ui5Model, key, id);

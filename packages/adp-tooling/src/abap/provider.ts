@@ -2,7 +2,7 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 
-import { type RequestOptions, getProviderConfig } from './config';
+import { type RequestOptions, getProviderConfig } from './config.js';
 
 interface ProviderOptions {
     system: string;
@@ -38,8 +38,8 @@ export async function getConfiguredProvider(
         }
 
         return await createAbapServiceProvider(config, requestOptions, false, logger);
-    } catch (e) {
-        logger?.error(`Failed to instantiate provider for system: ${system}. Reason: ${e.message}`);
-        throw new Error(e.message);
+    } catch (error) {
+        logger?.error(`Failed to instantiate provider for system: ${system}. Reason: ${error.message}`);
+        throw error;
     }
 }

@@ -6,7 +6,7 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-import rule from '../../src/rules/sap-no-hardcoded-url';
+import rule from '../../src/rules/sap-no-hardcoded-url.js';
 import { RuleTester } from 'eslint';
 
 //------------------------------------------------------------------------------

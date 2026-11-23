@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Opa tests for Record Defect/Display Defects (F2929)</title>
+		<meta http-equiv='X-UA-Compatible' content='IE=edge' />
+		<meta charset="UTF-8">
+
+<!--	Bootstrap with/for generic test library:  i2d.qm.defect.records1	-->
+		<script id="sap-ui-bootstrap"
+				src="../../resources/sap-ui-core.js"
+				data-sap-ui-resourceroots='{
+					"i2d.qm.defect.records1.test.integration": "./",
+					"i2d.qm.defect.records1.app" : "../flpSandboxMockServerOPA",
+					"i2d.qm.defect.records1.localService" : "../../localService",
+					"i2d.qm.defect.records1.i18n" : "../../i18n",
+					"sap.suite.ui.generic.template.integration.testLibrary" : "../../test-resources/sap/suite/ui/generic/template/integration/testLibrary"
+				}'>
+		</script>
+
+		<script>
+			jQuery.sap.require("i2d.qm.defect.records1.test.integration.AllJourneys");
+		</script>
+
+	</head>
+	<body>
+		<div id="qunit"></div>
+		<div id="qunit-fixture"></div>
+		<script>
+			QUnit.config.hidepassed = true;
+			QUnit.config.testTimeout = 200 * 1000;
+		</script>
+	</body>
+</html>

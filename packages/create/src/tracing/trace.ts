@@ -1,8 +1,8 @@
 import { existsSync, promises } from 'node:fs';
 import type { Editor } from 'mem-fs-editor';
 import { extname } from 'node:path';
-import { compareStrings, compareJson } from './compare';
-import { getLogger } from './logger';
+import { compareStrings, compareJson } from './compare.js';
+import { getLogger } from './logger.js';
 
 /**
  * Compare changes from mem-fs-editor and write to logger.

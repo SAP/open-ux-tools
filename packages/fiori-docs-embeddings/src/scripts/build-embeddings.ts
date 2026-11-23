@@ -1,10 +1,18 @@
 #!/usr/bin/env node
 
-import { pipeline, type FeatureExtractionPipeline } from '@xenova/transformers';
-import { connect } from '@lancedb/lancedb';
+import { pipeline, env } from '@huggingface/transformers';
+import type { FeatureExtractionPipeline } from '@huggingface/transformers';
+
+import type { Dirent } from 'node:fs';
 import * as fs from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
 import * as path from 'node:path';
 import { ToolsLogger, type Logger } from '@sap-ux/logger';
+
+// Store downloaded models under the package root so the CI cache step can
+// target a stable path regardless of the pnpm store layout.
+const packageRoot = path.dirname(path.dirname(path.dirname(fileURLToPath(import.meta.url))));
+env.cacheDir = path.join(packageRoot, '.cache');
 
 interface ProgressCallback {
     status: string;
@@ -17,7 +25,6 @@ interface EmbeddingConfig {
     chunkSize: number;
     chunkOverlap: number;
     batchSize: number;
-    maxVectorsPerTable: number;
 }
 
 interface Document {
@@ -52,25 +59,6 @@ interface Chunk {
     vector?: number[];
 }
 
-interface VectorData {
-    id: string;
-    vector: number[];
-    content: string;
-    title: string;
-    category: string;
-    path: string;
-    chunk_index: number;
-    document_id: string;
-    // Flattened metadata fields
-    tags_json: string;
-    headers_json: string;
-    lastModified: string;
-    wordCount: number;
-    excerpt: string;
-    totalChunks: number;
-    [key: string]: unknown;
-}
-
 interface EmbeddingMetadata {
     version: string;
     createdAt: string;
@@ -96,10 +84,9 @@ class EmbeddingBuilder {
         this.config = {
             embeddingsPath: './data/embeddings',
             model: 'Xenova/all-MiniLM-L6-v2',
-            chunkSize: 2000, // Much larger chunks to reduce count
-            chunkOverlap: 100, // Minimal overlap
-            batchSize: 20, // Increased batch size for faster processing
-            maxVectorsPerTable: 5000 // Limit vectors per table to control file size
+            chunkSize: 2000,
+            chunkOverlap: 100,
+            batchSize: 20
         };
         this.documents = [];
         this.chunks = [];
@@ -112,7 +99,6 @@ class EmbeddingBuilder {
 
         try {
             this.pipeline = await pipeline('feature-extraction', this.config.model, {
-                quantized: false, // Try without quantization first
                 progress_callback: (progress: ProgressCallback) => {
                     if (progress.status === 'downloading') {
                         this.logger.info(`Downloading: ${Math.round(progress.progress || 0)}%`);
@@ -123,7 +109,6 @@ class EmbeddingBuilder {
             this.logger.warn(`Failed to load preferred model (${error.message}), trying fallback...`);
             // Fallback to a simpler model if the main one fails
             this.pipeline = await pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2', {
-                quantized: false,
                 progress_callback: (progress: ProgressCallback) => {
                     if (progress.status === 'downloading') {
                         this.logger.info(`Fallback model downloading: ${Math.round(progress.progress || 0)}%`);
@@ -141,7 +126,7 @@ class EmbeddingBuilder {
     }
 
     /**
-     * Load Local markdown documents from data_local directory.
+     * Load Local markdown documents from data_local directory and data_local/skills subdirectories.
      * These files use -------------------------------- as chunk delimiters.
      */
     async loadLocalDocuments(): Promise<void> {
@@ -156,11 +141,30 @@ class EmbeddingBuilder {
             for (const file of mdFiles) {
                 await this.processLocalMarkdownFile(dataLocalPath, file);
             }
-
-            this.logger.info(`✓ Loaded ${this.documents.length} documents`);
         } catch (error) {
             this.logger.warn(`Failed to read data_local directory: ${error.message}`);
         }
+
+        const skillsPath = './data_local/skills_copy';
+
+        try {
+            const skillDirs = await fs.readdir(skillsPath, { withFileTypes: true });
+            for (const entry of skillDirs.filter((e) => e.isDirectory())) {
+                const skillDir = path.join(skillsPath, entry.name);
+                const files = await fs.readdir(skillDir);
+                const mdFiles = files.filter((file) => file.endsWith('.md'));
+
+                this.logger.info(`Found ${mdFiles.length} markdown files in data_local/skills_copy/${entry.name}`);
+
+                for (const file of mdFiles) {
+                    await this.processLocalMarkdownFile(skillDir, file, entry.name);
+                }
+            }
+        } catch (error) {
+            this.logger.warn(`Failed to read data_local/skills_copy directory: ${error.message}`);
+        }
+
+        this.logger.info(`✓ Loaded ${this.documents.length} documents`);
     }
 
     /**
@@ -168,8 +172,9 @@ class EmbeddingBuilder {
      *
      * @param dataLocalPath - Path to the data_local directory
      * @param file - Filename to process
+     * @param skillName - Optional skill directory name, used to namespace IDs and paths for skill files
      */
-    private async processLocalMarkdownFile(dataLocalPath: string, file: string): Promise<void> {
+    private async processLocalMarkdownFile(dataLocalPath: string, file: string, skillName?: string): Promise<void> {
         try {
             const filePath = path.join(dataLocalPath, file);
             const content = await fs.readFile(filePath, 'utf-8');
@@ -180,7 +185,7 @@ class EmbeddingBuilder {
             this.logger.info(`  ${file}: ${chunks.length} chunks`);
 
             for (const [index, chunkContent] of chunks.entries()) {
-                const doc = this.createDocumentFromChunk(file, index, chunkContent);
+                const doc = this.createDocumentFromChunk(file, index, chunkContent, skillName);
                 if (doc) {
                     this.documents.push(doc);
                 }
@@ -196,9 +201,15 @@ class EmbeddingBuilder {
      * @param file - Source filename
      * @param index - Chunk index
      * @param chunkContent - Content of the chunk
+     * @param skillName - Optional skill directory name, used to namespace IDs and paths for skill files
      * @returns Document or null if chunk is empty
      */
-    private createDocumentFromChunk(file: string, index: number, chunkContent: string): Document | null {
+    private createDocumentFromChunk(
+        file: string,
+        index: number,
+        chunkContent: string,
+        skillName?: string
+    ): Document | null {
         const trimmedContent = chunkContent.trim();
         if (!trimmedContent) {
             return null;
@@ -220,12 +231,17 @@ class EmbeddingBuilder {
                 .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
                 .join(' ') ?? 'Fiori Elements';
 
+        const idPrefix = skillName
+            ? `local-${skillName}-${file.replace('.md', '')}`
+            : `local-${file.replace('.md', '')}`;
+        const docPath = skillName ? `data_local/skills_copy/${skillName}/${file}` : `data_local/${file}`;
+
         return {
-            id: `local-${file.replace('.md', '')}-${index}`,
+            id: `${idPrefix}-${index}`,
             title,
             content: trimmedContent,
             category,
-            path: `data_local/${file}`,
+            path: docPath,
             tags,
             headers: [],
             lastModified: new Date().toISOString(),
@@ -375,6 +391,30 @@ class EmbeddingBuilder {
     }
 
     /**
+     * Remove stale LanceDB artifacts left by the previous embedding format.
+     * Deletes *.lance directories and table_index.json from the embeddings path.
+     */
+    private async cleanStaleArtifacts(): Promise<void> {
+        let entries: Dirent[];
+        try {
+            entries = await fs.readdir(this.config.embeddingsPath, { withFileTypes: true });
+        } catch {
+            return; // directory doesn't exist yet — nothing to clean
+        }
+
+        for (const entry of entries) {
+            const fullPath = path.join(this.config.embeddingsPath, entry.name);
+            if (entry.isDirectory() && entry.name.endsWith('.lance')) {
+                await fs.rm(fullPath, { recursive: true, force: true });
+                this.logger.info(`✓ Removed stale LanceDB directory: ${entry.name}`);
+            } else if (entry.isFile() && entry.name === 'table_index.json') {
+                await fs.rm(fullPath, { force: true });
+                this.logger.info(`✓ Removed stale file: ${entry.name}`);
+            }
+        }
+    }
+
+    /**
      * Create vector database with embeddings.
      *
      * @returns Promise resolving to embedding metadata
@@ -382,15 +422,12 @@ class EmbeddingBuilder {
     async createVectorDatabase(): Promise<EmbeddingMetadata> {
         this.logger.info('\n💾 Creating vector database...');
 
-        // Ensure embeddings directory exists
         await fs.mkdir(this.config.embeddingsPath, { recursive: true });
 
-        // Connect to LanceDB
-        const dbPath = path.resolve(this.config.embeddingsPath);
-        const db = await connect(dbPath);
+        // Remove stale LanceDB artifacts from previous format (*.lance dirs, table_index.json)
+        await this.cleanStaleArtifacts();
 
-        // Prepare data for LanceDB with flattened structure
-        const vectorData: VectorData[] = this.chunks
+        const vectorData = this.chunks
             .filter((chunk) => chunk.vector)
             .map((chunk) => ({
                 id: chunk.id,
@@ -401,7 +438,6 @@ class EmbeddingBuilder {
                 path: chunk.path,
                 chunk_index: chunk.chunkIndex,
                 document_id: chunk.documentId,
-                // Flatten metadata to avoid schema inference issues
                 tags_json: JSON.stringify(chunk.metadata.tags || []),
                 headers_json: JSON.stringify(chunk.metadata.headers || []),
                 lastModified: chunk.metadata.lastModified || '',
@@ -410,109 +446,50 @@ class EmbeddingBuilder {
                 totalChunks: chunk.metadata.totalChunks || 1
             }));
 
-        this.logger.info(`Storing ${vectorData.length} vectors in LanceDB`);
+        this.logger.info(`Storing ${vectorData.length} vectors`);
 
-        // Split data into smaller chunks to avoid large files
-        const maxVectorsPerTable = this.config.maxVectorsPerTable;
-        const tableChunks: VectorData[][] = [];
+        const dimensions = vectorData.length > 0 ? vectorData[0].vector.length : 384;
 
-        for (let i = 0; i < vectorData.length; i += maxVectorsPerTable) {
-            tableChunks.push(vectorData.slice(i, i + maxVectorsPerTable));
-        }
+        // Filter out any vectors with unexpected dimensions before writing to keep binary and JSONL in sync
+        const validVectorData = vectorData.filter((entry, i) => {
+            if (entry.vector.length !== dimensions) {
+                this.logger.warn(
+                    `Vector ${i} has unexpected length ${entry.vector.length} (expected ${dimensions}), skipping`
+                );
+                return false;
+            }
+            return true;
+        });
 
-        this.logger.info(`Splitting into ${tableChunks.length} tables with max ${maxVectorsPerTable} vectors each`);
-
-        // Drop existing tables
-        for (let i = 0; i < tableChunks.length; i++) {
-            const tableName = `documents_${i.toString().padStart(3, '0')}`;
-            try {
-                await db.dropTable(tableName);
-                this.logger.info(`🗑️  Dropped existing table: ${tableName}`);
-            } catch {
-                // Table doesn't exist, which is fine
+        // Write flat binary file: N * D float32 values, row-major
+        const binBuffer = Buffer.allocUnsafe(validVectorData.length * dimensions * 4);
+        for (let i = 0; i < validVectorData.length; i++) {
+            const vec = validVectorData[i].vector;
+            for (let d = 0; d < dimensions; d++) {
+                binBuffer.writeFloatLE(vec[d], (i * dimensions + d) * 4);
             }
         }
+        await fs.writeFile(path.join(this.config.embeddingsPath, 'embeddings.bin'), binBuffer);
+        this.logger.info('✓ Wrote embeddings.bin');
 
-        // Create new tables with explicit schema
-        for (let i = 0; i < tableChunks.length; i++) {
-            const tableName = `documents_${i.toString().padStart(3, '0')}`;
-            const chunk = tableChunks[i];
+        // Write records as newline-delimited JSON (one record per line, no vector field)
+        const lines = validVectorData.map(({ vector: _v, ...rec }) => JSON.stringify(rec)).join('\n');
+        await fs.writeFile(path.join(this.config.embeddingsPath, 'records.jsonl'), lines);
+        this.logger.info('✓ Wrote records.jsonl');
 
-            // Flatten metadata to avoid schema inference issues with nested arrays
-            const normalizedChunk = chunk.map((item) => {
-                // Safely access metadata with proper typing
-                type ChunkMetadata = {
-                    tags: string[];
-                    headers: string[];
-                    lastModified: string;
-                    wordCount: number;
-                    excerpt: string;
-                    totalChunks: number;
-                };
-                const metadata: ChunkMetadata =
-                    (item.metadata as ChunkMetadata) ||
-                    ({
-                        tags: [],
-                        headers: [],
-                        lastModified: '',
-                        wordCount: 0,
-                        excerpt: '',
-                        totalChunks: 1
-                    } as ChunkMetadata);
-
-                return {
-                    id: item.id || '',
-                    vector: Array.isArray(item.vector) ? item.vector : [],
-                    content: item.content || '',
-                    title: item.title || '',
-                    category: item.category || '',
-                    path: item.path || '',
-                    chunk_index: typeof item.chunk_index === 'number' ? item.chunk_index : 0,
-                    document_id: item.document_id || '',
-                    // Flatten metadata fields to avoid nested array issues
-                    tags_json: JSON.stringify(Array.isArray(metadata.tags) ? metadata.tags : []),
-                    headers_json: JSON.stringify(Array.isArray(metadata.headers) ? metadata.headers : []),
-                    lastModified: typeof metadata.lastModified === 'string' ? metadata.lastModified : '',
-                    wordCount: typeof metadata.wordCount === 'number' ? metadata.wordCount : 0,
-                    excerpt: typeof metadata.excerpt === 'string' ? metadata.excerpt : '',
-                    totalChunks: typeof metadata.totalChunks === 'number' ? metadata.totalChunks : 1
-                };
-            });
-
-            this.logger.info(`📝 Creating table ${tableName} with ${normalizedChunk.length} vectors...`);
-            await db.createTable(tableName, normalizedChunk);
-            this.logger.info(`✓ Created table ${tableName}`);
-        }
-
-        // Create a table index file for easy querying
-        const tableIndex = {
-            tables: tableChunks.map((_, i) => `documents_${i.toString().padStart(3, '0')}`),
-            totalTables: tableChunks.length,
-            maxVectorsPerTable,
-            totalVectors: vectorData.length
-        };
-
-        const tableIndexPath = path.join(this.config.embeddingsPath, 'table_index.json');
-        await fs.writeFile(tableIndexPath, JSON.stringify(tableIndex, null, 2));
-
-        this.logger.info('✓ Vector database created with multiple tables');
-
-        // Create metadata file
         const metadata: EmbeddingMetadata = {
-            version: '1.0.0',
+            version: '2.0.0',
             createdAt: new Date().toISOString(),
             model: this.config.model,
-            dimensions: vectorData.length > 0 ? vectorData[0].vector.length : 384,
-            totalVectors: vectorData.length,
+            dimensions,
+            totalVectors: validVectorData.length,
             totalDocuments: this.documents.length,
             chunkSize: this.config.chunkSize,
             chunkOverlap: this.config.chunkOverlap
         };
 
-        const metadataPath = path.join(this.config.embeddingsPath, 'metadata.json');
-        await fs.writeFile(metadataPath, JSON.stringify(metadata, null, 2));
-
-        this.logger.info(`✓ Created metadata file: ${metadataPath}`);
+        await fs.writeFile(path.join(this.config.embeddingsPath, 'metadata.json'), JSON.stringify(metadata, null, 2));
+        this.logger.info('✓ Created metadata.json');
 
         return metadata;
     }
@@ -548,11 +525,15 @@ class EmbeddingBuilder {
 export { EmbeddingBuilder };
 
 // Run the builder
-if (require.main === module) {
+// In ESM, check if this file is being run directly (cross-platform safe)
+const isMainModule = fileURLToPath(import.meta.url) === path.resolve(process.argv[1]);
+if (isMainModule) {
     const logger = new ToolsLogger();
     const builder = new EmbeddingBuilder();
-    builder.buildEmbeddings().catch((error) => {
+    try {
+        await builder.buildEmbeddings();
+    } catch (error) {
         logger.error(`Build failed: ${error.message}`);
         process.exit(1);
-    });
+    }
 }

@@ -5,8 +5,8 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import type { ManifestNamespace } from '@sap-ux/project-access';
 import type { ConfigAnswers, AttributesAnswers, SystemLookup, FlexLayer, Endpoint } from '@sap-ux/adp-tooling';
 
-import { t } from './i18n';
-import { getExtensionProjectData } from '../app/extension-project';
+import { t } from './i18n.js';
+import { getExtensionProjectData } from '../app/extension-project/index.js';
 import { AdaptationProjectType } from '@sap-ux/axios-extension';
 /**
  * Parameters required for composing the extension project generator.

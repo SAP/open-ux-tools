@@ -9,8 +9,8 @@ import type {
     RouteEntry,
     XsappConfig,
     XsappRoute
-} from '../types';
-import { UI5_SERVER_DESTINATION } from '../config/constants';
+} from '../types.js';
+import { UI5_SERVER_DESTINATION } from '../config/constants.js';
 
 /**
  * Auth route for HTML pages - triggers XSUAA login.

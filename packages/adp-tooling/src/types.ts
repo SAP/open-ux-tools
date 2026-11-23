@@ -12,7 +12,7 @@ import type { Destination } from '@sap-ux/btp-utils';
 import type { YUIQuestion } from '@sap-ux/inquirer-common';
 import type AdmZip from 'adm-zip';
 import type { ToolsLogger } from '@sap-ux/logger';
-import type { SupportedProject } from './source';
+import type { SupportedProject } from './source/index.js';
 
 export type DataSources = Record<string, ManifestNamespace.DataSource>;
 
@@ -370,6 +370,7 @@ export interface CodeExtChange extends CommonChangeProperties {
     changeType: 'codeExt';
     content: {
         codeRef: string;
+        viewId?: string;
     };
     selector: {
         controllerName: string;
@@ -888,10 +889,18 @@ export interface XsApp {
 export interface Uaa {
     clientid: string;
     clientsecret: string;
+    /** Auth server URL (used to request OAuth tokens). */
     url: string;
+    /** Present on destination-service uaa bindings. */
+    uri?: string;
 }
 
-export type CfDestinationServiceCredentials = { uri: string; uaa: Uaa } | ({ uri: string } & Uaa);
+/**
+ * CF destination-service service-key credentials.
+ * - nested: `{ uaa: { clientid, clientsecret, url, uri, ... } }`
+ * - flat:   `{ clientid, clientsecret, url, uri, ... }`
+ */
+export type CfDestinationServiceCredentials = { uaa: Uaa & { uri: string } } | (Uaa & { uri: string });
 
 export interface CfAppParams {
     appName: string;
@@ -990,6 +999,7 @@ export interface UI5YamlCustomTaskConfiguration {
     appHostId: string;
     appName: string;
     appVersion: string;
+    module: string;
     moduleName: string;
     org: string;
     space: string;
@@ -1172,6 +1182,11 @@ export interface CfAdpWriterConfig {
          * GUID of the BTP space.
          */
         spaceGuid: string;
+        /**
+         * Live CF service instance to bind via an `org.cloudfoundry.existing-service` resource.
+         * Unset when reusing a service already declared in an existing MTA.
+         */
+        existingService?: CfServiceInstanceChoice;
     };
     project: {
         name: string;
@@ -1286,7 +1301,30 @@ export enum cfServicesPromptNames {
     approuter = 'approuter',
     businessService = 'businessService',
     businessSolutionName = 'businessSolutionName',
-    baseApp = 'baseApp'
+    baseApp = 'baseApp',
+    serviceInstance = 'serviceInstance'
+}
+
+/**
+ * A live CF service instance offered as a choice in the service-instance prompt.
+ */
+export interface CfServiceInstanceChoice {
+    /**
+     * The service instance name.
+     */
+    name: string;
+    /**
+     * The service instance GUID.
+     */
+    guid: string;
+    /**
+     * The service offering (e.g. 'destination', 'connectivity').
+     */
+    service: string;
+    /**
+     * The service plan name.
+     */
+    servicePlan: string;
 }
 
 export type CfServicesAnswers = {
@@ -1295,6 +1333,8 @@ export type CfServicesAnswers = {
     [cfServicesPromptNames.businessSolutionName]?: string;
     // Base app object returned by discovery (shape provided by FDC service)
     [cfServicesPromptNames.baseApp]?: CFApp;
+    // Selected live CF service instance to bind via an existing-service resource
+    [cfServicesPromptNames.serviceInstance]?: CfServiceInstanceChoice;
 };
 
 export type CFServicesQuestion = YUIQuestion<CfServicesAnswers>;
@@ -1315,11 +1355,16 @@ export interface BaseAppPromptOptions {
     hide?: boolean;
 }
 
+export interface ServiceInstancePromptOptions {
+    hide?: boolean;
+}
+
 export type CfServicesPromptOptions = Partial<{
     [cfServicesPromptNames.approuter]: ApprouterPromptOptions;
     [cfServicesPromptNames.businessService]: BusinessServicePromptOptions;
     [cfServicesPromptNames.businessSolutionName]: BusinessSolutionNamePromptOptions;
     [cfServicesPromptNames.baseApp]: BaseAppPromptOptions;
+    [cfServicesPromptNames.serviceInstance]: ServiceInstancePromptOptions;
 }>;
 
 export interface RequestArguments {

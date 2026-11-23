@@ -1,9 +1,33 @@
-import { getControlById } from '../../../utils/core';
+import { getControlById } from '../../../utils/core.js';
 import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
-import type { QuickActionContext } from '../../../cpe/quick-actions/quick-action-definition';
+import type { QuickActionContext } from '../../../cpe/quick-actions/quick-action-definition.js';
 import CommandFactory from 'sap/ui/rta/command/CommandFactory';
-import { getV4AppComponent, getPageName, getReference, isMacroTable } from '../../../utils/fe-v4';
+import { getV4AppComponent, getPageName, getReference, isMacroTable } from '../../../utils/fe-v4.js';
 import UI5Element from 'sap/ui/core/Element';
+import type AppComponent from 'sap/fe/core/AppComponent';
+import { Manifest } from 'sap/ui/rta/RuntimeAuthoring';
+
+interface ViewDataType {
+    stableId: string;
+}
+
+export function getPageId(context: QuickActionContext): string | undefined {
+    return (context.view.getViewData() as ViewDataType)?.stableId.split('::').pop();
+}
+
+/**
+ * Returns the app component and page ID for use in appDescriptor, or undefined if either is missing.
+ */
+export function getAppDescriptorBase(
+    context: QuickActionContext
+): { appComponent: AppComponent; pageId: string } | undefined {
+    const appComponent = getV4AppComponent(context.view);
+    const pageId = getPageId(context);
+    if (!appComponent || !pageId) {
+        return undefined;
+    }
+    return { appComponent, pageId };
+}
 
 export async function executeToggleAction(
     context: QuickActionContext,
@@ -140,6 +164,18 @@ export function getPropertyPath(table: UI5Element, property: 'actions' | 'column
         }
     }
     return undefined;
+}
+
+export function hasRouteForNavProperty(
+    manifest: Manifest,
+    sourcePageId: string,
+    navigationProperty: string
+): boolean {
+    const targets = manifest['sap.ui5']?.routing?.targets ?? {};
+    const sourceTarget = targets[sourcePageId];
+
+    // Check if a route exists from the source page for the specified navigation property.
+    return !!sourceTarget?.options?.settings?.navigation?.[navigationProperty]?.detail?.route;
 }
 
 /**

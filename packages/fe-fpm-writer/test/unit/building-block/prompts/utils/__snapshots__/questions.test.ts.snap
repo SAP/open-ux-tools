@@ -111,6 +111,10 @@ Array [
     "value": "/mvc:View/macros:Page",
   },
   Object {
+    "name": "/mvc:View/macros:Page/macros:items",
+    "value": "/mvc:View/macros:Page/macros:items",
+  },
+  Object {
     "name": "/mvc:View/macros:Page/macros:Table",
     "value": "/mvc:View/macros:Page/macros:Table",
   },

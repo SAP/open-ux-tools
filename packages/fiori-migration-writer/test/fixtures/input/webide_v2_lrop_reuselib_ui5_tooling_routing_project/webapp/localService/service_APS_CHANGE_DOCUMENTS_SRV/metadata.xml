@@ -1,0 +1,82 @@
+<edmx:Edmx xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx"
+	xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" xmlns:sap="http://www.sap.com/Protocols/SAPData" Version="1.0">
+	<edmx:Reference xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx"
+		Uri="./IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMON',Version='0001',SAP__Origin='LOCAL')/$value"><edmx:Include Namespace="com.sap.vocabularies.Common.v1" Alias="Common"/></edmx:Reference>
+	<edmx:Reference xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx"
+		Uri="./IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_CAPABILITIES',Version='0001',SAP__Origin='LOCAL')/$value"><edmx:Include Namespace="Org.OData.Capabilities.V1" Alias="Capabilities"/></edmx:Reference>
+	<edmx:Reference xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx"
+		Uri="./IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMUNICATION',Version='0001',SAP__Origin='LOCAL')/$value"><edmx:Include Namespace="com.sap.vocabularies.Communication.v1" Alias="Communication"/></edmx:Reference>
+	<edmx:Reference xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx"
+		Uri="./IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_AGGREGATION',Version='0001',SAP__Origin='LOCAL')/$value"><edmx:Include Namespace="Org.OData.Aggregation.V1" Alias="Aggregation"/></edmx:Reference>
+	<edmx:Reference xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx"
+		Uri="./IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_PERSONALDATA',Version='0001',SAP__Origin='LOCAL')/$value"><edmx:Include Namespace="com.sap.vocabularies.PersonalData.v1" Alias="PersonalData"/></edmx:Reference>
+	<edmx:Reference xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx"
+		Uri="./IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_VALIDATION',Version='0001',SAP__Origin='LOCAL')/$value"><edmx:Include Namespace="Org.OData.Validation.V1" Alias="Validation"/></edmx:Reference>
+	<edmx:Reference xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx"
+		Uri="./IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_ANALYTICS',Version='0001',SAP__Origin='LOCAL')/$value"><edmx:Include Namespace="com.sap.vocabularies.Analytics.v1" Alias="Analytics"/></edmx:Reference>
+	<edmx:Reference xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx"
+		Uri="./IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_MEASURES',Version='0001',SAP__Origin='LOCAL')/$value"><edmx:Include Namespace="Org.OData.Measures.V1" Alias="Measures"/></edmx:Reference>
+	<edmx:DataServices m:DataServiceVersion="2.0">
+		<Schema xmlns="http://schemas.microsoft.com/ado/2008/09/edm" Namespace="APS_CHANGE_DOCUMENTS_SRV" xml:lang="en" sap:schema-version="1">
+			<EntityType Name="C_ChangeDocumentsType" sap:label="CDS View for Change Documents" sap:content-version="1">
+				<Key><PropertyRef Name="ChangeDocObjectClass"/><PropertyRef Name="ChangeDocObject"/><PropertyRef Name="ChangeDocument"/><PropertyRef Name="DatabaseTable"/><PropertyRef Name="ChangeDocTableKey"/><PropertyRef Name="ChangeDocDatabaseTableField"/><PropertyRef Name="ChangeDocChangeType"/></Key><Property Name="ChangeDocObjectClass" Type="Edm.String" Nullable="false" MaxLength="15" sap:display-format="UpperCase" sap:label="Object"
+					sap:quickinfo="Object class"/><Property Name="ChangeDocObject" Type="Edm.String" Nullable="false" MaxLength="90" sap:display-format="UpperCase" sap:label="Object Value"
+					sap:quickinfo="Object value"/><Property Name="ChangeDocument" Type="Edm.String" Nullable="false" MaxLength="10" sap:display-format="UpperCase"
+					sap:label="Change Document Number" sap:quickinfo="Change Number of Document"/><Property Name="DatabaseTable" Type="Edm.String" Nullable="false" MaxLength="30" sap:display-format="UpperCase"
+					sap:text="DatabaseTable_Text" sap:label="Table" sap:quickinfo="Table Name"/><Property Name="DatabaseTable_Text" Type="Edm.String" MaxLength="60" sap:label="Table"
+					sap:quickinfo="Short Description of Repository Objects" sap:creatable="false" sap:updatable="false"/><Property Name="ChangeDocTableKey" Type="Edm.String" Nullable="false" MaxLength="70" sap:display-format="UpperCase" sap:label="Table Key"
+					sap:quickinfo="Changed table record key"/><Property Name="ChangeDocDatabaseTableField" Type="Edm.String" Nullable="false" MaxLength="30" sap:display-format="UpperCase"
+					sap:text="ChangeDocDatabaseTableField_Text" sap:label="Field" sap:quickinfo="Field Name"/><Property Name="ChangeDocDatabaseTableField_Text" Type="Edm.String" MaxLength="40" sap:label="Field Name" sap:quickinfo="Long Field Label"
+					sap:creatable="false" sap:updatable="false"/><Property Name="ChangeDocChangeType" Type="Edm.String" Nullable="false" MaxLength="1" sap:display-format="UpperCase"
+					sap:text="ChangeDocChangeType_Text" sap:label="Change Type" sap:quickinfo="Type of Change"/><Property Name="ChangeDocChangeType_Text" Type="Edm.String" MaxLength="60" sap:label="Change Method"
+					sap:quickinfo="Short Text for Fixed Values" sap:creatable="false" sap:updatable="false"/><Property Name="CreatedByUser" Type="Edm.String" MaxLength="12" sap:display-format="UpperCase" sap:label="User"
+					sap:quickinfo="User name of the person responsible in change document"/><Property Name="NAME_TEXTC" Type="Edm.String" MaxLength="80" sap:label="Created By" sap:quickinfo="Full Name of Person"/><Property Name="CreationDate" Type="Edm.DateTime" Precision="0" sap:display-format="Date" sap:label="Date"
+					sap:quickinfo="Creation date of the change document"/><Property Name="CreationTime" Type="Edm.Time" Precision="0" sap:label="Time" sap:quickinfo="Time changed"/><Property Name="CreatedOn" Type="Edm.DateTimeOffset" Precision="7" sap:label="Angelegt am" sap:quickinfo="Änderungsbeleg, angelegt am"/><Property Name="ChangeDocLanguageKey" Type="Edm.String" MaxLength="2" sap:label="Language Key"/><Property Name="ChangeDocLanguage" Type="Edm.String" MaxLength="16" sap:label="Language" sap:quickinfo="Name of Language"/><Property Name="ChangeTransactionCode" Type="Edm.String" MaxLength="20" sap:display-format="UpperCase" sap:label="Transaction"
+					sap:quickinfo="Transaction in which a change was made"/><Property Name="ChangeDocTableKeyLong" Type="Edm.String" MaxLength="254" sap:label="Long Table Key"
+					sap:quickinfo="Key of Modified Table Row"/><Property Name="ChangeDocNewFieldValue" Type="Edm.String" MaxLength="255" sap:label="New Value"/><Property Name="ChangeDocPreviousFieldValue" Type="Edm.String" MaxLength="255" sap:label="Old Value"/><Property Name="ChangeDocObjectDescription" Type="Edm.String" MaxLength="350" sap:display-format="UpperCase" sap:label="Object Description"/><Property Name="ChangeDocumentStringNew" Type="Edm.String" sap:label="New Extended Value (Long)"/><Property Name="ChangeDocumentStringOld" Type="Edm.String" sap:label="Old Extended Value (Long)"/><Property Name="ChangeDocNewShortString" Type="Edm.String" MaxLength="255" sap:label="New Extended Value (Short)"/><Property Name="ChangeDocOldShortString" Type="Edm.String" MaxLength="255" sap:label="Old Extended Value (Short)"/><Property Name="ChangeDocNewRawString" Type="Edm.Binary" sap:label="New Raw Data Value"
+					sap:quickinfo="New Change Document Value for RAWSTRING Variable"/><Property Name="ChangeDocOldRawString" Type="Edm.Binary" sap:label="Old Raw Data Value"
+					sap:quickinfo="Old Change Document Value for RAWSTRING Variable"/><Property Name="Language" Type="Edm.String" MaxLength="2" sap:label="Language Key"/></EntityType>
+			<EntityType Name="I_ChangeDocFieldNamesType" sap:label="Field Names" sap:content-version="1">
+				<Key><PropertyRef Name="Language"/><PropertyRef Name="DatabaseTable"/><PropertyRef Name="Value"/></Key><Property Name="Language" Type="Edm.String" Nullable="false" MaxLength="2" sap:label="Lang." sap:quickinfo="Language Key"/><Property Name="DatabaseTable" Type="Edm.String" Nullable="false" MaxLength="30" sap:display-format="UpperCase" sap:label="Table Name"/><Property Name="Value" Type="Edm.String" Nullable="false" MaxLength="30" sap:display-format="UpperCase" sap:text="Text"
+					sap:label="Field Name"/><Property Name="Text" Type="Edm.String" MaxLength="40" sap:label="Field Name" sap:quickinfo="Long Field Label"/></EntityType>
+			<EntityContainer Name="APS_CHANGE_DOCUMENTS_SRV_Entities" m:IsDefaultEntityContainer="true" sap:message-scope-supported="true"
+				sap:supported-formats="atom json xlsx"><EntitySet Name="C_ChangeDocuments" EntityType="APS_CHANGE_DOCUMENTS_SRV.C_ChangeDocumentsType" sap:creatable="false" sap:updatable="false"
+				sap:deletable="false" sap:content-version="1"/><EntitySet Name="I_ChangeDocFieldNames" EntityType="APS_CHANGE_DOCUMENTS_SRV.I_ChangeDocFieldNamesType" sap:creatable="false"
+				sap:updatable="false" sap:deletable="false" sap:content-version="1"/></EntityContainer>
+			<Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm" Target="APS_CHANGE_DOCUMENTS_SRV.APS_CHANGE_DOCUMENTS_SRV_Entities"><Annotation Term="Common.ApplyMultiUnitBehaviorForSortingAndFiltering" Bool="true"/>
+				<Annotation Term="Aggregation.ApplySupported">
+					<Record>
+						<PropertyValue Property="Transformations">
+							<Collection>
+								<String>aggregate</String>
+								<String>groupby</String>
+								<String>filter</String>
+							</Collection>
+						</PropertyValue><PropertyValue Property="Rollup" EnumMember="None"/></Record>
+				</Annotation>
+			</Annotations>
+			<Annotations xmlns="http://docs.oasis-open.org/odata/ns/edm"
+				Target="APS_CHANGE_DOCUMENTS_SRV.APS_CHANGE_DOCUMENTS_SRV_Entities/C_ChangeDocuments">
+				<Annotation Term="Capabilities.FilterRestrictions">
+					<Record>
+						<PropertyValue Property="FilterExpressionRestrictions">
+							<Collection>
+								<Record><PropertyValue Property="Property" PropertyPath="ChangeDocumentStringNew"/><PropertyValue Property="AllowedExpressions" String="SearchExpression"/></Record>
+								<Record><PropertyValue Property="Property" PropertyPath="ChangeDocumentStringOld"/><PropertyValue Property="AllowedExpressions" String="SearchExpression"/></Record>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+				<Annotation Term="Capabilities.SortRestrictions">
+					<Record>
+						<PropertyValue Property="NonSortableProperties">
+							<Collection>
+								<PropertyPath>ChangeDocumentStringNew</PropertyPath>
+								<PropertyPath>ChangeDocumentStringOld</PropertyPath>
+							</Collection>
+						</PropertyValue>
+					</Record>
+				</Annotation>
+			</Annotations><atom:link xmlns:atom="http://www.w3.org/2005/Atom" rel="self" href="./sap/APS_CHANGE_DOCUMENTS_SRV/$metadata"/><atom:link xmlns:atom="http://www.w3.org/2005/Atom" rel="latest-version" href="./sap/APS_CHANGE_DOCUMENTS_SRV/$metadata"/></Schema>
+	</edmx:DataServices>
+</edmx:Edmx>

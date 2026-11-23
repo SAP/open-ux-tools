@@ -1,7 +1,7 @@
 import { DirName } from '@sap-ux/project-access';
 import { join } from 'node:path';
-import type { LaunchConfig, LaunchConfigInfo, LaunchJSON } from '../types';
-import { LAUNCH_JSON_FILE } from '../types';
+import type { LaunchConfig, LaunchConfigInfo, LaunchJSON } from '../types/index.js';
+import { LAUNCH_JSON_FILE } from '../types/index.js';
 import { parse } from 'jsonc-parser';
 import type { Editor } from 'mem-fs-editor';
 import { promises as fs } from 'node:fs';

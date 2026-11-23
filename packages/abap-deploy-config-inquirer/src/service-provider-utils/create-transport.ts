@@ -1,9 +1,9 @@
 import { TransportRequestService } from '@sap-ux/axios-extension';
-import { t } from '../i18n';
-import { AbapServiceProviderManager } from './abap-service-provider';
-import LoggerHelper from '../logger-helper';
+import { t } from '../i18n.js';
+import { AbapServiceProviderManager } from './abap-service-provider.js';
+import LoggerHelper from '../logger-helper.js';
 import type { NewUi5ObjectRequestParams } from '@sap-ux/axios-extension';
-import type { BackendTarget } from '../types';
+import type { BackendTarget } from '../types.js';
 
 /**
  * Create a transport number from the service.

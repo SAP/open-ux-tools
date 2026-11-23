@@ -1,12 +1,12 @@
 import path from 'node:path';
 import type { FSWatcher } from 'node:fs';
 import fs, { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
-import type { DataAccess } from '.';
+import type { DataAccess } from './index.js';
 import type { Logger } from '@sap-ux/logger';
-import { errorInstance, getEntityFileName, getFioriToolsDirectory, toPersistenceName } from '../utils';
-import type { ServiceOptions } from '../types';
+import { errorInstance, getEntityFileName, getFioriToolsDirectory, toPersistenceName } from '../utils/index.js';
+import type { ServiceOptions } from '../types.js';
 import os from 'node:os';
-import type { Entity } from '../constants';
+import type { Entity } from '../constants.js';
 
 export const basedir = ({ baseDirectory }: { baseDirectory?: string } = {}): string => {
     if (!baseDirectory) {

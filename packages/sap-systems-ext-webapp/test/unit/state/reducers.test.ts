@@ -1,7 +1,7 @@
-import type { SystemState } from '../../../src/types';
+import type { SystemState } from '../../../src/types/index.js';
 import type { BackendSystem } from '@sap-ux/store';
-import { LoadingState } from '../../../src/types';
-import { getInitialState, reducer } from '../../../src/state/reducers';
+import { LoadingState } from '../../../src/types/index.js';
+import { getInitialState, reducer } from '../../../src/state/reducers.js';
 import * as types from '@sap-ux/sap-systems-ext-types';
 
 const connectionStatus = {

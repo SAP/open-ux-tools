@@ -1,7 +1,7 @@
 import IconPool from 'mock/sap/ui/core/IconPool';
 import { sapCoreMock } from 'mock/window';
 import type Element from 'sap/ui/core/Element';
-import { getIcons } from '../../../src/cpe/ui5-utils';
+import { getIcons } from '../../../src/cpe/ui5-utils.js';
 
 describe('ui5Utils', () => {
     const testElement = {} as Element;

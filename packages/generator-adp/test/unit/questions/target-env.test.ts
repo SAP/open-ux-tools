@@ -1,36 +1,43 @@
+import { jest } from '@jest/globals';
 import { MessageType } from '@sap-devx/yeoman-ui-types';
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { CfConfig } from '@sap-ux/adp-tooling';
 import type { ListQuestion } from '@sap-ux/inquirer-common';
-import { getDefaultTargetFolder } from '@sap-ux/fiori-generator-shared';
 
-import { initI18n, t } from '../../../src/utils/i18n';
-import { TargetEnv, type TargetEnvAnswers } from '../../../src/app/types';
-import { getTargetEnvAdditionalMessages } from '../../../src/app/questions/helper/additional-messages';
-import { validateEnvironment, validateProjectPath } from '../../../src/app/questions/helper/validators';
-import { getTargetEnvPrompt, getEnvironments, getProjectPathPrompt } from '../../../src/app/questions/target-env';
+const mockGetDefaultTargetFolder = jest.fn<typeof realFioriGenShared.getDefaultTargetFolder>();
+const mockGetTargetEnvAdditionalMessages = jest.fn() as jest.Mock;
+const mockValidateEnvironment = jest.fn() as jest.Mock;
+const mockValidateProjectPath = jest.fn() as jest.Mock;
+const mockValidateMtaId = jest.fn() as jest.Mock;
+const mockIsMtaProject = jest.fn() as jest.Mock;
 
-jest.mock('@sap-ux/fiori-generator-shared', () => ({
-    getDefaultTargetFolder: jest.fn()
+jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
+    isMtaProject: mockIsMtaProject
 }));
 
-jest.mock('../../../src/app/questions/helper/additional-messages', () => ({
-    getTargetEnvAdditionalMessages: jest.fn()
+const realFioriGenShared = await import('@sap-ux/fiori-generator-shared');
+jest.unstable_mockModule('@sap-ux/fiori-generator-shared', () => ({
+    ...realFioriGenShared,
+    getDefaultTargetFolder: mockGetDefaultTargetFolder
 }));
 
-jest.mock('../../../src/app/questions/helper/validators', () => ({
-    validateEnvironment: jest.fn(),
-    validateProjectPath: jest.fn()
+jest.unstable_mockModule('../../../src/app/questions/helper/additional-messages', () => ({
+    getTargetEnvAdditionalMessages: mockGetTargetEnvAdditionalMessages
 }));
 
-const mockValidateEnvironment = validateEnvironment as jest.MockedFunction<typeof validateEnvironment>;
-const mockValidateProjectPath = validateProjectPath as jest.MockedFunction<typeof validateProjectPath>;
-const mockGetDefaultTargetFolder = getDefaultTargetFolder as jest.MockedFunction<typeof getDefaultTargetFolder>;
-const mockGetTargetEnvAdditionalMessages = getTargetEnvAdditionalMessages as jest.MockedFunction<
-    typeof getTargetEnvAdditionalMessages
->;
+jest.unstable_mockModule('../../../src/app/questions/helper/validators', () => ({
+    validateEnvironment: mockValidateEnvironment,
+    validateProjectPath: mockValidateProjectPath,
+    validateMtaId: mockValidateMtaId
+}));
+
+const { initI18n, t } = await import('../../../src/utils/i18n.js');
+const { TargetEnv, MtaMode } = await import('../../../src/app/types.js');
+import type { TargetEnvAnswers, ProjectLocationAnswers } from '../../../src/app/types.js';
+const { getTargetEnvPrompt, getEnvironments, getProjectPathPrompt, getMtaModePrompt, getMtaIdPrompt } =
+    await import('../../../src/app/questions/target-env.js');
 
 describe('Target Environment', () => {
     const mockAppWizard: AppWizard = {
@@ -168,8 +175,16 @@ describe('Target Environment', () => {
             const prompt = getProjectPathPrompt(mockLogger, mockVscode);
 
             const validateResult = prompt.validate!('/test/path');
-            expect(mockValidateProjectPath).toHaveBeenCalledWith('/test/path', mockLogger);
+            expect(mockValidateProjectPath).toHaveBeenCalledWith('/test/path', mockLogger, undefined, undefined);
             expect(validateResult).toBeUndefined();
+        });
+
+        test('should thread the selected MTA mode and CF config into the validator', () => {
+            const cfConfig = { space: { GUID: 'space-guid', Name: 'space' } } as unknown as CfConfig;
+            const prompt = getProjectPathPrompt(mockLogger, mockVscode, cfConfig);
+
+            prompt.validate!('/test/path', { mtaMode: MtaMode.New } as ProjectLocationAnswers);
+            expect(mockValidateProjectPath).toHaveBeenCalledWith('/test/path', mockLogger, MtaMode.New, cfConfig);
         });
 
         test('should set up default function', () => {
@@ -181,6 +196,70 @@ describe('Target Environment', () => {
             const defaultPath = prompt.default!();
             expect(mockGetDefaultTargetFolder).toHaveBeenCalledWith(mockVscode);
             expect(defaultPath).toBe(mockDefaultPath);
+        });
+    });
+
+    describe('getMtaModePrompt', () => {
+        test('should create the MTA mode prompt with new/existing choices', () => {
+            const prompt = getMtaModePrompt() as ListQuestion<ProjectLocationAnswers>;
+
+            expect(prompt.type).toBe('list');
+            expect(prompt.name).toBe('mtaMode');
+            expect(prompt.message).toBe(t('prompts.mtaModeLabel'));
+            expect(prompt.default).toBe(MtaMode.New);
+            expect(prompt.choices).toEqual([
+                { name: t('prompts.mtaModeNewLabel'), value: MtaMode.New },
+                { name: t('prompts.mtaModeExistingLabel'), value: MtaMode.Existing }
+            ]);
+            expect(prompt.guiOptions).toEqual({
+                mandatory: true,
+                hint: t('prompts.mtaModeTooltip'),
+                breadcrumb: t('prompts.mtaModeBreadcrumb')
+            });
+        });
+    });
+
+    describe('getMtaIdPrompt', () => {
+        test('should create the MTA id prompt with correct structure', () => {
+            const prompt = getMtaIdPrompt();
+
+            expect(prompt.type).toBe('input');
+            expect(prompt.name).toBe('mtaId');
+            expect(prompt.message).toBe(t('prompts.mtaIdLabel'));
+            expect(prompt.guiOptions).toEqual({
+                mandatory: true,
+                hint: t('prompts.mtaIdTooltip'),
+                breadcrumb: t('prompts.mtaIdBreadcrumb')
+            });
+        });
+
+        test('should only be shown when creating a new MTA project in a folder that is not already an MTA project', () => {
+            mockIsMtaProject.mockReturnValue(false);
+            const prompt = getMtaIdPrompt();
+
+            expect(prompt.when!({ mtaMode: MtaMode.New, projectLocation: '/parent' } as ProjectLocationAnswers)).toBe(
+                true
+            );
+            expect(
+                prompt.when!({ mtaMode: MtaMode.Existing, projectLocation: '/parent' } as ProjectLocationAnswers)
+            ).toBe(false);
+        });
+
+        test('should be hidden when the selected root path is already an MTA project', () => {
+            mockIsMtaProject.mockReturnValue(true);
+            const prompt = getMtaIdPrompt();
+
+            expect(
+                prompt.when!({ mtaMode: MtaMode.New, projectLocation: '/existing-mta' } as ProjectLocationAnswers)
+            ).toBe(false);
+            expect(mockIsMtaProject).toHaveBeenCalledWith('/existing-mta');
+        });
+
+        test('should validate the MTA id against the selected parent location', () => {
+            const prompt = getMtaIdPrompt();
+
+            prompt.validate!('my-mta', { projectLocation: '/parent' } as ProjectLocationAnswers);
+            expect(mockValidateMtaId).toHaveBeenCalledWith('my-mta', '/parent');
         });
     });
 });

@@ -1,3 +1,5 @@
+import { jest } from '@jest/globals';
+
 declare global {
     interface Window {
         ResizeObserver: any;

@@ -1,7 +1,7 @@
 import { ClientFactory, PerformanceMeasurementAPI as Performance, SampleRate } from '@sap-ux/telemetry';
 import type { TelemetryEvent } from '@sap-ux/telemetry';
-import type { TelemetryData } from './types';
-import { TelemetryHelper } from './telemetryHelper';
+import type { TelemetryData } from './types.js';
+import { TelemetryHelper } from './telemetryHelper.js';
 
 /**
  * Prepares the telemetry event to be sent to the telemetry client.

@@ -16,9 +16,11 @@ import {
 } from '@sap-ux/odata-annotation-core';
 import type { VocabularyService } from '@sap-ux/odata-vocabularies';
 
-import { createMetadataCollector, type CdsCompilerFacade } from '@sap/ux-cds-compiler-facade';
+import type { CdsCompilerFacade } from '@sap/ux-cds-compiler-facade';
+import { compareByRange } from '@sap-ux/text-document-utils';
+import { createMetadataCollector } from '@sap/ux-cds-compiler-facade';
 
-import type { Annotation, Collection, Token } from '@sap-ux/cds-annotation-parser';
+import type { Annotation, Collection, FlattenedExpression, Token } from '@sap-ux/cds-annotation-parser';
 import {
     copyRange,
     ENUM_TYPE,
@@ -30,20 +32,21 @@ import {
     RECORD_TYPE,
     copyPosition,
     ANNOTATION_GROUP_TYPE,
-    ANNOTATION_GROUP_ITEMS_TYPE
+    ANNOTATION_GROUP_ITEMS_TYPE,
+    FLATTENED_EXPRESSION_TYPE
 } from '@sap-ux/cds-annotation-parser';
 import type { Target } from '@sap-ux/cds-odata-annotation-converter';
 import { TARGET_TYPE, printPrimitiveValue, indent, print, printTarget } from '@sap-ux/cds-odata-annotation-converter';
 
-import { increaseIndent, compareByRange } from '../utils';
-import { ApiError } from '../error';
+import { increaseIndent } from '../utils/index.js';
+import { ApiError } from '../error.js';
 
-import type { Comment } from './comments';
-import type { AstNode, CDSDocument, ContainerNode } from './document';
-import { CDS_DOCUMENT_TYPE, getChildCount, getItems } from './document';
-import type { DeletionRange } from './deletion';
-import { getTextEditsForDeletionRanges, getDeletionRangeForNode } from './deletion';
-import { getAstNodesFromPointer } from './pointer';
+import type { Comment } from './comments.js';
+import type { AstNode, CDSDocument, ContainerNode } from './document.js';
+import { CDS_DOCUMENT_TYPE, getChildCount, getItems } from './document.js';
+import type { DeletionRange } from './deletion.js';
+import { getTextEditsForDeletionRanges, getDeletionRangeForNode } from './deletion.js';
+import { getAstNodesFromPointer } from './pointer.js';
 
 import type {
     CDSDocumentChange,
@@ -72,7 +75,7 @@ import type {
     ConvertToCompoundAnnotation,
     ElementInserts,
     DeleteAnnotationGroup
-} from './change';
+} from './change.js';
 import {
     INSERT_PRIMITIVE_VALUE_TYPE,
     MOVE_COLLECTION_VALUE_CHANGE_TYPE,
@@ -100,9 +103,9 @@ import {
     DELETE_ANNOTATION_GROUP_CHANGE_TYPE,
     DELETE_ANNOTATION_GROUP_ITEMS_CHANGE_TYPE,
     createDeleteAnnotationChange
-} from './change';
-import { createReferenceElement, preprocessChanges } from './preprocessor';
-import type { CompilerToken } from './cds-compiler-tokens';
+} from './change.js';
+import { createReferenceElement, preprocessChanges } from './preprocessor.js';
+import type { CompilerToken } from './cds-compiler-tokens.js';
 import {
     findLastTokenBeforePosition,
     findFirstTokenAfterPosition,
@@ -111,8 +114,8 @@ import {
     isOldToken,
     tokenLine,
     tokenColumn
-} from './cds-compiler-tokens';
-import { getIndentLevelFromPointer, getIndentLevelFromNode } from './indent';
+} from './cds-compiler-tokens.js';
+import { getIndentLevelFromPointer, getIndentLevelFromNode } from './indent.js';
 
 const printOptions: typeof defaultPrintOptions = { ...defaultPrintOptions, useSnippetSyntax: false };
 
@@ -423,10 +426,9 @@ export class CDSWriter implements ChangeHandler {
     //#region Deletes
 
     private deleteNode(pointer: string, reversePath: AstNode[]): void {
-        const [astNode, parent] = reversePath;
         const segments = pointer.split('/');
         const lastIndex = segments.pop();
-        deleteValue(this.edits, pointer, astNode, parent, this.comments, this.tokens, lastIndex);
+        deleteValue(this.edits, pointer, reversePath, this.comments, this.tokens, lastIndex);
     }
 
     [DELETE_TARGET_CHANGE_TYPE] = (_change: DeleteTarget, reversePath: AstNode[]): void => {
@@ -443,7 +445,13 @@ export class CDSWriter implements ChangeHandler {
         );
 
         const ranges = astNode.assignments
-            .flatMap((assignment) => (assignment.type === ANNOTATION_TYPE ? [assignment] : assignment.items.items))
+            .flatMap((assignment) => {
+                if (assignment.type === ANNOTATION_TYPE || assignment.type === FLATTENED_EXPRESSION_TYPE) {
+                    return [assignment];
+                } else {
+                    return assignment.items.items;
+                }
+            })
             .map((annotation, i) => {
                 return getDeletionRangeForNode(
                     this.vocabularyService,
@@ -494,7 +502,11 @@ export class CDSWriter implements ChangeHandler {
         // preprocessor converts these changes to DeleteAnnotationGroup
     };
 
-    private getDeletionRange(annotation: Annotation, target: Target, index: number): DeletionRange | undefined {
+    private getDeletionRange(
+        annotation: Annotation | FlattenedExpression,
+        target: Target,
+        index: number
+    ): DeletionRange | undefined {
         const { edmxPath } = this.facade.collectMetadataForAbsolutePath(
             target.name,
             target.kind,
@@ -516,7 +528,11 @@ export class CDSWriter implements ChangeHandler {
         const lastIndex = segments.pop();
         const isInAnnotationGroup = greatGrandParent?.type === TARGET_TYPE;
         const target = isInAnnotationGroup ? greatGrandParent : parent;
-        if (!lastIndex || annotation?.type !== ANNOTATION_TYPE || target.type !== TARGET_TYPE) {
+        if (
+            !lastIndex ||
+            (annotation?.type !== ANNOTATION_TYPE && annotation?.type !== FLATTENED_EXPRESSION_TYPE) ||
+            target.type !== TARGET_TYPE
+        ) {
             return;
         }
         const targetPointer = change.pointer.split('/').slice(0, 3).join('/');
@@ -558,7 +574,7 @@ export class CDSWriter implements ChangeHandler {
 
     [DELETE_EMBEDDED_ANNOTATION_CHANGE_TYPE] = (change: DeleteEmbeddedAnnotation, reversePath: AstNode[]): void => {
         const [astNode, parent] = reversePath;
-        if (astNode?.type === ANNOTATION_TYPE) {
+        if (astNode?.type === ANNOTATION_TYPE || astNode?.type === FLATTENED_EXPRESSION_TYPE) {
             if (parent.type === RECORD_TYPE) {
                 // Transform $value back to normal primitive value representation if last embedded annotation is being deleted
                 const firstProperty = parent.properties[0];
@@ -995,12 +1011,12 @@ function deletePreviousElementWhiteSpaces(
 function deleteValue(
     edits: TextEdit[],
     pointer: string,
-    astNode: AstNode,
-    parent: AstNode,
+    reversePath: AstNode[],
     comments: Comment[],
     tokens: CompilerToken[],
     lastIndex?: string
 ): void {
+    const [astNode, parent] = reversePath;
     if (parent.type === COLLECTION_TYPE) {
         if (!lastIndex) {
             throw new ApiError(`${pointer} is not pointing to a collection element.`);
@@ -1011,7 +1027,9 @@ function deleteValue(
         deleteBlock(edits, content, startContentIndex);
     } else if (
         parent.type === RECORD_TYPE &&
-        (astNode.type === RECORD_PROPERTY_TYPE || astNode.type === ANNOTATION_TYPE)
+        (astNode.type === RECORD_PROPERTY_TYPE ||
+            astNode.type === ANNOTATION_TYPE ||
+            astNode.type === FLATTENED_EXPRESSION_TYPE)
     ) {
         if (!lastIndex) {
             throw new ApiError(`${pointer} is not pointing to a record property.`);
@@ -1020,7 +1038,11 @@ function deleteValue(
         const index = Number.parseInt(lastIndex, 10);
         const { startContentIndex } = findContentIndices(content, index, index, astNode.type);
         deleteBlock(edits, content, startContentIndex);
-    } else if (parent.type === ANNOTATION_TYPE || parent.type === RECORD_PROPERTY_TYPE) {
+    } else if (
+        parent.type === ANNOTATION_TYPE ||
+        parent.type === RECORD_PROPERTY_TYPE ||
+        parent.type === FLATTENED_EXPRESSION_TYPE
+    ) {
         // delete record value including ':'
         if (parent.colon?.range && astNode.range) {
             const range = Range.create(parent.colon.range.start, astNode.range.end);
@@ -1286,7 +1308,11 @@ function findContentIndices(
     content: ContainerContentBlock[],
     start: number,
     end: number = start,
-    nodeType?: typeof ANNOTATION_TYPE | typeof RECORD_PROPERTY_TYPE | typeof ANNOTATION_GROUP_TYPE
+    nodeType?:
+        | typeof ANNOTATION_TYPE
+        | typeof RECORD_PROPERTY_TYPE
+        | typeof ANNOTATION_GROUP_TYPE
+        | typeof FLATTENED_EXPRESSION_TYPE
 ): {
     previousContentIndex: number;
     startContentIndex: number;

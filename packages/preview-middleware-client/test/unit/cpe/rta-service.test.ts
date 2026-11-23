@@ -1,4 +1,4 @@
-import { RtaService } from '../../../src/cpe/rta-service';
+import { RtaService } from '../../../src/cpe/rta-service.js';
 import type { ActionHandler } from '../../../src/cpe/types';
 import { setAppMode, undo, redo, save, reloadApplication } from '@sap-ux-private/control-property-editor-common';
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
@@ -12,7 +12,7 @@ describe('rta-service', () => {
 
     beforeEach(() => {
         sendActionMock = jest.fn();
-        subscribeMock = jest.fn<void, [ActionHandler]>();
+        subscribeMock = jest.fn<(handler: ActionHandler) => void>();
         fetchMock.mockRestore();
     });
     test('setMode - navigation', async () => {
@@ -108,6 +108,6 @@ describe('rta-service', () => {
         expect(rtaMock.attachStart).toHaveBeenCalledTimes(1);
 
         rtaMock.attachStart.mock.calls[0][0]();
-        expect(promise).resolves.toBe(undefined);
+        await expect(promise).resolves.toBe(undefined);
     });
 });

@@ -5,9 +5,9 @@ import { buildAst } from '@xml-tools/ast';
 import type { DocumentCstNode } from '@xml-tools/parser';
 import { parse } from '@xml-tools/parser';
 
-import { convertDocument, convertMetadataDocument } from '../../src/parser';
+import { convertDocument, convertMetadataDocument } from '../../src/parser/index.js';
 
-import { deserialize, FIXTURE_ROOT, getAllFixtures } from './utils/fixtures';
+import { deserialize, FIXTURE_ROOT, getAllFixtures } from './utils/fixtures.js';
 
 const eolRegEx = new RegExp(os.EOL, 'g');
 

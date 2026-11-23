@@ -1,5 +1,9 @@
-const fs = require('fs');
-const { join } = require('path');
+import { existsSync, mkdirSync, copyFileSync, readdirSync } from 'fs';
+import { join } from 'path';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const StorybookFiles = {
     StorybookFolder: '.storybook',
@@ -29,8 +33,8 @@ function copyFiles(files, source, target, overwrite) {
             source: join(source, file),
             target: join(target, file)
         };
-        if (!fs.existsSync(styleFile.target) || overwrite) {
-            fs.copyFileSync(styleFile.source, styleFile.target);
+        if (!existsSync(styleFile.target) || overwrite) {
+            copyFileSync(styleFile.source, styleFile.target);
         }
     }
 }
@@ -46,13 +50,13 @@ async function run(argv) {
         source: join(SourceDir, StorybookFiles.StylesFolder),
         target: join(TargetDir, StorybookFiles.StylesFolder)
     };
-    if (!fs.existsSync(styleFolder.target)) {
-        fs.mkdirSync(styleFolder.target);
+    if (!existsSync(styleFolder.target)) {
+        mkdirSync(styleFolder.target);
     }
-    const styleFiles = await fs.readdirSync(styleFolder.source);
+    const styleFiles = readdirSync(styleFolder.source);
     copyFiles(styleFiles, styleFolder.source, styleFolder.target, overwrite);
     // Handle html files
     copyFiles([StorybookFiles.ManagerFile, StorybookFiles.PreviewFile], SourceDir, TargetDir, overwrite);
 }
 
-module.exports = run;
+export default run;

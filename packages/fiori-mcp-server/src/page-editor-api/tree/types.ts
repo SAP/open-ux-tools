@@ -1,4 +1,4 @@
-import type { ArtifactType, PropertyMessage } from '@sap/ux-specification/dist/types/src';
+import type { ArtifactType, PropertyMessageType } from '@sap/ux-specification';
 import type { JSONSchema4 } from 'json-schema';
 
 export type PropertyPath = Array<string | number>;
@@ -22,7 +22,7 @@ export interface SettingOption {
     artifactType?: ArtifactType;
     required?: boolean;
     minimum?: number;
-    messages?: PropertyMessage[];
+    messages?: PropertyMessageType[];
     locations?: Location[];
     disabled?: boolean;
     displayName?: string;

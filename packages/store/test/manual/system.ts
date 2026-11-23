@@ -1,5 +1,5 @@
-import type { ServiceOptions, ApiHubSettingsKey, ApiHubSettings } from '../../src';
-import { getService, BackendSystem, BackendSystemKey } from '../../src';
+import type { ServiceOptions, ApiHubSettingsKey, ApiHubSettings } from '../../src/index.js';
+import { getService, BackendSystem, BackendSystemKey } from '../../src/index.js';
 import os from 'node:os';
 import path from 'node:path';
 import { ConsoleTransport, ToolsLogger } from '@sap-ux/logger';

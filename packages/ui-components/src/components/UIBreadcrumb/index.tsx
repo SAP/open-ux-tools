@@ -1,1 +1,1 @@
-export * from './UIBreadcrumb';
+export * from './UIBreadcrumb.js';

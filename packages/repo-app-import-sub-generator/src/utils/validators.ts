@@ -1,15 +1,18 @@
-import { t } from '../utils/i18n';
-import RepoAppDownloadLogger from '../utils/logger';
-import { PromptState } from '../prompts/prompt-state';
+import { t } from '../utils/i18n.js';
+import RepoAppDownloadLogger from '../utils/logger.js';
+import { PromptState } from '../prompts/prompt-state.js';
 import type { AppIndex } from '@sap-ux/axios-extension';
 import { HELP_NODES } from '@sap-ux/guided-answers-helper';
 import type { ValidationLink } from '@sap-ux/inquirer-common';
 import { ERROR_TYPE, ErrorHandler } from '@sap-ux/inquirer-common';
-import type { AppInfo, QuickDeployedAppConfig, QfaJsonConfig } from '../app/types';
-import { downloadApp, hasQfaJson } from '../utils/download-utils';
+import type { AppInfo, QuickDeployedAppConfig, QfaJsonConfig } from '../app/types.js';
+import { AppDownloadType } from '../app/types.js';
+import { downloadApp, hasQfaJson } from '../utils/download-utils.js';
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 import { MessageType } from '@sap-devx/yeoman-ui-types';
-import { qfaJsonFileName } from '../utils/constants';
+import { qfaJsonFileName } from '../utils/constants.js';
+import { sendTelemetry, TelemetryHelper } from '@sap-ux/fiori-generator-shared';
+import { EventName } from '../telemetryEvents/index.js';
 
 /**
  * Validates the metadata section of the app configuration.
@@ -19,7 +22,7 @@ import { qfaJsonFileName } from '../utils/constants';
  */
 const validateMetadata = (metadata: QfaJsonConfig['metadata']): boolean => {
     if (!metadata.package || typeof metadata.package !== 'string') {
-        RepoAppDownloadLogger.logger?.error(t('error.invalidMetadataPackage'));
+        RepoAppDownloadLogger.logger?.error(t('error.validationErrors.invalidMetadataPackage'));
         return false;
     }
     return true;
@@ -33,15 +36,15 @@ const validateMetadata = (metadata: QfaJsonConfig['metadata']): boolean => {
  */
 const validateServiceBindingDetails = (serviceBinding: QfaJsonConfig['serviceBindingDetails']): boolean => {
     if (!serviceBinding.serviceName || typeof serviceBinding.serviceName !== 'string') {
-        RepoAppDownloadLogger.logger?.error(t('error.invalidServiceName'));
+        RepoAppDownloadLogger.logger?.error(t('error.validationErrors.invalidServiceName'));
         return false;
     }
     if (!serviceBinding.serviceVersion || typeof serviceBinding.serviceVersion !== 'string') {
-        RepoAppDownloadLogger.logger?.error(t('error.invalidServiceVersion'));
+        RepoAppDownloadLogger.logger?.error(t('error.validationErrors.invalidServiceVersion'));
         return false;
     }
     if (!serviceBinding.mainEntityName || typeof serviceBinding.mainEntityName !== 'string') {
-        RepoAppDownloadLogger.logger?.error(t('error.invalidMainEntityName'));
+        RepoAppDownloadLogger.logger?.error(t('error.validationErrors.invalidMainEntityName'));
         return false;
     }
     return true;
@@ -55,7 +58,7 @@ const validateServiceBindingDetails = (serviceBinding: QfaJsonConfig['serviceBin
  */
 const validateProjectAttribute = (projectAttribute: QfaJsonConfig['projectAttribute']): boolean => {
     if (!projectAttribute.moduleName || typeof projectAttribute.moduleName !== 'string') {
-        RepoAppDownloadLogger.logger?.error(t('error.invalidModuleName'));
+        RepoAppDownloadLogger.logger?.error(t('error.validationErrors.invalidModuleName'));
         return false;
     }
     return true;
@@ -69,7 +72,7 @@ const validateProjectAttribute = (projectAttribute: QfaJsonConfig['projectAttrib
  */
 const validateDeploymentDetails = (deploymentDetails: QfaJsonConfig['deploymentDetails']): boolean => {
     if (!deploymentDetails.repositoryName) {
-        RepoAppDownloadLogger.logger?.error(t('error.invalidRepositoryName'));
+        RepoAppDownloadLogger.logger?.error(t('error.validationErrors.invalidRepositoryName'));
         return false;
     }
     return true;
@@ -115,19 +118,34 @@ async function generateAppNotFoundHelpLink(): Promise<ValidationLink> {
 }
 
 /**
- * Validates the app selection and handles app download if applicable.
+ * Generates a help link for the "App Download Failed" error.
+ *
+ * @returns {Promise<ValidationLink>} - A promise resolving to a validation link for the error.
+ */
+async function generateAppDownloadFailedHelpLink(): Promise<ValidationLink> {
+    return ErrorHandler.getHelpLink(
+        HELP_NODES.ABAP_REPO_APP_DOWNLOAD_FAILED,
+        ERROR_TYPE.INTERNAL_SERVER_ERROR,
+        t('error.appDownloadFailed')
+    );
+}
+
+/**
+ * Validates the app selection and handles the app download, if applicable.
  *
  * @param answers - The selected app information.
  * @param appList - The list of available apps.
  * @param quickDeployedAppConfig - The quick deployed app configuration.
  * @param appWizard - The app wizard instance.
+ * @param downloadType - The download type determining qfa.json validation behaviour.
  * @returns A promise resolving to a boolean or a validation error message.
  */
 export async function validateAppSelection(
     answers: AppInfo,
     appList: AppIndex,
     quickDeployedAppConfig?: QuickDeployedAppConfig,
-    appWizard?: AppWizard
+    appWizard?: AppWizard,
+    downloadType: AppDownloadType = AppDownloadType.ADTQuickDeploy
 ): Promise<string | boolean | ValidationLink> {
     // Quick deploy config exists but no apps found
     if (quickDeployedAppConfig?.appId && appList.length === 0) {
@@ -142,15 +160,36 @@ export async function validateAppSelection(
     // Valid app selected, try to download
     if (answers?.appId) {
         try {
-            await downloadApp(answers.repoName);
+            const result = await downloadApp(answers.repoName);
+            if (!result.success) {
+                if (downloadType === AppDownloadType.AbapRepository) {
+                    // Fires when the server returns no content — legacy ABAP system without repository content.
+                    await sendTelemetry(
+                        EventName.ABAP_REPO_DOWNLOAD_FAIL,
+                        TelemetryHelper.createTelemetryData({ errorMessage: result.errorMessage }) ?? {}
+                    ).catch(() => {
+                        // telemetry errors are non-fatal
+                    });
+                }
+                return await generateAppDownloadFailedHelpLink();
+            }
+            // Fires when the zip is successfully fetched — before writing begins.
+            const downloadSuccessEvent =
+                downloadType === AppDownloadType.AbapRepository
+                    ? EventName.ABAP_REPO_DOWNLOAD_SUCCESS
+                    : EventName.ADT_QUICK_DEPLOY_DOWNLOAD_SUCCESS;
+            await sendTelemetry(downloadSuccessEvent, TelemetryHelper.createTelemetryData({}) ?? {}).catch(() => {
+                // telemetry errors are non-fatal
+            });
             const isQfaJsonPresent: boolean = hasQfaJson();
-            if (!isQfaJsonPresent) {
+            if (!isQfaJsonPresent && downloadType === AppDownloadType.ADTQuickDeploy) {
                 appWizard?.showError(
                     t('error.qfaJsonNotFound', { jsonFileName: qfaJsonFileName }),
                     MessageType.notification
                 );
+                return false;
             }
-            return isQfaJsonPresent;
+            return true;
         } catch (error) {
             RepoAppDownloadLogger.logger?.debug(`validateAppSelection: Error downloading app: ${error.message}`);
             return t('error.appDownloadErrors.appDownloadFailure', { error: error.message });

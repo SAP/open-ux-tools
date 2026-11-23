@@ -1,0 +1,10 @@
+{
+  "name": "com.example.backend.variants",
+  "version": "1.0.0",
+  "description": "Backend configuration variants test",
+  "private": true,
+  "devDependencies": {
+    "@sap/ux-ui5-tooling": "1",
+    "@ui5/cli": "^3.0.0"
+  }
+}

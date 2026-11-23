@@ -1,46 +1,48 @@
+import { jest } from '@jest/globals';
 import type { CapService } from '@sap-ux/cap-config-writer';
-import { hostEnvironment } from '@sap-ux/fiori-generator-shared';
-import { searchChoices } from '@sap-ux/inquirer-common';
 import type { CapCustomPaths, CdsVersionInfo } from '@sap-ux/project-access';
-import { getCapCustomPaths } from '@sap-ux/project-access';
 import type { ListQuestion } from 'inquirer';
 import type { PathLike } from 'node:fs';
-import * as fsPromises from 'node:fs/promises';
 import os from 'node:os';
-import path from 'node:path';
-import { initI18nOdataServiceInquirer, t } from '../../../../src/i18n';
-import {
-    enterCapPathChoiceValue,
-    getCapServiceChoices as getCapServiceChoicesMock
-} from '../../../../src/prompts/datasources/cap-project/cap-helpers';
-import { getLocalCapProjectPrompts } from '../../../../src/prompts/datasources/cap-project/questions';
-import { capInternalPromptNames, type CapProjectChoice } from '../../../../src/prompts/datasources/cap-project/types';
-import * as capValidators from '../../../../src/prompts/datasources/cap-project/validators';
-import { errorHandler } from '../../../../src/prompts/prompt-helpers';
-import { promptNames, type CapServiceChoice } from '../../../../src/types';
-import { PromptState, getPromptHostEnvironment } from '../../../../src/utils';
+import * as actualPath from 'node:path';
+import type { CapProjectChoice } from '../../../../src/prompts/datasources/cap-project/types.js';
+import type { CapServiceChoice } from '../../../../src/types.js';
 
-jest.mock('fs/promises', () => ({
-    __esModule: true, // Workaround for spyOn TypeError: Jest cannot redefine property
-    ...jest.requireActual('fs/promises')
+// Mock fs/promises
+const actualFsPromises = await import('node:fs/promises');
+const mockRealpath = jest.fn<any>();
+jest.unstable_mockModule('node:fs/promises', () => ({
+    ...actualFsPromises,
+    realpath: mockRealpath
+}));
+jest.unstable_mockModule('fs/promises', () => ({
+    ...actualFsPromises,
+    realpath: mockRealpath
 }));
 
-jest.mock('../../../../src/utils', () => ({
-    ...jest.requireActual('../../../../src/utils'),
-    getPromptHostEnvironment: jest.fn()
+// Mock utils
+const actualUtils = await import('../../../../src/utils/index.js');
+const mockGetPromptHostEnvironment = jest.fn<any>();
+jest.unstable_mockModule('../../../../src/utils', () => ({
+    ...actualUtils,
+    getPromptHostEnvironment: mockGetPromptHostEnvironment
 }));
 
+// Mock @sap-ux/project-access
 const mockCapCustomPaths: CapCustomPaths = {
     app: 'app',
     srv: 'src',
     db: 'db'
 };
-
-jest.mock('@sap-ux/project-access', () => ({
-    ...jest.requireActual('@sap-ux/project-access'),
-    getCapCustomPaths: jest.fn().mockImplementation(async () => mockCapCustomPaths),
-    findCapProjectRoot: jest.fn(),
-    isCapProject: jest.fn()
+const actualProjectAccess = await import('@sap-ux/project-access');
+const mockGetCapCustomPaths = jest.fn<any>().mockImplementation(async () => mockCapCustomPaths);
+const mockFindCapProjectRoot = jest.fn<any>();
+const mockIsCapProject = jest.fn<any>();
+jest.unstable_mockModule('@sap-ux/project-access', () => ({
+    ...actualProjectAccess,
+    getCapCustomPaths: mockGetCapCustomPaths,
+    findCapProjectRoot: mockFindCapProjectRoot,
+    isCapProject: mockIsCapProject
 }));
 
 const mockCdsVersionInfo: CdsVersionInfo = {
@@ -79,27 +81,68 @@ let mockCapWorkspaceFolders: CapProjectChoice[] = [];
 const initialMockEdmx = '<?xml version="1.0" encoding="utf-8"?><edmx:Edmx Version="2"/>';
 let mockEdmx: string | undefined = initialMockEdmx;
 
-jest.mock('../../../../src/prompts/datasources/cap-project/cap-helpers', () => ({
-    ...jest.requireActual('../../../../src/prompts/datasources/cap-project/cap-helpers'),
-    getCapServiceChoices: jest.fn().mockImplementation(async () => mockCapServiceChoices),
-    getCapEdmx: jest.fn().mockImplementation(async () => mockEdmx),
-    getCapProjectPaths: jest.fn().mockImplementation(() => mockCapWorkspaceFolders),
-    getCapProjectChoices: jest.fn().mockImplementation(async () => mockCapProjectChoices)
+// Mock cap-helpers
+const actualCapHelpers = await import('../../../../src/prompts/datasources/cap-project/cap-helpers.js');
+const mockGetCapServiceChoices = jest.fn<any>().mockImplementation(async () => mockCapServiceChoices);
+const mockGetCapEdmx = jest.fn<any>().mockImplementation(async () => mockEdmx);
+const mockGetCapProjectPaths = jest.fn<any>().mockImplementation(() => mockCapWorkspaceFolders);
+const mockGetCapProjectChoices = jest.fn<any>().mockImplementation(async () => mockCapProjectChoices);
+jest.unstable_mockModule('../../../../src/prompts/datasources/cap-project/cap-helpers', () => ({
+    ...actualCapHelpers,
+    getCapServiceChoices: mockGetCapServiceChoices,
+    getCapEdmx: mockGetCapEdmx,
+    getCapProjectPaths: mockGetCapProjectPaths,
+    getCapProjectChoices: mockGetCapProjectChoices
 }));
 
-jest.mock('@sap-ux/fiori-generator-shared', () => ({
-    ...jest.requireActual('@sap-ux/fiori-generator-shared'),
-    getHostEnvironment: jest.fn()
+// Mock @sap-ux/fiori-generator-shared
+const actualFioriGenShared = await import('@sap-ux/fiori-generator-shared');
+const mockGetHostEnvironment = jest.fn<any>();
+jest.unstable_mockModule('@sap-ux/fiori-generator-shared', () => ({
+    ...actualFioriGenShared,
+    getHostEnvironment: mockGetHostEnvironment
 }));
 
-jest.mock('@sap-ux/inquirer-common', () => ({
-    ...jest.requireActual('@sap-ux/inquirer-common'),
-    searchChoices: jest.fn()
+// Mock @sap-ux/inquirer-common
+const actualInquirerCommon = await import('@sap-ux/inquirer-common');
+const mockSearchChoices = jest.fn<any>();
+jest.unstable_mockModule('@sap-ux/inquirer-common', () => ({
+    ...actualInquirerCommon,
+    searchChoices: mockSearchChoices
 }));
+
+// Mock cap-project validators
+const actualCapValidators = await import('../../../../src/prompts/datasources/cap-project/validators.js');
+const mockValidateCapPath = jest.fn<any>(actualCapValidators.validateCapPath);
+jest.unstable_mockModule('../../../../src/prompts/datasources/cap-project/validators', () => ({
+    ...actualCapValidators,
+    validateCapPath: mockValidateCapPath
+}));
+
+// Mock node:path so the capProjectPath filter can be exercised against both posix and win32 path
+// semantics regardless of the host OS. When `pathFlavor` is null the mock passes through to the
+// real platform default; tests that need to exercise a specific flavor set it explicitly.
+let pathFlavor: 'posix' | 'win32' | null = null;
+jest.unstable_mockModule('node:path', () => ({
+    ...actualPath,
+    isAbsolute: (p: string) => (pathFlavor ? actualPath[pathFlavor].isAbsolute(p) : actualPath.isAbsolute(p)),
+    resolve: (...args: string[]) => (pathFlavor ? actualPath[pathFlavor].resolve(...args) : actualPath.resolve(...args))
+}));
+
+// Dynamic imports after all mocks
+const { initI18nOdataServiceInquirer, t } = await import('../../../../src/i18n.js');
+const { enterCapPathChoiceValue } = await import('../../../../src/prompts/datasources/cap-project/cap-helpers.js');
+const { getLocalCapProjectPrompts } = await import('../../../../src/prompts/datasources/cap-project/questions.js');
+const { capInternalPromptNames } = await import('../../../../src/prompts/datasources/cap-project/types.js');
+const { errorHandler } = await import('../../../../src/prompts/prompt-helpers.js');
+const { promptNames } = await import('../../../../src/types.js');
+const { PromptState } = await import('../../../../src/utils/index.js');
+const { hostEnvironment } = await import('@sap-ux/fiori-generator-shared');
+const { getCapCustomPaths } = await import('@sap-ux/project-access');
 
 describe('getLocalCapProjectPrompts', () => {
     beforeAll(async () => {
-        (getPromptHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
+        mockGetPromptHostEnvironment.mockReturnValue(hostEnvironment.cli);
         // Wait for i18n to bootstrap so we can test localised strings
         await initI18nOdataServiceInquirer();
     });
@@ -110,7 +153,15 @@ describe('getLocalCapProjectPrompts', () => {
         mockCapProjectChoices = [];
         mockCapWorkspaceFolders = [];
         mockEdmx = initialMockEdmx;
-        jest.restoreAllMocks();
+        jest.clearAllMocks();
+        // Re-apply default implementations after clearAllMocks
+        mockGetPromptHostEnvironment.mockReturnValue(hostEnvironment.cli);
+        mockGetCapServiceChoices.mockImplementation(async () => mockCapServiceChoices);
+        mockGetCapEdmx.mockImplementation(async () => mockEdmx);
+        mockGetCapProjectPaths.mockImplementation(() => mockCapWorkspaceFolders);
+        mockGetCapProjectChoices.mockImplementation(async () => mockCapProjectChoices);
+        mockGetCapCustomPaths.mockImplementation(async () => mockCapCustomPaths);
+        mockValidateCapPath.mockImplementation(actualCapValidators.validateCapPath);
     });
 
     test('getLocalCapProjectPrompts, returns expected prompts', async () => {
@@ -204,7 +255,7 @@ describe('getLocalCapProjectPrompts', () => {
     });
 
     test('prompt: capProject - source function calls searchChoices', async () => {
-        (searchChoices as jest.Mock).mockReturnValue([]);
+        mockSearchChoices.mockReturnValue([]);
         mockCapProjectChoices = [{ name: 'test', value: 'test' }];
 
         const prompts = getLocalCapProjectPrompts({
@@ -214,7 +265,7 @@ describe('getLocalCapProjectPrompts', () => {
         await prompt.when();
 
         prompt.source({}, 'input');
-        expect(searchChoices).toHaveBeenCalledWith('input', mockCapProjectChoices);
+        expect(mockSearchChoices).toHaveBeenCalledWith('input', mockCapProjectChoices);
     });
 
     test('prompt: capProject - type is list without useAutoComplete option', async () => {
@@ -239,13 +290,12 @@ describe('getLocalCapProjectPrompts', () => {
     });
 
     test('prompt: capProjectPath', async () => {
-        let realpathSpy: jest.SpyInstance | undefined;
+        let realpathSpy: jest.Mock | undefined;
         if (os.platform() === 'win32') {
-            realpathSpy = jest
-                .spyOn(fsPromises, 'realpath')
-                .mockImplementation(
-                    async (path: PathLike) => (path as string)[0].toUpperCase() + (path as string).slice(1)
-                );
+            mockRealpath.mockImplementation(
+                async (path: PathLike) => (path as string)[0].toUpperCase() + (path as string).slice(1)
+            );
+            realpathSpy = mockRealpath;
         }
         let capPrompts = await getLocalCapProjectPrompts();
         let capProjectPathPrompt = capPrompts.find((prompt) => prompt.name === capInternalPromptNames.capProjectPath);
@@ -278,78 +328,59 @@ describe('getLocalCapProjectPrompts', () => {
 
         // Validate
         expect(await (capProjectPathPrompt!.validate as Function)()).toEqual(false);
-        const validateCapPathSpy = jest.spyOn(capValidators, 'validateCapPath').mockResolvedValue(true);
+        mockValidateCapPath.mockResolvedValue(true);
         expect(await (capProjectPathPrompt!.validate as Function)('/any/valid/cap/path')).toEqual(true);
-        expect(validateCapPathSpy).toHaveBeenCalledWith('/any/valid/cap/path');
-        validateCapPathSpy.mockClear();
+        expect(mockValidateCapPath).toHaveBeenCalledWith('/any/valid/cap/path');
+        mockValidateCapPath.mockClear();
 
-        jest.spyOn(capValidators, 'validateCapPath').mockResolvedValue('not valid');
+        mockValidateCapPath.mockResolvedValue('not valid');
         expect(await (capProjectPathPrompt!.validate as Function)('/not/valid/cap/path')).toEqual('not valid');
 
-        realpathSpy?.mockClear();
+        realpathSpy?.mockClear?.();
         // Test use of `realpath` to align drive letter casing with cds compiler facade
         if (os.platform() === 'win32') {
-            validateCapPathSpy.mockResolvedValue(true);
+            mockValidateCapPath.mockResolvedValue(true);
             await (capProjectPathPrompt!.validate as Function)('c:\\any\\windows\\path');
-            expect(validateCapPathSpy).toHaveBeenCalledWith('c:\\any\\windows\\path');
+            expect(mockValidateCapPath).toHaveBeenCalledWith('c:\\any\\windows\\path');
             expect(realpathSpy).toHaveBeenCalledWith('c:\\any\\windows\\path');
             // Check that the custom paths are set correctly using the result of a call to `realpath`
             expect(getCapCustomPaths).toHaveBeenCalledWith('C:\\any\\windows\\path');
         } else {
             // Validate should not call `realpath` on non-Windows platforms
             // Validate internal functions are already tested above
-            validateCapPathSpy.mockResolvedValue(true);
-            realpathSpy = jest.spyOn(fsPromises, 'realpath');
+            mockValidateCapPath.mockResolvedValue(true);
+            mockRealpath.mockClear();
             await (capProjectPathPrompt!.validate as Function)('/any/cap/path');
-            expect(realpathSpy).not.toHaveBeenCalled();
+            expect(mockRealpath).not.toHaveBeenCalled();
         }
     });
 
     /**
-     * Load a fresh `getLocalCapProjectPrompts` and `PromptState` with `node:path`'s
-     * `isAbsolute` / `resolve` swapped for the supplied flavor. This lets us deterministically
-     * exercise the `capProjectPath` prompt's filter for both Windows and POSIX paths,
-     * regardless of the OS running the test.
+     * Load `getLocalCapProjectPrompts` and `PromptState` with `node:path`'s
+     * `isAbsolute` / `resolve` swapped for the supplied flavor via the top-level mock's
+     * mutable `pathFlavor`. This lets us deterministically exercise the `capProjectPath`
+     * prompt's filter for both Windows and POSIX paths, regardless of the OS running the test.
      *
      * @param pathImpl - `path.win32` or `path.posix`
      */
-    function loadQuestionsWithPath(pathImpl: typeof path.win32 | typeof path.posix): {
+    function loadQuestionsWithPath(pathImpl: typeof actualPath.win32 | typeof actualPath.posix): {
         capProjectPathPrompt: any;
         promptState: typeof PromptState;
     } {
-        let capProjectPathPrompt: any;
-        let promptState: typeof PromptState;
-        jest.isolateModules(() => {
-            jest.doMock('node:path', () => {
-                const actual = jest.requireActual('node:path');
-                return {
-                    ...actual,
-                    isAbsolute: pathImpl.isAbsolute,
-                    resolve: pathImpl.resolve
-                };
-            });
-            const {
-                getLocalCapProjectPrompts: getPromptsLocal
-                // eslint-disable-next-line @typescript-eslint/no-require-imports
-            } = require('../../../../src/prompts/datasources/cap-project/questions');
-            // eslint-disable-next-line @typescript-eslint/no-require-imports
-            ({ PromptState: promptState } = require('../../../../src/utils'));
-            const prompts = getPromptsLocal();
-            capProjectPathPrompt = prompts.find(
-                (p: { name: string }) => p.name === capInternalPromptNames.capProjectPath
-            );
-        });
-        return { capProjectPathPrompt, promptState: promptState! };
+        pathFlavor = pathImpl === actualPath.win32 ? 'win32' : 'posix';
+        const prompts = getLocalCapProjectPrompts();
+        const capProjectPathPrompt = prompts.find((p) => p.name === capInternalPromptNames.capProjectPath);
+        return { capProjectPathPrompt, promptState: PromptState };
     }
 
     test('prompt: capProjectPath - filter (win32)', () => {
-        const { capProjectPathPrompt, promptState } = loadQuestionsWithPath(path.win32);
+        const { capProjectPathPrompt, promptState } = loadQuestionsWithPath(actualPath.win32);
         const relInput = 'relative\\cap\\path';
         const absInput = 'C:\\abs\\cap\\path';
 
         // CLI mode: relative paths are resolved to absolute paths using win32 semantics
         promptState.isYUI = false;
-        expect(capProjectPathPrompt.filter(relInput)).toEqual(path.win32.resolve(relInput));
+        expect(capProjectPathPrompt.filter(relInput)).toEqual(actualPath.win32.resolve(relInput));
         // CLI mode: absolute paths pass through unchanged
         expect(capProjectPathPrompt.filter(absInput)).toEqual(absInput);
         // CLI mode: empty / undefined input passes through unchanged
@@ -363,13 +394,13 @@ describe('getLocalCapProjectPrompts', () => {
     });
 
     test('prompt: capProjectPath - filter (posix)', () => {
-        const { capProjectPathPrompt, promptState } = loadQuestionsWithPath(path.posix);
+        const { capProjectPathPrompt, promptState } = loadQuestionsWithPath(actualPath.posix);
         const relInput = 'relative/cap/path';
         const absInput = '/abs/cap/path';
 
         // CLI mode: relative paths are resolved to absolute paths using posix semantics
         promptState.isYUI = false;
-        expect(capProjectPathPrompt.filter(relInput)).toEqual(path.posix.resolve(relInput));
+        expect(capProjectPathPrompt.filter(relInput)).toEqual(actualPath.posix.resolve(relInput));
         // CLI mode: absolute paths pass through unchanged
         expect(capProjectPathPrompt.filter(absInput)).toEqual(absInput);
         // CLI mode: empty / undefined input passes through unchanged
@@ -385,7 +416,7 @@ describe('getLocalCapProjectPrompts', () => {
     test('prompt: capService', async () => {
         let capPrompts = await getLocalCapProjectPrompts();
         let capServicePrompt = capPrompts.find((prompt) => prompt.name === promptNames.capService);
-        (getCapServiceChoicesMock as jest.Mock).mockClear();
+        mockGetCapServiceChoices.mockClear();
         const capProject = {
             path: '/cap/path/to/project1',
             folderName: 'project1',
@@ -401,7 +432,7 @@ describe('getLocalCapProjectPrompts', () => {
                 capProject
             })
         ).toEqual(true);
-        expect(getCapServiceChoicesMock as jest.Mock).toHaveBeenCalledWith(capProject);
+        expect(mockGetCapServiceChoices).toHaveBeenCalledWith(capProject);
         expect(((capServicePrompt as ListQuestion).choices as Function)()).toEqual(initialMockCapServicesChoices);
         expect((capServicePrompt!.default as Function)()).toEqual(0);
 

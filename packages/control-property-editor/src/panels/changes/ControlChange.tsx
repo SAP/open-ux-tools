@@ -15,7 +15,7 @@ import {
     deletePropertyChanges,
     selectControl
 } from '@sap-ux-private/control-property-editor-common';
-import { getFormattedDateAndTime } from './utils';
+import { getFormattedDateAndTime } from './utils.js';
 
 export interface ControlItemProps {
     fileName: string;

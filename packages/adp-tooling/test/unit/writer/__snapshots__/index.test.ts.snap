@@ -51,6 +51,9 @@ builder:
           url: http://sap.example
         app:
           package: $TMP
+        exclude:
+          - /test/
+          - /localService/
 ",
     "state": "modified",
   },
@@ -85,6 +88,8 @@ server:
           target:
             url: http://sap.example
           ignoreCertErrors: false
+        flp:
+          useNewSandbox: true
     - name: fiori-tools-proxy
       afterMiddleware: fiori-tools-preview
       configuration:
@@ -111,6 +116,10 @@ builder:
         target:
           url: http://sap.example
           ignoreCertErrors: false
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -168,6 +177,9 @@ builder:
           url: http://sap.example
         app:
           package: $TMP
+        exclude:
+          - /test/
+          - /localService/
 ",
     "state": "modified",
   },
@@ -202,6 +214,8 @@ server:
           target:
             url: http://sap.example
           ignoreCertErrors: false
+        flp:
+          useNewSandbox: true
     - name: fiori-tools-proxy
       afterMiddleware: fiori-tools-preview
       configuration:
@@ -228,6 +242,10 @@ builder:
         target:
           url: http://sap.example
           ignoreCertErrors: false
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -285,6 +303,9 @@ builder:
           destination: DUMMY_DESTINATION
         app:
           package: $TMP
+        exclude:
+          - /test/
+          - /localService/
 ",
     "state": "modified",
   },
@@ -319,6 +340,8 @@ server:
           target:
             destination: DUMMY_DESTINATION
           ignoreCertErrors: false
+        flp:
+          useNewSandbox: true
     - name: fiori-tools-proxy
       afterMiddleware: fiori-tools-preview
       configuration:
@@ -346,6 +369,10 @@ builder:
         target:
           destination: DUMMY_DESTINATION
           url: https://REQUIRED_FOR_VSCODE.example
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -406,6 +433,9 @@ builder:
           url: http://sap.example
         app:
           package: $TMP
+        exclude:
+          - /test/
+          - /localService/
 ",
     "state": "modified",
   },
@@ -418,7 +448,10 @@ Object {
     "contents": "node_modules/
 dist/
 .tmp
+.context
+.session
 .env
+.adp
 *.zip",
     "state": "modified",
   },
@@ -476,6 +509,8 @@ server:
           target:
             url: http://sap.example
           ignoreCertErrors: false
+        flp:
+          useNewSandbox: true
         rta:
           editors:
             - path: /test/adaptation-editor.html
@@ -490,6 +525,11 @@ server:
           path: /sap
         options:
           secure: true
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -577,6 +617,9 @@ builder:
           url: http://sap.example
         app:
           package: $TMP
+        exclude:
+          - /test/
+          - /localService/
 ",
     "state": "modified",
   },
@@ -605,6 +648,8 @@ server:
           target:
             url: http://sap.example
           ignoreCertErrors: false
+        flp:
+          useNewSandbox: true
     - name: fiori-tools-proxy
       afterMiddleware: fiori-tools-preview
       configuration:
@@ -617,6 +662,11 @@ server:
             - /resources
             - /test-resources
           url: https://ui5.sap.com
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -699,6 +749,9 @@ builder:
           url: http://sap.example
         app:
           package: $TMP
+        exclude:
+          - /test/
+          - /localService/
 ",
     "state": "modified",
   },
@@ -733,6 +786,8 @@ server:
           target:
             url: http://sap.example
           ignoreCertErrors: false
+        flp:
+          useNewSandbox: true
     - name: fiori-tools-proxy
       afterMiddleware: fiori-tools-preview
       configuration:
@@ -756,6 +811,10 @@ builder:
         omitTSFromBuildResult: true
         transformModulesToUI5:
           overridesToOverride: true
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -768,7 +827,10 @@ Object {
     "contents": "node_modules/
 dist/
 .tmp
+.context
+.session
 .env
+.adp
 *.zip",
     "state": "modified",
   },
@@ -826,6 +888,8 @@ server:
           target:
             url: http://sap.example
           ignoreCertErrors: false
+        flp:
+          useNewSandbox: true
         rta:
           editors:
             - path: /test/adaptation-editor.html
@@ -840,6 +904,11 @@ server:
           path: /sap
         options:
           secure: true
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -882,7 +951,10 @@ Object {
     "contents": "node_modules/
 dist/
 .tmp
+.context
+.session
 .env
+.adp
 *.zip",
     "state": "modified",
   },
@@ -940,6 +1012,8 @@ server:
           target:
             url: http://sap.example
           ignoreCertErrors: false
+        flp:
+          useNewSandbox: true
         rta:
           editors:
             - path: /test/adaptation-editor.html
@@ -954,6 +1028,11 @@ server:
           path: /sap
         options:
           secure: true
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -996,7 +1075,10 @@ Object {
     "contents": "node_modules/
 dist/
 .tmp
+.context
+.session
 .env
+.adp
 *.zip",
     "state": "modified",
   },
@@ -1052,6 +1134,9 @@ builder:
           url: http://sap.example
         app:
           package: $TMP
+        exclude:
+          - /test/
+          - /localService/
 ",
     "state": "modified",
   },
@@ -1080,6 +1165,8 @@ server:
           target:
             url: http://sap.example
           ignoreCertErrors: false
+        flp:
+          useNewSandbox: true
         rta:
           editors:
             - path: /test/adaptation-editor.html
@@ -1094,6 +1181,11 @@ server:
           path: /sap
         options:
           secure: true
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -1131,7 +1223,10 @@ my.test.app_sap.app.title=Adaptation of the.original.app
     "contents": "node_modules/
 dist/
 .tmp
+.context
+.session
 .env
+.adp
 *.zip",
     "state": "modified",
   },
@@ -1184,6 +1279,9 @@ builder:
           url: http://sap.example
         app:
           package: $TMP
+        exclude:
+          - /test/
+          - /localService/
 ",
     "state": "modified",
   },
@@ -1212,6 +1310,8 @@ server:
           target:
             url: http://sap.example
           ignoreCertErrors: false
+        flp:
+          useNewSandbox: true
     - name: fiori-tools-proxy
       afterMiddleware: fiori-tools-preview
       configuration:
@@ -1224,6 +1324,11 @@ server:
             - /resources
             - /test-resources
           url: https://ui5.sap.com
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -1261,7 +1366,10 @@ my.test.app_sap.app.title=Adaptation of the.original.app
     "contents": "node_modules/
 dist/
 .tmp
+.context
+.session
 .env
+.adp
 *.zip",
     "state": "modified",
   },
@@ -1319,6 +1427,8 @@ server:
           target:
             url: http://sap.example
           ignoreCertErrors: false
+        flp:
+          useNewSandbox: true
         rta:
           editors:
             - path: /test/adaptation-editor.html
@@ -1333,6 +1443,11 @@ server:
           path: /sap
         options:
           secure: true
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -1370,7 +1485,10 @@ my.test.app_sap.app.title=Adaptation of the.original.app
     "contents": "node_modules/
 dist/
 .tmp
+.context
+.session
 .env
+.adp
 *.zip",
     "state": "modified",
   },
@@ -1423,6 +1541,9 @@ builder:
           url: http://sap.example
         app:
           package: $TMP
+        exclude:
+          - /test/
+          - /localService/
 ",
     "state": "modified",
   },
@@ -1457,6 +1578,8 @@ server:
           target:
             url: http://sap.example
           ignoreCertErrors: false
+        flp:
+          useNewSandbox: true
     - name: fiori-tools-proxy
       afterMiddleware: fiori-tools-preview
       configuration:
@@ -1483,6 +1606,10 @@ builder:
         target:
           url: http://sap.example
           ignoreCertErrors: false
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -1520,7 +1647,10 @@ my.test.app_sap.app.title=Adaptation of the.original.app
     "contents": "node_modules/
 dist/
 .tmp
+.context
+.session
 .env
+.adp
 *.zip",
     "state": "modified",
   },
@@ -1573,6 +1703,9 @@ builder:
           destination: DUMMY_DESTINATION
         app:
           package: $TMP
+        exclude:
+          - /test/
+          - /localService/
 ",
     "state": "modified",
   },
@@ -1607,6 +1740,8 @@ server:
           target:
             destination: DUMMY_DESTINATION
           ignoreCertErrors: false
+        flp:
+          useNewSandbox: true
     - name: fiori-tools-proxy
       afterMiddleware: fiori-tools-preview
       configuration:
@@ -1634,6 +1769,10 @@ builder:
         target:
           destination: DUMMY_DESTINATION
           url: https://REQUIRED_FOR_VSCODE.example
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -1671,7 +1810,10 @@ my.test.app_sap.app.title=Adaptation of the.original.app
     "contents": "node_modules/
 dist/
 .tmp
+.context
+.session
 .env
+.adp
 *.zip",
     "state": "modified",
   },
@@ -1724,6 +1866,9 @@ builder:
           url: http://sap.example
         app:
           package: $TMP
+        exclude:
+          - /test/
+          - /localService/
 ",
     "state": "modified",
   },
@@ -1758,6 +1903,8 @@ server:
           target:
             url: http://sap.example
           ignoreCertErrors: false
+        flp:
+          useNewSandbox: true
     - name: fiori-tools-proxy
       afterMiddleware: fiori-tools-preview
       configuration:
@@ -1784,6 +1931,10 @@ builder:
         target:
           url: http://sap.example
           ignoreCertErrors: false
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -1821,7 +1972,10 @@ my.test.app_sap.app.title=Adaptation of the.original.app
     "contents": "node_modules/
 dist/
 .tmp
+.context
+.session
 .env
+.adp
 *.zip",
     "state": "modified",
   },
@@ -1899,6 +2053,9 @@ builder:
           url: http://sap.example
         app:
           package: $TMP
+        exclude:
+          - /test/
+          - /localService/
 ",
     "state": "modified",
   },
@@ -1933,6 +2090,8 @@ server:
           target:
             url: http://sap.example
           ignoreCertErrors: false
+        flp:
+          useNewSandbox: true
     - name: fiori-tools-proxy
       afterMiddleware: fiori-tools-preview
       configuration:
@@ -1956,6 +2115,10 @@ builder:
         omitTSFromBuildResult: true
         transformModulesToUI5:
           overridesToOverride: true
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },
@@ -1997,7 +2160,10 @@ my.test.app_sap.app.title=Adaptation of the.original.app
     "contents": "node_modules/
 dist/
 .tmp
+.context
+.session
 .env
+.adp
 *.zip",
     "state": "modified",
   },
@@ -2064,6 +2230,8 @@ server:
             url: http://sap.example
             client: '000'
           ignoreCertErrors: false
+        flp:
+          useNewSandbox: true
     - name: fiori-tools-proxy
       afterMiddleware: fiori-tools-preview
       configuration:
@@ -2079,6 +2247,11 @@ server:
             - /test-resources
           url: https://ui5.sap.com
           version: 1.133.0
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
 ",
     "state": "modified",
   },

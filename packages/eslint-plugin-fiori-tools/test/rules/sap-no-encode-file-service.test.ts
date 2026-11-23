@@ -5,7 +5,7 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-import rule from '../../src/rules/sap-no-encode-file-service';
+import rule from '../../src/rules/sap-no-encode-file-service.js';
 import { RuleTester } from 'eslint';
 
 //------------------------------------------------------------------------------

@@ -1,12 +1,13 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
+import type { Root } from 'react-dom/client';
 import type { IToggleProps, IToggleStyleProps, IToggleStyles } from '@fluentui/react';
 import { Toggle } from '@fluentui/react';
 
-import type { UIComponentMessagesProps } from '../../helper/ValidationMessage';
-import { getMessageInfo, MessageWrapper } from '../../helper/ValidationMessage';
-import { UIIcon } from '../UIIcon';
-import { UiIcons } from '../Icons';
+import type { UIComponentMessagesProps } from '../../helper/ValidationMessage/index.js';
+import { getMessageInfo, MessageWrapper } from '../../helper/ValidationMessage/index.js';
+import { UIIcon } from '../UIIcon/index.js';
+import { UiIcons } from '../Icons.js';
 
 export interface UIToggleProps extends IToggleProps, UIComponentMessagesProps {
     inlineLabelLeft?: boolean;
@@ -80,9 +81,9 @@ const COLORS = {
     thumb: {
         unchecked: {
             background: 'var(--vscode-button-secondaryBackground)',
-            borderColor: 'var(--vscode-button-border, transparent)',
+            borderColor: 'var(--vscode-button-secondaryBorder, var(--vscode-button-border, transparent))',
             hover: {
-                borderColor: 'var(--vscode-button-border, transparent)',
+                borderColor: 'var(--vscode-button-secondaryBorder, var(--vscode-button-border, transparent))',
                 background: 'var(--vscode-contrastBorder, var(--vscode-button-secondaryHoverBackground))'
             }
         },
@@ -107,6 +108,7 @@ const COLORS = {
  */
 export class UIToggle extends React.Component<UIToggleProps, {}> {
     private readonly toggleRootRef: React.RefObject<HTMLDivElement>;
+    private _iconRoots = new Map<Element, Root>();
     /**
      * Initializes component properties.
      *
@@ -166,12 +168,25 @@ export class UIToggle extends React.Component<UIToggleProps, {}> {
             const thumbElement = (this.toggleRootRef.current as HTMLElement)?.querySelector('.ms-Toggle-thumb');
 
             if (thumbElement) {
-                ReactDOM.render(
-                    <UIIcon iconName={checked ? UiIcons.SwitchOn : UiIcons.SwitchOff} style={ICON_STYLE} />,
-                    thumbElement
-                );
+                let root = this._iconRoots.get(thumbElement);
+                if (!root) {
+                    root = createRoot(thumbElement);
+                    this._iconRoots.set(thumbElement, root);
+                }
+                root.render(<UIIcon iconName={checked ? UiIcons.SwitchOn : UiIcons.SwitchOff} style={ICON_STYLE} />);
             }
         }
+    }
+
+    /**
+     * Lifecycle method called immediately before a component is unmounted and destroyed.
+     * Cleans up icon roots created by replaceThumbWithIcon to avoid React "unmounted root" warnings.
+     *
+     * @returns {void}
+     */
+    componentWillUnmount(): void {
+        this._iconRoots.forEach((root) => root.unmount());
+        this._iconRoots = new Map();
     }
 
     /**
@@ -223,6 +238,7 @@ export class UIToggle extends React.Component<UIToggleProps, {}> {
                     height: sizeInfo?.height,
                     width: sizeInfo?.width,
                     padding: sizeInfo?.padding,
+                    borderRadius: 'var(--vscode-cornerRadius-circle, 9999px)',
                     background: COLORS.pill.checked.background,
                     borderColor: COLORS.pill.checked.borderColor,
                     borderStyle: 'solid',

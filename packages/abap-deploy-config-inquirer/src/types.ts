@@ -228,6 +228,11 @@ export interface TransportAnswers {
     transportConfig?: TransportConfig;
     transportConfigError?: string;
     transportConfigNeedsCreds?: boolean;
+    /**
+     *  Tracks that credential fields (username/password) should remain visible
+     * throughout the authentication flow.
+     */
+    areCredentialFieldsVisible?: boolean;
     transportList?: TransportListItem[];
     newTransportNumber?: string;
 }

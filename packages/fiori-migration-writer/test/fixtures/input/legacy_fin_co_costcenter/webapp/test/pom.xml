@@ -1,0 +1,412 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<artifactId>fin.co.costcenter.manage.qunit</artifactId>
+	<groupId>com.sap.fiori</groupId>
+	<packaging>war</packaging>
+	<version>1.0.0-SNAPSHOT</version>
+	<name>Project Fiori :: Manage Cost Center Master Data QUnit</name>
+
+	<parent>
+		<groupId>com.sap.fiori</groupId>
+		<artifactId>fnf-parent-pom</artifactId>
+		<version>1.4.0-SNAPSHOT</version>
+	</parent>
+
+	<properties>
+
+		<!-- <sap.ui5.version>1.17.1-SNAPSHOT</sap.ui5.version> -->
+		<!-- - sap.ui5.jsunit.browser: comma-separated list of paths to the executables - of the browsers on which you want to 
+			run your JSUnit test suite. For - example, if you want to run the tests on Internet Explorer and Firefox, - its value might 
+			be: - c:\program files\internet explorer\iexplore.exe,c:\program files\Mozilla Firefox\firefox.exe -->
+		<!-- <sap.ui5.jsunit.browser>C:\Program Files (x86)\Internet Explorer\iexplore.exe</sap.ui5.jsunit.browser> -->
+		<sap.ui5.jsunit.browser>C:\Program Files (x86)\Google\Chrome\Application\chrome.exe</sap.ui5.jsunit.browser>
+
+		<sap.ui5.jscoverage.active>true</sap.ui5.jscoverage.active>
+
+		<!-- timeout of the test execution in seconds (default: 600 / coverage: 1800) -->
+		<sap.ui5.jsunit.timeout>180</sap.ui5.jsunit.timeout>
+
+		<!-- testpage which is used for the JSUnit tests "/test-resources/jsunit/testsuite.jsunit.html" -->
+		<sap.ui5.jsunit.testpage.path>/tests.html</sap.ui5.jsunit.testpage.path>
+
+		<!-- additional parameters for the test page e.g. "&amp;sap-ui-jqueryversion=1.6.2" -->
+		<sap.ui5.jsunit.testpage.urlparameters></sap.ui5.jsunit.testpage.urlparameters>
+
+		<!-- SONAR: reuse existing reports / do not execute report generation again during sonar build -->
+		<sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
+
+		<!-- SONAR: path, where the JSCoverage report is located -->
+		<sonar.javascript.jscoverage.reportPath>target/jscoverage/jscoverage.xml</sonar.javascript.jscoverage.reportPath>
+
+		<sonar.javascript.jslint.reportPath>target/jslint/jslint.xml</sonar.javascript.jslint.reportPath>
+
+		<!-- SONAR: path, where the JSCoverage sources are located -->
+		<sonar.javascript.jscoverage.sourcePath>target/jscoverage/sources</sonar.javascript.jscoverage.sourcePath>
+	</properties>
+
+	<build>
+
+		<plugins>
+
+			<!-- WAR overlay (extend "code-sample") -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.1.1</version>
+				<configuration>
+					<overlays>
+						<overlay>
+							<groupId>com.sap.fiori</groupId>
+							<artifactId>fin.co.costcenter.manage</artifactId>
+							<excludes>
+								<exclude>WEB-INF/web.xml</exclude>
+							</excludes>
+							<targetPath></targetPath>
+						</overlay>
+					</overlays>
+				</configuration>
+			</plugin>
+
+		</plugins>
+
+		<finalName>${project.artifactId}</finalName>
+	</build>
+
+	<dependencies>
+
+		<dependency>
+			<groupId>com.sap.fiori</groupId>
+			<artifactId>fin.co.costcenter.manage</artifactId>
+			<version>${project.version}</version>
+			<type>war</type>
+		</dependency>
+
+		<dependency>
+			<groupId>com.sap.ui5.tools</groupId>
+			<artifactId>jsunit-testrunner</artifactId>
+			<version>1.0.5</version>
+			<type>war</type>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- JSUnit stuff -->
+		<dependency>
+			<groupId>com.sap.ui5</groupId>
+			<artifactId>jsunit-server</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- added - why isn't it a transitive dependendency of jsunit-server? -->
+		<dependency>
+			<groupId>org.apache.ant</groupId>
+			<artifactId>ant-junit</artifactId>
+			<version>1.10.11</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.sap.ui5</groupId>
+			<artifactId>jscoverage</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.sap.ui5</groupId>
+			<artifactId>utils</artifactId>
+			
+		</dependency>
+
+		<dependency>
+			<groupId>com.sap.ui2.srvc</groupId>
+			<artifactId>proxy</artifactId>
+			<version>1.8.3</version>
+			<type>war</type>
+		</dependency>
+
+	</dependencies>
+
+	<profiles>
+		<profile>
+			<id>test.build</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<build>
+				<plugins>
+					<!-- use the build helper plugin to find random, unused TCP/IP ports -->
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>build-helper-maven-plugin</artifactId>
+						<version>1.7</version>
+						<executions>
+							<execution>
+								<id>reserve-network-port</id>
+								<goals>
+									<goal>reserve-network-port</goal>
+								</goals>
+								<phase>pre-integration-test</phase>
+								<configuration>
+									<portNames>
+										<portName>sap.ui5.jetty.dyn.port</portName>
+										<portName>sap.ui5.jsunit.dyn.port</portName>
+									</portNames>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+
+					<!-- extract the JAR's of the UI libraries from the test project into a folder for later extraction -->
+
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-dependency-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>unpack-webapp</id>
+								<goals>
+									<goal>unpack</goal>
+								</goals>
+								<phase>pre-integration-test</phase>
+								<configuration>
+									<outputDirectory>${project.build.directory}/webapp-extracted</outputDirectory>
+									<artifactItems>
+										<artifactItem>
+											<groupId>com.sap.fiori</groupId>
+											<artifactId>fin.co.costcenter.manage</artifactId>
+											<version>${project.version}</version>
+											<type>war</type>
+											<includes>WEB-INF/lib/*.jar</includes>
+										</artifactItem>
+									</artifactItems>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+
+					<!-- Usage of embedded Jetty for test execution -->
+					<plugin>
+
+						<groupId>org.codehaus.cargo</groupId>
+						<artifactId>cargo-maven2-plugin</artifactId>
+						<version>1.1.0</version>
+
+						<executions>
+							<execution>
+								<id>start-container</id>
+								<phase>pre-integration-test</phase>
+								<goals>
+									<goal>start</goal>
+								</goals>
+							</execution>
+							<execution>
+								<id>stop-container</id>
+								<phase>post-integration-test</phase>
+								<goals>
+									<goal>stop</goal>
+								</goals>
+							</execution>
+						</executions>
+
+						<configuration>
+							<wait>false</wait>
+							<container>
+								<containerId>jetty6x</containerId>
+								<type>embedded</type>
+								<systemProperties>
+									213
+									<java.io.tmpdir>${project.build.directory}/temp</java.io.tmpdir>
+									<jscoverage.sources.directory>${basedir}/${sonar.javascript.jscoverage.sourcePath}</jscoverage.sources.directory>
+									<org.apache.tomcat.util.buf.UDecoder.ALLOW_ENCODED_SLASH>true</org.apache.tomcat.util.buf.UDecoder.ALLOW_ENCODED_SLASH>
+									<sun.net.http.allowRestrictedHeaders>true</sun.net.http.allowRestrictedHeaders>
+									<https.required>false</https.required>
+								</systemProperties>
+							</container>
+							<configuration>
+								<properties>
+									<cargo.servlet.port>${sap.ui5.jetty.dyn.port}</cargo.servlet.port>
+								</properties>
+
+								<!-- deploy the JSUnit testrunner and the tests application -->
+								<deployables>
+
+									<deployable>
+										<groupId>com.sap.ui5.tools</groupId>
+										<artifactId>jsunit-testrunner</artifactId>
+										<type>war</type>
+										<properties>
+											<context>jsunit-testrunner</context>
+										</properties>
+									</deployable>
+
+									<deployable>
+										<location>${project.build.directory}/${project.build.finalName}.${project.packaging}</location>
+										<properties>
+											<context>jsunit-tests</context>
+										</properties>
+									</deployable>
+
+									<deployable>
+										<groupId>com.sap.ui2.srvc</groupId>
+										<artifactId>proxy</artifactId>
+										<type>war</type>
+										<properties>
+											<context></context>
+										</properties>
+									</deployable>
+
+								</deployables>
+
+							</configuration>
+						</configuration>
+
+					</plugin>
+
+					<!-- launch the external ANT build for JSUnit -->
+					<plugin>
+						<groupId>org.jvnet.maven-antrun-extended-plugin</groupId>
+						<artifactId>maven-antrun-extended-plugin</artifactId>
+						<version>1.42</version>
+						<executions>
+							<execution>
+								<id>mvn-antrun-test</id>
+								<phase>integration-test</phase>
+								<configuration>
+									<tasks>
+
+										<!-- import the ant-contrib tasks into ANT -->
+										<taskdef resource="net/sf/antcontrib/antcontrib.properties" classpathref="maven.plugin.classpath" />
+
+										<!-- Pass JSUnit related properties to ANT. See http://www.jsunit.net/ for more details. -->
+
+										<!-- jsunit.url: URL on which the browser will open, this must be the URL of the test runner application -->
+										<property name="jsunit.url" value="http://localhost:${sap.ui5.jetty.dyn.port}/jsunit-testrunner/testRunner.html" />
+
+										<!-- jsunit.testpage: URL of the test page to run -->
+										<property name="jsunit.testpage" value="http://localhost:${sap.ui5.jetty.dyn.port}/jsunit-tests/tests.html" />
+
+										<!-- jscoverage.testpage: URL of the test page to run -->
+										<property name="jscoverage.testpage"
+											value="http://localhost:${sap.ui5.jetty.dyn.port}/jsunit-tests${sap.ui5.jsunit.testpage.path}${sap.ui5.jsunit.testpage.urlparameters}" />
+
+										<!-- jsunit.remote.machine.url: a comma-separated list of URLs of remote machines on which you want to run your 
+											tests. These remote machines need to have a JSUnit server running on them, configured appropriately -->
+										<property name="jsunit.remote.machine.urls" value="http://localhost:${sap.ui5.jsunit.dyn.port}" />
+
+										<!-- jsunit.port: port on which the JSUnit server will run. If no value is provided, 8080 is assumed. -->
+										<property name="jsunit.port" value="${sap.ui5.jsunit.dyn.port}" />
+
+										<!-- jsunit.timeout: timeout for the complete test execution in seconds. -->
+										<property name="jsunit.timeout" value="${sap.ui5.jsunit.timeout}" />
+
+										<!-- jsunit.submit.results: url of the JSUnit server to which the test results should be submitted back from the 
+											browser -->
+										<!-- <property name="jsunit.submit.results" value="localhost:${jsunit.port}/jsunit/acceptor"/> -->
+										<property name="jsunit.submit.results" value="localhost:${jsunit.port}/jsunit/_acceptor" />
+
+										<!-- jsunit.logs.directory: directory into which the JSUnit Server will write its XML logs. If not specified, it 
+											defaults to the "jsunit/logs" directory. Again, for most people, the default value is fine. -->
+										<property name="jsunit.logs.directory" value="${basedir}/target/jsunit-logs" />
+
+										<!-- jsunit.browser.file.names: comma-separated list of paths to the executables of the browsers on which you want 
+											to run your JSUnit test suite. For example, if you want to run the tests on Internet Explorer and Firefox, its value might 
+											be d:\program files\internet explorer\iexplore.exe,d:\program files\Mozilla Firefox\firefox.exe -->
+										<property name="jsunit.browser.file.names" value="${sap.ui5.jsunit.browser}" />
+
+										<!-- jscoverage.browser.file.name: path to the executable of the browser on which you want to run your JSUnit test 
+											suite. For example its value might be: c:\program files\internet explorer\iexplore.exe -->
+										<property name="jscoverage.browser.file.name" value="${sap.ui5.jsunit.browser}" />
+
+										<!-- surefire.reports.directory: directory into which the JUnit Server will write its surefire reports. -->
+										<property name="surefire.reports.directory" value="${basedir}/target/surefire-reports" />
+
+										<!-- jscoverage.reports.directory: directory into which the JUnit Server will write its coverage reports. -->
+										<property name="jscoverage.reports.directory" value="${basedir}/target/jscoverage" />
+
+										<!-- pass addtl. Maven related stuff to ANT (purely informational) -->
+										<property name="project_home" value="${basedir}" />
+										<property name="project_version" value="${project.version}" />
+										<property name="compile_classpath" refid="maven.compile.classpath" />
+										<property name="runtime_classpath" refid="maven.dependency.classpath" />
+										<property name="test_classpath" refid="maven.test.classpath" />
+										<property name="plugin_classpath" refid="maven.plugin.classpath" />
+
+										<echo>Running coverage report</echo>
+										<ant antfile="${basedir}/tools/build.xml" dir="${basedir}">
+											<target name="jscoverage_test" />
+											<target name="rename_tests" />
+										</ant>
+									</tasks>
+								</configuration>
+								<inherited>false</inherited>
+								<goals>
+									<goal>run</goal>
+								</goals>
+							</execution>
+						</executions>
+						<dependencies>
+							<!-- use latest ANT version for antrun plugin -->
+							<dependency>
+								<groupId>org.apache.ant</groupId>
+								<artifactId>ant</artifactId>
+								<version>1.10.11</version>
+							</dependency>
+							<!-- extensions for ANT (e.g. if conditions, ...) -->
+							<dependency>
+								<groupId>ant-contrib</groupId>
+								<artifactId>ant-contrib</artifactId>
+								<version>1.0b3</version>
+								<exclusions>
+									<exclusion>
+										<groupId>ant</groupId>
+										<artifactId>ant</artifactId>
+									</exclusion>
+								</exclusions>
+							</dependency>
+							<dependency>
+								<groupId>org.apache.ant</groupId>
+								<artifactId>ant-trax</artifactId>
+								<version>1.10.11</version>
+							</dependency>
+						</dependencies>
+					</plugin>
+
+					<!-- enable the surefire plugin for the integration-test phase -->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-surefire-plugin</artifactId>
+						<version>2.11</version>
+						<executions>
+							<execution>
+								<phase>integration-test</phase>
+								<goals>
+									<goal>test</goal>
+								</goals>
+								<configuration>
+									<skip>false</skip>
+								</configuration>
+							</execution>
+						</executions>
+						<!-- disabling the dafault surefire plugin since the JUnit -->
+						<!-- tests require to be executed on an webapp server -->
+						<configuration>
+							<skip>true</skip>
+						</configuration>
+					</plugin>
+					<plugin>
+						<groupId>com.sap.ui5.tools.maven</groupId>
+						<artifactId>maven-jslint-plugin</artifactId>
+						<configuration>
+							<sourceFolders>
+								<sourceFolder>src/main/webapp/util</sourceFolder>
+								<sourceFolder>src/main/webapp/type</sourceFolder>
+								<sourceFolder>src/main/webapp/view</sourceFolder>
+							</sourceFolders>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+	<description>Cost Center QUnit</description>
+</project>

@@ -1,4 +1,4 @@
-import { concat, hardline, indent, line, printDocumentToString } from '../../src/printer/builders';
+import { concat, hardline, indent, line, printDocumentToString } from '../../src/printer/builders.js';
 import { printOptions } from '@sap-ux/odata-annotation-core';
 
 declare const expect: jest.Expect;

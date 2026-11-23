@@ -1,16 +1,24 @@
-import * as controlData from '../../../src/cpe/control-data';
-import { SelectionService } from '../../../src/cpe/selection';
-import * as Documentation from '../../../src/cpe/documentation';
+import { jest } from '@jest/globals';
 import { type ExternalAction, type Control } from '@sap-ux-private/control-property-editor-common';
 import type Element from 'sap/ui/core/Element';
 import type { ID } from 'sap/ui/core/library';
 import { fetchMock, sapCoreMock } from 'mock/window';
 import { mockOverlay } from 'mock/sap/ui/dt/OverlayRegistry';
 
+const buildControlDataMock = jest.fn();
+jest.unstable_mockModule('open/ux/preview/client/cpe/control-data', () => ({
+    buildControlData: buildControlDataMock
+}));
+
+const getDocumentationMock = jest.fn();
+jest.unstable_mockModule('open/ux/preview/client/cpe/documentation', () => ({
+    getDocumentation: getDocumentationMock
+}));
+
+const { SelectionService } = await import('open/ux/preview/client/cpe/selection');
+
 describe('SelectionService', () => {
     const sendActionMock = jest.fn();
-    let buildControlDataSpy: jest.SpyInstance<any>;
-    let documentation: jest.SpyInstance<any>;
     const mockControlData = {
         id: 'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--action::SEPMRA_PROD_MAN.SEPMRA_PROD_MAN_Entities::SEPMRA_C_PD_ProductCopy', //the id of the underlying control/aggregation
         type: 'sap.m.Button', //the name of the ui5 class of the control/aggregation
@@ -36,10 +44,10 @@ describe('SelectionService', () => {
     const onStackChangeMock = jest.fn();
     const changeService = { onStackChange: onStackChangeMock } as any;
     beforeEach(() => {
-        buildControlDataSpy = jest.spyOn(controlData, 'buildControlData').mockImplementation((): any => {
+        buildControlDataMock.mockImplementation((): any => {
             return mockControlData;
         });
-        documentation = jest.spyOn(Documentation, 'getDocumentation').mockImplementation(() =>
+        getDocumentationMock.mockImplementation(() =>
             Promise.resolve({
                 activeIcon: {
                     defaultValue: 'test',
@@ -95,8 +103,7 @@ describe('SelectionService', () => {
     });
 
     afterEach(() => {
-        buildControlDataSpy.mockRestore();
-        documentation.mockRestore();
+        jest.clearAllMocks();
     });
     beforeAll(() => {
         fetchMock.mockResolvedValue({});
@@ -105,11 +112,11 @@ describe('SelectionService', () => {
     test('attaches to RTA selection change', async () => {
         let handler: ((event: Event) => Promise<void>) | undefined;
         const cache = new Map();
-        sapCoreMock.byId.mockImplementation((id: ID) => {
+        sapCoreMock.byId.mockImplementation((id) => {
             return cache.get(id);
         });
         const selectionChangeGetParameterSpy = jest.fn().mockReturnValue([]);
-        const attachSelectionChange = jest.fn().mockImplementation((newHandler: (event: Event) => Promise<void>) => {
+        const attachSelectionChange = jest.fn().mockImplementation((newHandler: (e: Event) => Promise<void>) => {
             handler = newHandler;
         });
         const rta = {
@@ -132,12 +139,12 @@ describe('SelectionService', () => {
         let propertyChangeHandler: ((event: Event) => Promise<void>) | undefined;
         const attachEventSpy = jest
             .fn()
-            .mockImplementation((eventName: string, newHandler: (event: Event) => Promise<void>) => {
+            .mockImplementation((eventName: string, newHandler: (e: Event) => Promise<void>) => {
                 if (eventName === '_change') {
                     propertyChangeHandler = newHandler;
                 }
             });
-        jest.spyOn(controlData, 'buildControlData').mockReturnValue({
+        buildControlDataMock.mockReturnValue({
             id: 'control1',
             name: 'controlName',
             type: 'controlType',
@@ -284,7 +291,7 @@ describe('SelectionService', () => {
                 }
             ]
         ]);
-        sapCoreMock.byId.mockImplementation((id: ID) => {
+        sapCoreMock.byId.mockImplementation((id) => {
             return cache.get(id);
         });
         const selectionChangeGetParameterSpy = jest.fn().mockReturnValue([
@@ -292,7 +299,7 @@ describe('SelectionService', () => {
                 getId: () => 'overlayControl1'
             }
         ]);
-        const attachSelectionChange = jest.fn().mockImplementation((newHandler: (event: Event) => Promise<void>) => {
+        const attachSelectionChange = jest.fn().mockImplementation((newHandler: (e: Event) => Promise<void>) => {
             handler = newHandler;
         });
         const rta = {
@@ -343,12 +350,12 @@ describe('SelectionService', () => {
         let propertyChangeHandler: ((event: Event) => void) | undefined;
         const attachEventSpy = jest
             .fn()
-            .mockImplementation((eventName: string, newHandler: (event: Event) => Promise<void>) => {
+            .mockImplementation((eventName: string, newHandler: (e: Event) => Promise<void>) => {
                 if (eventName === '_change') {
                     propertyChangeHandler = newHandler;
                 }
             });
-        jest.spyOn(controlData, 'buildControlData').mockReturnValue({
+        buildControlDataMock.mockReturnValue({
             id: 'control1',
             type: 'controlType',
             name: 'controlName',
@@ -360,7 +367,7 @@ describe('SelectionService', () => {
                 {
                     getElementInstance: jest.fn().mockReturnValue({
                         attachEvent: attachEventSpy,
-                        detachEvent: jest.fn().mockImplementation((eventName: string) => {
+                        detachEvent: jest.fn().mockImplementation((eventName) => {
                             if (eventName === '_change') {
                                 propertyChangeHandler = undefined;
                             }
@@ -500,7 +507,7 @@ describe('SelectionService', () => {
                 }
             ]
         ]);
-        sapCoreMock.byId.mockImplementation((id: ID) => {
+        sapCoreMock.byId.mockImplementation((id) => {
             return cache.get(id);
         });
         const selectionChangeGetParameterSpy = jest.fn().mockReturnValue([
@@ -508,7 +515,7 @@ describe('SelectionService', () => {
                 getId: () => 'overlayControl1'
             }
         ]);
-        const attachSelectionChange = jest.fn().mockImplementation((newHandler: (event: Event) => Promise<void>) => {
+        const attachSelectionChange = jest.fn().mockImplementation((newHandler: (e: Event) => Promise<void>) => {
             handler = newHandler;
         });
         const rta = {
@@ -594,7 +601,7 @@ describe('SelectionService', () => {
             })
         } as any);
 
-        sapCoreMock.byId.mockImplementation((id: ID) => {
+        sapCoreMock.byId.mockImplementation((id) => {
             return cache.get(id);
         });
         sapCoreMock.getComponent.mockImplementation(() => {
@@ -680,7 +687,7 @@ describe('SelectionService', () => {
 
         mockOverlay.isSelectable.mockReturnValue(true);
         mockOverlay.isSelectable.mockReturnValue(false);
-        const attachSelectionChange = jest.fn().mockImplementation();
+        const attachSelectionChange = jest.fn().mockImplementation(() => {});
         const rta = {
             attachSelectionChange,
             getSelection: jest.fn().mockReturnValue([{ setSelected: jest.fn() }, { setSelected: jest.fn() }]),
@@ -711,8 +718,8 @@ describe('SelectionService', () => {
         }
         expect(sendActionMock).toHaveBeenNthCalledWith(1, { type: '[ext] control-selected', payload: mockControlData });
         expect(sendActionMock).toHaveBeenNthCalledWith(2, { type: '[ext] control-selected', payload: mockControlData });
-        expect(buildControlDataSpy).toHaveBeenNthCalledWith(1, {}, changeService, undefined);
-        expect(buildControlDataSpy).toHaveBeenNthCalledWith(2, cache.get('testIdfinal'), changeService, undefined);
+        expect(buildControlDataMock).toHaveBeenNthCalledWith(1, {}, changeService, undefined);
+        expect(buildControlDataMock).toHaveBeenNthCalledWith(2, cache.get('testIdfinal'), changeService, undefined);
 
         // call buildControlData when stack changed
         changeService.onStackChange.mock.calls[0][0]({
@@ -720,7 +727,7 @@ describe('SelectionService', () => {
                 controls: [cache.get('testIdfinal')]
             }
         });
-        expect(buildControlDataSpy).toHaveBeenNthCalledWith(2, cache.get('testIdfinal'), changeService, undefined);
+        expect(buildControlDataMock).toHaveBeenNthCalledWith(2, cache.get('testIdfinal'), changeService, undefined);
     });
 
     test('attaches to selected control change - test getBindingInfo object bindingString', async () => {
@@ -728,12 +735,12 @@ describe('SelectionService', () => {
         let propertyChangeHandler: ((event: Event) => Promise<void>) | undefined;
         const attachEventSpy = jest
             .fn()
-            .mockImplementation((eventName: string, newHandler: (event: Event) => Promise<void>) => {
+            .mockImplementation((eventName: string, newHandler: (e: Event) => Promise<void>) => {
                 if (eventName === '_change') {
                     propertyChangeHandler = newHandler;
                 }
             });
-        jest.spyOn(controlData, 'buildControlData').mockReturnValue({
+        buildControlDataMock.mockReturnValue({
             id: 'control1',
             name: 'controlName',
             type: 'controlType',
@@ -758,7 +765,7 @@ describe('SelectionService', () => {
                 }
             ]
         ]);
-        sapCoreMock.byId.mockImplementation((id: ID) => {
+        sapCoreMock.byId.mockImplementation((id) => {
             return cache.get(id);
         });
         const selectionChangeGetParameterSpy = jest.fn().mockReturnValue([
@@ -766,7 +773,7 @@ describe('SelectionService', () => {
                 getId: () => 'overlayControl1'
             }
         ]);
-        const attachSelectionChange = jest.fn().mockImplementation((newHandler: (event: Event) => Promise<void>) => {
+        const attachSelectionChange = jest.fn().mockImplementation((newHandler: (e: Event) => Promise<void>) => {
             handler = newHandler;
         });
         const rta = {

@@ -1,6 +1,8 @@
 node_modules/
 dist/
 .tmp
+.context
+.session
 .env
 .adp
 *.zip

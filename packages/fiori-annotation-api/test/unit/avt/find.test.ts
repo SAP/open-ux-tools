@@ -1,6 +1,6 @@
 import type { AnnotationList } from '@sap-ux/vocabularies-types';
-import { findAnnotation } from '../../../src/avt';
-import type { AnnotationReference } from '../../../src';
+import { findAnnotation } from '../../../src/avt/index.js';
+import type { AnnotationReference } from '../../../src/index.js';
 
 describe('find', () => {
     const reference: AnnotationReference = {

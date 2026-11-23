@@ -1,3 +1,3 @@
-export * from './markdown';
-export * from './zip';
-export * from './string';
+export * from './markdown.js';
+export * from './zip.js';
+export * from './string.js';

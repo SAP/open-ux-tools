@@ -1,4 +1,5 @@
-import { MessageType, Prompts, type AppWizard } from '@sap-devx/yeoman-ui-types';
+import type { AppWizard as AppWizardType } from '@sap-devx/yeoman-ui-types';
+import { MessageType, Prompts } from '@sap-devx/yeoman-ui-types';
 import type { ExternalService } from '@sap-ux/axios-extension';
 import { AbapServiceProvider } from '@sap-ux/axios-extension';
 import type { ILogWrapper } from '@sap-ux/fiori-generator-shared';
@@ -14,27 +15,26 @@ import { writeExternalServiceMetadata } from '@sap-ux/odata-service-writer';
 import { DirName, getMockServerConfig } from '@sap-ux/project-access';
 import type { IVSCodeExtLogger, LogLevel } from '@vscode-logging/logger';
 import { join } from 'node:path';
-// @ts-expect-error: No types available, breaks no implicit any rule
-import prettifyXml from 'prettify-xml';
+import xmlFormatter from 'xml-formatter';
 import type { GeneratorOptions } from 'yeoman-generator';
 import Generator from 'yeoman-generator';
-import { initI18nODataDownloadGenerator, t } from '../utils/i18n';
-import type { EntitySetsFlat } from './odata-query';
-import { getODataDownloaderPrompts, promptNames, type SelectedEntityAnswer } from './prompts/prompts';
-import { getMissingReferentialConstraintsPrompts } from './prompts/ref-constraints';
-import { type AppConfig, type ReferencedEntities } from './types';
+import { initI18nODataDownloadGenerator, t } from '../utils/i18n.js';
+import type { EntitySetsFlat } from './odata-query.js';
+import { getODataDownloaderPrompts, promptNames, type SelectedEntityAnswer } from './prompts/prompts.js';
+import { getMissingReferentialConstraintsPrompts } from './prompts/ref-constraints.js';
+import { type AppConfig, type ReferencedEntities } from './types.js';
 import {
     buildReferentialConstraintFileContent,
     createEntitySetData,
     updateReferentialConstraintFileContent
-} from './utils';
-import { getValueHelpSelectionPrompt } from './prompts/value-help-prompts';
+} from './utils.js';
+import { getValueHelpSelectionPrompt } from './prompts/value-help-prompts.js';
 import type { MockserverConfig, MockserverService } from '@sap-ux/ui5-config';
 import {
     generateMockserverConfig,
     type MockserverConfig as MockserverUpdateConfig
 } from '@sap-ux/mockserver-config-writer';
-import { TelemetryHelper } from '../telemetry';
+import { TelemetryHelper } from '../telemetry/index.js';
 
 export const APP_GENERATOR_MODULE = '@sap/generator-fiori';
 
@@ -44,7 +44,7 @@ export const APP_GENERATOR_MODULE = '@sap/generator-fiori';
  */
 export class ODataDownloadGenerator extends Generator {
     private readonly vscode: unknown;
-    private readonly appWizard: AppWizard | undefined;
+    private readonly appWizard: AppWizardType | undefined;
 
     // The logger is static to allow convenient access from everywhere, cross-cutting concern
     private static _logger: ILogWrapper & Logger = DefaultLogger;
@@ -371,7 +371,12 @@ export class ODataDownloadGenerator extends Generator {
                 );
                 this.writeDestination(
                     mainServiceMetadataPath,
-                    prettifyXml(this.state.mainServiceMetadata, { indent: 4 })
+                    xmlFormatter(this.state.mainServiceMetadata, {
+                        indentation: '    ',
+                        lineSeparator: '\n',
+                        collapseContent: true,
+                        throwOnFailure: false
+                    })
                 );
             }
         }

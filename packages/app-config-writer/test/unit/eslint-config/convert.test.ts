@@ -1,17 +1,41 @@
+import { jest } from '@jest/globals';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import type { Editor } from 'mem-fs-editor';
-import { join } from 'node:path';
-import { readFileSync, writeFileSync, mkdtempSync, rmSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { ToolsLogger } from '@sap-ux/logger';
-import { convertEslintConfig } from '../../../src';
-import type { EslintRcJson } from '../../../src/eslint-config/convert';
+import type { EslintRcJson } from '../../../src/eslint-config/convert.js';
 import type { Package } from '@sap-ux/project-access';
-import crossSpawn from 'cross-spawn';
 import type { ChildProcess } from 'node:child_process';
 import { EventEmitter } from 'node:events';
+import chalk from 'chalk';
+import type * as nodeFs from 'node:fs';
 
-jest.mock('cross-spawn');
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+jest.unstable_mockModule('chalk', () => ({
+    default: chalk,
+    cyan: (s: string) => s,
+    yellow: (s: string) => s,
+    red: (s: string) => s,
+    green: (s: string) => s,
+    blue: (s: string) => s,
+    bold: (s: string) => s,
+    dim: (s: string) => s
+}));
+
+const mockPrompt = jest.fn() as jest.Mock;
+const mockPromptsModule = Object.assign(mockPrompt, { prompt: mockPrompt, inject: jest.fn() });
+jest.unstable_mockModule('prompts', () => ({
+    default: mockPromptsModule
+}));
+
+const mockCrossSpawn = jest.fn() as jest.Mock;
+jest.unstable_mockModule('cross-spawn', () => ({
+    default: mockCrossSpawn
+}));
+
 const MOCK_MIGRATED_MJS = `import { defineConfig, globalIgnores } from "eslint/config";
 import globals from "globals";
 
@@ -39,23 +63,33 @@ export default defineConfig([globalIgnores([
 }]);
 `;
 
-jest.mock('node:fs', () => {
-    const actual = jest.requireActual('node:fs');
-    return {
-        ...actual,
-        writeFileSync: jest.fn(),
-        mkdtempSync: jest.fn(),
-        rmSync: jest.fn(),
-        readFileSync: jest.fn((path: string, encoding?: string) => {
-            // If reading from temp directory, return mock eslint.config.mjs
-            if (path.includes('eslint-migration-') && path.endsWith('eslint.config.mjs')) {
+const mockWriteFileSync = jest.fn() as jest.Mock;
+const mockMkdtempSync = jest.fn() as jest.Mock;
+const mockRmSync = jest.fn() as jest.Mock;
+const mockReadFileSync = jest.fn() as jest.Mock;
+
+jest.unstable_mockModule('node:fs', () => {
+    const actual = jest.requireActual<typeof nodeFs>('node:fs');
+    const { default: _default, ...rest } = actual as any;
+    const mockExports = {
+        ...rest,
+        writeFileSync: mockWriteFileSync,
+        mkdtempSync: mockMkdtempSync,
+        rmSync: mockRmSync,
+        readFileSync: mockReadFileSync.mockImplementation((path, encoding) => {
+            if (typeof path === 'string' && path.includes('eslint-migration-') && path.endsWith('eslint.config.mjs')) {
                 return MOCK_MIGRATED_MJS;
             }
-            // Otherwise use actual readFileSync
             return actual.readFileSync(path, encoding);
         })
     };
+    return {
+        ...mockExports,
+        default: mockExports
+    };
 });
+
+const { convertEslintConfig } = await import('../../../src/index.js');
 
 describe('convertEslintConfig', () => {
     const loggerMock: ToolsLogger = {
@@ -67,7 +101,6 @@ describe('convertEslintConfig', () => {
     let fs: Editor;
     let errorMock: jest.SpyInstance;
     let debugMock: jest.SpyInstance;
-    let spawnMock: jest.MockedFunction<typeof crossSpawn>;
 
     /**
      * Helper function to set up fixture data in memory for tests.
@@ -80,15 +113,17 @@ describe('convertEslintConfig', () => {
         const existingConfigBase = join(__dirname, '../../fixtures/eslint-config/existing-config');
         const missingConfigBase = join(__dirname, '../../fixtures/eslint-config/missing-config');
 
+        const { readFileSync: actualReadFileSync } = jest.requireActual<typeof nodeFs>('node:fs');
+
         // Load fixture files from disk and copy to in-memory fs
         const existingConfigPackageJson = JSON.parse(
-            readFileSync(join(existingConfigBase, 'package.json'), 'utf-8')
+            actualReadFileSync(join(existingConfigBase, 'package.json'), 'utf-8')
         ) as Package;
         const existingConfigEslintRc = JSON.parse(
-            readFileSync(join(existingConfigBase, '.eslintrc.json'), 'utf-8')
+            actualReadFileSync(join(existingConfigBase, '.eslintrc.json'), 'utf-8')
         ) as EslintRcJson;
         const missingConfigPackageJson = JSON.parse(
-            readFileSync(join(missingConfigBase, 'package.json'), 'utf-8')
+            actualReadFileSync(join(missingConfigBase, 'package.json'), 'utf-8')
         ) as Package;
 
         // Setup existing-config fixtures in memory
@@ -104,13 +139,12 @@ describe('convertEslintConfig', () => {
         fs = create(createStorage());
         errorMock = loggerMock.error as unknown as jest.SpyInstance;
         debugMock = loggerMock.debug as unknown as jest.SpyInstance;
-        spawnMock = crossSpawn as jest.MockedFunction<typeof crossSpawn>;
 
         // Setup fixtures in memory BEFORE mocking commit
         setupFixtures();
 
         // Mock fs.commit to prevent writing to disk in tests
-        jest.spyOn(fs, 'commit').mockImplementation((callback?: any) => {
+        jest.spyOn(fs, 'commit').mockImplementation((callback) => {
             if (callback) {
                 setImmediate(callback);
             }
@@ -118,12 +152,12 @@ describe('convertEslintConfig', () => {
         });
 
         // Mock temp directory operations
-        (mkdtempSync as jest.Mock).mockReturnValue('/tmp/eslint-migration-test');
-        (writeFileSync as jest.Mock).mockImplementation(() => {});
-        (rmSync as jest.Mock).mockImplementation(() => {});
+        mockMkdtempSync.mockReturnValue('/tmp/eslint-migration-test');
+        mockWriteFileSync.mockImplementation(() => {});
+        mockRmSync.mockImplementation(() => {});
 
         const mockChildProcess = new EventEmitter() as ChildProcess;
-        spawnMock.mockReturnValue(mockChildProcess);
+        mockCrossSpawn.mockReturnValue(mockChildProcess);
         // Trigger close event with exit code 0 after a short delay
         setImmediate(() => {
             mockChildProcess.emit('close', 0);
@@ -188,7 +222,7 @@ describe('convertEslintConfig', () => {
             const result = await convertEslintConfig(basePath, { logger: loggerMock, fs });
 
             expect(result).toBeDefined();
-            expect(spawnMock).toHaveBeenCalledWith('npx', ['--yes', '@eslint/migrate-config', '.eslintrc'], {
+            expect(mockCrossSpawn).toHaveBeenCalledWith('npx', ['--yes', '@eslint/migrate-config', '.eslintrc'], {
                 cwd: '/tmp/eslint-migration-test',
                 shell: false,
                 stdio: 'inherit'
@@ -240,7 +274,7 @@ describe('convertEslintConfig', () => {
      * stripped config is only visible via the writeFileSync call made into the temp dir.
      */
     const getStrippedConfig = (): EslintRcJson => {
-        const calls = (writeFileSync as jest.Mock).mock.calls;
+        const calls = mockWriteFileSync.mock.calls;
         // The first writeFileSync call in runMigrationCommand writes the stripped eslintrc to the temp dir
         const strippedCall = calls.find(
             ([path]: [string]) => path.includes('eslint-migration-') && !path.endsWith('eslint.config.mjs')
@@ -543,6 +577,28 @@ describe('convertEslintConfig', () => {
             expect(spreadCount).toBe(1);
         });
 
+        test('should not produce a leading comma when migration yields an empty array', async () => {
+            const emptyArrayMjs = `import { defineConfig } from "eslint/config";\n\nexport default defineConfig([]);\n`;
+            mockReadFileSync.mockImplementation((path: string, encoding?: string) => {
+                if (
+                    typeof path === 'string' &&
+                    path.includes('eslint-migration-') &&
+                    path.endsWith('eslint.config.mjs')
+                ) {
+                    return emptyArrayMjs;
+                }
+                const { readFileSync: actualReadFileSync } = jest.requireActual<typeof nodeFs>('node:fs');
+                return actualReadFileSync(path, encoding);
+            });
+
+            const basePath = join(__dirname, '../../fixtures/eslint-config/existing-config');
+            await convertEslintConfig(basePath, { logger: loggerMock, fs, config: 'recommended-for-s4hana' });
+
+            const migratedContent = fs.read(join(basePath, 'eslint.config.mjs'));
+            expect(migratedContent).not.toContain('[,');
+            expect(migratedContent).toContain("\n    ...fioriTools.configs['recommended-for-s4hana'],\n]);");
+        });
+
         test('should log debug message after injection', async () => {
             const basePath = join(__dirname, '../../fixtures/eslint-config/existing-config');
             await convertEslintConfig(basePath, { logger: loggerMock, fs });
@@ -556,7 +612,7 @@ describe('convertEslintConfig', () => {
             const basePath = join(__dirname, '../../fixtures/eslint-config/existing-config');
             await convertEslintConfig(basePath, { logger: loggerMock, fs });
 
-            expect(spawnMock).toHaveBeenCalledWith('npx', ['--yes', '@eslint/migrate-config', '.eslintrc.json'], {
+            expect(mockCrossSpawn).toHaveBeenCalledWith('npx', ['--yes', '@eslint/migrate-config', '.eslintrc.json'], {
                 cwd: '/tmp/eslint-migration-test',
                 shell: false,
                 stdio: 'inherit'
@@ -568,7 +624,7 @@ describe('convertEslintConfig', () => {
 
             // Mock spawn to return a process that fails
             const mockChildProcess = new EventEmitter() as ChildProcess;
-            spawnMock.mockReturnValue(mockChildProcess);
+            mockCrossSpawn.mockReturnValue(mockChildProcess);
             setImmediate(() => {
                 mockChildProcess.emit('close', 1);
             });
@@ -587,7 +643,7 @@ describe('convertEslintConfig', () => {
 
             // Mock spawn to return a process that emits error
             const mockChildProcess = new EventEmitter() as ChildProcess;
-            spawnMock.mockReturnValue(mockChildProcess);
+            mockCrossSpawn.mockReturnValue(mockChildProcess);
             setImmediate(() => {
                 mockChildProcess.emit('error', new Error('Command not found'));
             });
@@ -680,7 +736,7 @@ describe('convertEslintConfig', () => {
             setupFixtures(customFs);
 
             // Mock commit on custom fs
-            jest.spyOn(customFs, 'commit').mockImplementation((callback?: any) => {
+            jest.spyOn(customFs, 'commit').mockImplementation((callback) => {
                 if (callback) {
                     setImmediate(callback);
                 }
@@ -751,7 +807,7 @@ describe('convertEslintConfig', () => {
             expect(originalExtends.some((e) => e.includes('@sap-ux/eslint-plugin-fiori-tools'))).toBe(true);
 
             // Phase 2: Verify spawn was called (migration ran)
-            expect(spawnMock).toHaveBeenCalled();
+            expect(mockCrossSpawn).toHaveBeenCalled();
 
             // Phase 3: Verify fiori-tools import and spread are in the migrated eslint.config.mjs
             const migratedPath = join(basePath, 'eslint.config.mjs');

@@ -1,0 +1,21 @@
+[{
+	"SAP__Origin": "Q7D_004_TGW",
+	"InstanceID": "000001750567",
+	"ObjectId": "30303030303130303836202020202020202020",
+	"ObjectLink": "ObjectLink 1",
+	"Label": "Notification of Purchase",
+	"__metadata": {
+		"uri": "TaskObjectCollection(SAP__Origin='Q7D_004_TGW',InstanceID='000001750567',ObjectId='30303030303130303836202020202020202020')",
+		"type": "TASKPROCESSING.TaskObject"
+	}
+}, {
+	"SAP__Origin": "Q7D_004_TGW",
+	"InstanceID": "000001750567",
+	"ObjectId": "303030303031303038362020292356",
+	"ObjectLink": "ObjectLink 2",
+	"Label": "Notification of Product List",
+	"__metadata": {
+		"uri": "TaskObjectCollection(SAP__Origin='Q7D_004_TGW',InstanceID='000001750567',ObjectId='303030303031303038362020292356')",
+		"type": "TASKPROCESSING.TaskObject"
+	}
+}]

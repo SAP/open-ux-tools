@@ -3,7 +3,6 @@ import React from 'react';
 import type { StringControlPropertyWithOptions } from '@sap-ux-private/control-property-editor-common';
 import { DROPDOWN_EDITOR_TYPE, PropertyType, STRING_VALUE_TYPE } from '@sap-ux-private/control-property-editor-common';
 import { DropdownEditor, valueChanged } from '../../../../src/panels/properties/DropdownEditor';
-import * as slice from '../../../../src/slice';
 import '@testing-library/jest-dom';
 
 import { render } from '../../utils';
@@ -28,7 +27,6 @@ describe('DropdownEditor', () => {
             propertyType: PropertyType.ControlProperty
         };
         const testId = `${propertyName}--DropdownEditor`;
-        jest.spyOn(slice, 'changeProperty');
 
         cleanup();
 

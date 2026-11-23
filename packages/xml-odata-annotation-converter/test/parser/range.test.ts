@@ -1,4 +1,4 @@
-import { transformElementRange } from '../../src/parser/range';
+import { transformElementRange } from '../../src/parser/range.js';
 import type { SourcePosition, XMLElement } from '@xml-tools/ast';
 
 describe('edge cases', () => {

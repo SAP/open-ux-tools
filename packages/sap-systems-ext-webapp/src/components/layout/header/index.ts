@@ -1,1 +1,1 @@
-export * from './SystemHeader';
+export * from './SystemHeader.js';

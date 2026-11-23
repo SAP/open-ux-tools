@@ -1,7 +1,15 @@
-import { getAllNormalizeFolderPath, getAst, getBase, getToken, getInput, deserialize, serialize } from '../../helper';
-import { FileExtension } from '../../helper/types';
-import { parse } from '../../../../src/parser';
-import { FileFormat } from '../../../../src/parser/types';
+import {
+    getAllNormalizeFolderPath,
+    getAst,
+    getBase,
+    getToken,
+    getInput,
+    deserialize,
+    serialize
+} from '../../helper/index.js';
+import { FileExtension } from '../../helper/types.js';
+import { parse } from '../../../../src/parser/index.js';
+import { FileFormat } from '../../../../src/parser/types.js';
 const testParser = async (testCasePath: string): Promise<void> => {
     const text = await getInput(testCasePath, FileExtension.csv);
     const { ast, tokens } = parse(text, FileFormat.csv);

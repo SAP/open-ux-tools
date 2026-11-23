@@ -1,5 +1,5 @@
-import { PromptState } from './prompts/prompt-state';
-import LoggerHelper from './logger-helper';
+import { PromptState } from './prompts/prompt-state.js';
+import LoggerHelper from './logger-helper.js';
 
 /**
  * Throws error message to end prompting in cli.

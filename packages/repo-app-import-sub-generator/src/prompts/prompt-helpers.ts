@@ -1,22 +1,29 @@
-import { appListSearchParams, appListResultFields, generatorTitle, generatorDescription } from '../utils/constants';
+import {
+    appListResultFields,
+    downloadTypeConfig,
+    generatorTitleConfig,
+    adtSourceTemplateIds,
+    adtSourceTemplateId,
+    adtSourceTemplateIdCorrected,
+    appListFieldsWithoutSourceTemplate,
+    sourceTemplateIdField
+} from '../utils/constants.js';
 import type { AbapServiceProvider, AppIndex } from '@sap-ux/axios-extension';
-import type { AppInfo, AppItem } from '../app/types';
-import { PromptState } from './prompt-state';
-import { t } from '../utils/i18n';
-import RepoAppDownloadLogger from '../utils/logger';
+import type { AppInfo, AppItem } from '../app/types.js';
+import { AppDownloadType } from '../app/types.js';
+import { PromptState } from './prompt-state.js';
+import { t } from '../utils/i18n.js';
+import RepoAppDownloadLogger from '../utils/logger.js';
 import { type ConnectedSystem } from '@sap-ux/odata-service-inquirer';
 /**
  * Returns the details for the YUI prompt.
  *
+ * @param downloadType - The type of app download to determine which details to return.
  * @returns step details
  */
-export function getYUIDetails(): { name: string; description: string }[] {
-    return [
-        {
-            name: generatorTitle,
-            description: generatorDescription
-        }
-    ];
+export function getYUIDetails(downloadType: AppDownloadType): { name: string; description: string }[] {
+    const { title, description } = generatorTitleConfig[downloadType];
+    return [{ name: title, description }];
 }
 
 /**
@@ -74,20 +81,109 @@ export const formatAppChoices = (appList: AppIndex): Array<{ name: string; value
  *
  * @param {AbapServiceProvider} provider - The ABAP service provider.
  * @param {string} appId - Application ID to filter the list.
- * @returns {Promise<AppIndex>} A list of applications filtered by source template.
+ * @param {AppDownloadType} downloadType - The download type determining which search parameters to use.
+ * @returns {Promise<AppIndex>} A list of deployed applications. For the ADTQuickDeploy flow, only ADT-deployed apps are returned. For the AbapRepository flow on systems that support it, ADT-deployed apps are excluded.
  */
-async function getAppList(provider: AbapServiceProvider, appId?: string): Promise<AppIndex> {
+/**
+ * Fallback for older ABAP systems that reject sourceTemplate/type search params with HTTP 400.
+ * Fetches the full unfiltered list and then applies client-side appId filtering if provided,
+ * since older systems cannot handle server-side field filtering.
+ *
+ * @param appIndex - The app index instance to search against.
+ * @param appId - Optional app ID to filter results client-side.
+ * @returns Matching apps (or all apps when appId is omitted), or an empty array if the retry also fails.
+ */
+async function retryAppListFetchForOlderSystems(
+    appIndex: ReturnType<AbapServiceProvider['getAppIndex']>,
+    appId?: string
+): Promise<AppIndex> {
     try {
-        const searchParams = appId
-            ? {
-                  ...appListSearchParams,
-                  'sap.app/id': appId
-              }
-            : appListSearchParams;
-        return await provider.getAppIndex().search(searchParams, appListResultFields);
+        // sap.app/type=application is also dropped — older systems may reject it too.
+        // Non-application entries in the list are acceptable; they will fail at the download step.
+        const results = await appIndex.search({}, appListFieldsWithoutSourceTemplate);
+        const filtered = appId ? results.filter((app) => app['sap.app/id'] === appId) : results;
+        RepoAppDownloadLogger.logger?.debug(`Retry succeeded: ${filtered.length} results`);
+        return filtered;
+    } catch (retryError) {
+        const message = retryError instanceof Error ? retryError.message : String(retryError);
+        RepoAppDownloadLogger.logger?.error(t('error.applicationListFetchError', { error: message }));
+        return [];
+    }
+}
+
+/**
+ * Searches the app index for AbapRepository apps, filtering out ADT-deployed entries.
+ *
+ * @param appIndex - The app index instance to search against.
+ * @param appId - Optional app ID to narrow the search.
+ * @returns Filtered app list excluding any ADT source template IDs.
+ */
+async function searchAbapRepositoryApps(
+    appIndex: ReturnType<AbapServiceProvider['getAppIndex']>,
+    appId?: string
+): Promise<AppIndex> {
+    const base = downloadTypeConfig[AppDownloadType.AbapRepository].searchParams;
+    const searchParams = appId ? { ...base, 'sap.app/id': appId } : base;
+    const results = await appIndex.search(searchParams, appListResultFields);
+    const filtered = results.filter((app) => !adtSourceTemplateIds.includes(app[sourceTemplateIdField] as string));
+    RepoAppDownloadLogger.logger?.debug(
+        `App list fetched: ${results.length} total, ${filtered.length} after filtering out ADT-deployed apps`
+    );
+    return filtered;
+}
+
+/**
+ * Searches the app index for ADTQuickDeploy apps using both legacy and corrected template IDs concurrently.
+ * The app index API does not support OR filters, so two parallel searches are required.
+ *
+ * @param appIndex - The app index instance to search against.
+ * @param appId - Optional app ID to narrow the search.
+ * @returns Deduplicated app list from both template ID searches.
+ */
+async function searchAdtQuickDeployApps(
+    appIndex: ReturnType<AbapServiceProvider['getAppIndex']>,
+    appId?: string
+): Promise<AppIndex> {
+    const buildSearchParams = (templateId: string): Record<string, string> => ({
+        [sourceTemplateIdField]: templateId,
+        ...(appId ? { 'sap.app/id': appId } : {})
+    });
+    const [legacyResults, correctedResults] = await Promise.all([
+        appIndex.search(buildSearchParams(adtSourceTemplateId), appListResultFields),
+        appIndex.search(buildSearchParams(adtSourceTemplateIdCorrected), appListResultFields)
+    ]);
+    // An app can only carry one template ID at a time, so duplicates should not occur in practice.
+    // Dedup by sap.app/id as a safeguard against unexpected backend behaviour.
+    const legacyAppIds = new Set(legacyResults.map((app) => app['sap.app/id']));
+    return [...legacyResults, ...correctedResults.filter((app) => !legacyAppIds.has(app['sap.app/id']))];
+}
+
+async function getAppList(
+    provider: AbapServiceProvider,
+    appId?: string,
+    downloadType: AppDownloadType = AppDownloadType.ADTQuickDeploy
+): Promise<AppIndex> {
+    const appIndex = provider.getAppIndex();
+
+    try {
+        if (downloadType === AppDownloadType.AbapRepository) {
+            return await searchAbapRepositoryApps(appIndex, appId);
+        }
+        return await searchAdtQuickDeployApps(appIndex, appId);
     } catch (error) {
-        RepoAppDownloadLogger.logger?.error(t('error.applicationListFetchError', { error: error.message }));
-        RepoAppDownloadLogger.logger?.debug(t('error.applicationListFetchError', { error: JSON.stringify(error) }));
+        const status = (error as { response?: { status?: number } })?.response?.status;
+        const message = error instanceof Error ? error.message : String(error);
+        // Older systems rejects unknown fields either as HTTP 400 or with an "unknown column" error message
+        const isOlderSystemError = status === 400 || /column.*unknown|unknown.*column/i.test(message);
+        if (isOlderSystemError) {
+            // Older systems reject sap.app/sourceTemplate/id as an unknown column.
+            // Both flows send it — ADTQuickDeploy as a search param, AbapRepository as a result field.
+            RepoAppDownloadLogger.logger?.debug(
+                `Retrying without ${sourceTemplateIdField} and search params (original error: ${message})`
+            );
+            return retryAppListFetchForOlderSystems(appIndex, appId);
+        }
+        RepoAppDownloadLogger.logger?.error(t('error.applicationListFetchError', { error: message }));
         return [];
     }
 }
@@ -97,17 +193,19 @@ async function getAppList(provider: AbapServiceProvider, appId?: string): Promis
  *
  * @param {ConnectedSystem} connectedSystem - The ABAP service provider.
  * @param {string} appId - Application ID to be downloaded.
+ * @param {AppDownloadType} downloadType - The download type determining which search params to use.
  * @returns {Promise<AppIndex>} A list of applications filtered by source template.
  */
 export async function fetchAppListForSelectedSystem(
     connectedSystem: ConnectedSystem,
-    appId?: string
+    appId?: string,
+    downloadType: AppDownloadType = AppDownloadType.ADTQuickDeploy
 ): Promise<AppIndex> {
     if (connectedSystem?.serviceProvider) {
         PromptState.systemSelection = {
             connectedSystem: connectedSystem
         };
-        return await getAppList(connectedSystem.serviceProvider as AbapServiceProvider, appId);
+        return await getAppList(connectedSystem.serviceProvider as AbapServiceProvider, appId, downloadType);
     }
     return [];
 }

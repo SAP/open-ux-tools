@@ -1,0 +1,449 @@
+<core:View id="fin.co.costcenter.manage.s1.view"
+		xmlns:core="sap.ui.core" 
+           xmlns="sap.m" 
+           xmlns:t="sap.ui.table" 
+           xmlns:l="sap.ui.layout" 
+           xmlns:fb="sap.ui.comp.smartfilterbar" 
+           xmlns:st="sap.ui.comp.smarttable"
+           xmlns:smartlink="sap.ui.comp.navpopover"
+           xmlns:html="http://www.w3.org/1999/xhtml"
+           class="sapFinGLCostCenter"
+           xmlns:data="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1"
+           controllerName="fin.co.costcenter.manage.view.S1">
+	<Page id="page" showNavButton="true" showFooter="{device>/isNoPhone}" 
+		  busyIndicatorDelay="0" enableScrolling="false" navButtonPress="onListNavBack"
+		  class="sapFioriListReportPageOverflow"> 
+		<footer>
+        	<Bar>
+	        </Bar>
+        </footer>
+		<content>
+	    <VBox id="fin.co.costcenter.manage.s1.vbox" fitContainer="true">
+		<fb:SmartFilterBar id="fin.co.costcenter.manage.smartfilterbar" entityType="CostCenter" search="onSearch" reset="onReset" initialise="onInitSmartFilterBar"
+		 persistencyKey="fin.co.costcenter.manage.view.S1">
+		 <fb:layoutData>
+			    	<FlexItemData shrinkFactor="0"/>
+			    	</fb:layoutData> 
+        <fb:controlConfiguration id="fin.co.costcenter.manage.s1.controlconfiguration"> 
+          <fb:ControlConfiguration id="fin.co.costcenter.manage.s1.kostl" key="Kostl" displayBehaviour="idAndDescription" groupId="_BASIC" index="0" visible="true"  hasValueHelpDialog="true"/>
+          <fb:ControlConfiguration id="fin.co.costcenter.manage.s1.kosar" key="Kosar" displayBehaviour="idAndDescription" groupId="_BASIC" index="1" visible="true"  hasValueHelpDialog="true"/>
+          <fb:ControlConfiguration id="fin.co.costcenter.manage.s1.khinr" key="Khinr" displayBehaviour="idAndDescription" groupId="_BASIC" index="2" visible="true"  hasValueHelpDialog="true"/>  
+          <fb:ControlConfiguration id="fin.co.costcenter.manage.s1.verakuser" key="VerakUser" displayBehaviour="idAndDescription" groupId="_BASIC" index="3" visible="true"  hasValueHelpDialog="true"/>          
+          <fb:ControlConfiguration id="fin.co.costcenter.manage.s1.bukrs" key="Bukrs" displayBehaviour="idAndDescription" groupId="_BASIC" index="4" visible="true"  hasValueHelpDialog="true"/>  
+          <fb:ControlConfiguration id="fin.co.costcenter.manage.s1.prctr" key="Prctr" displayBehaviour="idAndDescription" groupId="_BASIC" index="5" visible="true"  hasValueHelpDialog="true"/>  
+          <fb:ControlConfiguration id="fin.co.costcenter.manage.s1.verak" key="Verak" displayBehaviour="idAndDescription" visible="true" hasValueHelpDialog="true"/>
+          <fb:ControlConfiguration id="fin.co.costcenter.manage.s1.ersda" key="Ersda" displayBehaviour="idAndDescription" visible="true" hasValueHelpDialog="true" />  
+          <fb:ControlConfiguration id="fin.co.costcenter.manage.s1.usnam" key="Usnam" displayBehaviour="idAndDescription" visible="true" hasValueHelpDialog="true"/>  
+          <fb:ControlConfiguration id="fin.co.costcenter.manage.s1.gsber" key="Gsber" displayBehaviour="idAndDescription" visible="true" hasValueHelpDialog="true"/>  
+          <fb:ControlConfiguration id="fin.co.costcenter.manage.s1.waers" key="Waers" displayBehaviour="idAndDescription" visible="true" hasValueHelpDialog="true"/>  
+          <fb:ControlConfiguration id="fin.co.costcenter.manage.s1.funcarea" key="FuncArea" displayBehaviour="idAndDescription" visible="true" hasValueHelpDialog="true"/>  
+          <fb:ControlConfiguration id="fin.co.costcenter.manage.s1.ltext" key="Ltext" displayBehaviour="idAndDescription" visible="true" hasValueHelpDialog="true"/>
+          <core:ExtensionPoint id="fin.co.costcenter.manage.s1.extensionpoint.filters" name="extFilters"/> 
+        </fb:controlConfiguration>  
+        <fb:customData> 
+          <core:CustomData key="defaultTokenDisplayBehaviour" value="idAndDescription"/> 
+        </fb:customData>  
+        <fb:groupConfiguration> 
+          <fb:GroupConfiguration key="Key11"/> 
+        </fb:groupConfiguration> 
+        </fb:SmartFilterBar>
+        <st:SmartTable id="fin.co.costcenter.manage.s1.smarttable"
+        entitySet="CostCenterSet" smartFilterId="fin.co.costcenter.manage.smartfilterbar" tableType="AnalyticalTable" class="sapFioriListReportSmartTable"
+                       header="{i18n>TABLETITLE}" persistencyKey="fin.co.costcenter.manage.view.S1.hTabVar1" beforeRebindTable="onBeforeRebindTable" height="100%"
+                       ignoredFields="CpiTempl,CpdTempl,SciTempl,ScdTempl,Anred,Name1,Name2,Name3,Name4,Stras,Ort01,Ort02,Land1,Txjcd,Pfach,Pstlz,Pstl2,Regio,Spras,Spras2,Telf1,Telf2,Telbx,Telx1,Telfx,Teltx,Drnam,Datlt">
+        <st:layoutData>
+			<FlexItemData growFactor="1"/>
+		 </st:layoutData>
+		 <st:semanticObjectController>
+				<smartlink:SemanticObjectController id="fin.co.costcenter.manage.s1.semanticobjectcontroller"
+							beforePopoverOpens="onBeforePopoverOpens" navigate="onSmartLinkNavigate"
+							navigationTargetsObtained="onNavTargetsObtained" ignoredFields=""
+							prefetchNavigationTargets="false" prefetchDone="onPrefetchNavTargets" />
+		</st:semanticObjectController>                                                
+           <t:Table id="fin.co.costcenter.manage.table" threshold="20" allowColumnReordering="true" visibleRowCountMode="Auto"  rowSelectionChange="onRowSelect" cellClick="onCellClick"
+         data:persoKey="fin.co.costcenter.manage.view.S1.hTabVar" enableColumnFreeze="true"  selectionMode="Single"
+         enableCustomFilter="false" customFilter="onCustomFilter"> 
+      <t:columns>
+       <core:ExtensionPoint id="fin.co.costcenter.manage.s1.extensionpoint.tablecolumns" name="extTableColumns"/>
+       
+            <t:Column id="fin.co.costcenter.manage.COL_KOSTL" autoResizable="true" filterProperty="Kostl" hAlign="Left" width="auto" visible="true" data:persoKey="fin.co.costcenter.manage.view.S1.columns.kostl" sortProperty="Kostl"> 
+            <t:label> 
+               <Label id="fin.co.costcenter.manage.table.kostl.label" design="Standard" text="{/#CostCenter/Kostl/@sap:label}" tooltip="Cost Center Name"/> 
+            </t:label>  
+            <t:template> 
+              <Text id="fin.co.costcenter.manage.table.kostl.text" text="{Kostl}" wrapping="false"/> 
+            </t:template> 
+            <t:customData>
+            	<core:CustomData key="p13nData" value="\{&quot;columnKey&quot;: &quot;Kostl&quot;, &quot;leadingProperty&quot;: &quot;Kostl&quot;}"/>
+            </t:customData>
+   			</t:Column>
+   			
+   		  <t:Column id="fin.co.costcenter.manage.COL_NAME" autoResizable="true" filterProperty="Ltext" hAlign="Left" width="auto" visible="true" data:persoKey="fin.co.costcenter.manage.view.S1.columns.Ltext" sortProperty="Ltext"> 
+            <t:label>
+               <Label id="fin.co.costcenter.manage.table.ltext.label" design="Standard" text="{/#CostCenter/Ltext/@sap:label}" tooltip="Cost Center Description"/>
+            </t:label>  
+            <t:template> 
+<!--               <Link id="Ltext" text="{Ltext}" press="pNaviToFactsheet"></Link> -->
+					<smartlink:SmartLink id="fin.co.costcenter.manage.s1.linkCC" semanticObject="CostCenter" text="{Ltext}" semanticObjectLabel="{/#CostCenter/Ltext/@sap:label}" beforePopoverOpens="onBeforePopoverOpens" navigationTargetsObtained="onNavTargetsObtained" innerNavigate="onPopoverLinkPressed"/>
+            </t:template>
+            <t:customData>
+            	<core:CustomData key="p13nData" value="\{&quot;columnKey&quot;: &quot;Ltext&quot;, &quot;leadingProperty&quot;: &quot;Ltext&quot;}"/>
+            </t:customData>
+          </t:Column> 
+            
+           <t:Column id="fin.co.costcenter.manage.COL_VALID_FROM" autoResizable="true" filterProperty="Datab" hAlign="Left" width="auto" visible="true" data:persoKey="fin.co.costcenter.manage.view.S1.columns.Datab" sortProperty="Datab"> 
+            <t:label> 
+               <Label id="fin.co.costcenter.manage.table.validfrom.label" design="Standard" text="{/#CostCenter/Datab/@sap:label}" tooltip="Valid From"/> 
+            </t:label>  
+            <t:template> 
+             <Text id="fin.co.costcenter.manage.table.validfrom.text" text="{path:'Datab', type:'sap.ui.model.type.Date' , formatOptions: {UTC : true}}" wrapping="false"/> 
+            </t:template>
+            <t:customData>
+            	<core:CustomData key="p13nData" value="\{&quot;columnKey&quot;: &quot;Datab&quot;,&quot;type&quot; : &quot;date&quot;,  &quot;leadingProperty&quot;: &quot;Datab&quot;}"/>
+            </t:customData> 
+          </t:Column>
+          
+          <t:Column id="fin.co.costcenter.manage.COL_User_Responsible" autoResizable="true" filterProperty="VerakUser" hAlign="Left" width="auto" visible="true" data:persoKey="fin.co.costcenter.manage.view.S1.columns.VerakUser" sortProperty="VerakUser"> 
+            <t:label> 
+               <Label id="fin.co.costcenter.manage.table.userresponsible.label" design="Standard" text="{/#CostCenter/VerakUser/@sap:label}" tooltip="User Responsible"/> 
+            </t:label>  
+            <t:template> 
+              <Link id="fin.co.costcenter.manage.table.userresponsible.link" text="{parts:[{path:'VerakUser'}, {path:'VerakUserText'}], formatter:'fin.co.costcenter.manage.formatter.GCCMFormatter.nameWithDescrip'}" press="pNameCard"/> 
+            </t:template>
+            <t:customData>
+            	<core:CustomData key="p13nData" value="\{&quot;columnKey&quot;: &quot;VerakUser&quot;, &quot;leadingProperty&quot;: &quot;VerakUser&quot;}"/>
+            </t:customData>
+          </t:Column>
+          
+          <t:Column id="fin.co.costcenter.manage.COL_DEPARTMENT" autoResizable="true" filterProperty="Abtei" hAlign="Left" width="auto" visible="true" data:persoKey="fin.co.costcenter.manage.view.S1.columns.Abtei" sortProperty="Abtei"> 
+            <t:label> 
+               <Label id="fin.co.costcenter.manage.table.department.label" design="Standard" text="{/#CostCenter/Abtei/@sap:label}" tooltip="Department"/> 
+            </t:label>  
+            <t:template> 
+              <Text id="fin.co.costcenter.manage.table.department.text" text="{Abtei}" wrapping="false"/> 
+            </t:template>
+            <t:customData>
+            	<core:CustomData key="p13nData" value="\{&quot;columnKey&quot;: &quot;Abtei&quot;, &quot;leadingProperty&quot;: &quot;Abtei&quot;}"/>
+            </t:customData> 
+          </t:Column>
+          
+          <t:Column id="fin.co.costcenter.manage.COL_KOSAR" autoResizable="true" filterProperty="Kosar" hAlign="Left" width="auto" visible="true" data:persoKey="fin.co.costcenter.manage.view.S1.columns.kosar" sortProperty="Kosar"> 
+            <t:label> 
+               <Label id="fin.co.costcenter.manage.table.kosar.label" design="Standard" text="{/#CostCenter/Kosar/@sap:label}" tooltip="Cost Center Category"/> 
+            </t:label>  
+            <t:template> 
+              <Text id="fin.co.costcenter.manage.table.kosar.text" text="{Kosar}" wrapping="false"/> 
+            </t:template>
+            <t:customData>
+            	<core:CustomData key="p13nData" value="\{&quot;columnKey&quot;: &quot;Kosar&quot;, &quot;leadingProperty&quot;: &quot;Kosar&quot;}"/>
+            </t:customData>
+          </t:Column>
+          
+          <t:Column id="fin.co.costcenter.manage.COL_Std_Hierarchy" autoResizable="true" filterProperty="Khinr" hAlign="Left" width="auto" visible="true" data:persoKey="fin.co.costcenter.manage.view.S1.columns.Khinr" sortProperty="Khinr"> 
+            <t:label> 
+               <Label id="fin.co.costcenter.manage.table.hierarchy.label" design="Standard" text="{/#CostCenter/Khinr/@sap:label}" tooltip="Hierarchy Area"/> 
+            </t:label>  
+            <t:template> 
+              <Text id="khinr" text="{Khinr}" wrapping="false"/>
+            </t:template>
+            <t:customData>
+            	<core:CustomData key="p13nData" value="\{&quot;columnKey&quot;: &quot;Khinr&quot;, &quot;leadingProperty&quot;: &quot;Khinr&quot;}"/>
+            </t:customData>
+           </t:Column>  
+           
+           <t:Column id="fin.co.costcenter.manage.COL_COMPANY_CODE" autoResizable="true" filterProperty="Bukrs" hAlign="Left" width="auto" visible="true" data:persoKey="fin.co.costcenter.manage.view.S1.columns.Bukrs" sortProperty="Bukrs">
+            <t:label> 
+               <Label id="fin.co.costcenter.manage.table.bukrs.label" design="Standard" text="{/#CostCenter/Bukrs/@sap:label}" tooltip="Company Code"/> 
+            </t:label>  
+            <t:template> 
+              <Text id="fin.co.costcenter.manage.table.bukrs.text" text="{Bukrs}" wrapping="false"/> 
+            </t:template>
+            <t:customData>
+            	<core:CustomData key="p13nData" value="\{&quot;columnKey&quot;: &quot;Bukrs&quot;, &quot;leadingProperty&quot;: &quot;Bukrs&quot;}"/>
+            </t:customData>
+          </t:Column>
+          
+          <t:Column id="fin.co.costcenter.manage.COL_PRCTR" autoResizable="true" filterProperty="Prctr" hAlign="Left" width="auto" visible="true" data:persoKey="fin.co.costcenter.manage.view.S1.columns.prctr" sortProperty="Prctr">  
+            <t:label> 
+               <Label id="fin.co.costcenter.manage.table.prctr.label" design="Standard" text="{/#CostCenter/Prctr/@sap:label}" tooltip="Profit Center"/> 
+            </t:label>  
+            <t:template> 
+<!--               <Link id="prctr" text="{Prctr}" press="pNaviToPCFactsheet"></Link>  --> 
+				<smartlink:SmartLink id="fin.co.costcenter.manage.s1.linkPC" semanticObject="ProfitCenter" text="{Prctr}" semanticObjectLabel="{/#CostCenter/Prctr/@sap:label}" beforePopoverOpens="onBeforePopoverOpens" navigationTargetsObtained="onNavTargetsObtained" innerNavigate="onPopoverLinkPressed"/>
+            </t:template>
+            <t:customData>
+            	<core:CustomData key="p13nData" value="\{&quot;columnKey&quot;: &quot;Prctr&quot;, &quot;leadingProperty&quot;: &quot;Prctr&quot;}"/>
+            </t:customData>
+          </t:Column>
+          
+          <t:Column id="fin.co.costcenter.manage.COL_CURRENCY" autoResizable="true" filterProperty="Waers" hAlign="Left" width="auto" visible="true" data:persoKey="fin.co.costcenter.manage.view.S1.columns.Waers" sortProperty="Waers"> 
+            <t:label> 
+               <Label id="fin.co.costcenter.manage.table.waers.label" design="Standard" text="{/#CostCenter/Waers/@sap:label}" tooltip="Cost Center Currency "/> 
+            </t:label>  
+            <t:template> 
+              <Text id="fin.co.costcenter.manage.table.waers.text" text="{Waers}" wrapping="false"/> 
+            </t:template>
+            <t:customData>
+            	<core:CustomData key="p13nData" value="\{&quot;columnKey&quot;: &quot;Waers&quot;, &quot;leadingProperty&quot;: &quot;Waers&quot;}"/>
+            </t:customData> 
+          </t:Column>
+           
+            <t:Column id="fin.co.costcenter.manage.COL_PERSON_RESP" autoResizable="true" filterProperty="Verak" hAlign="Left" width="auto" visible="false" data:persoKey="fin.co.costcenter.manage.view.S1.columns.Verak" sortProperty="Verak"> 
+            <t:label> 
+               <Label id="fin.co.costcenter.manage.table.verak.label" design="Standard" text="{/#CostCenter/Verak/@sap:label}" tooltip="Person Responsible"/> 
+            </t:label>  
+            <t:template> 
+              <Text id="fin.co.costcenter.manage.table.verak.text" text="{Verak}" wrapping="false"/> 
+            </t:template>
+            <t:customData>
+            	<core:CustomData key="p13nData" value="\{&quot;columnKey&quot;: &quot;Verak&quot;, &quot;leadingProperty&quot;: &quot;Verak&quot;}"/>
+            </t:customData>
+          </t:Column> 
+
+          <t:Column id="fin.co.costcenter.manage.COL_COMPANY_NAME" autoResizable="true" filterProperty="BUKRS_TEXT" hAlign="Left" width="auto" visible="false" data:persoKey="fin.co.costcenter.manage.view.S1.columns.BUKRS_TEXT" sortProperty="BUKRS_TEXT"> 
+            <t:label> 
+               <Label id="fin.co.costcenter.manage.table.bukrstext.label" design="Standard" text="{/#CostCenter/BUKRS_TEXT/@sap:label}" tooltip="Company Name"/> 
+            </t:label>  
+            <t:template> 
+              <Text id="fin.co.costcenter.manage.table.bukrstext.text" text="{BUKRS_TEXT}" wrapping="false"/> 
+            </t:template>
+            <t:customData>
+            	<core:CustomData key="p13nData" value="\{&quot;columnKey&quot;: &quot;BUKRS_TEXT&quot;, &quot;leadingProperty&quot;: &quot;BUKRS_TEXT&quot;}"/>
+            </t:customData> 
+          </t:Column>
+                   
+         <t:Column id="fin.co.costcenter.manage.COL_CO_AREA" autoResizable="true" filterProperty="Kokrs" hAlign="Left" width="auto" visible="false" data:persoKey="fin.co.costcenter.manage.view.S1.columns.Kokrs" sortProperty="Kokrs"> 
+            <t:label> 
+               <Label id="fin.co.costcenter.manage.table.kokrs.label" design="Standard" text="{i18n>C_CTRL_AREA}" tooltip="Controlling Area"/> 
+            </t:label>  
+            <t:template> 
+              <Text id="fin.co.costcenter.manage.table.kokrs.text" text="{Kokrs}" wrapping="false"/> 
+            </t:template>
+            <t:customData>
+            	<core:CustomData key="p13nData" value="\{&quot;columnKey&quot;: &quot;Kokrs&quot;, &quot;leadingProperty&quot;: &quot;Kokrs&quot;}"/>
+            </t:customData> 
+          </t:Column>
+          
+          <t:Column id="fin.co.costcenter.manage.COL_VALID_TO" autoResizable="true" filterProperty="Datbi" hAlign="Left" width="auto" visible="false" data:persoKey="fin.co.costcenter.manage.view.S1.columns.Datbi" sortProperty="Datbi"> 
+            <t:label> 
+               <Label id="fin.co.costcenter.manage.table.datbi.label" design="Standard" text="{/#CostCenter/Datbi/@sap:label}" tooltip="Valid To"/> 
+            </t:label>  
+            <t:template> 
+              <Text id="fin.co.costcenter.manage.table.datbi.text" text="{path:'Datbi',type:'sap.ui.model.type.Date' , formatOptions: {style: 'short' , UTC : true}}" wrapping="false"/> 
+            </t:template>
+            <t:customData>
+            	<core:CustomData key="p13nData" value="\{&quot;columnKey&quot;: &quot;Datbi&quot;, &quot;type&quot; : &quot;date&quot;, &quot;leadingProperty&quot;: &quot;Datbi&quot;}"/>
+            </t:customData> 
+          </t:Column>
+
+          <t:Column id="fin.co.costcenter.manage.COL_CREATED_ON" autoResizable="true" filterProperty="Ersda" hAlign="Left" width="auto" visible="false" data:persoKey="fin.co.costcenter.manage.view.S1.columns.Ersda" sortProperty="Ersda"> 
+            <t:label> 
+               <Label id="fin.co.costcenter.manage.table.ersda.label" design="Standard" text="{/#CostCenter/Ersda/@sap:label}" tooltip="Created On"/> 
+            </t:label>  
+            <t:template> 
+              <Text id="fin.co.costcenter.manage.table.ersda.text" text="{path:'Ersda',type:'sap.ui.model.type.Date' , formatOptions: {style: 'short'}}" wrapping="false"/> 
+            </t:template>
+            <t:customData>
+            	<core:CustomData key="p13nData" value="\{&quot;columnKey&quot;: &quot;Ersda&quot;, &quot;type&quot; : &quot;date&quot;, &quot;leadingProperty&quot;: &quot;Ersda&quot;}"/>
+            </t:customData> 
+          </t:Column>
+          
+          <t:Column id="fin.co.costcenter.manage.COL_CREATED_BY" autoResizable="true" filterProperty="Usnam" hAlign="Left" width="auto" visible="false" data:persoKey="fin.co.costcenter.manage.view.S1.columns.Usnam" sortProperty="Usnam"> 
+            <t:label> 
+               <Label id="fin.co.costcenter.manage.table.usnam.label" design="Standard" text="{/#CostCenter/Usnam/@sap:label}" tooltip="Created By"/> 
+            </t:label>  
+            <t:template> 
+              <Link id="fin.co.costcenter.manage.table.usnam.link" text="{parts:[{path:'Usnam'}, {path:'UsnamText'}], formatter:'fin.co.costcenter.manage.formatter.GCCMFormatter.nameWithDescrip'}" press="pNameCard4Usnam"/>
+            </t:template>
+            <t:customData>
+            	<core:CustomData key="p13nData" value="\{&quot;columnKey&quot;: &quot;Usnam&quot;, &quot;leadingProperty&quot;: &quot;Usnam&quot;}"/>
+            </t:customData> 
+          </t:Column>
+          
+          <t:Column id="fin.co.costcenter.manage.COL_Business_Area" autoResizable="true" filterProperty="Gsber" hAlign="Left" width="auto" visible="false" data:persoKey="fin.co.costcenter.manage.view.S1.columns.Gsber" sortProperty="Gsber"> 
+            <t:label> 
+               <Label id="fin.co.costcenter.manage.table.gsber.label" design="Standard" text="{/#CostCenter/Gsber/@sap:label}" tooltip="Buisness Area"/> 
+            </t:label>  
+            <t:template> 
+              <Text id="fin.co.costcenter.manage.table.gsber.text" text="{Gsber}" wrapping="false"/> 
+            </t:template>
+            <t:customData>
+            	<core:CustomData key="p13nData" value="\{&quot;columnKey&quot;: &quot;Gsber&quot;, &quot;leadingProperty&quot;: &quot;Gsber&quot;}"/>
+            </t:customData> 
+          </t:Column>
+                   
+          <t:Column id="fin.co.costcenter.manage.COL_Functional_Area" autoResizable="true" filterProperty="FuncArea" hAlign="Left" width="auto" visible="false" data:persoKey="fin.co.costcenter.manage.view.S1.columns.FuncArea" sortProperty="FuncArea"> 
+            <t:label> 
+               <Label id="fin.co.costcenter.manage.table.funcarea.label" design="Standard" text="{/#CostCenter/FuncArea/@sap:label}" tooltip="Functional Area"/> 
+            </t:label>  
+            <t:template> 
+              <Text id="fin.co.costcenter.manage.table.funcarea.text" text="{FuncArea}" wrapping="false"/> 
+            </t:template>
+            <t:customData>
+            	<core:CustomData key="p13nData" value="\{&quot;columnKey&quot;: &quot;FuncArea&quot;, &quot;leadingProperty&quot;: &quot;FuncArea&quot;}"/>
+            </t:customData> 
+          </t:Column>
+          
+          <t:Column id="fin.co.costcenter.manage.COL_Lock_Act_PCosts" autoResizable="true" filterProperty="Bkzkp" hAlign="Left" width="auto" visible="false" data:persoKey="fin.co.costcenter.manage.view.S1.columns.Bkzkp" sortProperty="Bkzkp"> 
+            <t:label> 
+               <Label id="fin.co.costcenter.manage.table.bkzkp.label" design="Standard" text="{/#CostCenter/Bkzkp/@sap:label}" tooltip="Actual Primary Costs"/> 
+            </t:label>  
+            <t:template> 
+              <Text id="fin.co.costcenter.manage.table.bkzkp.text" text="{Bkzkp}" wrapping="false"/> 
+            </t:template>
+            <t:customData>
+            	<core:CustomData key="p13nData" value="\{&quot;columnKey&quot;: &quot;Bkzkp&quot;, &quot;leadingProperty&quot;: &quot;Bkzkp&quot;}"/>
+            </t:customData> 
+          </t:Column>
+          
+          <t:Column id="fin.co.costcenter.manage.COL_Actl_sec_costs" autoResizable="true" filterProperty="Bkzks" hAlign="Left" width="auto" visible="false" data:persoKey="fin.co.costcenter.manage.view.S1.columns.Bkzks" sortProperty="Bkzks"> 
+            <t:label> 
+               <Label id="fin.co.costcenter.manage.table.bkzks.label" design="Standard" text="{/#CostCenter/Bkzks/@sap:label}" tooltip="Actual Secondary Costs"/> 
+            </t:label>  
+            <t:template> 
+              <Text id="fin.co.costcenter.manage.table.bkzks.text" text="{Bkzks}" wrapping="false"/> 
+            </t:template>
+            <t:customData>
+            	<core:CustomData key="p13nData" value="\{&quot;columnKey&quot;: &quot;Bkzks&quot;, &quot;leadingProperty&quot;: &quot;Bkzks&quot;}"/>
+            </t:customData> 
+          </t:Column>
+          
+          <t:Column id="fin.co.costcenter.manage.COL_Lock_act_rev." autoResizable="true" filterProperty="Bkzer" hAlign="Left" width="auto" visible="false" data:persoKey="fin.co.costcenter.manage.view.S1.columns.Bkzer" sortProperty="Bkzer"> 
+            <t:label> 
+               <Label id="fin.co.costcenter.manage.table.bkzer.label" design="Standard" text="{/#CostCenter/Bkzer/@sap:label}" tooltip="Actual Revenues"/> 
+            </t:label>  
+            <t:template> 
+              <Text id="fin.co.costcenter.manage.table.bkzer.text" text="{Bkzer}" wrapping="false"/> 
+            </t:template>
+            <t:customData>
+            	<core:CustomData key="p13nData" value="\{&quot;columnKey&quot;: &quot;Bkzer&quot;, &quot;leadingProperty&quot;: &quot;Bkzer&quot;}"/>
+            </t:customData> 
+          </t:Column>
+          
+          <t:Column id="fin.co.costcenter.manage.COL_Commitment" autoResizable="true" filterProperty="Bkzob" hAlign="Left" width="auto" visible="false" data:persoKey="Bkzob" sortProperty="Bkzob"> 
+            <t:label> 
+               <Label id="fin.co.costcenter.manage.table.bkzob.label" design="Standard" text="{/#CostCenter/Bkzob/@sap:label}" tooltip="Commitment"/> 
+            </t:label>  
+            <t:template> 
+              <Text id="fin.co.costcenter.manage.table.bkzob.text" text="{Bkzob}" wrapping="false"/> 
+            </t:template>
+            <t:customData>
+            	<core:CustomData key="p13nData" value="\{&quot;columnKey&quot;: &quot;Bkzob&quot;, &quot;leadingProperty&quot;: &quot;Bkzob&quot;}"/>
+            </t:customData> 
+          </t:Column>
+          
+          <t:Column id="fin.co.costcenter.manage.COL_Plan_pri_costs" autoResizable="true" filterProperty="Pkzkp" hAlign="Left" width="auto" visible="false" data:persoKey="fin.co.costcenter.manage.view.S1.columns.Pkzkp" sortProperty="Pkzkp"> 
+            <t:label> 
+               <Label id="fin.co.costcenter.manage.table.pkzkp.label" design="Standard" text="{/#CostCenter/Pkzkp/@sap:label}" tooltip="Planned Primary Costs"/> 
+            </t:label>  
+            <t:template> 
+              <Text id="fin.co.costcenter.manage.table.pkzkp.text" text="{Pkzkp}" wrapping="false"/> 
+            </t:template>
+            <t:customData>
+            	<core:CustomData key="p13nData" value="\{&quot;columnKey&quot;: &quot;Pkzkp&quot;, &quot;leadingProperty&quot;: &quot;Pkzkp&quot;}"/>
+            </t:customData> 
+          </t:Column>
+          
+          <t:Column id="fin.co.costcenter.manage.COL_Plan_secondary" autoResizable="true" filterProperty="Pkzks" hAlign="Left" width="auto" visible="false" data:persoKey="fin.co.costcenter.manage.view.S1.columns.Pkzks" sortProperty="Pkzks"> 
+            <t:label> 
+               <Label id="fin.co.costcenter.manage.table.pkzks.label" design="Standard" text="{/#CostCenter/Pkzks/@sap:label}" tooltip="Planned Secondary Costs"/> 
+            </t:label>  
+            <t:template> 
+              <Text id="fin.co.costcenter.manage.table.pkzks.text" text="{Pkzks}" wrapping="false"/>  
+            </t:template>
+            <t:customData>
+            	<core:CustomData key="p13nData" value="\{&quot;columnKey&quot;: &quot;Pkzks&quot;, &quot;leadingProperty&quot;: &quot;Pkzks&quot;}"/>
+            </t:customData> 
+          </t:Column>
+          
+          <t:Column id="fin.co.costcenter.manage.COL_Plan_revenues" autoResizable="true" filterProperty="Pkzer" hAlign="Left" width="auto" visible="false" data:persoKey="fin.co.costcenter.manage.view.S1.columns.Pkzer" sortProperty="Pkzer"> 
+            <t:label> 
+               <Label id="fin.co.costcenter.manage.table.pkzer.label" design="Standard" text="{/#CostCenter/Pkzer/@sap:label}" tooltip="Planned Revenues"/> 
+            </t:label>  
+            <t:template> 
+              <Text id="fin.co.costcenter.manage.table.pkzer.text" text="{Pkzer}" wrapping="false"/> 
+            </t:template>
+            <t:customData>
+            	<core:CustomData key="p13nData" value="\{&quot;columnKey&quot;: &quot;Pkzer&quot;, &quot;leadingProperty&quot;: &quot;Pkzer&quot;}"/>
+            </t:customData> 
+          </t:Column>
+          
+          <t:Column id="fin.co.costcenter.manage.COL_Record_Quantity" autoResizable="true" filterProperty="Mgefl" hAlign="Left" width="auto" visible="false" data:persoKey="fin.co.costcenter.manage.view.S1.columns.Mgefl" sortProperty="Mgefl"> 
+            <t:label> 
+               <Label id="fin.co.costcenter.manage.table.mgefl.label" design="Standard" text="{/#CostCenter/Mgefl/@sap:label}" tooltip="Record Quantity"/> 
+            </t:label>  
+            <t:template> 
+              <Text id="fin.co.costcenter.manage.table.mgefl.text" text="{Mgefl}" wrapping="false"/> 
+            </t:template>
+            <t:customData>
+            	<core:CustomData key="p13nData" value="\{&quot;columnKey&quot;: &quot;Mgefl&quot;, &quot;leadingProperty&quot;: &quot;Mgefl&quot;}"/>
+            </t:customData> 
+          </t:Column>
+                 
+          <t:Column id="fin.co.costcenter.manage.COL_USAGE" autoResizable="true" filterProperty="Kvewe" hAlign="Left" width="auto" visible="false" data:persoKey="fin.co.costcenter.manage.view.S1.columns.Kvewe" sortProperty="Kvewe"> 
+            <t:label> 
+               <Label id="fin.co.costcenter.manage.table.kvewe.label" design="Standard" text="{/#CostCenter/Kvewe/@sap:label}" tooltip="Usage"/> 
+            </t:label>  
+            <t:template> 
+              <Text id="fin.co.costcenter.manage.table.kvewe.text" text="{Kvewe}" wrapping="false"/> 
+            </t:template>
+            <t:customData>
+            	<core:CustomData key="p13nData" value="\{&quot;columnKey&quot;: &quot;Kvewe&quot;, &quot;leadingProperty&quot;: &quot;Kvewe&quot;}"/>
+            </t:customData> 
+          </t:Column>
+          
+          <t:Column id="fin.co.costcenter.manage.COL_Costing_Sheet" autoResizable="true" filterProperty="Kalsm" hAlign="Left" width="auto" visible="false" data:persoKey="fin.co.costcenter.manage.view.S1.columns.Kalsm" sortProperty="Kalsm"> 
+            <t:label> 
+               <Label id="fin.co.costcenter.manage.table.kalsm.label" design="Standard" text="{/#CostCenter/Kalsm/@sap:label}" tooltip="Costing Sheet"/> 
+            </t:label>  
+            <t:template> 
+              <Text id="fin.co.costcenter.manage.table.kalsm.text" text="{Kalsm}" wrapping="false"/> 
+            </t:template>
+            <t:customData>
+            	<core:CustomData key="p13nData" value="\{&quot;columnKey&quot;: &quot;Kalsm&quot;, &quot;leadingProperty&quot;: &quot;Kalsm&quot;}"/>
+            </t:customData> 
+          </t:Column>
+          
+          <t:Column id="fin.co.costcenter.manage.COL_Overhead_key" autoResizable="true" filterProperty="Koszschl" hAlign="Left" width="auto" visible="false" data:persoKey="fin.co.costcenter.manage.view.S1.columns.Koszschl" sortProperty="Koszschl"> 
+            <t:label> 
+               <Label id="fin.co.costcenter.manage.table.koszschl.label" design="Standard" text="{/#CostCenter/Koszschl/@sap:label}" tooltip="Overhead Key"/> 
+            </t:label>  
+            <t:template> 
+              <Text id="fin.co.costcenter.manage.table.koszschl.text" text="{Koszschl}" wrapping="false"/> 
+            </t:template>
+            <t:customData>
+            	<core:CustomData key="p13nData" value="\{&quot;columnKey&quot;: &quot;Koszschl&quot;, &quot;leadingProperty&quot;: &quot;Koszschl&quot;}"/>
+            </t:customData>
+          </t:Column>
+          
+          <t:Column id="fin.co.costcenter.manage.COL_Equity_Type" autoResizable="true" filterProperty="Etype" hAlign="Left" width="auto" visible="false" data:persoKey="fin.co.costcenter.manage.view.S1.columns.Etype" sortProperty="Etype"> 
+            <t:label> 
+               <Label id="fin.co.costcenter.manage.table.etype.label" design="Standard" text="{/#CostCenter/Etype/@sap:label}" tooltip="Equity Type"/> 
+            </t:label>  
+            <t:template> 
+              <Text id="fin.co.costcenter.manage.table.etype.text" text="{Etype}" wrapping="false"/> 
+            </t:template>
+            <t:customData>
+            	<core:CustomData key="p13nData" value="\{&quot;columnKey&quot;: &quot;Etype&quot;, &quot;leadingProperty&quot;: &quot;Etype&quot;}"/>
+            </t:customData> 
+          </t:Column>
+          
+          <t:Column id="fin.co.costcenter.manage.COL_COMPLETE" autoResizable="true" filterProperty="Kompl" hAlign="Left" width="auto" visible="false" data:persoKey="fin.co.costcenter.manage.view.S1.columns.Kompl" sortProperty="Kompl"> 
+            <t:label> 
+               <Label id="fin.co.costcenter.manage.table.kompl.label" design="Standard" text="{/#CostCenter/Kompl/@sap:label}" tooltip="Complete"/> 
+            </t:label>  
+            <t:template> 
+              <Text id="fin.co.costcenter.manage.table.kompl.text" text="{Kompl}" wrapping="false"/> 
+            </t:template>
+            <t:customData>
+            	<core:CustomData key="p13nData" value="\{&quot;columnKey&quot;: &quot;Kompl&quot;, &quot;leadingProperty&quot;: &quot;Kompl&quot;}"/>
+            </t:customData> 
+          </t:Column>
+            
+    	</t:columns>
+    	 </t:Table> 
+    	  </st:SmartTable>
+    	 </VBox>  
+		</content>	
+	</Page>
+</core:View>

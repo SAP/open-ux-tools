@@ -7,10 +7,10 @@
  *   - Yes → "persistence" mode is default/recommended
  */
 
-import rule from '../../src/rules/sap-state-preservation-mode';
+import rule from '../../src/rules/sap-state-preservation-mode.js';
 import { RuleTester } from 'eslint';
-import { meta, languages } from '../../src/index';
-import { getManifestAsCode, setup, V2_MANIFEST, V2_MANIFEST_PATH } from '../test-helper';
+import { meta, languages } from '../../src/index.js';
+import { getManifestAsCode, setup, V2_MANIFEST, V2_MANIFEST_PATH } from '../test-helper.js';
 
 const ruleTester = new RuleTester({
     plugins: { ['@sap-ux/eslint-plugin-fiori-tools']: { ...meta, languages } },
@@ -82,7 +82,7 @@ ruleTester.run(TEST_NAME, rule, {
                 output: getManifestAsCode(V2_MANIFEST, []),
                 errors: [
                     {
-                        message: 'Invalid value "invalidMode" for statePreservationMode. "discovery" is recommended.'
+                        message: 'Invalid value `invalidMode` for `statePreservationMode`. `discovery` is recommended.'
                     }
                 ]
             },
@@ -112,7 +112,7 @@ ruleTester.run(TEST_NAME, rule, {
                 errors: [
                     {
                         message:
-                            'Consider using default. For applications using Flexible Column Layout (FCL), default is "persistence" mode.'
+                            'Consider using default. For applications using Flexible Column Layout (FCL), default is `persistence` mode.'
                     }
                 ]
             },
@@ -133,7 +133,7 @@ ruleTester.run(TEST_NAME, rule, {
                 errors: [
                     {
                         message:
-                            'Consider using default. For applications not using Flexible Column Layout, default is "discovery" mode.'
+                            'Consider using default. For applications not using Flexible Column Layout, default is `discovery` mode.'
                     }
                 ]
             },

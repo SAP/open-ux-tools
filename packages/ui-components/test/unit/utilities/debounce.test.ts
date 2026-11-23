@@ -1,4 +1,4 @@
-import { debounce } from '../../../src/utilities';
+import { debounce } from '../../../src/utilities/index.js';
 
 describe('debounce', () => {
     beforeAll(() => {

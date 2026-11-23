@@ -1,42 +1,40 @@
-import { getService } from '@sap-ux/store';
-import type { ToolsLogger } from '@sap-ux/logger';
-import type { BackendSystem } from '@sap-ux/store';
-import { getCredentialsFromStore } from '@sap-ux/system-access';
-import { type Destination, isAppStudio, listDestinations } from '@sap-ux/btp-utils';
+import { jest } from '@jest/globals';
 import type { AbapServiceProvider, LayeredRepositoryService } from '@sap-ux/axios-extension';
 import { AdaptationProjectType } from '@sap-ux/axios-extension';
-
-import {
-    type Endpoint,
-    getEndpointNames,
-    getSupportedProject,
-    SupportedProject,
-    SystemLookup,
-    transformBackendSystem
-} from '../../../src';
+import type { Destination } from '@sap-ux/btp-utils';
+import type { ToolsLogger } from '@sap-ux/logger';
+import type { BackendSystem } from '@sap-ux/store';
 import { type AxiosResponseHeaders, AxiosError } from 'axios';
-import { t } from '../../../src/i18n';
+import type { Endpoint } from '../../../src/index.js';
 
-jest.mock('@sap-ux/system-access', () => ({
-    ...jest.requireActual('@sap-ux/system-access'),
-    getCredentialsFromStore: jest.fn()
+const mockGetService = jest.fn<typeof realStore.getService>();
+const mockIsAppStudio = jest.fn<typeof realBtpUtils.isAppStudio>();
+const mockListDestinations = jest.fn<typeof realBtpUtils.listDestinations>();
+const mockGetCredentialsFromStore = jest.fn<typeof realSystemAccess.getCredentialsFromStore>();
+
+const realSystemAccess = await import('@sap-ux/system-access');
+const realStore = await import('@sap-ux/store');
+const realBtpUtils = await import('@sap-ux/btp-utils');
+
+jest.unstable_mockModule('@sap-ux/system-access', () => ({
+    ...realSystemAccess,
+    getCredentialsFromStore: mockGetCredentialsFromStore
 }));
 
-jest.mock('@sap-ux/btp-utils', () => ({
-    ...jest.requireActual('@sap-ux/btp-utils'),
-    isAppStudio: jest.fn(),
-    listDestinations: jest.fn()
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...realBtpUtils,
+    isAppStudio: mockIsAppStudio,
+    listDestinations: mockListDestinations
 }));
 
-jest.mock('@sap-ux/store', () => ({
-    ...jest.requireActual('@sap-ux/store'),
-    getService: jest.fn()
+jest.unstable_mockModule('@sap-ux/store', () => ({
+    ...realStore,
+    getService: mockGetService
 }));
 
-const getServiceMock = getService as jest.Mock;
-const mockIsAppStudio = isAppStudio as jest.Mock;
-const listDestinationsMock = listDestinations as jest.Mock;
-const getCredentialsFromStoreMock = getCredentialsFromStore as jest.Mock;
+const { getEndpointNames, getSupportedProject, SupportedProject, SystemLookup, transformBackendSystem } =
+    await import('../../../src/index.js');
+const { t } = await import('../../../src/i18n.js');
 
 const logger: ToolsLogger = {
     error: jest.fn(),
@@ -219,19 +217,19 @@ describe('SystemLookup', () => {
     describe('getSystems', () => {
         test('should fetch systems via loadSystems and cache the result in BAS', async () => {
             mockIsAppStudio.mockReturnValue(true);
-            listDestinationsMock.mockResolvedValue(destinations);
+            mockListDestinations.mockResolvedValue(destinations);
             const systemsFirstCall = await sourceSystems.getSystems();
             expect(systemsFirstCall).toEqual(endpoints);
 
             // A second call should return the cached endpoints (checkEndpoints called only once)
             const systemsSecondCall = await sourceSystems.getSystems();
-            expect(listDestinationsMock).toHaveBeenCalledTimes(1);
+            expect(mockListDestinations).toHaveBeenCalledTimes(1);
             expect(systemsSecondCall).toEqual(endpoints);
         });
 
         test('should fetch systems via loadSystems and cache the result in VS Code', async () => {
             mockIsAppStudio.mockReturnValue(false);
-            getServiceMock.mockResolvedValue({
+            mockGetService.mockResolvedValue({
                 getAll: jest.fn().mockResolvedValue(backendSystems)
             });
             const systemsFirstCall = await sourceSystems.getSystems();
@@ -240,7 +238,7 @@ describe('SystemLookup', () => {
 
         test('should filter out systems with undefined names in VS Code', async () => {
             mockIsAppStudio.mockReturnValue(false);
-            getServiceMock.mockResolvedValue({
+            mockGetService.mockResolvedValue({
                 getAll: jest.fn().mockResolvedValue(backendSystems)
             });
 
@@ -254,7 +252,7 @@ describe('SystemLookup', () => {
         test('should throw an error if loadSystems fails', async () => {
             const error = new Error('Fetch failed');
             mockIsAppStudio.mockReturnValue(true);
-            listDestinationsMock.mockRejectedValue(error);
+            mockListDestinations.mockRejectedValue(error);
 
             await expect(sourceSystems.getSystems()).rejects.toThrow('Fetch failed');
 
@@ -265,7 +263,7 @@ describe('SystemLookup', () => {
     describe('getSystemByName', () => {
         beforeEach(() => {
             mockIsAppStudio.mockReturnValue(true);
-            listDestinationsMock.mockResolvedValue(destinations);
+            mockListDestinations.mockResolvedValue(destinations);
         });
 
         test('should return undefined and warn if no matching system is found', async () => {
@@ -278,7 +276,7 @@ describe('SystemLookup', () => {
         });
 
         test('should return system details', async () => {
-            getCredentialsFromStoreMock.mockResolvedValue(null);
+            mockGetCredentialsFromStore.mockResolvedValue(null);
 
             const system = await sourceSystems.getSystemByName('SystemA');
 
@@ -292,150 +290,108 @@ describe('SystemLookup', () => {
         });
     });
 
-    describe('getSystemRequiresAuth', () => {
-        test('should return true if found endpoint has Authentication "NoAuthentication" in BAS', async () => {
-            mockIsAppStudio.mockReturnValue(true);
-            listDestinationsMock.mockResolvedValue(destinations);
-
-            const result = await sourceSystems.getSystemRequiresAuth('SystemB');
-
-            expect(result).toBe(true);
-        });
-
-        test('should return false if found endpoint has different Authentication in BAS', async () => {
-            mockIsAppStudio.mockReturnValue(true);
-            listDestinationsMock.mockResolvedValue(destinations);
-
-            const result = await sourceSystems.getSystemRequiresAuth('SystemA');
-
-            expect(result).toBe(false);
-        });
-
-        test('should return false if system is found with credentials in VS Code', async () => {
-            mockIsAppStudio.mockReturnValue(false);
-            getServiceMock.mockResolvedValue({
-                getAll: jest.fn().mockResolvedValue(backendSystems)
+    describe('isBasicAuthConfigured', () => {
+        describe('in BAS', () => {
+            beforeEach(() => {
+                mockIsAppStudio.mockReturnValue(true);
+                mockListDestinations.mockResolvedValue(destinations);
             });
 
-            const result = await sourceSystems.getSystemRequiresAuth('SYS_010');
+            test('should return true when destination Authentication is BasicAuthentication', async () => {
+                const basicAuthDestinations = {
+                    SystemC: {
+                        Name: 'SystemC',
+                        Host: 'urlC',
+                        Authentication: 'BasicAuthentication',
+                        WebIDEUsage: 'dev_abap'
+                    }
+                } as unknown as { [name: string]: Destination };
+                mockListDestinations.mockResolvedValue(basicAuthDestinations);
 
-            expect(result).toBe(false);
-        });
+                const result = await sourceSystems.isBasicAuthConfigured('SystemC');
 
-        test('should return true if system is not found in VS Code', async () => {
-            mockIsAppStudio.mockReturnValue(false);
-            getServiceMock.mockResolvedValue({
-                getAll: jest.fn().mockResolvedValue(backendSystems)
+                expect(result).toBe(true);
             });
 
-            const result = await sourceSystems.getSystemRequiresAuth('NonExisting');
+            test('should return false when destination Authentication is not BasicAuthentication', async () => {
+                const result = await sourceSystems.isBasicAuthConfigured('SystemA');
 
-            expect(result).toBe(true);
+                expect(result).toBe(false);
+            });
+
+            test('should return false when the system is not found', async () => {
+                const result = await sourceSystems.isBasicAuthConfigured('UnknownSystem');
+
+                expect(result).toBe(false);
+            });
         });
 
-        test('should return true if system is found but credentials are missing in VS Code', async () => {
-            mockIsAppStudio.mockReturnValue(false);
-            const systemWithoutCredentials: BackendSystem = {
+        describe('outside BAS (VSCode)', () => {
+            const onPremSystemWithCreds: BackendSystem = {
                 client: '010',
-                name: 'SYS_NO_CREDS',
-                password: undefined as any,
-                url: 'some-url',
-                userDisplayName: 'some-name',
-                username: undefined as any,
-                connectionType: 'abap_catalog',
-                systemType: 'OnPrem'
-            };
-            getServiceMock.mockResolvedValue({
-                getAll: jest.fn().mockResolvedValue([...backendSystems, systemWithoutCredentials])
-            });
+                name: 'OnPremSys',
+                username: 'user',
+                password: 'pass',
+                url: 'url-onprem',
+                systemType: 'OnPrem',
+                connectionType: 'abap_catalog'
+            } as unknown as BackendSystem;
 
-            const result = await sourceSystems.getSystemRequiresAuth('SYS_NO_CREDS');
+            const onPremSystemNoCreds: BackendSystem = {
+                client: '010',
+                name: 'OnPremNoCreds',
+                username: '',
+                password: '',
+                url: 'url-onprem-nocreds',
+                systemType: 'OnPrem',
+                connectionType: 'abap_catalog'
+            } as unknown as BackendSystem;
 
-            expect(result).toBe(true);
-        });
-
-        test('should return false for AbapCloud system even without credentials in VS Code', async () => {
-            mockIsAppStudio.mockReturnValue(false);
             const cloudSystem: BackendSystem = {
-                client: '100',
-                name: 'CLOUD_SYS',
-                password: undefined as any,
-                url: 'cloud-url',
-                userDisplayName: 'Cloud User',
-                username: undefined as any,
-                connectionType: 'abap_catalog',
-                systemType: 'AbapCloud'
-            };
-            getServiceMock.mockResolvedValue({
-                getAll: jest.fn().mockResolvedValue([cloudSystem])
+                client: '001',
+                name: 'CloudSys',
+                username: 'user',
+                password: 'pass',
+                url: 'url-cloud',
+                systemType: 'SapCloud',
+                connectionType: 'abap_catalog'
+            } as unknown as BackendSystem;
+
+            beforeEach(() => {
+                mockIsAppStudio.mockReturnValue(false);
             });
 
-            const result = await sourceSystems.getSystemRequiresAuth('CLOUD_SYS');
+            test('should return true for AbapOnPrem system with stored credentials', async () => {
+                mockGetService.mockResolvedValue({ getAll: jest.fn().mockResolvedValue([onPremSystemWithCreds]) });
 
-            expect(result).toBe(false);
-        });
+                const result = await sourceSystems.isBasicAuthConfigured('OnPremSys');
 
-        test('should return false for OnPrem system with both username and password', async () => {
-            mockIsAppStudio.mockReturnValue(false);
-            const systemWithCreds: BackendSystem = {
-                client: '010',
-                name: 'FULL_CREDS',
-                password: 'testpass',
-                url: 'full-creds-url',
-                userDisplayName: 'Full Creds User',
-                username: 'testuser',
-                connectionType: 'abap_catalog',
-                systemType: 'OnPrem'
-            };
-            getServiceMock.mockResolvedValue({
-                getAll: jest.fn().mockResolvedValue([systemWithCreds])
+                expect(result).toBe(true);
             });
 
-            const result = await sourceSystems.getSystemRequiresAuth('FULL_CREDS');
+            test('should return false for AbapOnPrem system without stored credentials', async () => {
+                mockGetService.mockResolvedValue({ getAll: jest.fn().mockResolvedValue([onPremSystemNoCreds]) });
 
-            expect(result).toBe(false);
-        });
+                const result = await sourceSystems.isBasicAuthConfigured('OnPremNoCreds');
 
-        test('should return false for system with undefined SystemType but has credentials', async () => {
-            mockIsAppStudio.mockReturnValue(false);
-            const systemUndefinedType: BackendSystem = {
-                client: '010',
-                name: 'UNDEFINED_TYPE',
-                password: 'testpass',
-                url: 'undefined-type-url',
-                userDisplayName: 'Undefined Type User',
-                username: 'testuser',
-                connectionType: 'abap_catalog',
-                systemType: undefined as any
-            };
-            getServiceMock.mockResolvedValue({
-                getAll: jest.fn().mockResolvedValue([systemUndefinedType])
+                expect(result).toBe(false);
             });
 
-            const result = await sourceSystems.getSystemRequiresAuth('UNDEFINED_TYPE');
+            test('should return false for a non-OnPrem system even with credentials', async () => {
+                mockGetService.mockResolvedValue({ getAll: jest.fn().mockResolvedValue([cloudSystem]) });
 
-            expect(result).toBe(false);
-        });
+                const result = await sourceSystems.isBasicAuthConfigured('CloudSys');
 
-        test('should return false for system with non-OnPrem SystemType and missing credentials', async () => {
-            mockIsAppStudio.mockReturnValue(false);
-            const nonOnPremSystem: BackendSystem = {
-                client: '010',
-                name: 'NON_ONPREM',
-                password: undefined as any,
-                url: 'non-onprem-url',
-                userDisplayName: 'Non OnPrem User',
-                username: undefined as any,
-                connectionType: 'abap_catalog',
-                systemType: 'SomeOtherType' as any
-            };
-            getServiceMock.mockResolvedValue({
-                getAll: jest.fn().mockResolvedValue([nonOnPremSystem])
+                expect(result).toBe(false);
             });
 
-            const result = await sourceSystems.getSystemRequiresAuth('NON_ONPREM');
+            test('should return false when the system is not found', async () => {
+                mockGetService.mockResolvedValue({ getAll: jest.fn().mockResolvedValue([onPremSystemWithCreds]) });
 
-            expect(result).toBe(false);
+                const result = await sourceSystems.isBasicAuthConfigured('UnknownSystem');
+
+                expect(result).toBe(false);
+            });
         });
     });
 });

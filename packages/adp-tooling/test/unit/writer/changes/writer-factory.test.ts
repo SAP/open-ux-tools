@@ -1,8 +1,8 @@
 import type { Editor } from 'mem-fs-editor';
 
-import { ChangeType } from '../../../../src';
-import { WriterFactory } from '../../../../src/writer/changes/writer-factory';
-import { AnnotationsWriter } from '../../../../src/writer/changes/writers';
+import { ChangeType } from '../../../../src/index.js';
+import { WriterFactory } from '../../../../src/writer/changes/writer-factory.js';
+import { AnnotationsWriter } from '../../../../src/writer/changes/writers/index.js';
 
 describe('WriterFactory', () => {
     it('should create an AnnotationsWriter for ADD_ANNOTATIONS_TO_ODATA type', () => {

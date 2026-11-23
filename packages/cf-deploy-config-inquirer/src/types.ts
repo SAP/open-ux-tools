@@ -203,4 +203,6 @@ export interface CfSystemChoice {
     scp?: boolean;
     /** URL associated with the system choice. */
     url?: string;
+    /** Flag indicating if the destination is a full URL destination. */
+    isFullUrl?: boolean;
 }

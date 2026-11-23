@@ -1,6 +1,6 @@
-import type { GeneratorEntry } from './types';
-import type { AbapCDSView, BusinessObject, ValidationResponse } from '../../types';
-import { AdtService } from '../services';
+import type { GeneratorEntry } from './types.js';
+import type { AbapCDSView, BusinessObject, ValidationResponse } from '../../types/index.js';
+import { AdtService } from '../services/index.js';
 
 /**
  *

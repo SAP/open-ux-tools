@@ -3,16 +3,18 @@
     "composite": true,
     "declaration": true,
     "declarationMap": true,
+    "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
+    "isolatedModules": true,
     "lib": [
       "ES2023",
       "dom",
       "dom.iterable"
     ],
-    "module": "commonjs",
-    "moduleResolution": "node",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
     "noEmit": false,
     "sourceMap": true,
     "strict": true,
@@ -21,7 +23,8 @@
     "target": "ES2023",
     "skipLibCheck": true,
     "resolveJsonModule": true,
-    "useUnknownInCatchVariables": false
+    "useUnknownInCatchVariables": false,
+    "types": ["node", "jest"]
   },
   "references": [
     {
@@ -125,6 +128,9 @@
     },
     {
       "path": "packages/fiori-mcp-server"
+    },
+    {
+      "path": "packages/fiori-migration-writer"
     },
     {
       "path": "packages/fiori-tools-settings"

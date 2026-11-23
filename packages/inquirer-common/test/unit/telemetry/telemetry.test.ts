@@ -1,5 +1,5 @@
 import { type Destination } from '@sap-ux/btp-utils';
-import { getTelemPropertyDestinationType } from '../../../src/telemetry/telemetry';
+import { getTelemPropertyDestinationType } from '../../../src/telemetry/telemetry.js';
 
 describe('Telemetry', () => {
     test('getTelemPropertyDestinationType', () => {

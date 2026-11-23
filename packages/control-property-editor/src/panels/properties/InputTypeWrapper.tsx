@@ -24,15 +24,15 @@ import {
     STRING_VALUE_TYPE
 } from '@sap-ux-private/control-property-editor-common';
 
-import { IconName } from '../../icons';
-import { ChangeIndicator } from '../../components/ChangeIndicator';
+import { IconName } from '../../icons.js';
+import { ChangeIndicator } from '../../components/ChangeIndicator.js';
 
-import type { CacheValue } from './propertyValuesCache';
-import type { InputTypeToggleOptionProps, InputTypeWrapperProps } from './types';
-import { InputType, isExpression } from './types';
-import { PropertyDocumentation } from './PropertyDocumentation';
-import { defaultFontSize } from './constants';
-import { InputTypeSelector } from './InputTypeSelector';
+import type { CacheValue } from './propertyValuesCache.js';
+import type { InputTypeToggleOptionProps, InputTypeWrapperProps } from './types.js';
+import { InputType, isExpression } from './types.js';
+import { PropertyDocumentation } from './PropertyDocumentation.js';
+import { defaultFontSize } from './constants.js';
+import { InputTypeSelector } from './InputTypeSelector.js';
 import { useTranslation } from 'react-i18next';
 
 export const getDefaultInputType = (editor: string, type: string, value: CacheValue): InputType => {

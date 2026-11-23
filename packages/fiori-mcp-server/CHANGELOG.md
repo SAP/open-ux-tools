@@ -1,6 +1,1268 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.17.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-11-17
+
+#### Features
+
+- add `add-building-block` functionality for Fiori Elements building blocks
+
+    Adds building-block support to `@sap-ux/fiori-mcp-server` as a first-class `add-building-block` functionality in the
+    existing `list_functionality` → `get_functionality_details` → `execute_functionality` registry — not a standalone
+    tool — so there is one consistent way to add functionality to the server. It delegates to `@sap-ux/fe-fpm-writer`'s
+    `generateBuildingBlock()` (the same generator as the SAP Page Editor) to add building blocks (table, chart,
+    filter-bar, field, form, page, rich-text-editor, rich-text-editor-button-groups, custom-column, custom-filter-field,
+    custom-form-field, action) to an FPM view or fragment with correct XML and manifest wiring.
+    Property semantics are sourced from the generated `bb_macro_api.md` via the existing `search_docs` tool rather than
+    duplicated as inline schemas, so the per-type Zod schema stays lean (`zod.looseObject`) and only enforces the fields
+    the LLM must always provide; the per-type map is exhaustiveness-guarded against `BuildingBlockType` so adding a new
+    type upstream without a schema breaks the build. The functionality description carries the real UI5 version
+    constraints (RichTextEditor and RichTextEditorButtonGroups require UI5 >= 1.117.0; Page requires >= 1.136.0 basic /
+
+    > = 1.145.0 full layout) and the universal OData V4 requirement. `get_functionality_details` enriches its response with
+    > the app's actual view/fragment files and their valid aggregation XPaths, so the client never has to read the XML. For
+    > Table, FilterBar and Form on an OData app it auto-writes the required UI annotation shell (`UI.LineItem` /
+    > `UI.SelectionFields` / `UI.FieldGroup`) when it is missing; failure to write the shell is non-fatal and surfaced as a
+    > warning. Client-supplied view/fragment paths are validated to stay inside the app root.
+    > `@sap-ux/fe-fpm-writer` now exports the `BuildingBlock` type, the `getFragmentAndViewFiles` /
+    > `getXPathStringsForXmlFile` discovery helpers, and `MIN_UI5_VERSION_RICH_TEXT_EDITOR`.
+    > `@sap-ux/fiori-docs-embeddings` adds `bb_macro_api.md` (generated from the `@public`-annotated `sap.fe` macro source
+    > by the new `build-bb-macro-docs` script and wired into the embeddings build) so `search_docs` can return building
+    > block property documentation. [[6ecb16c](https://github.com/SAP/open-ux-tools/commit/6ecb16c7f4a2b26742b36f80adc6a8d0e03cb0b4)]
+
+### Patch Changes
+
+#### Features
+
+- Split adp-controller-extension skill into workflow core and reference files (hitl-gating, rta-actions, example-session) add enhancement to knowledge base [[6ecb16c](https://github.com/SAP/open-ux-tools/commit/6ecb16c7f4a2b26742b36f80adc6a8d0e03cb0b4)]
+
+## 1.16.3
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-13
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/fiori-docs-embeddings [[73fdfbf](https://github.com/SAP/open-ux-tools/commit/73fdfbfe2a371d5b9666d2a69b55d1ed977bb69e)]
+
+## 1.16.2
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-11
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/fiori-generator-shared [[75d0823](https://github.com/SAP/open-ux-tools/commit/75d0823084c6499c04fa4c564ea28a76b9e32df4)]
+
+## 1.16.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-10
+
+#### Features
+
+- Add agentName parameter to start step, add cleanup step, remove startVisualization [[c0973dc](https://github.com/SAP/open-ux-tools/commit/c0973dc03a4f7bcd6376cbd50d04bfb45661bf1a)]
+
+## 1.16.0
+
+### Minor Changes
+
+#### Features
+
+- Replace the RTA page-action steps (get_page_actions, call_page_action, press_interactive) with the generic Unified Frontend Actions describe_ui and execute_page_action. These are reached by requiring sap/ui/joule/frontend/util/ActionHelpers directly on the page (like FrontendActionsAPI for the Flex actions), so navigation needs no Joule webclient bridge and no sap-ui-xx-initializeJoule URL flag. [[93a01bf](https://github.com/SAP/open-ux-tools/commit/93a01bf69097d71f49ac69bbd55abb1fbda47836)]
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-09
+
+#### Dependency Updates
+
+- Upgrade MCP/AI stack deps (@langchain/mcp-adapters 1.1.3→2.0.1, @sap-ai-sdk 2.14→2.17, @huggingface/transformers 4.2→4.3.2, zod 4.4.3→4.6.7) [[72ce32f](https://github.com/SAP/open-ux-tools/commit/72ce32fdd5cc4dc6731389940ed87c43015a6f2d)]
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/fiori-generator-shared [[5e9c948](https://github.com/SAP/open-ux-tools/commit/5e9c94868b38d60d0643ea14e60f44f481138a80)]
+
+## 1.15.24
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-04
+
+#### Bug Fixes
+
+- Support Cloud Foundry adaptation projects across the UI automation flow.
+
+    - `read_odata_metadata_adp` detects CF projects and lists their OData data sources from the built manifest (empty EDMX, as CF has no ABAP backend to proxy `$metadata`).
+    - `run_rta_workflow_step` adds a `get_odata_metadata` step that fetches real EDMX through the editor's authenticated session, reuses an authenticated session per project (keyed by `appPath`), waits for interactive login and the editor's `app-loaded` signal before starting RTA, and makes `appPath` a required input for `start`/`restart`/`get_odata_metadata`.
+    - `open_adaptation_editor` detects CF and allows a longer startup for the embedded approuter. [[a9c5247](https://github.com/SAP/open-ux-tools/commit/a9c524741838a50be7c24e1aeef36a55b5cb95b7)]
+
+## 1.15.23
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-03
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/axios-extension [[da67944](https://github.com/SAP/open-ux-tools/commit/da6794455b7a46311c194dbe659fd6cd74344282)]
+
+## 1.15.22
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-02
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/telemetry [[05b1a43](https://github.com/SAP/open-ux-tools/commit/05b1a4300f69662ae1806c79d98369d9b9324b02)]
+
+#### Release Date
+
+2026-11-02
+
+#### Features
+
+- Automate mta.yaml creation for Adaptation Project on CF [[808fc4e](https://github.com/SAP/open-ux-tools/commit/808fc4e872b1e67a27b9a1e045e59856707844f2)]
+
+## 1.15.21
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-01
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/adp-tooling [[8fba055](https://github.com/SAP/open-ux-tools/commit/8fba0553289b4a033674c5181e9da8cad11bbe9d)]
+
+## 1.15.20
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-30
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/axios-extension [[641aebd](https://github.com/SAP/open-ux-tools/commit/641aebd17bd88af4257d45bc89c675eee0d997ac)]
+
+#### Release Date
+
+2026-10-30
+
+#### Dependency Updates
+
+- Upgrade i18next 26.3.6 → 26.5.11 [[d5e9708](https://github.com/SAP/open-ux-tools/commit/d5e9708d60338e575b72fa2dcd64af87120270ef)]
+
+#### Release Date
+
+2026-10-30
+
+#### Dependency Updates
+
+- Patch dependency updates (Oct 2026) — yaml 2.9.1, xpath 0.0.35, @xml-tools/ast 5.0.6, @xml-tools/parser 1.0.12, @sap-ux/annotation-converter 0.10.23, @sap-devx/feature-toggle-node 2.1.1, folder-hash 4.1.4, @fluentui/react 8.125.8 [[85d5e62](https://github.com/SAP/open-ux-tools/commit/85d5e62bcbc4f65601276277d028d340dc098eab)]
+
+## 1.15.19
+
+### Patch Changes
+
+#### Bug Fixes
+
+- [ADP][Auth] Add backend api probe call the generator to relay on when the authentication status is determined. [[b90b0b4](https://github.com/SAP/open-ux-tools/commit/b90b0b4a0e7dd672e06e9805d9421cd707339991)]
+
+## 1.15.18
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Rebuild bundle with updated fast-xml-parser dependencies [[ede63f6](https://github.com/SAP/open-ux-tools/commit/ede63f6d7f5958476bc311b6779a711bfeed12ac)]
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/nodejs-utils [[bdccc10](https://github.com/SAP/open-ux-tools/commit/bdccc104a9d9e74975bae38254cd9108591c7cc0)]
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/axios-extension [[3191804](https://github.com/SAP/open-ux-tools/commit/319180445190fffe5a43289fb5b389d34f6f1a34)]
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/project-access [[03be582](https://github.com/SAP/open-ux-tools/commit/03be5829af8d2736479336106be19b2162e9fa0c)]
+
+## 1.15.17
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-28
+
+#### Features
+
+- Split adp-controller-extension skill into workflow core and reference files (hitl-gating, rta-actions, example-session) add enhancement to knowledge base [[af39811](https://github.com/SAP/open-ux-tools/commit/af39811669fb24d1b52231faff96eb131c337c6f)]
+
+## 1.15.16
+
+### Patch Changes
+
+#### Features
+
+- Enable UShell Sandbox 2.0 for ADP preview on UI5 >= 1.151 [[1977942](https://github.com/SAP/open-ux-tools/commit/1977942e4732c9c90285eaee9f987fa96d545c9b)]
+
+## 1.15.15
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/btp-utils [[155f6f4](https://github.com/SAP/open-ux-tools/commit/155f6f435078bd30912b0a7ac715d69ad8fbbae2)]
+
+#### Dependency Updates
+
+- Rebuild bundle with updated dependencies (dotenv 18) [[c12e096](https://github.com/SAP/open-ux-tools/commit/c12e096b48bd3ebc18afc8bcae5f9825974bb55c)]
+
+## 1.15.14
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-20
+
+#### Bug Fixes
+
+- make ui5Version optional in app generation tools — omitting it lets the MCP server resolve the latest stable UI5 version from ui5.sap.com instead of using a hardcoded value in the MCP schema [[1e9c957](https://github.com/SAP/open-ux-tools/commit/1e9c957b1ee7253c9ec7f6e85f5509dfc9dd501d)]
+
+## 1.15.13
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-16
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/adp-tooling, @sap-ux/axios-extension, @sap-ux/btp-utils, @sap-ux/inquirer-common, @sap-ux/ui5-config, @sap-ux/telemetry, @sap-ux/ui5-info [[192bae1](https://github.com/SAP/open-ux-tools/commit/192bae152640fb51741f16d77402719d0dde0979)]
+
+## 1.15.12
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-14
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/axios-extension [[fbee098](https://github.com/SAP/open-ux-tools/commit/fbee09852355f9c51820ccd4bfbc04553c78b308)]
+
+#### Bug Fixes
+
+- Resolve npm audit vulnerabilities — adm-zip 0.6.1, sanitize-html 2.17.7, @xmldom/xmldom 0.9.12, @sap/approuter 23.0.0, qs 6.16.0; add pnpm-workspace.yaml overrides for browserslist, hono, js-yaml, smol-toml, sharp, stream-json, csv-parse, pacote, and others; upgrade @modelcontextprotocol/sdk to 1.32.1 (GHSA-6qxp-vccf-f47h) [[33b98a5](https://github.com/SAP/open-ux-tools/commit/33b98a54ec2f1e2d937cdcd068017c76cc230080)]
+
+## 1.15.11
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-14
+
+#### Features
+
+- Adds a new create-skill-sap-fiori-tools agent skill for authoring, reviewing, and refactoring SAP Fiori tools skills [[9e2493c](https://github.com/SAP/open-ux-tools/commit/9e2493c5306eb41ec6452a4180fffb4e4e7df7f6)]
+
+## 1.15.10
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-13
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/fiori-annotation-api [[c22d46a](https://github.com/SAP/open-ux-tools/commit/c22d46a0f58a03ae21947c6d3e66261ce8e07dc5)]
+
+## 1.15.9
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-10
+
+#### Bug Fixes
+
+- Update default UI5 version for application generation [[66fc1e1](https://github.com/SAP/open-ux-tools/commit/66fc1e159b926fb2c4b1b331fa4fa9b1c2592e12)]
+
+## 1.15.8
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-08
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/project-access [[c48a802](https://github.com/SAP/open-ux-tools/commit/c48a8025a353b00e8851bd5df6aa1ef6f1643fe3)]
+
+## 1.15.7
+
+### Patch Changes
+
+#### Bug Fixes
+
+- [CF] Bundle @sap-ux/backend-proxy-middleware-cf and @sap-ux/create in @sap/ux-ui5-tooling.- #5241 [[9235c77](https://github.com/SAP/open-ux-tools/commit/9235c77eea1977bbc11ca54b6fd0f2e229f1920a)]
+
+## 1.15.6
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-07
+
+#### Features
+
+- Enable GitHub Copilot marketplace distribution and extract plugin assets to plugins-coding-agents/fiori [[0833831](https://github.com/SAP/open-ux-tools/commit/08338312549d3f67936cd5cc290ce56ca983fa51)]
+
+## 1.15.5
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-07
+
+#### Features
+
+- Let generate_adaptation_project select the adaptation project type instead of always producing CloudReady. When the system and application support both CloudReady and Classic (on-premise) projects, the tool now returns status 'InputRequired' so the user can be asked which type to generate; single-type systems resolve automatically and an unsupportable requested projectType is rejected with an Error. [[27d4b12](https://github.com/SAP/open-ux-tools/commit/27d4b12ea136f8a2e07a8c50567d94f3399274ba)]
+
+## 1.15.4
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-06
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/i18n [[4d2a60a](https://github.com/SAP/open-ux-tools/commit/4d2a60a7e0f1dadb6557e2671c64d3f476569a00)]
+
+## 1.15.3
+
+### Patch Changes
+
+#### Bug Fixes
+
+- Replace opa5_docu.md and fiori-tools-opa-guide.md with OPA5 skill reference files as embeddings source [[3c76112](https://github.com/SAP/open-ux-tools/commit/3c7611299ff6b7b8f610285e2846430fffd859dd)]
+
+## 1.15.2
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-05
+
+#### Bug Fixes
+
+- generate_adaptation_project now imports key user changes again. The @sap-ux/generator-adp generator reads key user changes from a temp file keyed by the correlation `id` (`{os.tmpdir()}/{id}.txt`) rather than from the CLI JSON payload (since generator-adp #5079), but the MCP tool still passed them inline, so they were silently dropped. The tool now stages the fetched changes into that temp file, hands over the matching `id`, and cleans the file up afterwards. [[7309efa](https://github.com/SAP/open-ux-tools/commit/7309efa1a3895119cf5f8a7e3faa37aeab59d915)]
+
+## 1.15.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-05
+
+#### Bug Fixes
+
+- update skills to reuse testing fiori app instruction from sap-fiori-app-development skill [[2407541](https://github.com/SAP/open-ux-tools/commit/240754101316160892d1701a578221d197fe3a5d)]
+
+## 1.15.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-10-01
+
+#### Features
+
+- add MCP tools for adaptation project development, covering project generation, controller extension authoring, RTA workflow automation, and UI5 control documentation lookup [[27db0e7](https://github.com/SAP/open-ux-tools/commit/27db0e7339b8099513da5a42ad7fe8761d59302c)]
+
+## 1.14.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-09-24
+
+#### Features
+
+- Add enableTypeScript (default false), namespace, and viewName to generate_fiori_app_odata project input — generation-only properties that cannot be corrected after scaffolding [[2bdadd6](https://github.com/SAP/open-ux-tools/commit/2bdadd61025d3b0c53888c652f07974d2b5dcfae)]
+
+## 1.13.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-09-22
+
+#### Features
+
+- Expose navigationEntity in entityConfig so AI agents can generate sub-object page navigation [[5adaccb](https://github.com/SAP/open-ux-tools/commit/5adaccb465eb5de57ca8c00bdc6bdbc6137f7de0)]
+
+## 1.12.13
+
+### Patch Changes
+
+#### Features
+
+- Emit LICENSES.txt alongside each esbuild bundle listing all bundled node_modules packages; enable legalComments: 'linked' to preserve copyright comments; upgrade esbuild 0.27.4/0.28.1 → 0.28.2 [[9c6ecd9](https://github.com/SAP/open-ux-tools/commit/9c6ecd9adae607b3ec72f098bfad6fabe256efe6)]
+
+## 1.12.12
+
+### Patch Changes
+
+#### Bug Fixes
+
+- @sap-ux/cds-odata-annotation-converter is being released, and versions of packages that bundles it using esbuild also need to be patched. [[1466bf7](https://github.com/SAP/open-ux-tools/commit/1466bf721e0abc05a513d4389d7ffea6c43b9ce5)]
+
+## 1.12.11
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-22
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/store [[77ac0e2](https://github.com/SAP/open-ux-tools/commit/77ac0e2629ef9e95e72723c5a7a31c28aa2a1405)]
+
+## 1.12.10
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-21
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/telemetry [[b296735](https://github.com/SAP/open-ux-tools/commit/b2967355d5bfe3615f9d6f15784ec4f574a96eb9)]
+
+## 1.12.9
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-21
+
+#### Bug Fixes
+
+- Guard against pre-existing app subfolder in generate tools — return a clear error instead of silently deleting the folder via --force [[ea11bba](https://github.com/SAP/open-ux-tools/commit/ea11bbaf2f89cab14bb39a22e8dd37f7e395e85e)]
+
+## 1.12.8
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-19
+
+#### Bug Fixes
+
+- Correct frontmatter formatting in tree table skill [[863465a](https://github.com/SAP/open-ux-tools/commit/863465a4420c6435c2b8f206f631f2b5fd089d41)]
+
+## 1.12.7
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-18
+
+#### Bug Fixes
+
+- Improve ABAP RAP implementation guidance for analytical chart setup [[1c7ab55](https://github.com/SAP/open-ux-tools/commit/1c7ab55f7754a3f9aab1936760c45a64d1e51e49)]
+
+## 1.12.6
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-16
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/axios-extension [[dfd321e](https://github.com/SAP/open-ux-tools/commit/dfd321ea484bdaffef0aa18cb5a48d1fc7045687)]
+
+## 1.12.5
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-11
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/project-access [[bac78ad](https://github.com/SAP/open-ux-tools/commit/bac78ad9eae1b359c644c403bc7ac6d2e00716f1)]
+
+## 1.12.4
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-10
+
+#### Bug Fixes
+
+- propagate authenticationType from BackendSystem into the generator config written to disk [[41e9341](https://github.com/SAP/open-ux-tools/commit/41e934192805ce9fc954bc34b42f9085b3ea2b36)]
+
+#### Bug Fixes
+
+- Redirect AI agent to search_docs when updating service metadata in an existing Fiori app instead of incorrectly using download_odata_service_metadata [[59a74a5](https://github.com/SAP/open-ux-tools/commit/59a74a524ee68a226eb67fe88500809208711cc3)]
+
+## 1.12.3
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-08
+
+#### Bug Fixes
+
+- update manifest config sample for analytical chart skill [[3af2405](https://github.com/SAP/open-ux-tools/commit/3af24052f4654091e1fa535cf336d1f0e6fba3d2)]
+
+## 1.12.2
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-02
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/nodejs-utils [[30c8bbf](https://github.com/SAP/open-ux-tools/commit/30c8bbf4a155d45d6b7440e76171c24bd8b3a778)]
+
+## 1.12.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-02
+
+#### Bug Fixes
+
+- `download_odata_service_metadata` returns a structured error when `appPath` does not exist, and clarifies the pre-condition in the parameter description so LLMs know to create the directory first [[5dd1cfd](https://github.com/SAP/open-ux-tools/commit/5dd1cfd1a81eee693313445bf8ddf264b54a857c)]
+
+## 1.12.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-08-28
+
+#### Features
+
+- add skill to configure tree table in list report application [[cc08f10](https://github.com/SAP/open-ux-tools/commit/cc08f10bb839e101da923600834fefdf6dea071f)]
+
+## 1.11.18
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/telemetry [[a984fe5](https://github.com/SAP/open-ux-tools/commit/a984fe55497ad691ead632b25fcd7fd937cf3f30)]
+
+## 1.11.17
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-27
+
+#### Bug Fixes
+
+- Improve sap-fiori-opa5-test-development skill - consolidate scaffold sections, update generated test structure tree and custom file placement guidance [[9274d74](https://github.com/SAP/open-ux-tools/commit/9274d74f93bf428c4a42fc3eff4631e03dc4f806)]
+
+## 1.11.16
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-26
+
+#### Dependency Updates
+
+- Upgrade @langchain/core 1.1.49→1.2.8, @sap-ai-sdk/foundation-models and @sap-ai-sdk/langchain 2.9.0→2.14.0, @modelcontextprotocol/sdk 1.29.0→1.30.0, zod 4.3.6→4.4.3, promptfoo 0.121.19→0.122.0 [[ce2c618](https://github.com/SAP/open-ux-tools/commit/ce2c61870d487ca1757d1fe35d38386a6606c4bb)]
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/store [[3af3daf](https://github.com/SAP/open-ux-tools/commit/3af3dafef0833d88bc2cf77de1ad1a4d69f8fa36)]
+
+#### Release Date
+
+2026-08-26
+
+#### Dependency Updates
+
+- `@sap-ux/fiori-annotation-api` dependency update. [[cf28a5b](https://github.com/SAP/open-ux-tools/commit/cf28a5b0dc7f274240a2cbba2855607eb6c9e9ba)]
+
+## 1.11.15
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-25
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/ui5-config [[4f93997](https://github.com/SAP/open-ux-tools/commit/4f9399792acd60f967908570fc8621ee4f8e62bb)]
+
+## 1.11.14
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-25
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/project-access [[ed4f7bc](https://github.com/SAP/open-ux-tools/commit/ed4f7bc7b4d118d43280295e50e4f0c077ef0afb)]
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/text-document-utils and @sap-ux/ui5-config [[39f2e27](https://github.com/SAP/open-ux-tools/commit/39f2e27259354ce14e6de9d800fa4ecd487db596)]
+
+## 1.11.13
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-20
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/telemetry [[f6d65ac](https://github.com/SAP/open-ux-tools/commit/f6d65acceb9c3477b471cd76b93a900c39f3cf2b)]
+
+## 1.11.12
+
+### Patch Changes
+
+#### Dependency Updates
+
+- update dependencies [open-ux-odata] [[c0a9e6b](https://github.com/SAP/open-ux-tools/commit/c0a9e6b6f81bf1e24a2712e25dde08d72bd12604)]
+
+## 1.11.11
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-19
+
+#### Dependency Updates
+
+- Regenerate create CLI skill index to include the `generate opa5-tests` command [[750be80](https://github.com/SAP/open-ux-tools/commit/750be8036bb340d4d50acefad59209f9ae3a573c)]
+
+## 1.11.10
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-19
+
+#### Bug Fixes
+
+- Report accurate metadata fetch/parse errors instead of misleading "not a valid OData V4 service". A temporarily unavailable system (e.g. an HTML error page returned with a 2xx status) is now reported as a fetch/availability problem, and parse failures are described in an OData-version-neutral way rather than wrongly blaming an OData V2 service for not being V4. [[fae338f](https://github.com/SAP/open-ux-tools/commit/fae338fbbb3902105e41aaabf2651b9c2757b0a6)]
+
+## 1.11.9
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-11
+
+#### Bug Fixes
+
+- Fetch backend service annotations so generated v2 OData apps include the remote annotation dataSource. [[fdd1864](https://github.com/SAP/open-ux-tools/commit/fdd1864adf6cf67aa72888ab124f1a06c319584e)]
+
+## 1.11.8
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-10
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/fiori-docs-embeddings [[a5c33b0](https://github.com/SAP/open-ux-tools/commit/a5c33b05411d86208f77ed3be91c2c1e14991c14)]
+
+## 1.11.7
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-06
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/odata-vocabularies [[9b18470](https://github.com/SAP/open-ux-tools/commit/9b18470f0622a0da95b1cf17bd8bb57c6332ccbc)]
+
+## 1.11.6
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-05
+
+#### Bug Fixes
+
+- Add timeout to resolveApplication() to prevent indefinite hangs on invalid or unreachable paths [[b63d35f](https://github.com/SAP/open-ux-tools/commit/b63d35f3897c64fb58a2696de6f226daffceeb9f)]
+
+#### Release Date
+
+2026-08-05
+
+#### Bug Fixes
+
+- adjust preview middleware type [[b6d893c](https://github.com/SAP/open-ux-tools/commit/b6d893c039c74a8668a2f7635e517157d15dcd5b)]
+
+## 1.11.5
+
+### Patch Changes
+
+#### Dependency Updates
+
+- `@sap-ux/fiori-annotation-api` dependency update. [[bd968d9](https://github.com/SAP/open-ux-tools/commit/bd968d923ea8815b8495ec7319f92da9d587bc45)]
+
+## 1.11.4
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-31
+
+#### Bug Fixes
+
+- Improve sap-fiori-opa5-test-development skill with V4 pattern additions and API access guide [[246b33d](https://github.com/SAP/open-ux-tools/commit/246b33d5682dbe590e9a0c53914137aee14ed691)]
+
+## 1.11.3
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-29
+
+#### Bug Fixes
+
+- add input validation and consistent error throwing to list_functionality and execute_functionality tools [[76e8011](https://github.com/SAP/open-ux-tools/commit/76e80113baa6ada117cf6efdc0698c82d559128c)]
+
+## 1.11.2
+
+### Patch Changes
+
+#### Features
+
+- Add interactive prompting and connection checking for system management commands
+
+    - Added interactive prompts for `add system`, `update system`, and `remove system` commands when flags are not provided
+    - Added connection verification for `add system` and `update system` before saving (with `--skip-check` flag to bypass)
+    - Added confirmation prompt for `remove system` (with `--force` flag to bypass)
+    - All commands now support both flag-based and fully interactive modes
+    - Use centralized `isSystemNameInUse` from @sap-ux/store for global system name uniqueness validation
+      BUMP: Rebuild bundle with updated @sap-ux/store [[85fde11](https://github.com/SAP/open-ux-tools/commit/85fde118d01675c9b5d68e612e7bb5ef46aacf91)]
+
+#### Release Date
+
+2026-07-27
+
+#### Bug Fixes
+
+- substantiate opa5 dev skill patterns [[de08dd1](https://github.com/SAP/open-ux-tools/commit/de08dd1ce292f7560a3d2693fe85f296d5d74b83)]
+
+## 1.11.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-24
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/axios-extension, @sap-ux/btp-utils, @sap-ux/nodejs-utils, @sap-ux/project-access, @sap-ux/telemetry, @sap-ux/ui5-config [[d0369f5](https://github.com/SAP/open-ux-tools/commit/d0369f5d61e5790453d39cb3119112b80d5cd006)]
+
+## 1.11.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-07-23
+
+#### Features
+
+- Add external service metadata fetching (value help and code lists) to OData app generation [[d1f129b](https://github.com/SAP/open-ux-tools/commit/d1f129b98564bef9f42c51e0bad04381c025631b)]
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade i18next 25.10.10 → 26.3.6 [[28263d1](https://github.com/SAP/open-ux-tools/commit/28263d1cdcbb8599ee7b165c3482255b631604b8)]
+
+## 1.10.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-23
+
+#### Bug Fixes
+
+- adjust opa5 test development skill initial workflow [[eb0d618](https://github.com/SAP/open-ux-tools/commit/eb0d618bf0cc168efec98465964d6e01fc74f512)]
+
+## 1.10.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-07-23
+
+#### Features
+
+- add support for odata v2 to opa test development skill [[b45d339](https://github.com/SAP/open-ux-tools/commit/b45d339815670265f2c6013d98f636924514a24a)]
+
+## 1.9.4
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Rebuild with updated @sap-ux/project-access [[0249ff6](https://github.com/SAP/open-ux-tools/commit/0249ff67bdc2103aada7fb0d2d55f37c40d13339)]
+
+## 1.9.3
+
+### Patch Changes
+
+#### Bug Fixes
+
+- vocabulary loader - support vocabulary [[b7f0c85](https://github.com/SAP/open-ux-tools/commit/b7f0c851a97e31f76398c6f8131d55e3c9f07c7a)]
+
+## 1.9.2
+
+### Patch Changes
+
+#### Dependency Updates
+
+- `@sap-ux/project-access` dependency Update [[a94300d](https://github.com/SAP/open-ux-tools/commit/a94300db617727229f9e1c1fc7c878350e47deba)]
+
+## 1.9.1
+
+### Patch Changes
+
+#### Features
+
+- Add sap.fe.test JSDoc API as a new embedded data source [[d54fc9a](https://github.com/SAP/open-ux-tools/commit/d54fc9a6937632e19e5b50dbf79ba50f279b3a39)]
+
+## 1.9.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-07-08
+
+#### Features
+
+- add skill for opa5 test development for fiori apps [[f189d25](https://github.com/SAP/open-ux-tools/commit/f189d253808541f2f58fa950e28b7e14679c80a5)]
+
+## 1.8.9
+
+### Patch Changes
+
+#### Dependency Updates
+
+- align vscode and types with fiori tools extensions [[369c494](https://github.com/SAP/open-ux-tools/commit/369c49497073e99fda01bad7dfda1840e68c029a)]
+
+## 1.8.8
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-06
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/cds-odata-annotation-converter [[5b2a7f2](https://github.com/SAP/open-ux-tools/commit/5b2a7f2fce7f0faa43e2ab083ec25b80ea204503)]
+
+## 1.8.7
+
+### Patch Changes
+
+#### Features
+
+- Officially publish CF workflow in the ADP generator. [[58e9645](https://github.com/SAP/open-ux-tools/commit/58e9645465b48c7832d9da548df3d609c5c0d590)]
+
+## 1.8.6
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-03
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/axios-extension, @sap-ux/btp-utils, @sap-ux/odata-vocabularies, @sap-ux/ui5-config, @sap-ux/telemetry [[526d59b](https://github.com/SAP/open-ux-tools/commit/526d59b558a653635ab44ab10dbfedccb3c0dc43)]
+
+## 1.8.5
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Bulk upgrade of minor dependencies and devDependencies [[5ce779c](https://github.com/SAP/open-ux-tools/commit/5ce779c43ae81d9a4ed85414bfb6f0ca8f882afc)]
+
+## 1.8.4
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-03
+
+#### Bug Fixes
+
+- Adds service lookup. Improve MCP server instructions and schema descriptions to prevent AI clients from constructing invalid parameters. Enhanced tool descriptions with explicit DO/DON'T guidance, removed misleading examples that were being treated as templates, added catalog error reporting in service lookup failures, and strengthened server-level instructions with visual markers and consequence warnings. [[13f8400](https://github.com/SAP/open-ux-tools/commit/13f8400cea408fc68db50077a66aa52fc118c086)]
+
+## 1.8.3
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-01
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/telemetry [[f25db35](https://github.com/SAP/open-ux-tools/commit/f25db35917824f4c91e6f688f6566ffd5298c4f1)]
+
+## 1.8.2
+
+### Patch Changes
+
+#### Bug Fixes
+
+- Trigger @sap-ux/fiori-mcp-server release [[17354e0](https://github.com/SAP/open-ux-tools/commit/17354e08c50f44f031ad2bedcbcb6ce01acd96ba)]
+
+## 1.8.1
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade patch-level dependencies [[aed328d](https://github.com/SAP/open-ux-tools/commit/aed328da8a5c93e226c58e4d7dc14c7c82756259)]
+
+## 1.8.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-06-25
+
+#### Features
+
+- add ESLint agent skills for Fiori projects (setup, migrate, lint) [[045738d](https://github.com/SAP/open-ux-tools/commit/045738db600206b7a6bf1e28fdf6d344ea6485ca)]
+
+## 1.7.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-24
+
+#### Bug Fixes
+
+- rename skill name to sap-fiori-app-development [[88f17e9](https://github.com/SAP/open-ux-tools/commit/88f17e9a249caffcd2334a5fd6ac360dc8ab3c57)]
+
+## 1.7.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-06-24
+
+#### Features
+
+- add skill for usage of @sap-ux/create cli [[2733268](https://github.com/SAP/open-ux-tools/commit/2733268fc635cdef7bded697ecafc5237a59e6b7)]
+
+## 1.6.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-06-24
+
+#### Features
+
+- add new skill for fiori elements development [[b021644](https://github.com/SAP/open-ux-tools/commit/b021644a977c70bc4ed5c548e0121ce65975feed)]
+
+## 1.5.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-23
+
+#### Bug Fixes
+
+- Update visual and analytical chart creation with RAP scenario [[46d6081](https://github.com/SAP/open-ux-tools/commit/46d6081f7b6956bc9406c880ea22d6b90ae65262)]
+
+## 1.5.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-06-22
+
+#### Features
+
+- promote static functionalities to top-level MCP tools
+
+    Promotes generate-fiori-ui-application, generate-fiori-ui-application-cap, fetch-service-metadata, and list-sap-systems to dedicated top-level MCP tools, removing them from the 3-step list/get_details/execute workflow. Reduces round-trips for generation workflows from 3 calls to 1. list_sap_systems and download_odata_service_metadata are environment-aware: on SAP Business Application Studio they use BTP destinations, on VSCode they use the Fiori tools system store. download_odata_service_metadata returns a destination field on BAS which must be passed into the generator service config. Errors from fetch-service-metadata return a structured response instead of propagating as unhandled exceptions. Entity names in generator config are normalised by stripping wrapping single quotes. Generator wrappers use Zod-inferred types instead of Record<string, unknown>. [[fdc185d](https://github.com/SAP/open-ux-tools/commit/fdc185d3db4046847d3d660354f1b371eff88c19)]
+
+## 1.4.1
+
+_Released: 2026-06-16T21:19:36Z_
+
+### Patch Changes
+
+#### Bug Fixes
+
+- OPA5 embeddings chunk formatting [[70f934e](https://github.com/SAP/open-ux-tools/commit/70f934e20e2e91aabccc02fc6e3d8f25940edc95)]
+
+## 1.4.0
+
+_Released: 2026-06-12T13:04:20Z_
+
+### Minor Changes
+
+- a7ed101: Add opa5_docu.md to doc_search
+
+## 1.3.0
+
+_Released: 2026-06-11T19:07:40Z_
+
+### Minor Changes
+
+- c1d3564: FEAT: Add skill for analytical chart
+
+## 1.2.0
+
+_Released: 2026-06-11T16:48:19Z_
+
+### Minor Changes
+
+- 14c8584: FEAT: update visual filter skill with ABAP RAP support.
+
+## 1.1.4
+
+_Released: 2026-06-10T16:48:39Z_
+
+### Patch Changes
+
+- 2dffcb0: FIX: Apply TLS patch, fix Zowe keyring loading, format metadata XML, pass real HOME to MCP server,
+    - Apply `TlsPatch` in `fetch-service-metadata` before constructing `AbapServiceProvider` (was bypassed by instantiating directly instead of via `createForAbap`)
+    - Bundle `@zowe/secrets-for-zowe-sdk` native keyring via an inline shim that loads the platform `.node` binary directly from `dist/prebuilds/`, fixing credential lookup when running from a tgz install
+    - Use `SAP_TOOLS_DIR || getSapToolsDirectory()` to locate `~/.saptools` independently of `HOME`, so stored SAP systems are found even when the test harness overrides `HOME`
+    - Format fetched EDMX metadata with `xml-formatter` (4-space indent) before writing `metadata.xml`
+    - Surface the original XML parse error message when EDMX validation fails
+    - search_docs fails in BAS/Docker with "Unsupported device: cpu"
+
+## 1.1.3
+
+_Released: 2026-06-08T12:39:24Z_
+
+### Patch Changes
+
+- 74a3c3f: Switch to onnxruntime-web (WASM) to eliminate native binaries and reduce tgz to ~9 MB
+
+## 1.1.2
+
+_Released: 2026-06-05T20:41:12Z_
+
+### Patch Changes
+
+- 5a70fbf: Download ONNX model at runtime to reduce tgz below npm publish 100 MB limit
+
+## 1.1.1
+
+_Released: 2026-06-05T16:17:23Z_
+
+### Patch Changes
+
+- 889a217: Download ONNX model at runtime to reduce tgz below npm publish 100 MB limit
+
+## 1.1.0
+
+_Released: 2026-06-05T11:08:04Z_
+
+### Minor Changes
+
+- 9f33150: Build self-contained dist/ bundle (ONNX model, onnxruntime, embeddings data included);
+  Replace @xenova/transformers with @huggingface/transformers 4.2.0;
+
+## 1.0.3
+
+_Released: 2026-06-03T14:58:37Z_
+
+### Patch Changes
+
+- 21a3de7: FIX: TypeScript type errors in test files (ESM migration follow-up)
+- Updated dependencies [21a3de7]
+    - @sap-ux/fiori-docs-embeddings@1.0.1
+    - @sap-ux/store@2.0.1
+
+## 1.0.2
+
+_Released: 2026-06-01T17:22:37Z_
+
+### Patch Changes
+
+- 0268c25: Replace negated typeof checks to avoid SonarQube findings
+    - @sap-ux/fiori-docs-embeddings@1.0.0
+
+## 1.0.1
+
+_Released: 2026-05-31T21:32:23Z_
+
+### Patch Changes
+
+- 35962a9: fix: bundle odata-annotation-core, odata-annotation-core-types and text-document-utils instead of marking them as external
+
+    These packages have no bundling obstacles and should be inlined into the dist rather than left as unresolved external imports that cause `ERR_MODULE_NOT_FOUND` when the server is run via npx.
+
+## 1.0.0
+
+_Released: 2026-05-30T20:54:07Z_
+
+### Major Changes
+
+- 32609a7: # Migration to ECMAScript Modules (ESM)
+
+    Packages in the SAP Open UX Tools monorepo have been migrated from CommonJS (CJS) to ECMAScript Modules (ESM) with NodeNext module resolution.
+
+    '@sap-ux/backend-proxy-middleware-cf' is experimental and will remain at major version 0.
+    '@sap-ux/generator-odata-downloader' is a top level yeoman generator and will remain as CJS until validation as ESM is done.
+
+    ## What Changed
+    - **Module System**: Most packages now use native ESM (`"type": "module"` in package.json)
+    - **TypeScript Configuration**: Updated to `module: "NodeNext"` and `moduleResolution: "NodeNext"`
+    - **Import Statements**: All relative imports now include explicit `.js` extensions (per ESM spec)
+    - **Build Output**: Generated JavaScript files are now ESM modules
+    - **Node.js Requirement**: Minimum Node.js version remains >=22.x
+
+    ### Jest Configuration (for Testing)
+
+    If your project tests code that imports these packages, update your Jest configuration:
+
+    ```js
+    export default {
+        extensionsToTreatAsEsm: ['.ts'],
+        transform: {
+            '^.+\\.ts$': ['ts-jest', { useESM: true }]
+        }
+    };
+    ```
+
+    And run Jest with: `NODE_OPTIONS='--experimental-vm-modules' jest`
+
+### Patch Changes
+
+- Updated dependencies [32609a7]
+    - @sap-ux/fiori-docs-embeddings@1.0.0
+    - @sap-ux/store@2.0.0
+
+## 0.7.2
+
+_Released: 2026-05-27T10:42:47Z_
+
+### Patch Changes
+
+- Updated dependencies [c12420a]
+    - @sap-ux/store@1.6.1
+    - @sap-ux/fiori-docs-embeddings@0.5.1
+
 ## 0.7.1
+
+_Released: 2026-05-21T05:46:16Z_
 
 ### Patch Changes
 
@@ -8,6 +1270,8 @@
     - @sap-ux/fiori-docs-embeddings@0.5.1
 
 ## 0.7.0
+
+_Released: 2026-05-15T08:12:20Z_
 
 ### Minor Changes
 
@@ -21,6 +1285,8 @@
 
 ## 0.6.60
 
+_Released: 2026-05-14T12:51:22Z_
+
 ### Patch Changes
 
 - 59537d3: chore: override sharp to >=0.33.5 to fix CI build on darwin-arm64
@@ -28,6 +1294,8 @@
     - @sap-ux/fiori-docs-embeddings@0.4.20
 
 ## 0.6.59
+
+_Released: 2026-05-14T11:45:51Z_
 
 ### Patch Changes
 
@@ -38,17 +1306,23 @@
 
 ## 0.6.58
 
+_Released: 2026-05-13T17:45:03Z_
+
 ### Patch Changes
 
 - 4101c21: fix: connect stdio transport before telemetry init to fix Claude Desktop extension disconnect
 
 ## 0.6.57
 
+_Released: 2026-05-12T23:31:37Z_
+
 ### Patch Changes
 
 - c4bd625: Improve documentation Claude code, etc...
 
 ## 0.6.56
+
+_Released: 2026-05-11T09:58:34Z_
 
 ### Patch Changes
 
@@ -57,17 +1331,23 @@
 
 ## 0.6.55
 
+_Released: 2026-05-07T13:23:43Z_
+
 ### Patch Changes
 
 - 2781f39: fix: add missing apache-arrow runtime dependency required by @lancedb/lancedb
 
 ## 0.6.54
 
+_Released: 2026-05-07T11:24:28Z_
+
 ### Patch Changes
 
 - 35f4b68: chore: update plugin.json manifest name to sap-fiori-mcp-server and fix author metadata
 
 ## 0.6.53
+
+_Released: 2026-05-04T15:49:13Z_
 
 ### Patch Changes
 
@@ -76,11 +1356,15 @@
 
 ## 0.6.52
 
+_Released: 2026-04-28T09:04:02Z_
+
 ### Patch Changes
 
 - cf59d8e: feat: add Claude Code plugin support
 
 ## 0.6.51
+
+_Released: 2026-04-23T10:18:53Z_
 
 ### Patch Changes
 
@@ -88,17 +1372,23 @@
 
 ## 0.6.50
 
+_Released: 2026-04-23T09:36:26Z_
+
 ### Patch Changes
 
 - c88661f: fix(deps): update dependency @langchain/core to v1.1.40
 
 ## 0.6.49
 
+_Released: 2026-04-14T09:46:36Z_
+
 ### Patch Changes
 
 - 7746b58: feat: add MCP registry manifest for registry.modelcontextprotocol.io
 
 ## 0.6.48
+
+_Released: 2026-04-08T13:10:18Z_
 
 ### Patch Changes
 
@@ -107,6 +1397,8 @@
     - @sap-ux/store@1.5.13
 
 ## 0.6.47
+
+_Released: 2026-03-30T22:24:11Z_
 
 ### Patch Changes
 
@@ -117,6 +1409,8 @@
 
 ## 0.6.46
 
+_Released: 2026-03-26T12:07:04Z_
+
 ### Patch Changes
 
 - Updated dependencies [a41533f]
@@ -125,11 +1419,15 @@
 
 ## 0.6.45
 
+_Released: 2026-03-23T14:11:51Z_
+
 ### Patch Changes
 
 - 55d833f: fix i18next init showSupportNotice: false.
 
 ## 0.6.44
+
+_Released: 2026-03-17T01:04:22Z_
 
 ### Patch Changes
 
@@ -140,11 +1438,15 @@
 
 ## 0.6.43
 
+_Released: 2026-03-16T23:16:05Z_
+
 ### Patch Changes
 
 - 1b7094e: fix(deps): update dependency @sap/ux-specification to v1.144.0
 
 ## 0.6.42
+
+_Released: 2026-03-13T09:41:40Z_
 
 ### Patch Changes
 
@@ -152,12 +1454,16 @@
 
 ## 0.6.41
 
+_Released: 2026-03-05T12:30:25Z_
+
 ### Patch Changes
 
 - 7c06ef0: fix(deps): update dependencies [open-ux-odata]
     - @sap-ux/fiori-docs-embeddings@0.4.16
 
 ## 0.6.40
+
+_Released: 2026-03-04T22:42:20Z_
 
 ### Patch Changes
 
@@ -167,11 +1473,15 @@
 
 ## 0.6.39
 
+_Released: 2026-03-04T19:53:52Z_
+
 ### Patch Changes
 
 - afd2fa2: feat: add icon and title to mcp server
 
 ## 0.6.38
+
+_Released: 2026-03-04T15:52:08Z_
 
 ### Patch Changes
 
@@ -181,6 +1491,8 @@
 
 ## 0.6.37
 
+_Released: 2026-03-03T08:27:12Z_
+
 ### Patch Changes
 
 - 4af92b5: add node: proto prefix to imports
@@ -188,12 +1500,16 @@
 
 ## 0.6.36
 
+_Released: 2026-02-27T15:42:39Z_
+
 ### Patch Changes
 
 - Updated dependencies [ca2566b]
     - @sap-ux/fiori-docs-embeddings@0.4.16
 
 ## 0.6.35
+
+_Released: 2026-02-26T10:46:59Z_
 
 ### Patch Changes
 
@@ -203,6 +1519,8 @@
 
 ## 0.6.34
 
+_Released: 2026-02-23T22:35:31Z_
+
 ### Patch Changes
 
 - 94d370f: fix(deps): update dependency @langchain/mcp-adapters to v1.1.3
@@ -210,12 +1528,16 @@
 
 ## 0.6.33
 
+_Released: 2026-02-20T20:20:17Z_
+
 ### Patch Changes
 
 - ff634b0: fix(deps): update dependency @sap-ux/edmx-parser to v0.9.8
     - @sap-ux/fiori-docs-embeddings@0.4.15
 
 ## 0.6.32
+
+_Released: 2026-02-20T16:17:11Z_
 
 ### Patch Changes
 
@@ -226,6 +1548,8 @@
 
 ## 0.6.31
 
+_Released: 2026-02-20T13:46:55Z_
+
 ### Patch Changes
 
 - 1371f6b: fix(deps): update dependency @langchain/core to v1.1.26
@@ -233,12 +1557,16 @@
 
 ## 0.6.30
 
+_Released: 2026-02-18T21:45:35Z_
+
 ### Patch Changes
 
 - Updated dependencies [d57cc47]
     - @sap-ux/fiori-docs-embeddings@0.4.15
 
 ## 0.6.29
+
+_Released: 2026-02-13T16:18:58Z_
 
 ### Patch Changes
 
@@ -248,12 +1576,16 @@
 
 ## 0.6.28
 
+_Released: 2026-02-10T21:03:43Z_
+
 ### Patch Changes
 
 - Updated dependencies [3795bb2]
     - @sap-ux/fiori-docs-embeddings@0.4.14
 
 ## 0.6.27
+
+_Released: 2026-02-05T13:53:56Z_
 
 ### Patch Changes
 
@@ -262,6 +1594,8 @@
     - @sap-ux/fiori-docs-embeddings@0.4.13
 
 ## 0.6.26
+
+_Released: 2026-02-05T11:39:04Z_
 
 ### Patch Changes
 
@@ -272,12 +1606,16 @@
 
 ## 0.6.25
 
+_Released: 2026-02-05T09:48:57Z_
+
 ### Patch Changes
 
 - 32a9147: chore(deps): update dependency @langchain/mcp-adapters to v1.1.2
     - @sap-ux/fiori-docs-embeddings@0.4.13
 
 ## 0.6.24
+
+_Released: 2026-02-04T22:31:27Z_
 
 ### Patch Changes
 
@@ -286,11 +1624,15 @@
 
 ## 0.6.23
 
+_Released: 2026-02-04T17:27:24Z_
+
 ### Patch Changes
 
 - bd48387: Update readme for Self-Signed SSL Certificates
 
 ## 0.6.22
+
+_Released: 2026-02-03T15:42:23Z_
 
 ### Patch Changes
 
@@ -299,11 +1641,15 @@
 
 ## 0.6.21
 
+_Released: 2026-02-02T10:47:12Z_
+
 ### Patch Changes
 
 - 6b659e7: feat: add tool annotations for better AI guidance
 
 ## 0.6.20
+
+_Released: 2026-01-30T16:59:27Z_
 
 ### Patch Changes
 
@@ -312,6 +1658,8 @@
 
 ## 0.6.19
 
+_Released: 2026-01-30T16:18:20Z_
+
 ### Patch Changes
 
 - Updated dependencies [4eac0a7]
@@ -319,11 +1667,15 @@
 
 ## 0.6.18
 
+_Released: 2026-01-29T08:53:41Z_
+
 ### Patch Changes
 
 - 5d50232: feat: add telemetry tracking for MCP server sessions and handlers
 
 ## 0.6.17
+
+_Released: 2026-01-29T08:15:00Z_
 
 ### Patch Changes
 
@@ -331,12 +1683,16 @@
 
 ## 0.6.16
 
+_Released: 2026-01-28T10:59:00Z_
+
 ### Patch Changes
 
 - Updated dependencies [a686522]
     - @sap-ux/fiori-docs-embeddings@0.4.11
 
 ## 0.6.15
+
+_Released: 2026-01-28T00:19:05Z_
 
 ### Patch Changes
 
@@ -346,12 +1702,16 @@
 
 ## 0.6.14
 
+_Released: 2026-01-23T22:30:10Z_
+
 ### Patch Changes
 
 - d11943d: fix(deps): update dependency i18next to v25.8.0
     - @sap-ux/fiori-docs-embeddings@0.4.10
 
 ## 0.6.13
+
+_Released: 2026-01-23T17:12:38Z_
 
 ### Patch Changes
 
@@ -360,11 +1720,15 @@
 
 ## 0.6.12
 
+_Released: 2026-01-23T14:04:48Z_
+
 ### Patch Changes
 
 - 924e26f: fix(deps): update dependency @sap/ux-specification to v1.142.0
 
 ## 0.6.11
+
+_Released: 2026-01-23T12:49:27Z_
 
 ### Patch Changes
 
@@ -374,17 +1738,23 @@
 
 ## 0.6.10
 
+_Released: 2026-01-19T11:29:24Z_
+
 ### Patch Changes
 
 - f4cf1d2: Update readme to contain description of latest features
 
 ## 0.6.9
 
+_Released: 2026-01-17T12:32:50Z_
+
 ### Patch Changes
 
 - 5652318: fix(server): downgrade MCP protocol version to '2024-11-05' to better backward compatibility
 
 ## 0.6.8
+
+_Released: 2026-01-16T12:32:24Z_
 
 ### Patch Changes
 
@@ -394,6 +1764,8 @@
 
 ## 0.6.7
 
+_Released: 2026-01-13T23:21:31Z_
+
 ### Patch Changes
 
 - b116439: chore(deps): update dependency @modelcontextprotocol/sdk to v1.25.2
@@ -401,11 +1773,15 @@
 
 ## 0.6.6
 
+_Released: 2026-01-12T11:11:42Z_
+
 ### Patch Changes
 
 - 5c34d46: feat(telemetry): enhance telemetry data with MCP client info and do not pass telemetry data when unknownTool
 
 ## 0.6.5
+
+_Released: 2026-01-12T09:10:27Z_
 
 ### Patch Changes
 
@@ -414,6 +1790,8 @@
 
 ## 0.6.4
 
+_Released: 2026-01-09T11:35:48Z_
+
 ### Patch Changes
 
 - Updated dependencies [e111d0d]
@@ -421,12 +1799,16 @@
 
 ## 0.6.3
 
+_Released: 2026-01-08T17:12:17Z_
+
 ### Patch Changes
 
 - 2204ad3: fix(deps): update dependencies @sap-ux/annotation-converter to v0.10.19 and @sap-ux/vocabularies-types to v0.14.5
     - @sap-ux/fiori-docs-embeddings@0.4.7
 
 ## 0.6.2
+
+_Released: 2025-12-19T11:36:13Z_
 
 ### Patch Changes
 
@@ -436,6 +1818,8 @@
 
 ## 0.6.1
 
+_Released: 2025-12-18T21:05:02Z_
+
 ### Patch Changes
 
 - a9471d0: fix sonar issues
@@ -444,6 +1828,8 @@
     - @sap-ux/store@1.4.1
 
 ## 0.6.0
+
+_Released: 2025-12-18T08:56:52Z_
 
 ### Minor Changes
 
@@ -455,6 +1841,8 @@
 
 ## 0.5.2
 
+_Released: 2025-12-16T11:43:52Z_
+
 ### Patch Changes
 
 - ba58398: adds mandatory props to backend systems and migrates existing
@@ -464,6 +1852,8 @@
 
 ## 0.5.1
 
+_Released: 2025-12-15T10:50:50Z_
+
 ### Patch Changes
 
 - 4ecfbe2: Chore - upgrade eslint devDependenies, convert to flat config and fix lint issues.
@@ -472,6 +1862,8 @@
     - @sap-ux/store@1.3.5
 
 ## 0.5.0
+
+_Released: 2025-12-12T12:38:21Z_
 
 ### Minor Changes
 
@@ -483,6 +1875,8 @@
 
 ## 0.4.11
 
+_Released: 2025-12-12T09:02:37Z_
+
 ### Patch Changes
 
 - 63eec1e: fix(fiori-mcp): fix cap service schema and logger errors in stdio
@@ -490,11 +1884,15 @@
 
 ## 0.4.10
 
+_Released: 2025-12-09T15:45:14Z_
+
 ### Patch Changes
 
 - 8e8e7ce: fix(fiori-mcp): add service metadata validation
 
 ## 0.4.9
+
+_Released: 2025-12-08T17:56:48Z_
 
 ### Patch Changes
 
@@ -504,11 +1902,15 @@
 
 ## 0.4.8
 
+_Released: 2025-12-04T14:58:56Z_
+
 ### Patch Changes
 
 - d08a64c: fix: mcp server load the latest embeddings package on install/ npx
 
 ## 0.4.7
+
+_Released: 2025-12-03T10:00:07Z_
 
 ### Patch Changes
 
@@ -516,11 +1918,15 @@
 
 ## 0.4.6
 
+_Released: 2025-12-02T12:30:36Z_
+
 ### Patch Changes
 
 - 4f7aa43: fix(fiori-mcp): improve non-cap app-gen input schema
 
 ## 0.4.5
+
+_Released: 2025-12-01T12:26:44Z_
 
 ### Patch Changes
 
@@ -528,11 +1934,15 @@
 
 ## 0.4.4
 
+_Released: 2025-11-28T13:00:10Z_
+
 ### Patch Changes
 
 - 66ca93f: chore(fiori-mcp): fix pipeline
 
 ## 0.4.3
+
+_Released: 2025-11-28T10:44:15Z_
 
 ### Patch Changes
 
@@ -540,17 +1950,23 @@
 
 ## 0.4.2
 
+_Released: 2025-11-26T00:12:42Z_
+
 ### Patch Changes
 
 - 597834f: chore - update "@sap-ux/annotation-converter": "0.10.8" and "@sap-ux/vocabularies-types": "0.13.1"
 
 ## 0.4.1
 
+_Released: 2025-11-14T20:58:09Z_
+
 ### Patch Changes
 
 - 9544c24: fix: page creation fails in v2
 
 ## 0.4.0
+
+_Released: 2025-11-10T12:32:12Z_
 
 ### Minor Changes
 
@@ -559,11 +1975,15 @@
 
 ## 0.3.3
 
+_Released: 2025-11-06T12:16:07Z_
+
 ### Patch Changes
 
 - f1a2795: fix: Instrumentation key
 
 ## 0.3.2
+
+_Released: 2025-11-05T06:53:42Z_
 
 ### Patch Changes
 
@@ -573,11 +1993,15 @@
 
 ## 0.3.1
 
+_Released: 2025-10-29T12:50:30Z_
+
 ### Patch Changes
 
 - f7cb5b1: Fix: Pass `layer` and `ui5Version` to the specification API method `exportConfig`.
 
 ## 0.3.0
+
+_Released: 2025-10-27T13:41:31Z_
 
 ### Minor Changes
 
@@ -586,11 +2010,15 @@
 
 ## 0.2.5
 
+_Released: 2025-10-21T05:22:49Z_
+
 ### Patch Changes
 
 - 8b7171e: chore: readme update - how to disable telemetry
 
 ## 0.2.4
+
+_Released: 2025-10-15T11:11:41Z_
 
 ### Patch Changes
 
@@ -600,17 +2028,23 @@
 
 ## 0.2.3
 
+_Released: 2025-10-10T09:39:17Z_
+
 ### Patch Changes
 
 - e015869: chore: patch inquirer dependency
 
 ## 0.2.2
 
+_Released: 2025-10-08T12:33:12Z_
+
 ### Patch Changes
 
 - 8a97bcc: fix "Error [ERR_REQUIRE_ESM]" when starting fiori mcp server e.g. Nodejs 22.8.0
 
 ## 0.2.1
+
+_Released: 2025-10-06T17:09:01Z_
 
 ### Patch Changes
 
@@ -619,6 +2053,8 @@
     - @sap-ux/fiori-docs-embeddings@0.1.1
 
 ## 0.2.0
+
+_Released: 2025-10-06T11:26:22Z_
 
 ### Minor Changes
 
@@ -631,11 +2067,15 @@
 
 ## 0.1.6
 
+_Released: 2025-09-30T05:59:47Z_
+
 ### Patch Changes
 
 - f038ab8: Refactored `get-functionality-details` to return parameters as JSON Schema, unified with Zod validation (validateWithSchema) and schema conversion (convertion to JSON Schema).
 
 ## 0.1.5
+
+_Released: 2025-09-23T10:15:54Z_
 
 ### Patch Changes
 
@@ -643,11 +2083,15 @@
 
 ## 0.1.4
 
+_Released: 2025-09-23T08:21:10Z_
+
 ### Patch Changes
 
 - 8c01a6f: add hint for AGENTS.md to readme
 
 ## 0.1.3
+
+_Released: 2025-09-22T12:45:08Z_
 
 ### Patch Changes
 
@@ -655,11 +2099,15 @@
 
 ## 0.1.2
 
+_Released: 2025-09-19T16:36:41Z_
+
 ### Patch Changes
 
 - 9872384: Upgrade axios module
 
 ## 0.1.1
+
+_Released: 2025-09-18T23:50:28Z_
 
 ### Patch Changes
 
@@ -667,17 +2115,23 @@
 
 ## 0.1.0
 
+_Released: 2025-09-17T14:22:31Z_
+
 ### Minor Changes
 
 - a7b6272: Add doc_search tool to Fiori MCP server using data from embeddings module.
 
 ## 0.0.11
 
+_Released: 2025-09-16T20:04:56Z_
+
 ### Patch Changes
 
 - @sap-ux/fiori-annotation-api@0.6.20
 
 ## 0.0.10
+
+_Released: 2025-09-16T06:28:11Z_
 
 ### Patch Changes
 
@@ -687,11 +2141,15 @@
 
 ## 0.0.9
 
+_Released: 2025-09-15T09:07:18Z_
+
 ### Patch Changes
 
 - 5b06421: Simplify "generate-fiori-ui-application-cap" input params by removing the "appGenConfig" nesting level and unnecessary properties such as "appGenConfig.telemetryData" and "projectPath".
 
 ## 0.0.8
+
+_Released: 2025-09-12T07:38:54Z_
 
 ### Patch Changes
 
@@ -700,6 +2158,8 @@
 
 ## 0.0.7
 
+_Released: 2025-09-11T13:45:54Z_
+
 ### Patch Changes
 
 - e82605e: Move "npm install" outside MCP create app call.
@@ -707,17 +2167,23 @@
 
 ## 0.0.6
 
+_Released: 2025-09-11T09:30:17Z_
+
 ### Patch Changes
 
 - ac9a2d0: feat: collect telemetry
 
 ## 0.0.5
 
+_Released: 2025-09-10T10:08:07Z_
+
 ### Patch Changes
 
 - cbd2a6f: Use Zod schemas to generate input/output JSON schemas and TypeScript types
 
 ## 0.0.4
+
+_Released: 2025-09-05T08:52:38Z_
 
 ### Patch Changes
 
@@ -726,11 +2192,15 @@
 
 ## 0.0.3
 
+_Released: 2025-09-05T05:50:10Z_
+
 ### Patch Changes
 
 - 4fad77a: Regenerate output schema for 'get_functionality_details' tool
 
 ## 0.0.2
+
+_Released: 2025-09-03T15:46:36Z_
 
 ### Patch Changes
 
@@ -738,11 +2208,15 @@
 
 ## 0.0.1
 
+_Released: 2025-08-28T13:37:07Z_
+
 ### Patch Changes
 
 - 38ecd39: Initial version of the fiori-mcp-server package
 
 ## 0.0.1
+
+_Released: 2025-08-28T13:37:07Z_
 
 ### Patch Changes
 

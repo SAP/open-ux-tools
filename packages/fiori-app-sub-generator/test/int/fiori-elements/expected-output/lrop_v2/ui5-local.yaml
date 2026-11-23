@@ -2,7 +2,7 @@
 
 specVersion: "4.0"
 metadata:
-  name: testNameSpace.lropv2
+  name: testnamespace.lropv2
 type: application
 framework:
   name: SAPUI5
@@ -49,3 +49,8 @@ server:
         annotations:
           - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**

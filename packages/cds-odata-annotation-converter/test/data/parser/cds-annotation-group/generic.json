@@ -1,0 +1,16 @@
+[
+    {
+        "type": "element",
+        "range": "[(1,4)..(1,17)]",
+        "name": "Annotation",
+        "attributes": {
+            "Term": {
+                "type": "attribute",
+                "name": "Term",
+                "value": "CDS.OdataDraftEnabled",
+                "valueRange": "[(1,4)..(1,17)]"
+            }
+        },
+        "content": []
+    }
+]

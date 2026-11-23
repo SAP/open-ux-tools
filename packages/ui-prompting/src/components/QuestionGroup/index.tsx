@@ -1,1 +1,1 @@
-export * from './QuestionGroup';
+export * from './QuestionGroup.js';

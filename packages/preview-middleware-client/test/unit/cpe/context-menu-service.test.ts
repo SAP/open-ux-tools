@@ -1,66 +1,129 @@
-import { ContextMenuService } from '../../../src/cpe/context-menu-service';
-import { ActionHandler } from '../../../src/cpe/types';
-import * as cpeCpmmon from '@sap-ux-private/control-property-editor-common';
+import { jest } from '@jest/globals';
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 import { fetchMock } from 'mock/window';
-import * as coreUtils from '../../../src/utils/core';
 import type { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
-import * as cpeUtils from '../../../src/cpe/utils';
-import * as versionUtils from '../../../src/utils/version';
-import * as applicationUtils from '../../../src/utils/application';
+import { ActionHandler } from '../../../src/cpe/types';
 
-jest.mock('../../../src/i18n', () => {
-    return {
-        ...jest.requireActual('../../../src/i18n'),
-        getTextBundle: async () => {
-            return {
-                hasText: jest.fn().mockReturnValueOnce(true),
-                getText: jest.fn().mockReturnValueOnce('This action is disabled because a dialog is already open')
-            };
-        }
-    };
-});
+// Pre-import modules so we can spread their real exports into mocks
+const _core = await import('open/ux/preview/client/utils/core');
+const _version = await import('open/ux/preview/client/utils/version');
+const _i18n = await import('open/ux/preview/client/i18n');
+const _common = await import('@sap-ux-private/control-property-editor-common');
+const { executeContextMenuAction, requestControlContextMenu } = _common;
+
+const getControlByIdMock = jest.fn();
+jest.unstable_mockModule('open/ux/preview/client/utils/core', () => ({
+    ..._core,
+    getControlById: getControlByIdMock
+}));
+
+const getOverlayMock = jest.fn();
+jest.unstable_mockModule('open/ux/preview/client/cpe/utils', () => ({
+    getOverlay: getOverlayMock,
+    getRuntimeControl: jest.fn(),
+    isReuseComponent: jest.fn()
+}));
+
+const getUi5VersionMock = jest.fn();
+jest.unstable_mockModule('open/ux/preview/client/utils/version', () => ({
+    ..._version,
+    getUi5Version: getUi5VersionMock
+}));
+
+const getApplicationTypeMock = jest.fn();
+jest.unstable_mockModule('open/ux/preview/client/utils/application', () => ({
+    getApplicationType: getApplicationTypeMock
+}));
+
+jest.unstable_mockModule('open/ux/preview/client/i18n', () => ({
+    ..._i18n,
+    getTextBundle: jest.fn().mockResolvedValue({
+        hasText: jest.fn().mockReturnValueOnce(true),
+        getText: jest.fn().mockReturnValueOnce('This action is disabled because a dialog is already open')
+    })
+}));
+
+const reportTelemetryMock = jest.fn();
+jest.unstable_mockModule('@sap-ux-private/control-property-editor-common', () => ({
+    ..._common,
+    reportTelemetry: reportTelemetryMock
+}));
+
+const { ContextMenuService } = await import('open/ux/preview/client/cpe/context-menu-service');
+
 describe('context-menu-service', () => {
     let sendActionMock: jest.Mock;
     let subscribeMock: jest.Mock<void, [ActionHandler]>;
-    let getControlByIdSpy: jest.SpyInstance;
-    let getOverlaySpy: jest.SpyInstance;
-    let reportTelemetrySpy: jest.SpyInstance;
-    let getUi5VersionSpy: jest.SpyInstance;
-    let getApplicationTypeSpy: jest.SpyInstance;
 
     beforeEach(() => {
         sendActionMock = jest.fn();
-        subscribeMock = jest.fn<void, [ActionHandler]>();
+        subscribeMock = jest.fn<(handler: ActionHandler) => void>();
         fetchMock.mockRestore();
-        getControlByIdSpy = jest.spyOn(coreUtils, 'getControlById');
-        getOverlaySpy = jest.spyOn(cpeUtils, 'getOverlay');
-        reportTelemetrySpy = jest.spyOn(cpeCpmmon, 'reportTelemetry');
-        getUi5VersionSpy = jest.spyOn(versionUtils,'getUi5Version');
-        getApplicationTypeSpy = jest.spyOn(applicationUtils,'getApplicationType')
     });
     test('executeContextMenuAction - default plugin', async () => {
         const rtaMock = new RuntimeAuthoringMock({} as RTAOptions);
-        getControlByIdSpy.mockReturnValue({ getMetadata: jest.fn().mockReturnValue({getName: jest.fn().mockReturnValue('sap.m.Button')})});
-        getUi5VersionSpy.mockReturnValue({major: 1, minor:127, patch:0})
-        getApplicationTypeSpy.mockReturnValue('fe-v4')
+        getControlByIdMock.mockReturnValue({ getMetadata: jest.fn().mockReturnValue({getName: jest.fn().mockReturnValue('sap.m.Button')})});
+        getUi5VersionMock.mockReturnValue({major: 1, minor:127, patch:0});
+        getApplicationTypeMock.mockReturnValue('fe-v4');
         const actionServiceExecuteSpy = jest.fn();
         rtaMock.getService.mockResolvedValue({ execute: actionServiceExecuteSpy });
         const contextMenuService = new ContextMenuService(rtaMock as unknown as RuntimeAuthoring);
         await contextMenuService.init(sendActionMock, subscribeMock);
 
         await subscribeMock.mock.calls[0][0](
-            cpeCpmmon.executeContextMenuAction({ actionName: 'TESTACTION01', controlId: 'test-control' })
+            executeContextMenuAction({ actionName: 'TESTACTION01', controlId: 'test-control' })
         );
-        expect(reportTelemetrySpy).toHaveBeenCalledWith({
+        expect(reportTelemetryMock).toHaveBeenCalledWith({
                                 category: 'OutlineContextMenu',
                                 actionName: 'TESTACTION01',
                                 controlName: 'sap.m.Button',
                                 ui5Version: '1.127.0',
                                 appType : 'fe-v4'
                             });
-        expect(actionServiceExecuteSpy).toHaveBeenCalledWith('test-control', 'TESTACTION01');
+        expect(actionServiceExecuteSpy).toHaveBeenCalledWith('test-control', 'TESTACTION01', undefined);
+    });
+
+    test('executeContextMenuAction - multi-control (combine)', async () => {
+        const rtaMock = new RuntimeAuthoringMock({} as RTAOptions);
+        getControlByIdMock.mockReturnValue({ getMetadata: jest.fn().mockReturnValue({getName: jest.fn().mockReturnValue('sap.m.Button')})});
+        getUi5VersionMock.mockReturnValue({major: 1, minor:127, patch:0});
+        getApplicationTypeMock.mockReturnValue('fe-v4');
+        const actionServiceExecuteSpy = jest.fn();
+        rtaMock.getService.mockResolvedValue({ execute: actionServiceExecuteSpy });
+        const contextMenuService = new ContextMenuService(rtaMock as unknown as RuntimeAuthoring);
+        await contextMenuService.init(sendActionMock, subscribeMock);
+
+        await subscribeMock.mock.calls[0][0](
+            executeContextMenuAction({ actionName: 'CTX_GROUP_FIELDS', controlId: ['control-01', 'control-02'] })
+        );
+
+        // the array is forwarded verbatim; telemetry resolves the control name from the first id without throwing
+        expect(getControlByIdMock).toHaveBeenCalledWith('control-01');
+        expect(actionServiceExecuteSpy).toHaveBeenCalledWith(['control-01', 'control-02'], 'CTX_GROUP_FIELDS', undefined);
+    });
+
+    test('executeContextMenuAction - forwards payload (variant switch)', async () => {
+        const rtaMock = new RuntimeAuthoringMock({} as RTAOptions);
+        getControlByIdMock.mockReturnValue({ getMetadata: jest.fn().mockReturnValue({getName: jest.fn().mockReturnValue('sap.m.Button')})});
+        getUi5VersionMock.mockReturnValue({major: 1, minor:127, patch:0});
+        getApplicationTypeMock.mockReturnValue('fe-v4');
+        const actionServiceExecuteSpy = jest.fn();
+        rtaMock.getService.mockResolvedValue({ execute: actionServiceExecuteSpy });
+        const contextMenuService = new ContextMenuService(rtaMock as unknown as RuntimeAuthoring);
+        await contextMenuService.init(sendActionMock, subscribeMock);
+
+        await subscribeMock.mock.calls[0][0](
+            executeContextMenuAction({
+                actionName: 'CTX_VARIANT_SWITCH_SUBMENU',
+                controlId: 'test-control',
+                payload: { key: 'variantKeyB' }
+            })
+        );
+
+        expect(actionServiceExecuteSpy).toHaveBeenCalledWith('test-control', 'CTX_VARIANT_SWITCH_SUBMENU', {
+            key: 'variantKeyB'
+        });
     });
 
     test('requestControlContextMenu', async () => {
@@ -74,11 +137,11 @@ describe('context-menu-service', () => {
         ]);
 
         const contextMenuService = new ContextMenuService(rtaMock as unknown as RuntimeAuthoring);
-        getControlByIdSpy.mockReturnValue({ id: 'test-control-01' });
-        getOverlaySpy.mockReturnValue({ id: 'test-control-01' });
+        getControlByIdMock.mockReturnValue({ id: 'test-control-01' });
+        getOverlayMock.mockReturnValue({ id: 'test-control-01' });
         await contextMenuService.init(sendActionMock, subscribeMock);
 
-        await subscribeMock.mock.calls[0][0](cpeCpmmon.requestControlContextMenu.pending('test-control-01'));
+        await subscribeMock.mock.calls[0][0](requestControlContextMenu.pending('test-control-01'));
 
         expect(sendActionMock).toHaveBeenCalledWith({
             payload: {
@@ -94,6 +157,82 @@ describe('context-menu-service', () => {
                         id: 'DEFAULTACTION02',
                         title: 'default action 02',
                         tooltip: undefined
+                    }
+                ],
+                controlId: 'test-control-01'
+            },
+            type: '[ext] request-control-context-menu <fulfilled>'
+        });
+    });
+
+    test('requestControlContextMenu - multi-control (combine)', async () => {
+        const rtaMock = new RuntimeAuthoringMock({} as RTAOptions);
+        const actionServiceGetsSpy = jest.fn();
+        rtaMock.getService.mockResolvedValue({ get: actionServiceGetsSpy });
+
+        actionServiceGetsSpy.mockResolvedValue([{ enabled: true, id: 'CTX_GROUP_FIELDS', text: 'Combine' }]);
+
+        const contextMenuService = new ContextMenuService(rtaMock as unknown as RuntimeAuthoring);
+        getControlByIdMock.mockReturnValue({ id: 'control-01' });
+        getOverlayMock.mockReturnValue({ id: 'control-01' });
+        await contextMenuService.init(sendActionMock, subscribeMock);
+
+        await subscribeMock.mock.calls[0][0](requestControlContextMenu.pending(['control-01', 'control-02']));
+
+        // the array of ids is forwarded to the action service and echoed back in the response
+        expect(actionServiceGetsSpy).toHaveBeenCalledWith(['control-01', 'control-02']);
+        expect(sendActionMock).toHaveBeenCalledWith({
+            payload: {
+                contextMenuItems: [
+                    {
+                        enabled: true,
+                        id: 'CTX_GROUP_FIELDS',
+                        title: 'Combine',
+                        tooltip: undefined
+                    }
+                ],
+                controlId: ['control-01', 'control-02']
+            },
+            type: '[ext] request-control-context-menu <fulfilled>'
+        });
+    });
+
+    test('requestControlContextMenu - surfaces submenu entries (variant switch)', async () => {
+        const rtaMock = new RuntimeAuthoringMock({} as RTAOptions);
+        const actionServiceGetsSpy = jest.fn();
+        rtaMock.getService.mockResolvedValue({ get: actionServiceGetsSpy });
+
+        actionServiceGetsSpy.mockResolvedValue([
+            {
+                enabled: true,
+                id: 'CTX_VARIANT_SWITCH_SUBMENU',
+                text: 'Switch Variant',
+                submenu: [
+                    { id: 'variantKeyA', text: 'Variant A', icon: 'sap-icon://accept', enabled: false },
+                    { id: 'variantKeyB', text: 'Variant B', icon: 'blank', enabled: true }
+                ]
+            }
+        ]);
+
+        const contextMenuService = new ContextMenuService(rtaMock as unknown as RuntimeAuthoring);
+        getControlByIdMock.mockReturnValue({ id: 'test-control-01' });
+        getOverlayMock.mockReturnValue({ id: 'test-control-01' });
+        await contextMenuService.init(sendActionMock, subscribeMock);
+
+        await subscribeMock.mock.calls[0][0](requestControlContextMenu.pending('test-control-01'));
+
+        expect(sendActionMock).toHaveBeenCalledWith({
+            payload: {
+                contextMenuItems: [
+                    {
+                        enabled: true,
+                        id: 'CTX_VARIANT_SWITCH_SUBMENU',
+                        title: 'Switch Variant',
+                        tooltip: undefined,
+                        submenu: [
+                            { id: 'variantKeyA', title: 'Variant A', enabled: false },
+                            { id: 'variantKeyB', title: 'Variant B', enabled: true }
+                        ]
                     }
                 ],
                 controlId: 'test-control-01'

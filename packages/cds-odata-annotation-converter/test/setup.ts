@@ -1,8 +1,9 @@
 import { promises } from 'node:fs';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { Diagnostic, Element } from '@sap-ux/odata-annotation-core';
 import type { AnnotationGroup, Annotation } from '@sap-ux/cds-annotation-parser';
-import { deserialize } from './deserialize-ast';
+import { deserialize } from './deserialize-ast.js';
 import { createCdsCompilerFacadeForRoot, getCdsFiles } from '@sap/ux-cds-compiler-facade';
 import type { CdsCompilerFacade } from '@sap/ux-cds-compiler-facade';
 
@@ -19,6 +20,7 @@ export type TestCaseName =
     | 'multi-line-string'
     | 'multi-line-string-strip-indent'
     | 'top-level-empty-value'
+    | 'top-level-quoted'
     | 'bracket-matching'
     | 'record'
     | 'record-annotation'
@@ -35,7 +37,10 @@ export type TestCaseName =
     | 'array-spread-operator'
     | 'nested-record-type'
     | 'expression'
-    | 'flattened-nested-record';
+    | 'flattened-nested-record'
+    | 'flatten-embedded-annotation-with-qualifiers';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const { readFile } = promises;
 

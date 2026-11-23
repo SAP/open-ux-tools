@@ -10,9 +10,9 @@ import {
     externalFileChange
 } from '@sap-ux-private/control-property-editor-common';
 
-import type { ChangeService } from '../../../../src/cpe/changes/service';
-import { QuickActionService } from '../../../../src/cpe/quick-actions/quick-action-service';
-import { OutlineService } from '../../../../src/cpe/outline/service';
+import type { ChangeService } from '../../../../src/cpe/changes/service.js';
+import { QuickActionService } from '../../../../src/cpe/quick-actions/quick-action-service.js';
+import { OutlineService } from '../../../../src/cpe/outline/service.js';
 import type {
     QuickActionActivationContext,
     QuickActionContext,

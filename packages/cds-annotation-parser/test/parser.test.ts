@@ -1,6 +1,6 @@
-import { parse as parseInternal } from '../src/parser';
-import type { AnnotationNode } from '../src/transformer';
-import { buildAst } from '../src/transformer';
+import { parse as parseInternal } from '../src/parser/index.js';
+import type { AnnotationNode } from '../src/transformer/index.js';
+import { buildAst } from '../src/transformer/index.js';
 import {
     getAssignment,
     getCst,
@@ -9,11 +9,11 @@ import {
     transformCstForAssertion,
     doesExits,
     getBase
-} from './utils';
+} from './utils/index.js';
 import type { Position } from '@sap-ux/text-document-utils';
 import { join } from 'node:path';
 import { readFileSync } from 'node:fs';
-import { findAnnotationNode, getAstNodes, getNode, parse } from '../src';
+import { findAnnotationNode, getAstNodes, getNode, parse } from '../src/index.js';
 
 const testParser = async (testCasePath: string, valid = true): Promise<void> => {
     const text = await getAssignment(testCasePath);
@@ -41,7 +41,15 @@ describe('cds annotation parser', () => {
     const allTests = getAllNormalizeFolderPath();
     const skip: string[] = [];
     const todo: string[] = [];
-    // const only: string[] = []; // to be used for debugging purposes only
+    const only: string[] = [
+        // '/valid/qualifier/flat-syntax-3',
+        // '/valid/qualifier/flat-syntax-with-spaces',
+        // '/valid/qualifier/flat-syntax-in-group',
+        // '/invalid/missing/value-with-flattened-syntax',
+        // '/valid/qualifier/flat-syntax-qualifier-in-last-segment',
+        // '/valid/struct/flattened',
+        // '/valid/term/cds-term'
+    ]; // to be used for debugging purposes only
     for (const t of allTests) {
         if (skip.includes(t)) {
             test.skip(`${t}`, () => {
@@ -54,7 +62,7 @@ describe('cds annotation parser', () => {
             continue;
         }
 
-        // // Sonar is compaining about test.only(). Use this code for debugging purposes only
+        // // Sonar is complaining about test.only(). Use this code for debugging purposes only
         // if (only.includes(t)) {
         //     test.only(`${t}`, async () => {
         //         await testParser(t, t.startsWith('valid'));

@@ -1,9 +1,8 @@
+import { jest } from '@jest/globals';
 import nock from 'nock';
-import type { AppInfo, AbapServiceProvider, ErrorMessage } from '../../src';
-import { Ui5AbapRepositoryService, createForAbap, createForDestination } from '../../src';
+import type { AppInfo, AbapServiceProvider, ErrorMessage, FileStoreService } from '../../src/index.js';
 import mockErrorDetails from './mockResponses/errordetails.json';
 import type { ToolsLogger } from '@sap-ux/logger';
-import * as Logger from '@sap-ux/logger';
 import { WebIDEUsage as WebIDEUsageType, type Destination } from '@sap-ux/btp-utils';
 import { type AxiosRequestConfig, type AxiosResponse } from 'axios';
 import { info } from 'node:console';
@@ -15,7 +14,13 @@ const loggerMock: ToolsLogger = {
     error: jest.fn()
 } as Partial<ToolsLogger> as ToolsLogger;
 
-jest.spyOn(Logger, 'ToolsLogger').mockImplementation(() => loggerMock);
+const actualLogger = await import('@sap-ux/logger');
+jest.unstable_mockModule('@sap-ux/logger', () => ({
+    ...actualLogger,
+    ToolsLogger: jest.fn().mockImplementation(() => loggerMock)
+}));
+
+const { Ui5AbapRepositoryService, createForAbap, createForDestination } = await import('../../src/index.js');
 
 describe('Ui5AbapRepositoryService', () => {
     const server = 'http://sap.example';
@@ -23,6 +28,8 @@ describe('Ui5AbapRepositoryService', () => {
     const validAppNs = '/NS/VALID_APP';
     const notExistingApp = 'NOT_EXISTING_APP';
     const restrictedApp = 'RESTRICTED_APP';
+    const serverErrorApp = 'SERVER_ERROR_APP';
+    const serverErrorBody = JSON.stringify({ error: { code: '500', message: { value: 'Internal Server Error' } } });
     const validAppInfo: AppInfo = {
         Name: validApp,
         Package: 'my_package',
@@ -82,6 +89,14 @@ describe('Ui5AbapRepositoryService', () => {
             )
             .reply(401, { d: validAppInfo })
             .persist();
+        nock(server)
+            .get(
+                (url) =>
+                    url.includes(`/Repositories(%27${serverErrorApp}%27)`) ||
+                    url.includes(`/Repositories('${serverErrorApp}')`)
+            )
+            .reply(500, serverErrorBody)
+            .persist();
     });
 
     afterAll(() => {
@@ -113,6 +128,11 @@ describe('Ui5AbapRepositoryService', () => {
         test('Not authorized to access app', async () => {
             await expect(service.getInfo(restrictedApp)).rejects.toThrow();
         });
+
+        test('Server error (500) logs the response body at debug level and re-throws', async () => {
+            await expect(service.getInfo(serverErrorApp)).rejects.toThrow('Request failed with status code 500');
+            expect(loggerMock.debug).toHaveBeenCalledWith(serverErrorBody);
+        });
     });
 
     describe('downloadFiles', () => {
@@ -125,6 +145,41 @@ describe('Ui5AbapRepositoryService', () => {
         test('Non-existing app returning 404', async () => {
             const data = await service.downloadFiles(notExistingApp);
             expect(data).toBeUndefined();
+        });
+
+        test('Server error (500) logs the response body at debug level and re-throws', async () => {
+            await expect(service.downloadFiles(serverErrorApp)).rejects.toThrow('Request failed with status code 500');
+            expect(loggerMock.debug).toHaveBeenCalledWith(serverErrorBody);
+        });
+    });
+
+    describe('downloadFilesViaAdt', () => {
+        test('should recursively collect files and return a ZIP buffer', async () => {
+            const mockFileStoreService = {
+                getAppArchiveContent: jest
+                    .fn()
+                    .mockResolvedValueOnce([
+                        { path: '/webapp', type: 'folder' },
+                        { path: '/Component.js', type: 'file' }
+                    ])
+                    .mockResolvedValueOnce([{ path: '/webapp/index.html', type: 'file' }])
+                    .mockResolvedValueOnce(Buffer.from('<html/>'))
+                    .mockResolvedValueOnce(Buffer.from('Component content'))
+            } as unknown as FileStoreService;
+
+            const result = await service.downloadFilesViaAdt(validApp, mockFileStoreService);
+            expect(result).toBeInstanceOf(Buffer);
+            expect(result).toBeDefined();
+            expect(result?.length).toBeGreaterThan(0);
+        });
+
+        test('should return undefined when no files are found', async () => {
+            const mockFileStoreService = {
+                getAppArchiveContent: jest.fn().mockResolvedValue([])
+            } as unknown as FileStoreService;
+
+            const result = await service.downloadFilesViaAdt(validApp, mockFileStoreService);
+            expect(result).toBeUndefined();
         });
     });
 
@@ -427,7 +482,7 @@ describe('Ui5AbapRepositoryService', () => {
             const appName = 'TestApp';
             nock(server).get(`${Ui5AbapRepositoryService.PATH}/Repositories(%27${appName}%27)?$format=json`).reply(401);
             await expect(service.undeploy({ bsp: { name: appName } })).rejects.toThrow();
-            expect(loggerMock.debug).toHaveBeenCalledTimes(1);
+            expect(loggerMock.debug).toHaveBeenCalledTimes(2);
             expect(loggerMock.info).toHaveBeenCalledTimes(0);
             expect(loggerMock.error).toHaveBeenCalledTimes(0);
         });

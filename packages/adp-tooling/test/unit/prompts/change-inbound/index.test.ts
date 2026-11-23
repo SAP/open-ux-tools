@@ -1,6 +1,6 @@
-import { getPrompts } from '../../../../src/prompts/change-inbound';
-import * as i18n from '../../../../src/i18n';
-import type { InboundChangeAnswers } from '../../../../src/types';
+import { getPrompts } from '../../../../src/prompts/change-inbound/index.js';
+import * as i18n from '../../../../src/i18n.js';
+import type { InboundChangeAnswers } from '../../../../src/types.js';
 
 describe('getPrompts', () => {
     beforeAll(async () => {

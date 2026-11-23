@@ -10,7 +10,7 @@ import {
     FUNCTION_IMPORT_KIND,
     FUNCTION_KIND
 } from '@sap-ux/odata-annotation-core-types';
-import { resolveName } from '..';
+import { resolveName } from '../index.js';
 
 /**
  * Gets outermost Metadata element which represents an entity type or complex type or has a structured type.

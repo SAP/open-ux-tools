@@ -1,4 +1,4 @@
-import { print, printTarget } from '../../src/printer/csdl-to-cds';
+import { print, printTarget } from '../../src/printer/csdl-to-cds.js';
 import {
     createAttributeNode,
     createElementNode,

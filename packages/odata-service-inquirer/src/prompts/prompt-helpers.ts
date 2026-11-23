@@ -1,7 +1,7 @@
 import type { ListChoiceOptions } from 'inquirer';
 import { ErrorHandler } from '@sap-ux/inquirer-common';
-import { t } from '../i18n';
-import { DatasourceType, type DatasourceTypePromptOptions } from '../types';
+import { t } from '../i18n.js';
+import { DatasourceType, type DatasourceTypePromptOptions } from '../types.js';
 
 // Error handling is a cross-cutting concern, a single instance is required
 export const errorHandler = new ErrorHandler(undefined, undefined, '@sap-ux/odata-service-inquirer');

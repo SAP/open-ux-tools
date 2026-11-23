@@ -1,4 +1,4 @@
-import { updateProperty } from '../../../src/page-editor-api/json-helper';
+import { updateProperty } from '../../../src/page-editor-api/json-helper.js';
 
 describe('Test for "JsonLineFinder"', () => {
     describe('Method "updateProperty"', () => {

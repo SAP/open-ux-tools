@@ -15,7 +15,7 @@ import {
     isHTML5DynamicConfigured,
     ProxyType,
     isAbapODataDestination
-} from '../src';
+} from '../src/index.js';
 import destinations from './mockResponses/destinations.json';
 
 const destination: Destination = destinations.find((destination) => destination.Name === 'NO_ADDITIONAL_PROPERTIES')!;

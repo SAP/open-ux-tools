@@ -13,20 +13,27 @@ modules:
       - name: sap-ux-test-app-front
         parameters:
           content-target: true
-      - name: sap-ux-test-uaa
+      - name: sap-ux-test-auth
     parameters:
       config:
         destinations:
           - name: ui5
             url: https://ui5.sap.com
 resources:
-  - name: sap-ux-test-uaa
+  - name: sap-ux-test-auth
     type: org.cloudfoundry.managed-service
     parameters:
       path: ./xs-security.json
       service: xsuaa
       service-name: sap-ux-test-xsuaa-service
       service-plan: application
+      config:
+        tenant-mode: dedicated
+        xsappname: 'sap-ux-test-${org}-${space}'
+        oauth2-configuration:
+            credential-types:
+                - binding-secret
+                - x509
   - name: sap-ux-test-app-front
     type: org.cloudfoundry.managed-service
     parameters:

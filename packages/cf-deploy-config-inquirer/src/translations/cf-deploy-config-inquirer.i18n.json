@@ -42,7 +42,8 @@
     },
     "warning": {
         "btpDestinationListWarning": "BTP destinations are only retrieved on SAP Business Application Studio.",
-        "appFrontendServiceRouterChoice": "You need to have the Application Frontend service enabled for your subaccount."
+        "appFrontendServiceRouterChoice": "You must have the Application Frontend service enabled for your subaccount.",
+        "fullUrlDestination": "The selected destination is a full URL destination. The URL path is appended to the destination host, which may cause routing issues."
     },
     "info": {
         "addManagedAppRouter": "Add managed application router is enabled.",

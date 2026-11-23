@@ -1,0 +1,21 @@
+<edmx:Edmx xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx" Version="4.0">
+	<edmx:Reference Uri="/northwind_v2/V2/Northwind/Northwind.svc/$metadata">
+		<edmx:Include Alias="Metadata" Namespace="NorthwindModel"/>
+	</edmx:Reference>
+	<edmx:Reference Uri="https://wiki.scn.sap.com/wiki/download/attachments/448470968/UI.xml?api=v2">
+		<edmx:Include Alias="UI" Namespace="com.sap.vocabularies.UI.v1"/>
+	</edmx:Reference>
+	<edmx:DataServices>
+		<Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="multi_destination_ovp_mta.multi_destination_ovp.localService.Northwind.svc.annotation2.NorthwindModel">
+			<Annotations Target="Metadata.Product">
+				<Annotation Term="UI.LineItem" Qualifier="northwind_table_product">
+					<Collection>
+						<Record Type="UI.DataField">
+							<PropertyValue Property="Value" Path="ProductName"/>
+						</Record>
+					</Collection>
+				</Annotation>
+			</Annotations>
+		</Schema>
+	</edmx:DataServices>
+</edmx:Edmx>

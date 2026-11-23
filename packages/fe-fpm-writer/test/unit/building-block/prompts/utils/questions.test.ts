@@ -1,12 +1,39 @@
+import { jest } from '@jest/globals';
 import { UIAnnotationTerms } from '@sap-ux/vocabularies-types/vocabularies/UI';
 import type { Answers, DistinctChoice, ListChoiceMap } from 'inquirer';
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
-import { join } from 'node:path';
-import { getProject } from '@sap-ux/project-access';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { Project } from '@sap-ux/project-access';
-import {
+import { bindingContextAbsolute, bindingContextRelative } from '../../../../../src/building-block/types.js';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+const mockGetCapModelAndServices = jest.fn().mockResolvedValue({
+    model: {},
+    services: [],
+    cdsVersionInfo: { home: '', version: '', root: '' }
+});
+const mockGetCapServiceName = jest.fn().mockResolvedValue('mappedMainServiceName');
+
+const actualProjectAccess = await import('@sap-ux/project-access');
+jest.unstable_mockModule('@sap-ux/project-access', () => ({
+    ...actualProjectAccess,
+    getCapModelAndServices: mockGetCapModelAndServices,
+    getCapServiceName: mockGetCapServiceName
+}));
+
+const mockGetEntitySetOptions = jest.fn<typeof actualPromptHelpers.getEntitySetOptions>();
+const actualPromptHelpers = await import('../../../../../src/building-block/prompts/utils/prompt-helpers.js');
+jest.unstable_mockModule('../../../../../src/building-block/prompts/utils/prompt-helpers', () => ({
+    ...actualPromptHelpers,
+    getEntitySetOptions: mockGetEntitySetOptions
+}));
+
+const { getProject } = await import('@sap-ux/project-access');
+const {
     getAggregationPathPrompt,
     getAnnotationPathQualifierPrompt,
     getBindingContextTypePrompt,
@@ -19,10 +46,8 @@ import {
     getTargetPropertiesPrompt,
     getFilterBarIdPrompt,
     getViewOrFragmentPathPrompt
-} from '../../../../../src/building-block/prompts/utils/questions';
-import type { ListPromptQuestion, PromptContext } from '../../../../../src/prompts/types';
-import { bindingContextAbsolute, bindingContextRelative } from '../../../../../src/building-block/types';
-import * as promptHelpers from '../../../../../src/building-block/prompts/utils/prompt-helpers';
+} = await import('../../../../../src/building-block/prompts/utils/questions.js');
+import type { ListPromptQuestion, PromptContext } from '../../../../../src/prompts/types.js';
 
 const projectFolder = join(__dirname, '../../../sample/building-block/webapp-prompts');
 const capProjectFolder = join(__dirname, '../../../sample/building-block/webapp-prompts-cap');
@@ -30,23 +55,6 @@ const capAppFolder = join('app/incidents');
 
 const ENTITY_SET = 'C_CustomerOP';
 type Choices = (answers?: Answers) => Promise<readonly DistinctChoice<Answers, ListChoiceMap<Answers>>[]>;
-
-jest.mock('@sap-ux/project-access', () => ({
-    __esModule: true,
-
-    ...(jest.requireActual('@sap-ux/project-access') as object),
-    getCapModelAndServices: jest.fn().mockResolvedValue({
-        model: {},
-        services: [],
-        cdsVersionInfo: { home: '', version: '', root: '' }
-    }),
-    getCapServiceName: jest.fn().mockResolvedValue('mappedMainServiceName')
-}));
-
-jest.mock('../../../../../src/building-block/prompts/utils/prompt-helpers', () => ({
-    ...jest.requireActual('../../../../../src/building-block/prompts/utils/prompt-helpers'),
-    getEntitySetOptions: jest.fn()
-}));
 
 describe('utils - questions', () => {
     let project: Project;
@@ -67,9 +75,7 @@ describe('utils - questions', () => {
     });
 
     beforeEach(() => {
-        (promptHelpers.getEntitySetOptions as jest.Mock).mockImplementation(
-            jest.requireActual('../../../../../src/building-block/prompts/utils/prompt-helpers').getEntitySetOptions
-        );
+        mockGetEntitySetOptions.mockImplementation(actualPromptHelpers.getEntitySetOptions);
     });
 
     test('entityPrompt', async () => {
@@ -131,7 +137,7 @@ describe('utils - questions', () => {
     });
 
     test('getBindingContextTypePrompt uses choices passed in properties and overwrites default choices', async () => {
-        (promptHelpers.getEntitySetOptions as jest.Mock).mockReturnValueOnce([]);
+        mockGetEntitySetOptions.mockReturnValueOnce([]);
 
         const bindingContextPrompt = getBindingContextTypePrompt({
             message: 'bindingContext',
@@ -162,7 +168,7 @@ describe('utils - questions', () => {
         };
 
         // return empty array
-        (promptHelpers.getEntitySetOptions as jest.Mock).mockReturnValueOnce([]);
+        mockGetEntitySetOptions.mockReturnValueOnce([]);
         const entityPrompt = getEntityPrompt(contextWithPageContextEntitySet, { message: 'entity' });
         const answers = {
             buildingBlockData: {
@@ -369,6 +375,85 @@ describe('utils - questions', () => {
 
         choices = await choicesProp({
             viewOrFragmentPath: join('webapp/ext/view/Page.view.xml')
+        });
+    });
+
+    describe('getAggregationPathPrompt with defaultTarget: "items"', () => {
+        // Use an isolated in-memory app path so these fixtures don't affect the shared sample folder
+        // (e.g. the getViewOrFragmentPathPrompt view-count assertion).
+        const itemsAppPath = join(__dirname, '../../../sample/building-block/items-default-virtual');
+        const viewPath = 'webapp/ext/view/Page.view.xml';
+        const pageOpen =
+            '<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:macros="sap.fe.macros">';
+        const writeView = (inner: string) => {
+            fs.write(join(itemsAppPath, viewPath), `${pageOpen}\n${inner}\n</mvc:View>`);
+        };
+        const getChoices = async () => {
+            const prompt = getAggregationPathPrompt(
+                { ...context, appPath: itemsAppPath },
+                { message: 'AggregationPathMessage' },
+                { defaultTarget: 'items' }
+            );
+            return (await (prompt.choices as Choices)({
+                viewOrFragmentPath: join(viewPath)
+            })) as { name: string; value: string; checked?: boolean }[];
+        };
+        const getChecked = (choices: { name: string; checked?: boolean }[]) => choices.find((c) => c.checked)?.name;
+
+        test('defaults to the first tab (IconTabFilter) when an IconTabBar is present', async () => {
+            writeView(
+                '<macros:Page id="Page"><macros:items><IconTabBar id="itb"><items>' +
+                    '<IconTabFilter id="itf" text="Tab 1"/></items></IconTabBar></macros:items></macros:Page>'
+            );
+            const choices = await getChoices();
+            expect(getChecked(choices)).toBe('/mvc:View/macros:Page/macros:items/IconTabBar/items/IconTabFilter');
+        });
+
+        test('defaults to macros:items when items exists without an IconTabBar', async () => {
+            writeView('<macros:Page id="Page"><macros:items><Text text="content"/></macros:items></macros:Page>');
+            const choices = await getChoices();
+            expect(getChecked(choices)).toBe('/mvc:View/macros:Page/macros:items');
+        });
+
+        test('defaults to synthesized macros:items when the page has no items child', async () => {
+            writeView('<macros:Page id="Page"><macros:Table id="Table"/></macros:Page>');
+            const choices = await getChoices();
+            expect(getChecked(choices)).toBe('/mvc:View/macros:Page/macros:items');
+        });
+
+        test('ignores a deeply nested IconTabFilter and defaults to the first direct tab', async () => {
+            writeView(
+                '<macros:Page id="Page"><macros:items><IconTabBar id="itb"><items>' +
+                    '<IconTabFilter id="itf1" text="Tab 1">' +
+                    '<content><IconTabBar id="inner"><items>' +
+                    '<IconTabFilter id="itf2" text="Inner Tab"/>' +
+                    '</items></IconTabBar></content>' +
+                    '</IconTabFilter>' +
+                    '</items></IconTabBar></macros:items></macros:Page>'
+            );
+            const choices = await getChoices();
+            expect(getChecked(choices)).toBe('/mvc:View/macros:Page/macros:items/IconTabBar/items/IconTabFilter');
+        });
+
+        test('leaves the default unchanged (no items/tab preselection) when the view has no macros:Page', async () => {
+            writeView('<Page title="Main"><content/></Page>');
+            const choices = await getChoices();
+            // No page macro => no key contains the page segment => falls through to historic behavior.
+            expect(getChecked(choices)).toBeUndefined();
+        });
+
+        test('defaults to first tab when sap.m controls use a non-default namespace prefix (e.g. xmlns:m="sap.m")', async () => {
+            // The view declares sap.m as "m:" instead of the default namespace — IconTabBar/IconTabFilter
+            // nodes appear as "m:IconTabBar" / "m:IconTabFilter" in the XPath keys.
+            fs.write(
+                join(itemsAppPath, viewPath),
+                '<mvc:View xmlns:core="sap.ui.core" xmlns:mvc="sap.ui.core.mvc" xmlns:m="sap.m" xmlns:macros="sap.fe.macros">' +
+                    '\n<macros:Page id="Page"><macros:items><m:IconTabBar id="itb"><m:items>' +
+                    '<m:IconTabFilter id="itf" text="Tab 1"/></m:items></m:IconTabBar></macros:items></macros:Page>' +
+                    '\n</mvc:View>'
+            );
+            const choices = await getChoices();
+            expect(getChecked(choices)).toBe('/mvc:View/macros:Page/macros:items/m:IconTabBar/m:items/m:IconTabFilter');
         });
     });
 

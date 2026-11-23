@@ -1,5 +1,5 @@
-import type { Diagnostic } from '../../language/diagnostics';
-import type { ParsedApp } from '../parser';
+import type { Diagnostic } from '../../language/diagnostics.js';
+import type { ParsedApp } from '../parser/index.js';
 
 export interface LinkerContext {
     app: ParsedApp;
@@ -22,6 +22,14 @@ export type ConfigurationProperty<T> = {
      * Absolute path in manifest where this configuration is defined.
      */
     configurationPath: string[];
+    /**
+     * Flex change file uri.
+     */
+    changeFileUri?: string;
+    /**
+     * Flex change selector id
+     */
+    selector?: string;
 };
 
 export interface ConfigurationBase<T extends string, Configuration extends object = {}> {

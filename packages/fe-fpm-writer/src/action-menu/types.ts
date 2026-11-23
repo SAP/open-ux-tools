@@ -1,4 +1,4 @@
-import type { CustomElement, Position } from '../common/types';
+import type { CustomElement, Position } from '../common/types.js';
 
 export enum TargetControl {
     header = 'header',

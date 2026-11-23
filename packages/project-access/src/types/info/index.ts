@@ -1,5 +1,5 @@
-import type { CapCustomPaths, CapProjectType } from '../cap';
-import type { ManifestNamespace } from '../webapp';
+import type { CapCustomPaths, CapProjectType } from '../cap/index.js';
+import type { ManifestNamespace } from '../webapp/index.js';
 
 export interface Project {
     /**
@@ -67,12 +67,22 @@ export interface I18nPropertiesPaths {
      * Absolute path to the i18n.properties file from sap.app namespace.
      */
     'sap.app': string;
+    /**
+     * Absolute path to the fallback locale i18n file from sap.app namespace, e.g. i18n_en.properties.
+     * Only set when `fallbackLocale` is configured in `sap.app.i18n`.
+     */
+    'sap.app.fallbackLocale'?: string;
     models: {
         [modelKey: string]: {
             /**
              * Absolute path to the i18n.properties files.
              */
             path: string;
+            /**
+             * Absolute path to the fallback locale i18n file, e.g. i18n_en.properties.
+             * Only set when `fallbackLocale` is configured in the model settings.
+             */
+            fallbackLocalePath?: string;
         };
     };
 }
@@ -96,8 +106,4 @@ export type AppProgrammingLanguage = 'JavaScript' | 'TypeScript' | '';
 export type ProjectType = 'EDMXBackend' | CapProjectType;
 
 export type AppType =
-    | 'SAP Fiori elements'
-    | 'SAPUI5 freestyle'
-    | 'SAPUI5 Extension'
-    | 'Fiori Reuse'
-    | 'Fiori Adaptation';
+    'SAP Fiori elements' | 'SAPUI5 freestyle' | 'SAPUI5 Extension' | 'Fiori Reuse' | 'Fiori Adaptation';

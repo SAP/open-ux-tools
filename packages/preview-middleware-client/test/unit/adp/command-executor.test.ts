@@ -1,6 +1,6 @@
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
-import CommandExecutor from '../../../src/adp/command-executor';
+import CommandExecutor from '../../../src/adp/command-executor.js';
 import type ManagedObject from 'sap/ui/base/ManagedObject';
 import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import type DesignTimeMetadata from 'sap/ui/dt/DesignTimeMetadata';

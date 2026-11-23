@@ -1,8 +1,8 @@
-import { VSCodeTransport } from '../transports';
-import { VSCodeTransport as WinstonVSCodeTransport } from '../winston-logger/vscode-output-channel-transport';
-import { WinstonLogger } from '../winston-logger';
-import { LogLevel } from '../types';
-import { toWinstonLogLevel } from '../winston-logger/adapter';
+import { VSCodeTransport } from '../transports/index.js';
+import { VSCodeTransport as WinstonVSCodeTransport } from '../winston-logger/vscode-output-channel-transport.js';
+import { WinstonLogger } from '../winston-logger/index.js';
+import { LogLevel } from '../types.js';
+import { toWinstonLogLevel } from '../winston-logger/adapter.js';
 
 /**
  *

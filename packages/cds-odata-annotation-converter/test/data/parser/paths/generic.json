@@ -712,7 +712,7 @@
                                                 "valueRange": "[(55,22)..(55,35)]"
                                             }
                                         },
-                                        "contentRange": "[(55,38)..(55,48)]",
+                                        "contentRange": "[(55,37)..(55,48)]",
                                         "content": [
                                             {
                                                 "type": "element",

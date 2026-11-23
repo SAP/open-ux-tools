@@ -1,7 +1,7 @@
 import React from 'react';
 import './UISplitter.scss';
-import { UiIcons } from '../Icons';
-import { UIIcon } from '../UIIcon';
+import { UiIcons } from '../Icons.js';
+import { UIIcon } from '../UIIcon/index.js';
 
 export interface UISplitterProps {
     type: UISplitterType;

@@ -1,7 +1,7 @@
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 import type { ProviderSystem } from '@sap/service-provider-apis';
 import type { BusinessObjectType, CDSType } from '@sap/subaccount-destination-service-provider';
-import type { UI_SERVICE_CACHE } from '../utils';
+import type { UI_SERVICE_CACHE } from '../utils/index.js';
 
 export interface PromptOptions {
     systemName: string;

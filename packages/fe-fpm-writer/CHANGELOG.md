@@ -1,6 +1,600 @@
 # @sap-ux/fe-fpm-writer
 
+## 1.5.0
+
+### Minor Changes
+
+#### Features
+
+- add `add-building-block` functionality for Fiori Elements building blocks
+
+    Adds building-block support to `@sap-ux/fiori-mcp-server` as a first-class `add-building-block` functionality in the
+    existing `list_functionality` → `get_functionality_details` → `execute_functionality` registry — not a standalone
+    tool — so there is one consistent way to add functionality to the server. It delegates to `@sap-ux/fe-fpm-writer`'s
+    `generateBuildingBlock()` (the same generator as the SAP Page Editor) to add building blocks (table, chart,
+    filter-bar, field, form, page, rich-text-editor, rich-text-editor-button-groups, custom-column, custom-filter-field,
+    custom-form-field, action) to an FPM view or fragment with correct XML and manifest wiring.
+    Property semantics are sourced from the generated `bb_macro_api.md` via the existing `search_docs` tool rather than
+    duplicated as inline schemas, so the per-type Zod schema stays lean (`zod.looseObject`) and only enforces the fields
+    the LLM must always provide; the per-type map is exhaustiveness-guarded against `BuildingBlockType` so adding a new
+    type upstream without a schema breaks the build. The functionality description carries the real UI5 version
+    constraints (RichTextEditor and RichTextEditorButtonGroups require UI5 >= 1.117.0; Page requires >= 1.136.0 basic /
+
+    > = 1.145.0 full layout) and the universal OData V4 requirement. `get_functionality_details` enriches its response with
+    > the app's actual view/fragment files and their valid aggregation XPaths, so the client never has to read the XML. For
+    > Table, FilterBar and Form on an OData app it auto-writes the required UI annotation shell (`UI.LineItem` /
+    > `UI.SelectionFields` / `UI.FieldGroup`) when it is missing; failure to write the shell is non-fatal and surfaced as a
+    > warning. Client-supplied view/fragment paths are validated to stay inside the app root.
+    > `@sap-ux/fe-fpm-writer` now exports the `BuildingBlock` type, the `getFragmentAndViewFiles` /
+    > `getXPathStringsForXmlFile` discovery helpers, and `MIN_UI5_VERSION_RICH_TEXT_EDITOR`.
+    > `@sap-ux/fiori-docs-embeddings` adds `bb_macro_api.md` (generated from the `@public`-annotated `sap.fe` macro source
+    > by the new `build-bb-macro-docs` script and wired into the embeddings build) so `search_docs` can return building
+    > block property documentation. [[6ecb16c](https://github.com/SAP/open-ux-tools/commit/6ecb16c7f4a2b26742b36f80adc6a8d0e03cb0b4)]
+
+## 1.4.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-12
+
+#### Features
+
+- Enabled Replacing Standard Navigation in LR with navigation to an external app [[d1377b8](https://github.com/SAP/open-ux-tools/commit/d1377b8d249e4fec9c3a4d48020376adb46383df)]
+
+## 1.4.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-11-05
+
+#### Features
+
+- Add section for navigation to a newly created object page. [[b570d2f](https://github.com/SAP/open-ux-tools/commit/b570d2f32989dbc5ee92ed868c422fa33b8dfb45)]
+
+## 1.3.28
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-annotation-api 1.1.6 → 1.1.7
+- @sap-ux/i18n 1.0.6 → 1.0.7
+- @sap-ux/project-access 2.3.3 → 2.3.4
+
+## 1.3.27
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade i18next 26.3.6 → 26.5.11 [[d5e9708](https://github.com/SAP/open-ux-tools/commit/d5e9708d60338e575b72fa2dcd64af87120270ef)]
+
+#### Dependency Updates
+
+- Patch dependency updates (Oct 2026) — yaml 2.9.1, xpath 0.0.35, @xml-tools/ast 5.0.6, @xml-tools/parser 1.0.12, @sap-ux/annotation-converter 0.10.23, @sap-devx/feature-toggle-node 2.1.1, folder-hash 4.1.4, @fluentui/react 8.125.8 [[85d5e62](https://github.com/SAP/open-ux-tools/commit/85d5e62bcbc4f65601276277d028d340dc098eab)]
+
+#### Workspace Updates
+
+- @sap-ux/fiori-annotation-api 1.1.5 → 1.1.6
+- @sap-ux/project-access 2.3.2 → 2.3.3
+
+## 1.3.26
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.3.1 → 2.3.2
+- @sap-ux/fiori-annotation-api 1.1.4 → 1.1.5
+
+## 1.3.25
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-annotation-api 1.1.3 → 1.1.4
+- @sap-ux/i18n 1.0.5 → 1.0.6
+- @sap-ux/project-access 2.3.0 → 2.3.1
+
+## 1.3.24
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-14
+
+#### Bug Fixes
+
+- Replace \\bid regex boundary with negative lookbehind in isElementIdAvailable to prevent false positives on compound attributes like data-id [[33b98a5](https://github.com/SAP/open-ux-tools/commit/33b98a54ec2f1e2d937cdcd068017c76cc230080)]
+
+#### Bug Fixes
+
+- Resolve npm audit vulnerabilities — adm-zip 0.6.1, sanitize-html 2.17.7, @xmldom/xmldom 0.9.12, @sap/approuter 23.0.0, qs 6.16.0; add pnpm-workspace.yaml overrides for browserslist, hono, js-yaml, smol-toml, sharp, stream-json, csv-parse, pacote, and others; upgrade @modelcontextprotocol/sdk to 1.32.1 (GHSA-6qxp-vccf-f47h) [[33b98a5](https://github.com/SAP/open-ux-tools/commit/33b98a54ec2f1e2d937cdcd068017c76cc230080)]
+
+## 1.3.23
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-annotation-api 1.1.2 → 1.1.3
+
+## 1.3.22
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.2.2 → 2.3.0
+- @sap-ux/fiori-annotation-api 1.1.1 → 1.1.2
+
+## 1.3.21
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-08
+
+#### Bug Fixes
+
+- add stickySubheaderProvider to Page BB template to remove empty space between header and tab bar [[ce5ec7e](https://github.com/SAP/open-ux-tools/commit/ce5ec7e5b77e04ff2479007730c6e90a035b598a)]
+
+## 1.3.20
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/i18n 1.0.4 → 1.0.5
+- @sap-ux/project-access 2.2.1 → 2.2.2
+- @sap-ux/fiori-annotation-api 1.1.0 → 1.1.1
+
+## 1.3.19
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-annotation-api 1.0.28 → 1.1.0
+- @sap-ux/i18n 1.0.3 → 1.0.4
+- @sap-ux/project-access 2.2.0 → 2.2.1
+
+## 1.3.18
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.13 → 2.2.0
+- @sap-ux/fiori-annotation-api 1.0.27 → 1.0.28
+
+## 1.3.17
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-annotation-api 1.0.26 → 1.0.27
+
+## 1.3.16
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.12 → 2.1.13
+- @sap-ux/fiori-annotation-api 1.0.25 → 1.0.26
+
+## 1.3.15
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.11 → 2.1.12
+- @sap-ux/fiori-annotation-api 1.0.24 → 1.0.25
+- @sap-ux/i18n 1.0.2 → 1.0.3
+
+## 1.3.14
+
+### Patch Changes
+
+#### Dependency Updates
+
+- update dependencies [open-ux-odata] [[c0a9e6b](https://github.com/SAP/open-ux-tools/commit/c0a9e6b6f81bf1e24a2712e25dde08d72bd12604)]
+
+#### Workspace Updates
+
+- @sap-ux/fiori-annotation-api 1.0.23 → 1.0.24
+- @sap-ux/project-access 2.1.10 → 2.1.11
+
+## 1.3.13
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-06
+
+#### Bug Fixes
+
+- default aggregation path page building block for items aggregations [[63e8a93](https://github.com/SAP/open-ux-tools/commit/63e8a938100394679b623fb382dbaee383b64efc)]
+
+## 1.3.12
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-annotation-api 1.0.22 → 1.0.23
+
+## 1.3.11
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.9 → 2.1.10
+- @sap-ux/fiori-annotation-api 1.0.21 → 1.0.22
+
+## 1.3.10
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-annotation-api 1.0.20 → 1.0.21
+
+## 1.3.9
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-29
+
+#### Bug Fixes
+
+- Allow multiple aggregations to page BB except breadcrumbs and footer. [[4615b91](https://github.com/SAP/open-ux-tools/commit/4615b91b5351cc764a3af49ba3bb69383795715c)]
+
+## 1.3.8
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade semver 7.8.4 → 7.8.5 [[d0369f5](https://github.com/SAP/open-ux-tools/commit/d0369f5d61e5790453d39cb3119112b80d5cd006)]
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.8 → 2.1.9
+- @sap-ux/fiori-annotation-api 1.0.19 → 1.0.20
+
+## 1.3.7
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade i18next 25.10.10 → 26.3.6 [[28263d1](https://github.com/SAP/open-ux-tools/commit/28263d1cdcbb8599ee7b165c3482255b631604b8)]
+
+#### Release Date
+
+2026-07-23
+
+#### Workspace Updates
+
+- @sap-ux/fiori-annotation-api 1.0.18 → 1.0.19
+
+## 1.3.6
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.7 → 2.1.8
+- @sap-ux/fiori-annotation-api 1.0.17 → 1.0.18
+
+## 1.3.5
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-annotation-api 1.0.16 → 1.0.17
+
+## 1.3.4
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-21
+
+#### Bug Fixes
+
+- Add missing namespace prefixes to TEMPLATE_NAMESPACES for xmldom [[c143424](https://github.com/SAP/open-ux-tools/commit/c143424d9ed3332a3c4c8a61cbcda79e325c2b95)]
+
+## 1.3.3
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.6 → 2.1.7
+- @sap-ux/fiori-annotation-api 1.0.15 → 1.0.16
+
+## 1.3.2
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-20
+
+#### Bug Fixes
+
+- Use onError instead of errorHandler in DOMParser options for xmldom 0.9.x compatibility [[7249031](https://github.com/SAP/open-ux-tools/commit/7249031c3c38bcc8c8afe1d448fd49268a3f4695)]
+
+## 1.3.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-20
+
+#### Bug Fixes
+
+- Consolidate DOMParser instantiation behind getDOMParserOptions with correct errorHandler and xmlns support [[70ab106](https://github.com/SAP/open-ux-tools/commit/70ab106566883152b7483e96c297e5782a453e97)]
+
+## 1.3.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-07-16
+
+#### Features
+
+- Add option to create Page Building Block with full layout during app generation [[85b88aa](https://github.com/SAP/open-ux-tools/commit/85b88aa64241d65d7a0618222221281bae2e3e45)]
+
+## 1.2.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-15
+
+#### Bug Fixes
+
+- hide Page BB templateType prompt and default to basic when UI5 version is < 1.145.0 [[37a342f](https://github.com/SAP/open-ux-tools/commit/37a342f1995602638173bd358ba7b98e54f3d1d9)]
+
+## 1.2.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-07-14
+
+#### Features
+
+- Add standalone fragment generation support [[5d0eb12](https://github.com/SAP/open-ux-tools/commit/5d0eb12b95f71b9ee7556564c639b19e04ada60f)]
+
+## 1.1.7
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/logger 1.0.2 → 1.0.3
+- @sap-ux/fiori-annotation-api 1.0.14 → 1.0.15
+- @sap-ux/project-access 2.1.6 → 2.1.6
+
+## 1.1.6
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-annotation-api 1.0.13 → 1.0.14
+
+## 1.1.5
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-annotation-api 1.0.12 → 1.0.13
+- @sap-ux/project-access 2.1.5 → 2.1.6
+
+## 1.1.4
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Bulk upgrade of minor dependencies and devDependencies [[5ce779c](https://github.com/SAP/open-ux-tools/commit/5ce779c43ae81d9a4ed85414bfb6f0ca8f882afc)]
+
+#### Workspace Updates
+
+- @sap-ux/fiori-annotation-api 1.0.11 → 1.0.12
+- @sap-ux/project-access 2.1.4 → 2.1.5
+- @sap-ux/logger 1.0.1 → 1.0.2
+- @sap-ux/i18n 1.0.1 → 1.0.2
+
+## 1.1.3
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.3 → 2.1.4
+- @sap-ux/fiori-annotation-api 1.0.10 → 1.0.11
+
+## 1.1.2
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.2 → 2.1.3
+- @sap-ux/fiori-annotation-api 1.0.9 → 1.0.10
+
+## 1.1.1
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-annotation-api 1.0.8 → 1.0.9
+
+## 1.1.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-06-19
+
+#### Features
+
+- Add full template support for the Page building block with all 7 aggregations and controller stub generation [[5a4f633](https://github.com/SAP/open-ux-tools/commit/5a4f633fdd1a1c7d5415221c0863089e7e540aca)]
+
+## 1.0.8
+
+_Released: 2026-06-11T07:16:28Z_
+
+### Patch Changes
+
+- Updated dependencies [3443820]
+    - @sap-ux/fiori-annotation-api@1.0.8
+
+## 1.0.7
+
+_Released: 2026-06-10T09:57:42Z_
+
+### Patch Changes
+
+- @sap-ux/project-access@2.1.2
+- @sap-ux/fiori-annotation-api@1.0.7
+
+## 1.0.6
+
+_Released: 2026-06-09T19:59:54Z_
+
+### Patch Changes
+
+- @sap-ux/fiori-annotation-api@1.0.6
+
+## 1.0.5
+
+_Released: 2026-06-04T13:54:21Z_
+
+### Patch Changes
+
+- Updated dependencies [fff7490]
+    - @sap-ux/project-access@2.1.1
+    - @sap-ux/fiori-annotation-api@1.0.5
+
+## 1.0.4
+
+_Released: 2026-06-04T10:19:37Z_
+
+### Patch Changes
+
+- Updated dependencies [b326a9a]
+    - @sap-ux/project-access@2.1.0
+    - @sap-ux/fiori-annotation-api@1.0.4
+
+## 1.0.3
+
+_Released: 2026-06-03T14:58:37Z_
+
+### Patch Changes
+
+- 21a3de7: FIX: TypeScript type errors in test files (ESM migration follow-up)
+- Updated dependencies [21a3de7]
+    - @sap-ux/fiori-annotation-api@1.0.3
+    - @sap-ux/project-access@2.0.3
+    - @sap-ux/logger@1.0.1
+    - @sap-ux/i18n@1.0.1
+
+## 1.0.2
+
+_Released: 2026-06-03T13:52:44Z_
+
+### Patch Changes
+
+- @sap-ux/project-access@2.0.2
+- @sap-ux/fiori-annotation-api@1.0.2
+
+## 1.0.1
+
+_Released: 2026-06-01T15:15:26Z_
+
+### Patch Changes
+
+- Updated dependencies [aed799d]
+    - @sap-ux/project-access@2.0.1
+    - @sap-ux/fiori-annotation-api@1.0.1
+
+## 1.0.0
+
+_Released: 2026-05-30T20:54:07Z_
+
+### Major Changes
+
+- 32609a7: # Migration to ECMAScript Modules (ESM)
+
+    Packages in the SAP Open UX Tools monorepo have been migrated from CommonJS (CJS) to ECMAScript Modules (ESM) with NodeNext module resolution.
+
+    '@sap-ux/backend-proxy-middleware-cf' is experimental and will remain at major version 0.
+    '@sap-ux/generator-odata-downloader' is a top level yeoman generator and will remain as CJS until validation as ESM is done.
+
+    ## What Changed
+    - **Module System**: Most packages now use native ESM (`"type": "module"` in package.json)
+    - **TypeScript Configuration**: Updated to `module: "NodeNext"` and `moduleResolution: "NodeNext"`
+    - **Import Statements**: All relative imports now include explicit `.js` extensions (per ESM spec)
+    - **Build Output**: Generated JavaScript files are now ESM modules
+    - **Node.js Requirement**: Minimum Node.js version remains >=22.x
+
+    ### Jest Configuration (for Testing)
+
+    If your project tests code that imports these packages, update your Jest configuration:
+
+    ```js
+    export default {
+        extensionsToTreatAsEsm: ['.ts'],
+        transform: {
+            '^.+\\.ts$': ['ts-jest', { useESM: true }]
+        }
+    };
+    ```
+
+    And run Jest with: `NODE_OPTIONS='--experimental-vm-modules' jest`
+
+### Patch Changes
+
+- Updated dependencies [32609a7]
+    - @sap-ux/fiori-annotation-api@1.0.0
+    - @sap-ux/project-access@2.0.0
+    - @sap-ux/logger@1.0.0
+    - @sap-ux/i18n@1.0.0
+
 ## 0.44.3
+
+_Released: 2026-05-21T16:21:11Z_
 
 ### Patch Changes
 
@@ -9,12 +603,16 @@
 
 ## 0.44.2
 
+_Released: 2026-05-20T13:39:22Z_
+
 ### Patch Changes
 
 - Updated dependencies [2f1ece0]
     - @sap-ux/fiori-annotation-api@0.11.0
 
 ## 0.44.1
+
+_Released: 2026-05-19T15:16:46Z_
 
 ### Patch Changes
 
@@ -23,6 +621,8 @@
     - @sap-ux/fiori-annotation-api@0.10.1
 
 ## 0.44.0
+
+_Released: 2026-05-15T08:12:20Z_
 
 ### Minor Changes
 
@@ -38,6 +638,8 @@
 
 ## 0.43.30
 
+_Released: 2026-05-14T11:45:51Z_
+
 ### Patch Changes
 
 - 50a8ba5: chore: fresh release after workflow updates
@@ -49,6 +651,8 @@
 
 ## 0.43.29
 
+_Released: 2026-05-13T09:36:59Z_
+
 ### Patch Changes
 
 - Updated dependencies [21abda3]
@@ -57,12 +661,16 @@
 
 ## 0.43.28
 
+_Released: 2026-05-06T23:02:00Z_
+
 ### Patch Changes
 
 - @sap-ux/project-access@1.36.3
 - @sap-ux/fiori-annotation-api@0.9.48
 
 ## 0.43.27
+
+_Released: 2026-04-30T14:23:24Z_
 
 ### Patch Changes
 
@@ -74,6 +682,8 @@
 
 ## 0.43.26
 
+_Released: 2026-04-29T15:24:37Z_
+
 ### Patch Changes
 
 - 3945459: chore: upgrade @xmldom/xmldom 0.8.12 to 0.8.13 (security fix for XML injection vulnerabilities)
@@ -83,11 +693,15 @@
 
 ## 0.43.25
 
+_Released: 2026-04-28T12:02:15Z_
+
 ### Patch Changes
 
 - d45b5a4: fix(fpm-writer): custom form field view.xml update
 
 ## 0.43.24
+
+_Released: 2026-04-27T19:47:46Z_
 
 ### Patch Changes
 
@@ -99,12 +713,16 @@
 
 ## 0.43.23
 
+_Released: 2026-04-24T09:57:47Z_
+
 ### Patch Changes
 
 - Updated dependencies [52f6549]
     - @sap-ux/fiori-annotation-api@0.9.44
 
 ## 0.43.22
+
+_Released: 2026-04-23T12:54:21Z_
 
 ### Patch Changes
 
@@ -114,6 +732,8 @@
 
 ## 0.43.21
 
+_Released: 2026-04-14T12:35:35Z_
+
 ### Patch Changes
 
 - @sap-ux/project-access@1.35.20
@@ -121,11 +741,15 @@
 
 ## 0.43.20
 
+_Released: 2026-04-13T13:12:49Z_
+
 ### Patch Changes
 
 - 9700a95: feat(fpm-writer): Support custom fields for form building block
 
 ## 0.43.19
+
+_Released: 2026-04-08T13:10:18Z_
 
 ### Patch Changes
 
@@ -137,6 +761,8 @@
 
 ## 0.43.18
 
+_Released: 2026-04-01T11:49:37Z_
+
 ### Patch Changes
 
 - Updated dependencies [3291f6c]
@@ -144,6 +770,8 @@
     - @sap-ux/fiori-annotation-api@0.9.40
 
 ## 0.43.17
+
+_Released: 2026-03-30T22:24:11Z_
 
 ### Patch Changes
 
@@ -155,6 +783,8 @@
 
 ## 0.43.16
 
+_Released: 2026-03-26T20:06:10Z_
+
 ### Patch Changes
 
 - Updated dependencies [b66e827]
@@ -162,6 +792,8 @@
     - @sap-ux/fiori-annotation-api@0.9.38
 
 ## 0.43.15
+
+_Released: 2026-03-26T12:07:04Z_
 
 ### Patch Changes
 
@@ -177,6 +809,8 @@
 
 ## 0.43.14
 
+_Released: 2026-03-25T12:56:41Z_
+
 ### Patch Changes
 
 - Updated dependencies [f384ace]
@@ -185,11 +819,15 @@
 
 ## 0.43.13
 
+_Released: 2026-03-24T08:12:44Z_
+
 ### Patch Changes
 
 - 08f3a5c: Refactored createIdGenerator to use object parameters for reusing for v2 scenarios.
 
 ## 0.43.12
+
+_Released: 2026-03-20T16:07:49Z_
 
 ### Patch Changes
 
@@ -198,12 +836,16 @@
 
 ## 0.43.11
 
+_Released: 2026-03-18T14:50:43Z_
+
 ### Patch Changes
 
 - Updated dependencies [436cad8]
     - @sap-ux/fiori-annotation-api@0.9.34
 
 ## 0.43.10
+
+_Released: 2026-03-17T01:04:22Z_
 
 ### Patch Changes
 
@@ -212,6 +854,8 @@
 
 ## 0.43.9
 
+_Released: 2026-03-16T17:06:45Z_
+
 ### Patch Changes
 
 - Updated dependencies [dfa433e]
@@ -219,11 +863,15 @@
 
 ## 0.43.8
 
+_Released: 2026-03-11T16:49:00Z_
+
 ### Patch Changes
 
 - @sap-ux/fiori-annotation-api@0.9.31
 
 ## 0.43.7
+
+_Released: 2026-03-11T11:14:18Z_
 
 ### Patch Changes
 
@@ -231,11 +879,15 @@
 
 ## 0.43.6
 
+_Released: 2026-03-10T10:25:55Z_
+
 ### Patch Changes
 
 - 620ca53: fix: add control id for sap.fe.macros.table column
 
 ## 0.43.5
+
+_Released: 2026-03-10T07:46:29Z_
 
 ### Patch Changes
 
@@ -244,6 +896,8 @@
 
 ## 0.43.4
 
+_Released: 2026-03-05T16:08:22Z_
+
 ### Patch Changes
 
 - Updated dependencies [d834713]
@@ -251,6 +905,8 @@
     - @sap-ux/fiori-annotation-api@0.9.29
 
 ## 0.43.3
+
+_Released: 2026-03-05T12:30:25Z_
 
 ### Patch Changes
 
@@ -261,6 +917,8 @@
 
 ## 0.43.2
 
+_Released: 2026-03-04T22:42:20Z_
+
 ### Patch Changes
 
 - Updated dependencies [45d4797]
@@ -270,12 +928,16 @@
 
 ## 0.43.1
 
+_Released: 2026-03-04T14:39:10Z_
+
 ### Patch Changes
 
 - @sap-ux/project-access@1.35.11
 - @sap-ux/fiori-annotation-api@0.9.26
 
 ## 0.43.0
+
+_Released: 2026-03-04T10:34:42Z_
 
 ### Minor Changes
 
@@ -287,11 +949,15 @@
 
 ## 0.42.21
 
+_Released: 2026-03-04T09:03:38Z_
+
 ### Patch Changes
 
 - @sap-ux/fiori-annotation-api@0.9.25
 
 ## 0.42.20
+
+_Released: 2026-03-03T20:14:02Z_
 
 ### Patch Changes
 
@@ -299,11 +965,15 @@
 
 ## 0.42.19
 
+_Released: 2026-03-03T08:27:12Z_
+
 ### Patch Changes
 
 - 4af92b5: add node: proto prefix to imports
 
 ## 0.42.18
+
+_Released: 2026-02-27T15:42:39Z_
 
 ### Patch Changes
 
@@ -313,12 +983,16 @@
 
 ## 0.42.17
 
+_Released: 2026-02-26T10:46:59Z_
+
 ### Patch Changes
 
 - 6c993f3: fix: turn off i18next support notice
     - @sap-ux/fiori-annotation-api@0.9.23
 
 ## 0.42.16
+
+_Released: 2026-02-25T12:30:29Z_
 
 ### Patch Changes
 
@@ -328,12 +1002,16 @@
 
 ## 0.42.15
 
+_Released: 2026-02-23T22:35:31Z_
+
 ### Patch Changes
 
 - @sap-ux/project-access@1.35.9
 - @sap-ux/fiori-annotation-api@0.9.22
 
 ## 0.42.14
+
+_Released: 2026-02-23T19:07:48Z_
 
 ### Patch Changes
 
@@ -344,6 +1022,8 @@
 
 ## 0.42.13
 
+_Released: 2026-02-20T21:31:31Z_
+
 ### Patch Changes
 
 - @sap-ux/project-access@1.35.7
@@ -351,12 +1031,16 @@
 
 ## 0.42.12
 
+_Released: 2026-02-20T16:17:11Z_
+
 ### Patch Changes
 
 - cbd340a: fix(deps): update dependency i18next to v25.8.12
     - @sap-ux/fiori-annotation-api@0.9.19
 
 ## 0.42.11
+
+_Released: 2026-02-20T13:46:55Z_
 
 ### Patch Changes
 
@@ -368,6 +1052,8 @@
 
 ## 0.42.10
 
+_Released: 2026-02-18T21:45:35Z_
+
 ### Patch Changes
 
 - Updated dependencies [d57cc47]
@@ -376,11 +1062,15 @@
 
 ## 0.42.9
 
+_Released: 2026-02-17T01:38:30Z_
+
 ### Patch Changes
 
 - @sap-ux/fiori-annotation-api@0.9.16
 
 ## 0.42.8
+
+_Released: 2026-02-16T16:08:11Z_
 
 ### Patch Changes
 
@@ -388,6 +1078,8 @@
 - @sap-ux/fiori-annotation-api@0.9.15
 
 ## 0.42.7
+
+_Released: 2026-02-13T09:54:38Z_
 
 ### Patch Changes
 
@@ -397,6 +1089,8 @@
 
 ## 0.42.6
 
+_Released: 2026-02-12T10:29:41Z_
+
 ### Patch Changes
 
 - Updated dependencies [d2b772d]
@@ -405,6 +1099,8 @@
 
 ## 0.42.5
 
+_Released: 2026-02-10T23:50:15Z_
+
 ### Patch Changes
 
 - @sap-ux/fiori-annotation-api@0.9.12
@@ -412,12 +1108,16 @@
 
 ## 0.42.4
 
+_Released: 2026-02-10T21:03:43Z_
+
 ### Patch Changes
 
 - Updated dependencies [3795bb2]
     - @sap-ux/fiori-annotation-api@0.9.11
 
 ## 0.42.3
+
+_Released: 2026-02-09T11:21:43Z_
 
 ### Patch Changes
 
@@ -427,6 +1127,8 @@
 
 ## 0.42.2
 
+_Released: 2026-02-05T20:09:45Z_
+
 ### Patch Changes
 
 - Updated dependencies [467e6aa]
@@ -434,6 +1136,8 @@
     - @sap-ux/fiori-annotation-api@0.9.9
 
 ## 0.42.1
+
+_Released: 2026-02-05T08:38:39Z_
 
 ### Patch Changes
 
@@ -444,11 +1148,15 @@
 
 ## 0.42.0
 
+_Released: 2026-02-04T15:08:32Z_
+
 ### Minor Changes
 
 - 8064811: feat(fpm-writer): Form building block
 
 ## 0.41.6
+
+_Released: 2026-02-03T15:42:23Z_
 
 ### Patch Changes
 
@@ -457,6 +1165,8 @@
     - @sap-ux/fiori-annotation-api@0.9.7
 
 ## 0.41.5
+
+_Released: 2026-01-30T16:59:27Z_
 
 ### Patch Changes
 
@@ -467,11 +1177,15 @@
 
 ## 0.41.4
 
+_Released: 2026-01-30T10:53:11Z_
+
 ### Patch Changes
 
 - 1c6288d: Edit i18n text titles for RTE Button Groups
 
 ## 0.41.3
+
+_Released: 2026-01-29T14:02:02Z_
 
 ### Patch Changes
 
@@ -481,11 +1195,15 @@
 
 ## 0.41.2
 
+_Released: 2026-01-29T13:15:38Z_
+
 ### Patch Changes
 
 - 22fbaef: Add titles to RTE button groups options
 
 ## 0.41.1
+
+_Released: 2026-01-23T22:30:10Z_
 
 ### Patch Changes
 
@@ -494,17 +1212,23 @@
 
 ## 0.41.0
 
+_Released: 2026-01-20T12:48:23Z_
+
 ### Minor Changes
 
 - 68b0e54: Add Rich Text Editor Button Groups support
 
 ## 0.40.12
 
+_Released: 2026-01-20T12:04:18Z_
+
 ### Patch Changes
 
 - cc8871a: fix(fpm-writer): fix width issue with custom filter field in filter bar
 
 ## 0.40.11
+
+_Released: 2026-01-16T13:57:39Z_
 
 ### Patch Changes
 
@@ -514,6 +1238,8 @@
 
 ## 0.40.10
 
+_Released: 2026-01-15T14:14:39Z_
+
 ### Patch Changes
 
 - Updated dependencies [55ac9f0]
@@ -522,12 +1248,16 @@
 
 ## 0.40.9
 
+_Released: 2026-01-15T12:16:35Z_
+
 ### Patch Changes
 
 - Updated dependencies [4d6695f]
     - @sap-ux/fiori-annotation-api@0.9.1
 
 ## 0.40.8
+
+_Released: 2026-01-14T17:56:49Z_
 
 ### Patch Changes
 
@@ -538,11 +1268,15 @@
 
 ## 0.40.7
 
+_Released: 2026-01-13T10:50:18Z_
+
 ### Patch Changes
 
 - 38e4633: Fixed: Generation of custom extensions fails when the path to fpm-writer contains parentheses (e.g. myApp(1)), causing a `Trying to copy from a source that does not exist` error.
 
 ## 0.40.6
+
+_Released: 2026-01-12T12:01:34Z_
 
 ### Patch Changes
 
@@ -552,11 +1286,15 @@
 
 ## 0.40.5
 
+_Released: 2026-01-12T09:10:27Z_
+
 ### Patch Changes
 
 - @sap-ux/fiori-annotation-api@0.8.5
 
 ## 0.40.4
+
+_Released: 2026-01-09T11:35:48Z_
 
 ### Patch Changes
 
@@ -567,6 +1305,8 @@
 
 ## 0.40.3
 
+_Released: 2026-01-08T17:12:17Z_
+
 ### Patch Changes
 
 - 2204ad3: fix(deps): update dependencies @sap-ux/annotation-converter to v0.10.19 and @sap-ux/vocabularies-types to v0.14.5
@@ -574,6 +1314,8 @@
     - @sap-ux/fiori-annotation-api@0.8.3
 
 ## 0.40.2
+
+_Released: 2025-12-19T11:36:13Z_
 
 ### Patch Changes
 
@@ -585,6 +1327,8 @@
 
 ## 0.40.1
 
+_Released: 2025-12-18T21:05:02Z_
+
 ### Patch Changes
 
 - a9471d0: fix sonar issues
@@ -594,6 +1338,8 @@
     - @sap-ux/logger@0.7.3
 
 ## 0.40.0
+
+_Released: 2025-12-18T08:56:52Z_
 
 ### Minor Changes
 
@@ -606,6 +1352,8 @@
 
 ## 0.39.33
 
+_Released: 2025-12-15T10:50:50Z_
+
 ### Patch Changes
 
 - 4ecfbe2: Chore - upgrade eslint devDependenies, convert to flat config and fix lint issues.
@@ -616,6 +1364,8 @@
 
 ## 0.39.32
 
+_Released: 2025-12-12T12:38:21Z_
+
 ### Patch Changes
 
 - Updated dependencies [7217d7d]
@@ -623,6 +1373,8 @@
     - @sap-ux/fiori-annotation-api@0.7.22
 
 ## 0.39.31
+
+_Released: 2025-12-10T20:04:51Z_
 
 ### Patch Changes
 
@@ -632,6 +1384,8 @@
 
 ## 0.39.30
 
+_Released: 2025-12-10T09:08:56Z_
+
 ### Patch Changes
 
 - Updated dependencies [985223a]
@@ -640,6 +1394,8 @@
 
 ## 0.39.29
 
+_Released: 2025-12-08T17:56:48Z_
+
 ### Patch Changes
 
 - Updated dependencies [037a430]
@@ -647,11 +1403,15 @@
 
 ## 0.39.28
 
+_Released: 2025-12-05T13:00:51Z_
+
 ### Patch Changes
 
 - 34acfaf: Fix/fe fpm writer/custom filter fields in multiple filterbar
 
 ## 0.39.27
+
+_Released: 2025-12-04T10:42:12Z_
 
 ### Patch Changes
 
@@ -661,17 +1421,23 @@
 
 ## 0.39.26
 
+_Released: 2025-12-04T09:20:42Z_
+
 ### Patch Changes
 
 - @sap-ux/fiori-annotation-api@0.7.17
 
 ## 0.39.25
 
+_Released: 2025-12-01T15:39:41Z_
+
 ### Patch Changes
 
 - 8b334e5: fix(fpm-writer): unique ids in fragment
 
 ## 0.39.24
+
+_Released: 2025-11-27T14:58:09Z_
 
 ### Patch Changes
 
@@ -681,11 +1447,15 @@
 
 ## 0.39.23
 
+_Released: 2025-11-26T16:43:07Z_
+
 ### Patch Changes
 
 - 796129a: feat: Action Menu generator added to the FE fpm-writer
 
 ## 0.39.22
+
+_Released: 2025-11-26T14:39:37Z_
 
 ### Patch Changes
 
@@ -694,6 +1464,8 @@
 
 ## 0.39.21
 
+_Released: 2025-11-26T00:12:42Z_
+
 ### Patch Changes
 
 - 597834f: chore - update "@sap-ux/annotation-converter": "0.10.8" and "@sap-ux/vocabularies-types": "0.13.1"
@@ -701,6 +1473,8 @@
     - @sap-ux/fiori-annotation-api@0.7.14
 
 ## 0.39.20
+
+_Released: 2025-11-24T12:45:14Z_
 
 ### Patch Changes
 
@@ -711,17 +1485,23 @@
 
 ## 0.39.19
 
+_Released: 2025-11-15T17:01:08Z_
+
 ### Patch Changes
 
 - 5ed4083: feat(fpm-writer): Filter building block custom filter
 
 ## 0.39.18
 
+_Released: 2025-11-14T07:12:13Z_
+
 ### Patch Changes
 
 - 3d3c18b: Fix: `generateCustomField` now includes the `core:require` attribute with the handler file in new fragment files when `eventHandler` is set.
 
 ## 0.39.17
+
+_Released: 2025-11-05T06:53:42Z_
 
 ### Patch Changes
 
@@ -733,6 +1513,8 @@
 
 ## 0.39.16
 
+_Released: 2025-11-04T14:07:00Z_
+
 ### Patch Changes
 
 - Updated dependencies [271847c]
@@ -740,11 +1522,15 @@
 
 ## 0.39.15
 
+_Released: 2025-10-28T11:21:49Z_
+
 ### Patch Changes
 
 - 0cff26e: Added new API method `generateCustomField` to support custom field generation.
 
 ## 0.39.14
+
+_Released: 2025-10-27T13:41:31Z_
 
 ### Patch Changes
 
@@ -754,11 +1540,15 @@
 
 ## 0.39.13
 
+_Released: 2025-10-22T18:56:41Z_
+
 ### Patch Changes
 
 - fa9580c: chore - Rimraf upgrade
 
 ## 0.39.12
+
+_Released: 2025-10-22T09:32:12Z_
 
 ### Patch Changes
 
@@ -768,6 +1558,8 @@
 
 ## 0.39.11
 
+_Released: 2025-10-21T07:47:50Z_
+
 ### Patch Changes
 
 - Updated dependencies [c5d7915]
@@ -776,11 +1568,15 @@
 
 ## 0.39.10
 
+_Released: 2025-10-15T14:30:03Z_
+
 ### Patch Changes
 
 - 6debb89: incorrect entity list rich text editor fix
 
 ## 0.39.9
+
+_Released: 2025-10-15T11:57:34Z_
 
 ### Patch Changes
 
@@ -788,11 +1584,15 @@
 
 ## 0.39.8
 
+_Released: 2025-10-14T21:48:08Z_
+
 ### Patch Changes
 
 - 43dc48c: Add custom columns for building blocks
 
 ## 0.39.7
+
+_Released: 2025-10-14T14:20:59Z_
 
 ### Patch Changes
 
@@ -801,6 +1601,8 @@
 
 ## 0.39.6
 
+_Released: 2025-10-10T12:22:06Z_
+
 ### Patch Changes
 
 - @sap-ux/project-access@1.32.4
@@ -808,12 +1610,16 @@
 
 ## 0.39.5
 
+_Released: 2025-10-08T13:16:50Z_
+
 ### Patch Changes
 
 - Updated dependencies [376daf5]
     - @sap-ux/fiori-annotation-api@0.7.4
 
 ## 0.39.4
+
+_Released: 2025-10-06T17:09:01Z_
 
 ### Patch Changes
 
@@ -824,6 +1630,8 @@
 
 ## 0.39.3
 
+_Released: 2025-10-06T10:53:53Z_
+
 ### Patch Changes
 
 - @sap-ux/project-access@1.32.2
@@ -831,11 +1639,15 @@
 
 ## 0.39.2
 
+_Released: 2025-09-29T12:29:29Z_
+
 ### Patch Changes
 
 - 99ec164: Remove button group configuration from Rich Text Editor template for initial version
 
 ## 0.39.1
+
+_Released: 2025-09-26T12:52:39Z_
 
 ### Patch Changes
 
@@ -844,17 +1656,23 @@
 
 ## 0.39.0
 
+_Released: 2025-09-26T11:12:01Z_
+
 ### Minor Changes
 
 - 1276258: Add support for Rich text editor
 
 ## 0.38.11
 
+_Released: 2025-09-25T12:07:53Z_
+
 ### Patch Changes
 
 - d553f8e: Binding Context Type Choices Should Be Alphabetically Ordered
 
 ## 0.38.10
+
+_Released: 2025-09-23T16:06:33Z_
 
 ### Patch Changes
 
@@ -863,12 +1681,16 @@
 
 ## 0.38.9
 
+_Released: 2025-09-19T16:36:41Z_
+
 ### Patch Changes
 
 - @sap-ux/fiori-annotation-api@0.6.23
 - @sap-ux/project-access@1.32.1
 
 ## 0.38.8
+
+_Released: 2025-09-19T00:44:48Z_
 
 ### Patch Changes
 
@@ -878,6 +1700,8 @@
 
 ## 0.38.7
 
+_Released: 2025-09-18T07:30:28Z_
+
 ### Patch Changes
 
 - Updated dependencies [c385a76]
@@ -886,11 +1710,15 @@
 
 ## 0.38.6
 
+_Released: 2025-09-16T20:04:56Z_
+
 ### Patch Changes
 
 - @sap-ux/fiori-annotation-api@0.6.20
 
 ## 0.38.5
+
+_Released: 2025-09-16T06:28:11Z_
 
 ### Patch Changes
 
@@ -899,6 +1727,8 @@
 
 ## 0.38.4
 
+_Released: 2025-09-12T07:38:54Z_
+
 ### Patch Changes
 
 - Updated dependencies [a6ff2aa]
@@ -906,17 +1736,23 @@
 
 ## 0.38.3
 
+_Released: 2025-09-09T08:01:21Z_
+
 ### Patch Changes
 
 - 080480a: Update EJS templates for JavaScript and TypeScript event handlers: parameters are updated based on documentation/examples and JSDoc comments are generated accordingly.
 
 ## 0.38.2
 
+_Released: 2025-08-29T18:55:54Z_
+
 ### Patch Changes
 
 - b3e95fb: add UI5 version check and warning for custom page building block generation
 
 ## 0.38.1
+
+_Released: 2025-08-28T13:37:07Z_
 
 ### Patch Changes
 
@@ -925,17 +1761,23 @@
 
 ## 0.38.0
 
+_Released: 2025-08-20T09:55:47Z_
+
 ### Minor Changes
 
 - 43f94eb: Add support for automatically including a Page Building Block when generating a custom page
 
 ## 0.37.3
 
+_Released: 2025-08-19T12:23:05Z_
+
 ### Patch Changes
 
 - @sap-ux/fiori-annotation-api@0.6.16
 
 ## 0.37.2
+
+_Released: 2025-08-14T14:36:13Z_
 
 ### Patch Changes
 
@@ -944,6 +1786,8 @@
 
 ## 0.37.1
 
+_Released: 2025-08-13T10:00:10Z_
+
 ### Patch Changes
 
 - @sap-ux/fiori-annotation-api@0.6.14
@@ -951,11 +1795,15 @@
 
 ## 0.37.0
 
+_Released: 2025-08-12T07:55:40Z_
+
 ### Minor Changes
 
 - 69cfbe3: add support for checked property in Select choices for default selection
 
 ## 0.36.1
+
+_Released: 2025-08-07T14:27:31Z_
 
 ### Patch Changes
 
@@ -963,11 +1811,15 @@
 
 ## 0.36.0
 
+_Released: 2025-08-05T13:27:24Z_
+
 ### Minor Changes
 
 - f81c86b: Add Page building block support to fpm writer
 
 ## 0.35.15
+
+_Released: 2025-08-01T09:39:39Z_
 
 ### Patch Changes
 
@@ -976,12 +1828,16 @@
 
 ## 0.35.14
 
+_Released: 2025-07-30T19:33:46Z_
+
 ### Patch Changes
 
 - @sap-ux/project-access@1.30.9
 - @sap-ux/fiori-annotation-api@0.6.12
 
 ## 0.35.13
+
+_Released: 2025-07-28T22:57:52Z_
 
 ### Patch Changes
 
@@ -991,6 +1847,8 @@
 
 ## 0.35.12
 
+_Released: 2025-07-28T21:20:33Z_
+
 ### Patch Changes
 
 - 2cae662: fix(deps): update dependency @sap-ux/annotation-converter to v0.10.3
@@ -998,6 +1856,8 @@
     - @sap-ux/fiori-annotation-api@0.6.10
 
 ## 0.35.11
+
+_Released: 2025-07-08T12:06:04Z_
 
 ### Patch Changes
 
@@ -1007,6 +1867,8 @@
 
 ## 0.35.10
 
+_Released: 2025-07-04T15:18:17Z_
+
 ### Patch Changes
 
 - 69f62ec: i18next upgrade to 25.3.0
@@ -1014,12 +1876,16 @@
 
 ## 0.35.9
 
+_Released: 2025-07-04T09:34:59Z_
+
 ### Patch Changes
 
 - @sap-ux/project-access@1.30.6
 - @sap-ux/fiori-annotation-api@0.6.7
 
 ## 0.35.8
+
+_Released: 2025-07-03T12:14:55Z_
 
 ### Patch Changes
 
@@ -1029,6 +1895,8 @@
 
 ## 0.35.7
 
+_Released: 2025-06-27T16:39:38Z_
+
 ### Patch Changes
 
 - Updated dependencies [f75b89d]
@@ -1037,12 +1905,16 @@
 
 ## 0.35.6
 
+_Released: 2025-06-24T07:18:46Z_
+
 ### Patch Changes
 
 - @sap-ux/project-access@1.30.3
 - @sap-ux/fiori-annotation-api@0.6.4
 
 ## 0.35.5
+
+_Released: 2025-06-17T14:16:05Z_
 
 ### Patch Changes
 
@@ -1051,17 +1923,23 @@
 
 ## 0.35.4
 
+_Released: 2025-06-16T13:15:49Z_
+
 ### Patch Changes
 
 - @sap-ux/fiori-annotation-api@0.6.2
 
 ## 0.35.3
 
+_Released: 2025-06-12T12:47:49Z_
+
 ### Patch Changes
 
 - @sap-ux/fiori-annotation-api@0.6.1
 
 ## 0.35.2
+
+_Released: 2025-06-10T11:56:07Z_
 
 ### Patch Changes
 
@@ -1070,17 +1948,23 @@
 
 ## 0.35.1
 
+_Released: 2025-06-10T10:19:01Z_
+
 ### Patch Changes
 
 - @sap-ux/fiori-annotation-api@0.5.8
 
 ## 0.35.0
 
+_Released: 2025-06-06T12:32:43Z_
+
 ### Minor Changes
 
 - ccd85c8: Support 'sap.fe.ariba' dependency for new pages'. If the dependency is listed in the manifest, it will be used as the template(property "name") for new LR and OP pages.
 
 ## 0.34.3
+
+_Released: 2025-05-30T07:18:36Z_
 
 ### Patch Changes
 
@@ -1089,6 +1973,8 @@
 
 ## 0.34.2
 
+_Released: 2025-05-23T13:07:21Z_
+
 ### Patch Changes
 
 - Updated dependencies [e605d30]
@@ -1096,12 +1982,16 @@
 
 ## 0.34.1
 
+_Released: 2025-05-15T13:36:04Z_
+
 ### Patch Changes
 
 - @sap-ux/project-access@1.30.1
 - @sap-ux/fiori-annotation-api@0.5.5
 
 ## 0.34.0
+
+_Released: 2025-05-14T22:35:53Z_
 
 ### Minor Changes
 
@@ -1115,12 +2005,16 @@
 
 ## 0.33.29
 
+_Released: 2025-05-14T15:30:12Z_
+
 ### Patch Changes
 
 - Updated dependencies [aeb23b0]
     - @sap-ux/fiori-annotation-api@0.5.3
 
 ## 0.33.28
+
+_Released: 2025-05-05T13:48:20Z_
 
 ### Patch Changes
 
@@ -1130,12 +2024,16 @@
 
 ## 0.33.27
 
+_Released: 2025-04-29T08:08:36Z_
+
 ### Patch Changes
 
 - Updated dependencies [2024a9f]
     - @sap-ux/fiori-annotation-api@0.5.1
 
 ## 0.33.26
+
+_Released: 2025-04-28T07:24:41Z_
 
 ### Patch Changes
 
@@ -1144,12 +2042,16 @@
 
 ## 0.33.25
 
+_Released: 2025-04-24T15:01:01Z_
+
 ### Patch Changes
 
 - @sap-ux/project-access@1.29.21
 - @sap-ux/fiori-annotation-api@0.4.27
 
 ## 0.33.24
+
+_Released: 2025-04-23T15:22:38Z_
 
 ### Patch Changes
 
@@ -1159,6 +2061,8 @@
 
 ## 0.33.23
 
+_Released: 2025-04-23T13:59:14Z_
+
 ### Patch Changes
 
 - @sap-ux/project-access@1.29.19
@@ -1166,17 +2070,23 @@
 
 ## 0.33.22
 
+_Released: 2025-04-22T12:39:21Z_
+
 ### Patch Changes
 
 - 8b035bd: Method "generateObjectPage": Incorrect 'controlAggregation' applied when a new Object Page is added and FCL is enabled
 
 ## 0.33.21
 
+_Released: 2025-04-16T13:54:40Z_
+
 ### Patch Changes
 
 - @sap-ux/fiori-annotation-api@0.4.24
 
 ## 0.33.20
+
+_Released: 2025-04-16T12:27:23Z_
 
 ### Patch Changes
 
@@ -1185,12 +2095,16 @@
 
 ## 0.33.19
 
+_Released: 2025-03-20T17:18:47Z_
+
 ### Patch Changes
 
 - Updated dependencies [d873cbd]
     - @sap-ux/fiori-annotation-api@0.4.22
 
 ## 0.33.18
+
+_Released: 2025-03-19T08:54:25Z_
 
 ### Patch Changes
 
@@ -1200,6 +2114,8 @@
 
 ## 0.33.17
 
+_Released: 2025-03-18T09:41:03Z_
+
 ### Patch Changes
 
 - @sap-ux/project-access@1.29.17
@@ -1207,12 +2123,16 @@
 
 ## 0.33.16
 
+_Released: 2025-03-10T20:40:35Z_
+
 ### Patch Changes
 
 - @sap-ux/fiori-annotation-api@0.4.19
 - @sap-ux/project-access@1.29.16
 
 ## 0.33.15
+
+_Released: 2025-03-06T16:16:20Z_
 
 ### Patch Changes
 
@@ -1222,12 +2142,16 @@
 
 ## 0.33.14
 
+_Released: 2025-03-05T12:32:21Z_
+
 ### Patch Changes
 
 - Updated dependencies [282dd9a]
     - @sap-ux/fiori-annotation-api@0.4.17
 
 ## 0.33.13
+
+_Released: 2025-03-05T11:16:53Z_
 
 ### Patch Changes
 
@@ -1237,12 +2161,16 @@
 
 ## 0.33.12
 
+_Released: 2025-03-05T09:14:02Z_
+
 ### Patch Changes
 
 - @sap-ux/project-access@1.29.13
 - @sap-ux/fiori-annotation-api@0.4.15
 
 ## 0.33.11
+
+_Released: 2025-03-04T08:55:15Z_
 
 ### Patch Changes
 
@@ -1252,6 +2180,8 @@
 
 ## 0.33.10
 
+_Released: 2025-02-28T15:10:48Z_
+
 ### Patch Changes
 
 - Updated dependencies [0f35b4b]
@@ -1260,6 +2190,8 @@
 
 ## 0.33.9
 
+_Released: 2025-02-28T14:22:29Z_
+
 ### Patch Changes
 
 - Updated dependencies [d443dde]
@@ -1267,12 +2199,16 @@
 
 ## 0.33.8
 
+_Released: 2025-02-27T14:15:03Z_
+
 ### Patch Changes
 
 - @sap-ux/project-access@1.29.10
 - @sap-ux/fiori-annotation-api@0.4.11
 
 ## 0.33.7
+
+_Released: 2025-02-27T08:22:17Z_
 
 ### Patch Changes
 
@@ -1282,11 +2218,15 @@
 
 ## 0.33.6
 
+_Released: 2025-02-21T13:25:12Z_
+
 ### Patch Changes
 
 - 0c37c3d: Added support for 'showClearButton', 'showMessages', and 'liveMode' properties in FilterBar building block generation.
 
 ## 0.33.5
+
+_Released: 2025-02-17T13:42:22Z_
 
 ### Patch Changes
 
@@ -1296,6 +2236,8 @@
 
 ## 0.33.4
 
+_Released: 2025-02-13T10:58:34Z_
+
 ### Patch Changes
 
 - Updated dependencies [2c0d657]
@@ -1304,11 +2246,15 @@
 
 ## 0.33.3
 
+_Released: 2025-02-11T12:08:20Z_
+
 ### Patch Changes
 
 - @sap-ux/fiori-annotation-api@0.4.7
 
 ## 0.33.2
+
+_Released: 2025-02-10T08:52:20Z_
 
 ### Patch Changes
 
@@ -1317,6 +2263,8 @@
 
 ## 0.33.1
 
+_Released: 2025-02-07T19:58:32Z_
+
 ### Patch Changes
 
 - @sap-ux/project-access@1.29.6
@@ -1324,11 +2272,15 @@
 
 ## 0.33.0
 
+_Released: 2025-02-07T07:55:32Z_
+
 ### Minor Changes
 
 - aaaf046: update validateBasePath to use dynamic webapp path from manifest.json instead of hardcoded value
 
 ## 0.32.4
+
+_Released: 2025-02-05T17:08:20Z_
 
 ### Patch Changes
 
@@ -1336,6 +2288,8 @@
 - @sap-ux/fiori-annotation-api@0.4.4
 
 ## 0.32.3
+
+_Released: 2025-02-04T15:39:07Z_
 
 ### Patch Changes
 
@@ -1345,12 +2299,16 @@
 
 ## 0.32.2
 
+_Released: 2025-01-31T16:09:34Z_
+
 ### Patch Changes
 
 - Updated dependencies [1f0bb25]
     - @sap-ux/fiori-annotation-api@0.4.2
 
 ## 0.32.1
+
+_Released: 2025-01-30T10:04:50Z_
 
 ### Patch Changes
 
@@ -1359,6 +2317,8 @@
     - @sap-ux/fiori-annotation-api@0.4.1
 
 ## 0.32.0
+
+_Released: 2025-01-28T14:20:43Z_
 
 ### Minor Changes
 
@@ -1371,6 +2331,8 @@
 
 ## 0.31.27
 
+_Released: 2025-01-28T09:20:06Z_
+
 ### Patch Changes
 
 - Updated dependencies [93ef8c1]
@@ -1379,12 +2341,16 @@
 
 ## 0.31.26
 
+_Released: 2025-01-27T18:57:16Z_
+
 ### Patch Changes
 
 - @sap-ux/project-access@1.29.1
 - @sap-ux/fiori-annotation-api@0.3.7
 
 ## 0.31.25
+
+_Released: 2025-01-16T02:22:29Z_
 
 ### Patch Changes
 
@@ -1394,11 +2360,15 @@
 
 ## 0.31.24
 
+_Released: 2025-01-15T13:31:47Z_
+
 ### Patch Changes
 
 - @sap-ux/fiori-annotation-api@0.3.5
 
 ## 0.31.23
+
+_Released: 2024-12-17T15:31:53Z_
 
 ### Patch Changes
 
@@ -1408,6 +2378,8 @@
 
 ## 0.31.22
 
+_Released: 2024-12-06T21:07:01Z_
+
 ### Patch Changes
 
 - Updated dependencies [e93797a]
@@ -1416,6 +2388,8 @@
 
 ## 0.31.21
 
+_Released: 2024-12-04T09:13:08Z_
+
 ### Patch Changes
 
 - Updated dependencies [7d61e58]
@@ -1423,12 +2397,16 @@
 
 ## 0.31.20
 
+_Released: 2024-12-02T16:28:38Z_
+
 ### Patch Changes
 
 - @sap-ux/project-access@1.28.8
 - @sap-ux/fiori-annotation-api@0.3.1
 
 ## 0.31.19
+
+_Released: 2024-11-25T12:18:22Z_
 
 ### Patch Changes
 
@@ -1438,6 +2416,8 @@
 
 ## 0.31.18
 
+_Released: 2024-11-18T20:38:37Z_
+
 ### Patch Changes
 
 - @sap-ux/project-access@1.28.7
@@ -1445,12 +2425,16 @@
 
 ## 0.31.17
 
+_Released: 2024-11-13T15:30:16Z_
+
 ### Patch Changes
 
 - Updated dependencies [0235973]
     - @sap-ux/fiori-annotation-api@0.2.16
 
 ## 0.31.16
+
+_Released: 2024-11-08T08:58:34Z_
 
 ### Patch Changes
 
@@ -1460,11 +2444,15 @@
 
 ## 0.31.15
 
+_Released: 2024-11-06T09:55:42Z_
+
 ### Patch Changes
 
 - a52de73: Update the "header" question in the Table building block prompt to include i18n annotation information for the translation entry.
 
 ## 0.31.14
+
+_Released: 2024-11-05T21:46:19Z_
 
 ### Patch Changes
 
@@ -1472,6 +2460,8 @@
 - @sap-ux/fiori-annotation-api@0.2.14
 
 ## 0.31.13
+
+_Released: 2024-11-05T13:50:29Z_
 
 ### Patch Changes
 
@@ -1481,6 +2471,8 @@
 
 ## 0.31.12
 
+_Released: 2024-10-31T07:40:48Z_
+
 ### Patch Changes
 
 - Updated dependencies [42f13eb]
@@ -1489,11 +2481,15 @@
 
 ## 0.31.11
 
+_Released: 2024-10-22T09:42:10Z_
+
 ### Patch Changes
 
 - @sap-ux/fiori-annotation-api@0.2.11
 
 ## 0.31.10
+
+_Released: 2024-10-16T08:21:13Z_
 
 ### Patch Changes
 
@@ -1503,6 +2499,8 @@
 
 ## 0.31.9
 
+_Released: 2024-10-14T21:48:37Z_
+
 ### Patch Changes
 
 - Updated dependencies [64e037d]
@@ -1510,6 +2508,8 @@
     - @sap-ux/fiori-annotation-api@0.2.9
 
 ## 0.31.8
+
+_Released: 2024-10-14T16:41:16Z_
 
 ### Patch Changes
 
@@ -1519,6 +2519,8 @@
 
 ## 0.31.7
 
+_Released: 2024-10-08T10:16:01Z_
+
 ### Patch Changes
 
 - Updated dependencies [eb74890]
@@ -1527,11 +2529,15 @@
 
 ## 0.31.6
 
+_Released: 2024-10-04T15:21:13Z_
+
 ### Patch Changes
 
 - @sap-ux/fiori-annotation-api@0.2.6
 
 ## 0.31.5
+
+_Released: 2024-10-02T14:28:15Z_
 
 ### Patch Changes
 
@@ -1541,11 +2547,15 @@
 
 ## 0.31.4
 
+_Released: 2024-09-27T11:06:11Z_
+
 ### Patch Changes
 
 - 05b554d: Bulding block prompts. Mark table header question as translatable input
 
 ## 0.31.3
+
+_Released: 2024-09-23T10:02:33Z_
 
 ### Patch Changes
 
@@ -1554,11 +2564,15 @@
 
 ## 0.31.2
 
+_Released: 2024-09-20T09:25:45Z_
+
 ### Patch Changes
 
 - a18d4a2: Added property `allowAutoAddDependencyLib` to the building block API. This property allows turning off the automatic addition of the 'sap.fe.macros' library to the 'manifest.json' file under library dependencies (`"sap.ui5"/"dependencies"/"libs"`). The default value is `true`.
 
 ## 0.31.1
+
+_Released: 2024-09-18T14:01:49Z_
 
 ### Patch Changes
 
@@ -1568,6 +2582,8 @@
 
 ## 0.31.0
 
+_Released: 2024-09-17T11:06:43Z_
+
 ### Minor Changes
 
 - 327ebec: Divide chart, filter bar and table building block prompts questions into groups, add Manifest Change group.
@@ -1575,11 +2591,15 @@
 
 ## 0.30.0
 
+_Released: 2024-09-16T06:19:30Z_
+
 ### Minor Changes
 
 - ddc2d84: The API methods `generateCustomAction`, `generateCustomColumn`, `generateControllerExtension`, `generateCustomFilter`, `generateCustomHeaderSection`, `generateCustomSection`, `generateCustomSubSection`, `generateCustomPage`, `generateObjectPage`, `generateListReport`, `enableFPM` changed from synchronous to asynchronous.
 
 ## 0.29.6
+
+_Released: 2024-09-13T06:13:54Z_
 
 ### Patch Changes
 
@@ -1588,11 +2608,15 @@
 
 ## 0.29.5
 
+_Released: 2024-09-12T14:02:00Z_
+
 ### Patch Changes
 
 - 19e3b0e: Extend the building block generation by adding the `alwaysAbsolutePath` property to `BuildingBlockMetaPath`, allowing the generation of either relative or absolute paths
 
 ## 0.29.4
+
+_Released: 2024-09-12T09:42:45Z_
 
 ### Patch Changes
 
@@ -1602,12 +2626,16 @@
 
 ## 0.29.3
 
+_Released: 2024-09-10T14:58:16Z_
+
 ### Patch Changes
 
 - Updated dependencies [a0836d0]
     - @sap-ux/fiori-annotation-api@0.2.1
 
 ## 0.29.2
+
+_Released: 2024-09-09T13:32:11Z_
 
 ### Patch Changes
 
@@ -1616,17 +2644,23 @@
 
 ## 0.29.1
 
+_Released: 2024-09-09T11:35:24Z_
+
 ### Patch Changes
 
 - @sap-ux/fiori-annotation-api@0.1.41
 
 ## 0.29.0
 
+_Released: 2024-09-04T10:31:42Z_
+
 ### Minor Changes
 
 - 177cdc8: Apply the "contextPath" attribute in building blocks when the application has a minimum UI5 version equal to or below 1.96.
 
 ## 0.28.3
+
+_Released: 2024-09-03T19:06:21Z_
 
 ### Patch Changes
 
@@ -1636,6 +2670,8 @@
 
 ## 0.28.2
 
+_Released: 2024-08-30T06:05:30Z_
+
 ### Patch Changes
 
 - Updated dependencies [df29368]
@@ -1644,17 +2680,23 @@
 
 ## 0.28.1
 
+_Released: 2024-08-29T06:57:27Z_
+
 ### Patch Changes
 
 - b10e3fd: fix: ensure that the controller template include an example call to super.onInit()
 
 ## 0.28.0
 
+_Released: 2024-08-28T12:44:36Z_
+
 ### Minor Changes
 
 - bb4305f: Update fpm-writer to require either sap.fe.core or sap.fe.templates library, throw error if both are missing when creating a building block.
 
 ## 0.27.7
+
+_Released: 2024-08-28T11:16:50Z_
 
 ### Patch Changes
 
@@ -1663,17 +2705,23 @@
 
 ## 0.27.6
 
+_Released: 2024-08-23T08:29:06Z_
+
 ### Patch Changes
 
 - 087752f: Building block Prompts. Use EntitySets instead of EntityTypes for displaying choices and writing metaPath or contextPath
 
 ## 0.27.5
 
+_Released: 2024-08-20T16:06:24Z_
+
 ### Patch Changes
 
 - 73aa3cd: FilterBar prompt. Show binding context path type for filter bar
 
 ## 0.27.4
+
+_Released: 2024-08-20T10:06:29Z_
 
 ### Patch Changes
 
@@ -1683,11 +2731,15 @@
 
 ## 0.27.3
 
+_Released: 2024-08-19T21:50:52Z_
+
 ### Patch Changes
 
 - 6916f9e: Chart building block creation. Create 'contextPath' attribute when 'metaPath' property is received as 'BuildingBlockMetaPath' object
 
 ## 0.27.2
+
+_Released: 2024-08-19T11:34:45Z_
 
 ### Patch Changes
 
@@ -1696,11 +2748,15 @@
 
 ## 0.27.1
 
+_Released: 2024-08-19T09:48:14Z_
+
 ### Patch Changes
 
 - @sap-ux/fiori-annotation-api@0.1.35
 
 ## 0.27.0
+
+_Released: 2024-08-14T12:44:52Z_
 
 ### Minor Changes
 
@@ -1708,12 +2764,16 @@
 
 ## 0.26.4
 
+_Released: 2024-08-12T11:41:22Z_
+
 ### Patch Changes
 
 - Updated dependencies [26379ea]
     - @sap-ux/fiori-annotation-api@0.1.34
 
 ## 0.26.3
+
+_Released: 2024-08-12T10:50:52Z_
 
 ### Patch Changes
 
@@ -1723,6 +2783,8 @@
 
 ## 0.26.2
 
+_Released: 2024-08-08T07:33:51Z_
+
 ### Patch Changes
 
 - Updated dependencies [cc16cbb]
@@ -1731,12 +2793,16 @@
 
 ## 0.26.1
 
+_Released: 2024-08-07T11:06:05Z_
+
 ### Patch Changes
 
 - @sap-ux/fiori-annotation-api@0.1.31
 - @sap-ux/project-access@1.26.4
 
 ## 0.26.0
+
+_Released: 2024-08-01T18:27:11Z_
 
 ### Minor Changes
 
@@ -1750,6 +2816,8 @@
 
 ## 0.25.7
 
+_Released: 2024-08-01T17:28:17Z_
+
 ### Patch Changes
 
 - e69db46: Upgrade fast-xml-parser
@@ -1758,12 +2826,16 @@
 
 ## 0.25.6
 
+_Released: 2024-08-01T16:21:31Z_
+
 ### Patch Changes
 
 - Updated dependencies [a986655]
     - @sap-ux/project-access@1.26.1
 
 ## 0.25.5
+
+_Released: 2024-08-01T14:53:05Z_
 
 ### Patch Changes
 
@@ -1772,6 +2844,8 @@
 
 ## 0.25.4
 
+_Released: 2024-08-01T12:24:50Z_
+
 ### Patch Changes
 
 - Updated dependencies [99b7b5f]
@@ -1779,17 +2853,23 @@
 
 ## 0.25.3
 
+_Released: 2024-07-24T17:31:33Z_
+
 ### Patch Changes
 
 - dc60d98: fix: add `@sap-ux/project-access` dependency
 
 ## 0.25.2
 
+_Released: 2024-07-24T11:39:59Z_
+
 ### Patch Changes
 
 - 29bebd2: feat: add required libraries on page addition
 
 ## 0.25.1
+
+_Released: 2024-07-23T09:01:05Z_
 
 ### Patch Changes
 
@@ -1798,17 +2878,23 @@
 
 ## 0.25.0
 
+_Released: 2024-07-05T15:03:05Z_
+
 ### Minor Changes
 
 - c2359077: [BREAKING CHANGE] Change TypeScript transpile target to ES2021 to align with NodeJS 18+
 
 ## 0.24.16
 
+_Released: 2024-06-26T13:30:18Z_
+
 ### Patch Changes
 
 - 1a1baeb0: Revert "feat(fiori-elements-writer): remove `sap.fe.templates` dependency
 
 ## 0.24.15
+
+_Released: 2024-06-12T15:20:44Z_
 
 ### Patch Changes
 
@@ -1817,11 +2903,15 @@
 
 ## 0.24.14
 
+_Released: 2024-06-04T11:05:46Z_
+
 ### Patch Changes
 
 - d2063073: Fixed custom action path when it's generated in custom section.
 
 ## 0.24.13
+
+_Released: 2024-06-03T13:58:25Z_
 
 ### Patch Changes
 
@@ -1829,11 +2919,15 @@
 
 ## 0.24.12
 
+_Released: 2024-05-30T15:50:10Z_
+
 ### Patch Changes
 
 - 855a4ae2: Added support for custom action within custom section
 
 ## 0.24.11
+
+_Released: 2024-05-07T14:01:29Z_
 
 ### Patch Changes
 
@@ -1841,11 +2935,15 @@
 
 ## 0.24.10
 
+_Released: 2024-04-24T12:30:48Z_
+
 ### Patch Changes
 
 - 2e10a7ae: fix: fragment of custom section with event handler - move attribute 'core:require' from inner element('Button', 'Input') to wrapper element('VBox', 'FormElement')
 
 ## 0.24.9
+
+_Released: 2024-02-28T13:59:50Z_
 
 ### Patch Changes
 
@@ -1853,11 +2951,15 @@
 
 ## 0.24.8
 
+_Released: 2024-02-27T22:07:50Z_
+
 ### Patch Changes
 
 - c15435b6: fix: remove engines pnpm from package.json
 
 ## 0.24.7
+
+_Released: 2024-02-20T14:36:42Z_
 
 ### Patch Changes
 
@@ -1865,11 +2967,15 @@
 
 ## 0.24.6
 
+_Released: 2024-02-16T10:11:31Z_
+
 ### Patch Changes
 
 - 9b62f5a1: Added optional `id` property to use as page key in manifest templates
 
 ## 0.24.5
+
+_Released: 2024-02-14T12:39:10Z_
 
 ### Patch Changes
 
@@ -1877,11 +2983,15 @@
 
 ## 0.24.4
 
+_Released: 2024-02-07T11:10:48Z_
+
 ### Patch Changes
 
 - eb0b7b37: Chore - TypeScript 5 upgrade
 
 ## 0.24.3
+
+_Released: 2023-12-12T10:35:31Z_
 
 ### Patch Changes
 
@@ -1889,11 +2999,15 @@
 
 ## 0.24.2
 
+_Released: 2023-11-22T11:29:36Z_
+
 ### Patch Changes
 
 - 3c5fa042: fpm localize custom xml view
 
 ## 0.24.1
+
+_Released: 2023-11-10T10:22:27Z_
 
 ### Patch Changes
 
@@ -1901,11 +3015,15 @@
 
 ## 0.24.0
 
+_Released: 2023-10-19T12:06:19Z_
+
 ### Minor Changes
 
 - 1aa0fc43: Drop NodeJS 16 support, current supported versions NodeJS 18 and 20.
 
 ## 0.23.9
+
+_Released: 2023-10-03T06:24:31Z_
 
 ### Patch Changes
 
@@ -1913,11 +3031,15 @@
 
 ## 0.23.8
 
+_Released: 2023-09-29T14:31:07Z_
+
 ### Patch Changes
 
 - c11f6c02: Correction for `templateEdit` property in manifest which led to parsing errors: Missing comma is added right after `templateEdit` value if it exists
 
 ## 0.23.7
+
+_Released: 2023-09-26T10:41:45Z_
 
 ### Patch Changes
 
@@ -1925,17 +3047,23 @@
 
 ## 0.23.6
 
+_Released: 2023-09-20T13:13:51Z_
+
 ### Patch Changes
 
 - 63c698a8: chore - fix publishing of modules missed in failed release build
 
 ## 0.23.5
 
+_Released: 2023-09-19T16:14:25Z_
+
 ### Patch Changes
 
 - 7b156515: fix(deps): update dependency xpath to v0.0.33
 
 ## 0.23.4
+
+_Released: 2023-09-19T15:51:30Z_
 
 ### Patch Changes
 
@@ -1944,11 +3072,15 @@
 
 ## 0.23.3
 
+_Released: 2023-09-19T14:02:55Z_
+
 ### Patch Changes
 
 - 7c8a6946: fix(deps): update dependency semver to v7.5.4
 
 ## 0.23.2
+
+_Released: 2023-09-05T10:19:05Z_
 
 ### Patch Changes
 
@@ -1958,11 +3090,15 @@
 
 ## 0.23.1
 
+_Released: 2023-09-01T16:11:57Z_
+
 ### Patch Changes
 
 - da6aed84: Correction for content of generated fragment for `templateEdit` property: Content is wrapped inside `sap.ui.layout.form.FormElement`
 
 ## 0.23.0
+
+_Released: 2023-08-18T09:39:35Z_
 
 ### Minor Changes
 
@@ -1970,11 +3106,15 @@
 
 ## 0.22.3
 
+_Released: 2023-06-27T14:58:54Z_
+
 ### Patch Changes
 
 - 4ba13898: Chore - update devDeps, fix lint issues, adjust rimraf.
 
 ## 0.22.2
+
+_Released: 2023-06-26T15:34:40Z_
 
 ### Patch Changes
 
@@ -1982,11 +3122,15 @@
 
 ## 0.22.1
 
+_Released: 2023-06-13T09:14:04Z_
+
 ### Patch Changes
 
 - b7b25d00: Fix. Allow to create custom section or subsection without 'position' property.
 
 ## 0.22.0
+
+_Released: 2023-06-12T16:13:23Z_
 
 ### Minor Changes
 
@@ -1994,11 +3138,15 @@
 
 ## 0.21.0
 
+_Released: 2023-06-12T11:24:28Z_
+
 ### Minor Changes
 
 - 2de44bb9: Feature. Add VBox wrapper container to generated content for custom section and sub section
 
 ## 0.20.3
+
+_Released: 2023-06-12T06:59:29Z_
 
 ### Patch Changes
 
@@ -2006,11 +3154,15 @@
 
 ## 0.20.2
 
+_Released: 2023-06-06T09:28:04Z_
+
 ### Patch Changes
 
 - 2fc69d95: Fix: generated typescript controller extension does not work with latest ui5-application-writer version
 
 ## 0.20.1
+
+_Released: 2023-05-26T15:20:03Z_
 
 ### Patch Changes
 
@@ -2018,11 +3170,15 @@
 
 ## 0.20.0
 
+_Released: 2023-05-25T07:16:47Z_
+
 ### Minor Changes
 
 - 5c16776d: Generate custom filter
 
 ## 0.19.1
+
+_Released: 2023-05-24T11:36:16Z_
 
 ### Patch Changes
 
@@ -2030,11 +3186,15 @@
 
 ## 0.19.0
 
+_Released: 2023-05-22T07:52:42Z_
+
 ### Minor Changes
 
 - 970dc528: Feature: Custom SubSections support for fe-fpm-writer
 
 ## 0.18.9
+
+_Released: 2023-05-05T09:30:41Z_
 
 ### Patch Changes
 
@@ -2042,11 +3202,15 @@
 
 ## 0.18.8
 
+_Released: 2023-04-26T11:22:18Z_
+
 ### Patch Changes
 
 - 3391be7f: Feature enhancement: in addition to the entity (set) you now can define a contextPath that gets written instead of entitySet into the `options > settings` of the new page.
 
 ## 0.18.7
+
+_Released: 2023-03-01T09:34:05Z_
 
 ### Patch Changes
 
@@ -2054,11 +3218,15 @@
 
 ## 0.18.6
 
+_Released: 2023-02-23T13:56:23Z_
+
 ### Patch Changes
 
 - d350038: chore - TypeScript 4.9.4 upgrade
 
 ## 0.18.5
+
+_Released: 2023-02-10T14:09:06Z_
 
 ### Patch Changes
 
@@ -2066,11 +3234,15 @@
 
 ## 0.18.4
 
+_Released: 2023-01-13T10:06:27Z_
+
 ### Patch Changes
 
 - d167d79: Fix: writing into manifest.json always provides 2 spaces for tab size. Additional property 'tabInfo' can be passed in config for generation functions or tab sizing will be calculated before saving
 
 ## 0.18.3
+
+_Released: 2022-12-19T16:44:59Z_
 
 ### Patch Changes
 
@@ -2078,11 +3250,15 @@
 
 ## 0.18.2
 
+_Released: 2022-12-16T00:26:20Z_
+
 ### Patch Changes
 
 - b727719: chore(open-ux-tools) upgrade @xmldom/xmldom
 
 ## 0.18.1
+
+_Released: 2022-12-05T07:50:58Z_
 
 ### Patch Changes
 
@@ -2090,11 +3266,15 @@
 
 ## 0.18.0
 
+_Released: 2022-11-10T07:42:22Z_
+
 ### Minor Changes
 
 - b0553a0: If a given file is specified in the API of the FPM writer, no implicit conversion of the name shall take place. Only if no file name get passed, the default value now follows the naming convention of uppercase first letter.
 
 ## 0.17.8
+
+_Released: 2022-11-02T14:24:56Z_
 
 ### Patch Changes
 
@@ -2102,11 +3282,15 @@
 
 ## 0.17.7
 
+_Released: 2022-10-14T14:52:33Z_
+
 ### Patch Changes
 
 - 11c8f5d: Use manifest types from @sap-ux/project-access
 
 ## 0.17.6
+
+_Released: 2022-10-12T08:59:54Z_
 
 ### Patch Changes
 
@@ -2114,11 +3298,15 @@
 
 ## 0.17.5
 
+_Released: 2022-10-11T14:06:32Z_
+
 ### Patch Changes
 
 - 5b487ef: chore - Apply linting to test folders and linting fixes
 
 ## 0.17.4
+
+_Released: 2022-09-29T06:54:58Z_
 
 ### Patch Changes
 
@@ -2126,11 +3314,15 @@
 
 ## 0.17.3
 
+_Released: 2022-09-21T09:27:40Z_
+
 ### Patch Changes
 
 - b72abf0: Fix: generate type dependency based on provided versions
 
 ## 0.17.2
+
+_Released: 2022-09-21T07:38:29Z_
 
 ### Patch Changes
 
@@ -2138,11 +3330,15 @@
 
 ## 0.17.1
 
+_Released: 2022-09-20T06:43:59Z_
+
 ### Patch Changes
 
 - 0bb70df: Adds sap.fe.macros namespace to fpm apps View.xml where ui5 version >= 1.94
 
 ## 0.17.0
+
+_Released: 2022-09-07T08:43:22Z_
 
 ### Minor Changes
 
@@ -2150,11 +3346,15 @@
 
 ## 0.16.0
 
+_Released: 2022-09-05T10:00:35Z_
+
 ### Minor Changes
 
 - 4fb53ce: Fix sonar warnings
 
 ## 0.15.0
+
+_Released: 2022-09-02T13:28:53Z_
 
 ### Minor Changes
 
@@ -2162,11 +3362,15 @@
 
 ## 0.14.3
 
+_Released: 2022-09-02T09:59:26Z_
+
 ### Patch Changes
 
 - a1dc069: Improves template path handling for bundling consumers. Fixes minor issue. TBI: #650
 
 ## 0.14.2
+
+_Released: 2022-08-29T16:24:57Z_
 
 ### Patch Changes
 
@@ -2174,11 +3378,15 @@
 
 ## 0.14.1
 
+_Released: 2022-08-29T10:26:03Z_
+
 ### Patch Changes
 
 - c86bfaf: Using better types and improved quality of generate TS projects
 
 ## 0.14.0
+
+_Released: 2022-08-26T17:31:01Z_
 
 ### Minor Changes
 
@@ -2186,11 +3394,15 @@
 
 ## 0.13.6
 
+_Released: 2022-08-26T09:19:11Z_
+
 ### Patch Changes
 
 - 9e6d402: Add id to page in generated custom page
 
 ## 0.13.5
+
+_Released: 2022-08-24T14:12:45Z_
 
 ### Patch Changes
 
@@ -2198,11 +3410,15 @@
 
 ## 0.13.4
 
+_Released: 2022-07-27T08:51:11Z_
+
 ### Patch Changes
 
 - 30afc5f: Override glob-parent due to ReDos vulnerability
 
 ## 0.13.3
+
+_Released: 2022-07-21T14:10:31Z_
 
 ### Patch Changes
 
@@ -2210,17 +3426,23 @@
 
 ## 0.13.2
 
+_Released: 2022-07-21T07:42:18Z_
+
 ### Patch Changes
 
 - 4c1b0c2: Custom Action. Optional "anchor" position property. Do not include "anchor" property if undefined is passed
 
 ## 0.13.1
 
+_Released: 2022-07-04T13:03:56Z_
+
 ### Patch Changes
 
 - cc1c406: chore(open-ux-tools) ignore source map files when publishing to npm
 
 ## 0.13.0
+
+_Released: 2022-06-30T13:27:30Z_
 
 ### Minor Changes
 
@@ -2231,11 +3453,15 @@
 
 ## 0.12.0
 
+_Released: 2022-06-29T10:19:25Z_
+
 ### Minor Changes
 
 - 338dcb6: Add support to generate building blocks
 
 ## 0.11.0
+
+_Released: 2022-06-27T10:20:57Z_
 
 ### Minor Changes
 
@@ -2243,11 +3469,15 @@
 
 ## 0.10.0
 
+_Released: 2022-06-27T05:23:43Z_
+
 ### Minor Changes
 
 - ab39dae: "requireSelection" property support for custom action in fe-fpm-writer
 
 ## 0.9.0
+
+_Released: 2022-06-20T09:56:56Z_
 
 ### Minor Changes
 
@@ -2255,11 +3485,15 @@
 
 ## 0.8.0
 
+_Released: 2022-06-15T17:31:16Z_
+
 ### Minor Changes
 
 - dc0fb1c: Feature: Custom Views support for fe-fpm-writer
 
 ## 0.7.0
+
+_Released: 2022-06-13T09:53:27Z_
 
 ### Minor Changes
 
@@ -2267,11 +3501,15 @@
 
 ## 0.6.2
 
+_Released: 2022-05-19T14:38:34Z_
+
 ### Patch Changes
 
 - c70fd4d: chore(open-ux-tools) pnpm 7 and node 18 support.
 
 ## 0.6.1
+
+_Released: 2022-04-27T16:48:18Z_
 
 ### Patch Changes
 
@@ -2279,11 +3517,15 @@
 
 ## 0.6.0
 
+_Released: 2022-04-05T09:30:21Z_
+
 ### Minor Changes
 
 - 29a3ebe: Feature: enable FPM in an existing UI5 application
 
 ## 0.5.4
+
+_Released: 2022-04-01T07:00:29Z_
 
 ### Patch Changes
 
@@ -2291,11 +3533,15 @@
 
 ## 0.5.3
 
+_Released: 2022-03-29T13:57:37Z_
+
 ### Patch Changes
 
 - c18fc5c: chore(open-ux-tools) update devDependencies and change dependabot config
 
 ## 0.5.2
+
+_Released: 2022-03-24T07:10:57Z_
 
 ### Patch Changes
 
@@ -2303,11 +3549,15 @@
 
 ## 0.5.1
 
+_Released: 2022-03-22T19:34:16Z_
+
 ### Patch Changes
 
 - 7107fbc: chore - use import type in TS code.
 
 ## 0.5.0
+
+_Released: 2022-03-03T14:59:56Z_
 
 ### Minor Changes
 
@@ -2315,11 +3565,15 @@
 
 ## 0.4.1
 
+_Released: 2022-03-01T15:31:35Z_
+
 ### Patch Changes
 
 - f989e61: Fix: incorrect json generated if optional paramater is missing
 
 ## 0.4.0
+
+_Released: 2022-01-24T09:08:45Z_
 
 ### Minor Changes
 
@@ -2328,17 +3582,23 @@
 
 ## 0.3.1
 
+_Released: 2022-01-03T09:19:43Z_
+
 ### Patch Changes
 
 - b0f69fe: Custom Section. Fix to support old(<1.86) and new(>=1.86) manifest.json syntaxes
 
 ## 0.3.0
 
+_Released: 2021-12-15T12:22:51Z_
+
 ### Minor Changes
 
 - c50f4e0: Custom Section support for fe-fpm-writer
 
 ## 0.2.1
+
+_Released: 2021-11-10T19:52:11Z_
 
 ### Patch Changes
 

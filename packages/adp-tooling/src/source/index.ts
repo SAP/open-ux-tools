@@ -1,3 +1,3 @@
-export * from './applications';
-export * from './manifest';
-export * from './systems';
+export * from './applications.js';
+export * from './manifest.js';
+export * from './systems.js';

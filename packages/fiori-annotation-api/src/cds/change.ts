@@ -1,5 +1,5 @@
 import type { Element, Target as AnnotationFileTarget } from '@sap-ux/odata-annotation-core';
-import type { JsonPointer } from '../types';
+import type { JsonPointer } from '../types/index.js';
 
 //#region Insert Changes
 export const INSERT_TARGET_CHANGE_TYPE = 'insert-target';
@@ -42,11 +42,7 @@ export function createInsertTargetChange(
 }
 
 export type ElementInserts =
-    | InsertAnnotation
-    | InsertEmbeddedAnnotation
-    | InsertRecord
-    | InsertRecordProperty
-    | InsertPrimitiveValue;
+    InsertAnnotation | InsertEmbeddedAnnotation | InsertRecord | InsertRecordProperty | InsertPrimitiveValue;
 export type Inserts = ElementInserts | InsertCollection;
 
 type InsertByType<Union, Type> = Union extends { type: Type } ? Union : never;

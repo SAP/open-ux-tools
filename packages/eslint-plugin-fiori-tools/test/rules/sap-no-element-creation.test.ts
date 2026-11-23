@@ -5,7 +5,7 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-import rule from '../../src/rules/sap-no-element-creation';
+import rule from '../../src/rules/sap-no-element-creation.js';
 import { RuleTester } from 'eslint';
 
 //------------------------------------------------------------------------------

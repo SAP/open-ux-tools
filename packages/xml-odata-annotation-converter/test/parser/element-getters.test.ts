@@ -1,4 +1,4 @@
-import { getElementsWithName } from '../../src/parser/element-getters';
+import { getElementsWithName } from '../../src/parser/element-getters.js';
 import type { XMLElement } from '@xml-tools/ast';
 
 describe('edge cases', () => {

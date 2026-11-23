@@ -2,7 +2,7 @@ import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 
 import type { ToolsLogger } from '@sap-ux/logger';
 
-import { getPackageInfo } from './deps';
+import { getPackageInfo } from './deps.js';
 
 export interface GeneratorOpts {
     appWizard?: AppWizard;

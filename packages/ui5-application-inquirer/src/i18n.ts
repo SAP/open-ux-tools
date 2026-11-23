@@ -1,6 +1,6 @@
 import type { i18n as i18nNext, TOptions } from 'i18next';
 import i18next from 'i18next';
-import translations from './translations/ui5-application-inquirer.i18n.json';
+import translations from './translations/ui5-application-inquirer.i18n.json' with { type: 'json' };
 import { addi18nResourceBundle as addi18nResourceBundleInquirerCommon } from '@sap-ux/inquirer-common';
 import { addi18nResourceBundle as addi18nResourceBundleProjectInputValidator } from '@sap-ux/project-input-validator';
 
@@ -18,8 +18,7 @@ export async function initI18nUi5AppInquirer(): Promise<void> {
             defaultVariables: {
                 defaultProjectNumber
             }
-        },
-        showSupportNotice: false
+        }
     });
     i18n.addResourceBundle('en', ui5AppInquirerNamespace, translations);
     // Add bundles on which this module depends (this is a temp workaround as the init from the imported modules is not called)
@@ -41,6 +40,4 @@ export function t(key: string, options?: TOptions): string {
     return (i18n.t as (key: string, opts?: TOptions) => string)(key, options);
 }
 
-initI18nUi5AppInquirer().catch(() => {
-    // Needed for lint
-});
+void initI18nUi5AppInquirer().catch(() => undefined);

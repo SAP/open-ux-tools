@@ -3,12 +3,11 @@ import { RECORD_PROPERTY_TYPE, nodeRange } from '@sap-ux/cds-annotation-parser';
 
 import type { Element } from '@sap-ux/odata-annotation-core-types';
 import { createElementNode, Edm, Position } from '@sap-ux/odata-annotation-core-types';
-import { convertFlattenedPath } from '../flattened';
 
-import type { NodeHandler, Subtree } from '../handler';
-import { getImplicitPropertyType } from '../type-resolver';
-import type { VisitorState } from '../visitor-state';
-import { createPropertyAttribute, createTermAttribute } from '../creators';
+import type { NodeHandler, Subtree } from '../handler.js';
+import { getImplicitPropertyType } from '../type-resolver.js';
+import type { VisitorState } from '../visitor-state.js';
+import { createPropertyAttribute, createTermAttribute } from '../creators.js';
 
 export const recordPropertyHandler: NodeHandler<RecordProperty> = {
     type: RECORD_PROPERTY_TYPE,
@@ -60,8 +59,6 @@ export const recordPropertyHandler: NodeHandler<RecordProperty> = {
                 }
             }
             return element;
-        } else {
-            return convertFlattenedPath(state, node.name.segments, node.value);
         }
     }
 };

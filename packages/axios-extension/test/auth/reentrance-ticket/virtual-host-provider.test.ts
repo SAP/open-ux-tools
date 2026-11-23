@@ -1,5 +1,5 @@
 import nock from 'nock';
-import { ABAPVirtualHostProvider } from '../../../src/auth/reentrance-ticket/abap-virtual-host-provider';
+import { ABAPVirtualHostProvider } from '../../../src/auth/reentrance-ticket/abap-virtual-host-provider.js';
 
 describe('ABAPVirtualHostProvider', () => {
     const backendOrigin = 'https://backend.com';

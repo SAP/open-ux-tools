@@ -1,8 +1,9 @@
 import { validateEmptyString } from '@sap-ux/project-input-validator';
 import axios from 'axios';
-import { t } from '../i18n';
-import { getOfficialBaseUI5VersionUrl, getFormattedVersion } from './format';
-import { isOfflineError } from './network';
+import { getProxyAgentConfig } from '@sap-ux/axios-extension';
+import { t } from '../i18n.js';
+import { getOfficialBaseUI5VersionUrl, getFormattedVersion } from './format.js';
+import { isOfflineError } from './network.js';
 
 /**
  * Validates a specified UI5 version by checking its availability on the SAP CDN.
@@ -20,7 +21,8 @@ export async function validateUI5VersionExists(version: string): Promise<string 
     const resource = version.includes('snapshot') ? 'neo-app.json' : getFormattedVersion(version);
 
     try {
-        await axios.get(`${selectedVersionURL}/${resource}`);
+        const url = `${selectedVersionURL}/${resource}`;
+        await axios.get(url, getProxyAgentConfig(url));
         return true;
     } catch (e) {
         if (version.includes('snapshot')) {

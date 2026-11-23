@@ -23,6 +23,7 @@
             line-height: $dropdown-line-height;
             border: $dropdown-input-border-width solid transparent;
             padding: $dropdown-input-text-padding;
+            border-radius: $dropdown-input-border-radius;
             @include base-font;
         }
         > .ms-Dropdown-caretDownWrapper {

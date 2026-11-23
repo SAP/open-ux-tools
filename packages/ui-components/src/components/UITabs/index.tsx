@@ -1,1 +1,1 @@
-export * from './UITabs';
+export * from './UITabs.js';

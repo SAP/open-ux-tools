@@ -1,4 +1,4 @@
-import { isReservedProperty } from '../src/constants';
+import { isReservedProperty } from '../src/constants.js';
 
 describe('isReservedProperty', () => {
     test.each([

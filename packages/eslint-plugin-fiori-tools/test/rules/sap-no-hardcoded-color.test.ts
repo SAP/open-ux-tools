@@ -6,7 +6,7 @@
 // Requirements
 //------------------------------------------------------------------------------
 
-import rule from '../../src/rules/sap-no-hardcoded-color';
+import rule from '../../src/rules/sap-no-hardcoded-color.js';
 import { RuleTester } from 'eslint';
 
 //------------------------------------------------------------------------------

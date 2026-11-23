@@ -1,16 +1,20 @@
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
-import type { CustomAction, CustomActionTarget, InternalCustomAction } from './types';
-import { TargetControl } from './types';
+import type { CustomAction, CustomActionTarget, InternalCustomAction } from './types.js';
+import { TargetControl } from './types.js';
 import { render } from 'ejs';
-import { validateVersion, validateBasePath } from '../common/validate';
-import type { Manifest } from '../common/types';
-import { setCommonDefaults } from '../common/defaults';
-import { applyEventHandlerConfiguration, contextParameter, selectedContextsParameter } from '../common/event-handler';
-import { getTemplatePath } from '../templates';
-import { getJsonSpace } from '../common/file';
-import { getManifest } from '../common/utils';
+import { validateVersion, validateBasePath } from '../common/validate.js';
+import type { Manifest } from '../common/types.js';
+import { setCommonDefaults } from '../common/defaults.js';
+import {
+    applyEventHandlerConfiguration,
+    contextParameter,
+    selectedContextsParameter
+} from '../common/event-handler.js';
+import { getTemplatePath } from '../templates.js';
+import { getJsonSpace } from '../common/file.js';
+import { getManifest } from '../common/utils.js';
 
 /**
  * Enhances the provided custom action configuration with default data.

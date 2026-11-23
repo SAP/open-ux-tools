@@ -1,0 +1,49 @@
+{
+    "extends": "../../tsconfig.json",
+    "compilerOptions": {
+        "outDir": "./dist",
+        "rootDir": "./src",
+        "composite": true,
+        "resolveJsonModule": true
+    },
+    "include": ["src/**/*", "src/**/*.json"],
+    "exclude": ["node_modules", "dist", "test"],
+    "references": [
+        {
+            "path": "../adp-tooling"
+        },
+        {
+            "path": "../axios-extension"
+        },
+        {
+            "path": "../btp-utils"
+        },
+        {
+            "path": "../eslint-plugin-fiori-tools"
+        },
+        {
+            "path": "../i18n"
+        },
+        {
+            "path": "../launch-config"
+        },
+        {
+            "path": "../nodejs-utils"
+        },
+        {
+            "path": "../project-access"
+        },
+        {
+            "path": "../store"
+        },
+        {
+            "path": "../ui5-application-writer"
+        },
+        {
+            "path": "../ui5-config"
+        },
+        {
+            "path": "../ui5-info"
+        }
+    ]
+}

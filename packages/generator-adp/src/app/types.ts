@@ -2,9 +2,10 @@ import type Generator from 'yeoman-generator';
 import type { AppWizard, Prompts as YeomanUiSteps } from '@sap-devx/yeoman-ui-types';
 
 import type { YUIQuestion } from '@sap-ux/inquirer-common';
+import type { Manifest } from '@sap-ux/project-access';
 import type { TelemetryData } from '@sap-ux/fiori-generator-shared';
 import type { AdaptationDescriptor, AdaptationProjectType, KeyUserChangeContent } from '@sap-ux/axios-extension';
-import type { AttributesAnswers, ConfigAnswers, FlexLayer } from '@sap-ux/adp-tooling';
+import type { AttributesAnswers, ConfigAnswers, FlexLayer, AppRouterType } from '@sap-ux/adp-tooling';
 
 export interface AdpGeneratorOptions extends Generator.GeneratorOptions {
     /**
@@ -200,9 +201,12 @@ export type KeyUserImportQuestion = YUIQuestion<KeyUserImportAnswers>;
  */
 export enum keyUserPromptNames {
     keyUserSystem = 'keyUserSystem',
+    keyUserSystemValidationCli = 'keyUserSystemValidationCli',
     keyUserUsername = 'keyUserUsername',
     keyUserPassword = 'keyUserPassword',
-    keyUserAdaptation = 'keyUserAdaptation'
+    keyUserAdaptation = 'keyUserAdaptation',
+    keyUserAdaptationValidationCli = 'keyUserAdaptationValidationCli',
+    keyUserRestrictedViewsLabel = 'keyUserRestrictedViewsLabel'
 }
 
 export interface KeyUserSystemPromptOptions {
@@ -225,14 +229,21 @@ export interface KeyUserAdaptationPromptOptions {
     hide?: boolean;
 }
 
+export interface KeyUserRestrictedViewsLabelPromptOptions {
+    hide?: boolean;
+}
+
 /**
  * Options for the key-user import inquirer & the prompts.
  */
 export type KeyUserImportPromptOptions = Partial<{
     [keyUserPromptNames.keyUserSystem]: KeyUserSystemPromptOptions;
+    [keyUserPromptNames.keyUserSystemValidationCli]: CliValidationPromptOptions;
     [keyUserPromptNames.keyUserUsername]: KeyUserUsernamePromptOptions;
     [keyUserPromptNames.keyUserPassword]: KeyUserPasswordPromptOptions;
     [keyUserPromptNames.keyUserAdaptation]: KeyUserAdaptationPromptOptions;
+    [keyUserPromptNames.keyUserAdaptationValidationCli]: CliValidationPromptOptions;
+    [keyUserPromptNames.keyUserRestrictedViewsLabel]: KeyUserRestrictedViewsLabelPromptOptions;
 }>;
 
 export interface KeyUserImportAnswers {
@@ -254,7 +265,28 @@ export type TargetEnvAnswers = { targetEnv: TargetEnv };
 
 export type TargetEnvQuestion = YUIQuestion<TargetEnvAnswers>;
 
-export type ProjectLocationAnswers = { projectLocation: string };
+/**
+ * MTA project mode selected on the CF Project Path page.
+ * `New` scaffolds a new MTA project folder; `Existing` reuses an existing MTA project.
+ */
+export const MtaMode = { New: 'new', Existing: 'existing' } as const;
+
+export type MtaMode = (typeof MtaMode)[keyof typeof MtaMode];
+
+export type ProjectLocationAnswers = {
+    /**
+     * Whether to create a new MTA project or use an existing one.
+     */
+    mtaMode?: MtaMode;
+    /**
+     * The MTA project ID/name to create (new-MTA mode only).
+     */
+    mtaId?: string;
+    /**
+     * The selected folder: the parent dir (new mode) or the MTA root (existing mode).
+     */
+    projectLocation: string;
+};
 
 export enum cfLoginPromptNames {
     cfLoggedInMainMessage = 'cfLoggedInMainMessage',
@@ -289,10 +321,19 @@ export interface ExtensionProjectData {
 }
 
 /**
- * An interface representing the json input used to store the complete adaptation project
- * generator configurations. The json is passed as an CLI argument.
+ * CLI JSON for the adaptation project generator (ABAP target).
+ *
+ * When `id` is set, `{tmpdir}/{id}.txt` may also be loaded (see `readJsonInputFile`).
  */
 export interface JsonInput {
+    /**
+     * Orchestrator correlation id. Keys the result file and `{tmpdir}/{id}.txt`.
+     */
+    id?: string;
+    /**
+     * Target environment. Absent is treated as `ABAP` for backwards compatibility.
+     */
+    targetEnv?: typeof TargetEnv.ABAP;
     system: string;
     client?: string;
     username?: string;
@@ -303,6 +344,100 @@ export interface JsonInput {
     projectName?: string;
     namespace?: string;
     projectType?: AdaptationProjectType;
+}
+
+/**
+ * CLI JSON for the adaptation project generator (Cloud Foundry target).
+ *
+ * Selected by `targetEnv: 'CF'`. The `application` field carries the CF base-app id, matched within
+ * the apps discovered for the given service instance. A `serviceInstanceName` is always required.
+ */
+export interface CfJsonInput {
+    /**
+     * Orchestrator correlation id. Keys the result file.
+     */
+    id?: string;
+    /**
+     * Target environment discriminator. Always `CF` for this shape.
+     */
+    targetEnv: typeof TargetEnv.CF;
+    /**
+     * CF base-app id to adapt. Matched against the apps discovered for the business service.
+     */
+    application: string;
+    /**
+     * Title for the generated adaptation project.
+     */
+    applicationTitle?: string;
+    /**
+     * Name of the live CF service instance to connect to and extend. Always required; identifies the
+     * service whose apps are discovered and that is bound into the generated project.
+     */
+    serviceInstanceName: string;
+    /**
+     * Approuter type to configure. When omitted, inherits the existing MTA router type or defaults
+     * to the managed HTML5 application runtime for a new MTA.
+     */
+    approuter?: AppRouterType;
+    /**
+     * Optional business solution name (reuse library prefix).
+     */
+    businessSolutionName?: string;
+    /**
+     * Whether to scaffold a new MTA (`new`) or reuse an existing one (`existing`). Defaults to `existing`.
+     */
+    mtaMode?: MtaMode;
+    /**
+     * The MTA project id/name to create (new-MTA mode only).
+     */
+    mtaId?: string;
+    /**
+     * For `existing` MTA mode, the absolute path to the MTA root (the folder containing `mta.yaml`).
+     * For `new` MTA mode, the parent folder the new MTA folder is created in.
+     */
+    targetFolder?: string;
+    /**
+     * Name of the generated adaptation project (sub-module) folder.
+     */
+    projectName?: string;
+    /**
+     * Namespace for the generated adaptation project.
+     */
+    namespace?: string;
+}
+
+/**
+ * Base-app values required to build the CF writer config, sourced either from the interactive
+ * `CFServicesPrompter` or from the headless JSON discovery.
+ */
+export interface CfArtifactInputs {
+    /**
+     * The base app manifest.
+     */
+    manifest?: Manifest;
+    /**
+     * HTML5 repo runtime service instance GUID.
+     */
+    html5RepoRuntimeGuid?: string;
+    /**
+     * Business service instance GUID.
+     */
+    serviceInstanceGuid?: string;
+    /**
+     * Backend URLs derived from the service keys.
+     */
+    backendUrls?: string[];
+    /**
+     * OAuth paths extracted from the base app's xs-app.json.
+     */
+    oauthPaths?: string[];
+}
+
+/**
+ * Extra JSON from `{tmpdir}/{id}.txt`. BAS writes a `.txt` file whose contents are JSON.
+ * Currently `keyUserChanges` only; extra fields are allowed.
+ */
+export interface JsonInputFile {
     keyUserChanges?: KeyUserChangeContent[];
 }
 

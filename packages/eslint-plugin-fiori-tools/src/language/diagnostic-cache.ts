@@ -1,4 +1,4 @@
-import type { Diagnostic } from './diagnostics';
+import type { Diagnostic } from './diagnostics.js';
 
 type InternalDiagnosticCache = {
     [K in Diagnostic['type']]?: Extract<Diagnostic, { type: K }>[];

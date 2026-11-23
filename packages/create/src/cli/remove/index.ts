@@ -1,6 +1,6 @@
 import { Command } from 'commander';
-import { addRemoveMockserverConfigCommand } from './mockserver-config';
-import { addSystemRemoveCommand } from './system';
+import { addRemoveMockserverConfigCommand } from './mockserver-config.js';
+import { addSystemRemoveCommand } from './system.js';
 
 /**
  * Return 'create-fiori remove *' commands. Commands include also the handler action.

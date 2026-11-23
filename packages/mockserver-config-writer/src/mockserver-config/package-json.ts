@@ -1,7 +1,7 @@
 import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 import type { Package } from '@sap-ux/project-access';
-import type { PackageJsonMockConfig } from '../types';
+import type { PackageJsonMockConfig } from '../types/index.js';
 
 /**
  * Enhance the package.json with dependency for mockserver.

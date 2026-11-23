@@ -1,8 +1,8 @@
 import type { Editor } from 'mem-fs-editor';
 
-import { ChangeType } from '../../../types';
-import type { IWriter, DataSourceData } from '../../../types';
-import { getChange, writeChangeToFolder } from '../../../base/change-utils';
+import { ChangeType } from '../../../types.js';
+import type { IWriter, DataSourceData } from '../../../types.js';
+import { getChange, writeChangeToFolder } from '../../../base/change-utils.js';
 
 /**
  * Handles the creation and writing of data source data changes for a project.

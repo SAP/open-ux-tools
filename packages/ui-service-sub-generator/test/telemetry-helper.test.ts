@@ -1,7 +1,7 @@
 import { ObjectType } from '@sap-ux/ui-service-inquirer';
 import type { UiServiceAnswers } from '@sap-ux/ui-service-inquirer';
-import { getTelemetryData } from '../src/app/telemetryHelper';
-import type { PromptOptions } from '../src/app/types';
+import { getTelemetryData } from '../src/app/telemetryHelper.js';
+import type { PromptOptions } from '../src/app/types.js';
 
 describe('TelemetryHelper', () => {
     test('getTelemetryData', () => {

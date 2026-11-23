@@ -9,25 +9,25 @@
     ],
     "strictNullChecks": true,
     "outDir": "dist",
-    "module": "ES6",
+    "module": "NodeNext",
     "rootDir": ".",
-    "baseUrl": ".",
     "types": [
       "node",
       "jest"
-    ]
+    ],
+    "noUncheckedSideEffectImports": false,
+    "allowArbitraryExtensions": true
   },
   "include": [
     "src/**/*.json",
     "src/**/*.ts",
-    "src/**/*.tsx",
-    "test/**/*.ts",
-    "test/**/*.tsx"
+    "src/**/*.tsx"
   ],
   "exclude": [
     "dist",
     "node_modules",
-    "coverage"
+    "coverage",
+    "test"
   ],
   "references": [
     {

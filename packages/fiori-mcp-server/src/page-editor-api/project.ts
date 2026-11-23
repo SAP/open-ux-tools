@@ -1,10 +1,12 @@
 import { FileName, getCapServiceName, getMinimumUI5Version, getWebappPath } from '@sap-ux/project-access';
 import type { ApplicationAccess, Manifest, Package } from '@sap-ux/project-access';
-import { FlexChangeLayer } from '@sap/ux-specification/dist/types/src';
+import uxSpec from '@sap/ux-specification';
+const { FlexChangeLayer } = uxSpec;
+import type { FlexChangeLayer as FlexChangeLayerType } from '@sap/ux-specification';
 import { existsSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { logger } from '../utils/logger';
+import { logger } from '../utils/logger.js';
 
 /**
  * Method returns main service of the application.
@@ -85,7 +87,7 @@ export async function getUI5Version(appAccess: ApplicationAccess): Promise<strin
  * @param root - the absolute path to the application's root directory.
  * @returns A promise that resolves to the `sapuxLayer` value from `package.json`.
  */
-export async function getFlexChangeLayer(root: string): Promise<FlexChangeLayer> {
+export async function getFlexChangeLayer(root: string): Promise<FlexChangeLayerType> {
     let packageJson: Package | undefined;
     const packageJsonPath = join(root, FileName.Package);
     if (existsSync(packageJsonPath)) {

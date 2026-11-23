@@ -1,1 +1,1 @@
-export * from './UIMessageBar';
+export * from './UIMessageBar.js';

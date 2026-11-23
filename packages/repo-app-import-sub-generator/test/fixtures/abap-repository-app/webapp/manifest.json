@@ -1,0 +1,53 @@
+{
+    "_version": "1.83.1",
+    "sap.app": {
+        "id": "abapRepositoryTestApp",
+        "type": "application",
+        "i18n": {
+            "bundleUrl": "i18n/i18n.properties",
+            "supportedLocales": [""]
+        },
+        "applicationVersion": {
+            "version": "0.0.1"
+        },
+        "title": "{{appTitle}}",
+        "description": "{{appDescription}}",
+        "sourceTemplate": {
+            "id": "@sap/generator-fiori:lrop",
+            "version": "1.25.0",
+            "toolsId": "c5019a6c-76aa-40c9-a1b6-661a7276619b"
+        },
+        "dataSources": {
+            "annotation": {
+                "type": "ODataAnnotation",
+                "uri": "annotations/annotation.xml",
+                "settings": {
+                    "localUri": "annotations/annotation.xml"
+                }
+            },
+            "mainService": {
+                "uri": "/sap/opu/odata4/dmo/ui_agency_o4/srvd/dmo/ui_agency/0001/",
+                "type": "OData",
+                "settings": {
+                    "annotations": ["annotation"],
+                    "localUri": "localService/mainService/metadata.xml",
+                    "odataVersion": "4.01"
+                }
+            }
+        }
+    },
+    "sap.ui": {
+        "technology": "UI5"
+    },
+    "sap.ui5": {
+        "flexEnabled": true,
+        "dependencies": {
+            "minUI5Version": "1.145.2",
+            "libs": {
+                "sap.m": {},
+                "sap.ui.core": {},
+                "sap.fe.templates": {}
+            }
+        }
+    }
+}

@@ -1,22 +1,25 @@
-import { isAppStudio } from '@sap-ux/btp-utils';
+import { jest } from '@jest/globals';
 import type { ConfigAnswers, SourceApplication, CfServicesAnswers } from '@sap-ux/adp-tooling';
-import { AppRouterType } from '@sap-ux/adp-tooling';
+import { AdaptationProjectType } from '@sap-ux/axios-extension';
 
-import {
+const mockIsAppStudio = jest.fn<typeof realBtpUtils.isAppStudio>();
+
+const realBtpUtils = await import('@sap-ux/btp-utils');
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...realBtpUtils,
+    isAppStudio: mockIsAppStudio
+}));
+
+const { AppRouterType } = await import('@sap-ux/adp-tooling');
+const {
     showApplicationQuestion,
     showCredentialQuestion,
     showExtensionProjectQuestion,
     showInternalQuestions,
     showBusinessSolutionNameQuestion,
+    shouldShowBaseAppPrompt,
     showStoreCredentialsQuestion
-} from '../../../../src/app/questions/helper/conditions';
-import { AdaptationProjectType } from '@sap-ux/axios-extension';
-
-jest.mock('@sap-ux/btp-utils', () => ({
-    isAppStudio: jest.fn()
-}));
-
-const mockIsAppStudio = isAppStudio as jest.Mock;
+} = await import('../../../../src/app/questions/helper/conditions.js');
 
 describe('showApplicationQuestion', () => {
     it('should return true when system is provided, no authentication is required, and login is successful', () => {
@@ -102,13 +105,6 @@ describe('showExtensionProjectQuestion', () => {
             isApplicationSupported: true,
             hasSyncViews: true
         });
-        // const result = showExtensionProjectQuestion(
-        //     { ...answers, application: undefined as unknown as SourceApplication },
-        //     { isOnPremise: true, isUIFlex: true },
-        //     false,
-        //     true,
-        //     true
-        // );
         expect(result).toBe(false);
     });
 
@@ -245,6 +241,50 @@ describe('showBusinessSolutionNameQuestion', () => {
             baseApp: undefined
         } as CfServicesAnswers;
         const result = showBusinessSolutionNameQuestion(answers, true, true, undefined);
+        expect(result).toBe(false);
+    });
+
+    it('should treat an uncommitted (undefined) approuter as managed so BSN shows for a new MTA', () => {
+        const answers = { businessSolutionName: '' } as CfServicesAnswers;
+        const result = showBusinessSolutionNameQuestion(answers, true, true, 'psm-service-instance');
+        expect(result).toBe(true);
+    });
+
+    it('should return false when the approuter is explicitly standalone', () => {
+        const answers = { approuter: AppRouterType.STANDALONE, businessSolutionName: '' } as CfServicesAnswers;
+        const result = showBusinessSolutionNameQuestion(answers, true, true, 'psm-service-instance');
+        expect(result).toBe(false);
+    });
+});
+
+describe('shouldShowBaseAppPrompt', () => {
+    const apps = [{ appId: 'a1' }] as unknown as Parameters<typeof shouldShowBaseAppPrompt>[2];
+
+    it('should return true when logged in, a business service is selected and apps exist', () => {
+        const result = shouldShowBaseAppPrompt({ businessService: 'test-service' } as CfServicesAnswers, true, apps);
+        expect(result).toBe(true);
+    });
+
+    it('should return true when logged in, a service instance is selected and apps exist', () => {
+        const answers = {
+            serviceInstance: { name: 'inst', service: 'hana', servicePlan: 'plan' }
+        } as CfServicesAnswers;
+        const result = shouldShowBaseAppPrompt(answers, true, apps);
+        expect(result).toBe(true);
+    });
+
+    it('should return false when neither a business service nor a service instance is selected', () => {
+        const result = shouldShowBaseAppPrompt({} as CfServicesAnswers, true, apps);
+        expect(result).toBe(false);
+    });
+
+    it('should return false when not logged in to CF', () => {
+        const result = shouldShowBaseAppPrompt({ businessService: 'test-service' } as CfServicesAnswers, false, apps);
+        expect(result).toBe(false);
+    });
+
+    it('should return false when no apps are available', () => {
+        const result = shouldShowBaseAppPrompt({ businessService: 'test-service' } as CfServicesAnswers, true, []);
         expect(result).toBe(false);
     });
 });

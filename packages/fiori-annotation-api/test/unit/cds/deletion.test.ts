@@ -1,10 +1,17 @@
 import { readFile } from 'node:fs/promises';
-import { join, normalize } from 'node:path';
-import { pathToFileURL } from 'node:url';
+import { dirname, join, normalize } from 'node:path';
+import { fileURLToPath, pathToFileURL } from 'node:url';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 import type { Range, AnnotationFile } from '@sap-ux/odata-annotation-core';
 import { VocabularyService } from '@sap-ux/odata-vocabularies';
-import { ANNOTATION_GROUP_TYPE, ANNOTATION_TYPE } from '@sap-ux/cds-annotation-parser';
+import {
+    ANNOTATION_GROUP_TYPE,
+    ANNOTATION_TYPE,
+    FLATTENED_ANNOTATION_SEGMENT_TYPE,
+    FLATTENED_EXPRESSION_TYPE
+} from '@sap-ux/cds-annotation-parser';
 
 import { createCdsCompilerFacadeForRoot, createMetadataCollector } from '@sap/ux-cds-compiler-facade';
 import type { CdsCompilerFacade } from '@sap/ux-cds-compiler-facade';
@@ -12,10 +19,10 @@ import type { CdsCompilerFacade } from '@sap/ux-cds-compiler-facade';
 import type { Target, CdsAnnotationFile } from '@sap-ux/cds-odata-annotation-converter';
 import { toAnnotationFile, toTargetMap } from '@sap-ux/cds-odata-annotation-converter';
 
-import type { CompilerToken } from '../../../src/cds/cds-compiler-tokens';
-import type { AstNode } from '../../../src/cds/document';
-import { getDeletionRangeForNode, getTextEditsForDeletionRanges } from '../../../src/cds/deletion';
-import { getAnnotationFromAssignment } from '../../../src/cds/utils';
+import type { CompilerToken } from '../../../src/cds/cds-compiler-tokens.js';
+import type { AstNode } from '../../../src/cds/document.js';
+import { getDeletionRangeForNode, getTextEditsForDeletionRanges } from '../../../src/cds/deletion.js';
+import { getAnnotationFromAssignment } from '../../../src/cds/utils.js';
 
 function getTextForRange(content: string, range: Range): string {
     const lines = content.split('\n');
@@ -40,15 +47,14 @@ function getDeletedTextsForQualifierStartString(
     const targets = [...(context.ast.targetMap || [])].map(([, value]) => value);
     const matches = findNodesByQualifier(targets, qualifierStartString)!;
 
-    const ranges = matches.map(
-        ({ index, node, parent, greatGrandParent }) =>
-            getDeletionRangeForNode(
-                context.vocabularyService,
-                context.vocabularyAliases,
-                index,
-                context.tokens,
-                ...getAnnotationFromAssignment(context.facade, node, parent, greatGrandParent)
-            )!
+    const ranges = matches.map(({ index, node, parent, greatGrandParent }) =>
+        getDeletionRangeForNode(
+            context.vocabularyService,
+            context.vocabularyAliases,
+            index,
+            context.tokens,
+            ...getAnnotationFromAssignment(context.facade, node, parent, greatGrandParent)
+        )!
     );
 
     const textEdits = getTextEditsForDeletionRanges(
@@ -96,17 +102,49 @@ function matchTarget(target: Target, qualifierStartString: string): Match[] {
                 break;
             }
             case ANNOTATION_GROUP_TYPE: {
-                for (const annotation of assignment.items.items) {
-                    if (annotation.qualifier?.value.startsWith(qualifierStartString)) {
-                        matches.push({
-                            node: annotation,
-                            parent: assignment.items,
-                            greatGrandParent: target,
-                            index: i
-                        });
+                for (const item of assignment.items.items) {
+                    if (item.type === ANNOTATION_TYPE) {
+                        if (item.qualifier?.value.startsWith(qualifierStartString)) {
+                            matches.push({
+                                node: item,
+                                parent: assignment.items,
+                                greatGrandParent: target,
+                                index: i
+                            });
+                        }
+                    } else {
+                        for (const segment of item.path.segments) {
+                            if (
+                                segment.type === FLATTENED_ANNOTATION_SEGMENT_TYPE &&
+                                segment.qualifier?.value.startsWith(qualifierStartString)
+                            ) {
+                                matches.push({
+                                    node: item,
+                                    parent: assignment.items,
+                                    greatGrandParent: target,
+                                    index: i
+                                });
+                            }
+                        }
                     }
                     i++;
                 }
+                break;
+            }
+            case FLATTENED_EXPRESSION_TYPE: {
+                for (const segment of assignment.path.segments) {
+                    if (
+                        segment.type === FLATTENED_ANNOTATION_SEGMENT_TYPE &&
+                        segment.qualifier?.value.startsWith(qualifierStartString)
+                    ) {
+                        matches.push({
+                            node: assignment,
+                            parent: target,
+                            index: i
+                        });
+                    }
+                }
+                i++;
                 break;
             }
             default:

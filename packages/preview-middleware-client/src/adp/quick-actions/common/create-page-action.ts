@@ -1,16 +1,16 @@
 import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 
-import { DialogFactory, DialogNames } from '../../dialog-factory';
+import { DialogFactory, DialogNames } from '../../dialog-factory.js';
 import type {
     QuickActionContext,
     SimpleQuickActionDefinition
-} from '../../../cpe/quick-actions/quick-action-definition';
-import { SimpleQuickActionDefinitionBase } from '../simple-quick-action-base';
-import type { ApplicationType } from '../../../utils/application';
-import { getApplicationType } from '../../../utils/application';
-import { getUi5Version, isLowerThanMinimalUi5Version } from '../../../utils/version';
-import { DIALOG_ENABLEMENT_VALIDATOR } from '../dialog-enablement-validator';
+} from '../../../cpe/quick-actions/quick-action-definition.js';
+import { SimpleQuickActionDefinitionBase } from '../simple-quick-action-base.js';
+import type { ApplicationType } from '../../../utils/application.js';
+import { getApplicationType } from '../../../utils/application.js';
+import { getUi5Version, isLowerThanMinimalUi5Version } from '../../../utils/version.js';
+import { DIALOG_ENABLEMENT_VALIDATOR } from '../dialog-enablement-validator.js';
 
 export const ADD_PAGE_ACTION = 'add-page-action';
 const CONTROL_TYPES = ['sap.f.DynamicPageTitle', 'sap.uxap.ObjectPageHeader', 'sap.uxap.ObjectPageDynamicHeaderTitle'];

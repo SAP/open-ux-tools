@@ -12,11 +12,11 @@ import type {
     VocabulariesInformation,
     TypeDefinition,
     EnumType
-} from './types/vocabulary-service';
-import { TermApplicability, CDS_VOCABULARY_NAMESPACE, CDS_VOCABULARY_ALIAS } from './types/vocabulary-service';
-import { loadVocabulariesInformation } from './loader';
-import type { VocabularyNamespace, VocabularyAlias } from './resources';
-import { NAMESPACE_TO_ALIAS } from './resources';
+} from './types/vocabulary-service.js';
+import { TermApplicability, CDS_VOCABULARY_NAMESPACE, CDS_VOCABULARY_ALIAS } from './types/vocabulary-service.js';
+import { loadVocabulariesInformation } from './loader.js';
+import type { VocabularyNamespace, VocabularyAlias } from './resources/index.js';
+import { NAMESPACE_TO_ALIAS } from './resources/index.js';
 import type {
     TargetKind,
     FullyQualifiedName,

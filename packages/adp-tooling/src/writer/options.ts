@@ -18,10 +18,18 @@ import type {
     CloudCustomTaskConfigTarget,
     CfAdpWriterConfig,
     CustomConfig
-} from '../types';
-import { UI5_CDN_URL } from '../base/constants';
+} from '../types.js';
+import { UI5_CDN_URL } from '../base/constants/index.js';
 import { AdaptationProjectType } from '@sap-ux/axios-extension';
-import { SupportedProject } from '../source';
+import { SupportedProject } from '../source/index.js';
+import { isFeatureSupportedVersion } from '../ui5/format.js';
+
+/**
+ * ABAP added support for 'appdescr_app_setInbounds' in UI5 1.143. On older systems we must fall back
+ * to the legacy 'appdescr_app_addNewInbound' + 'appdescr_app_removeAllInboundsExceptOne' pair.
+ * CF projects always use the new type.
+ */
+const MIN_VERSION_FOR_SET_INBOUNDS = '1.143.0';
 
 const VSCODE_URL = 'https://REQUIRED_FOR_VSCODE.example';
 
@@ -161,7 +169,8 @@ function addFioriToolsMiddlewares(ui5Config: UI5Config, config: AdpWriterConfig)
                 adp: {
                     target: config.target,
                     ignoreCertErrors: false
-                }
+                },
+                flp: { useNewSandbox: true }
             }
         }
     ]);
@@ -199,6 +208,7 @@ function addOpenSourceMiddlewares(ui5Config: UI5Config, config: AdpWriterConfig)
                     target: config.target,
                     ignoreCertErrors: false
                 },
+                flp: { useNewSandbox: true },
                 rta: {
                     editors: [
                         {
@@ -313,28 +323,107 @@ function getInboundChangeContentWithNewInboundID(
 }
 
 /**
+ * Determines whether the legacy inbound change types should be used based on the system UI5 version.
+ * Legacy change types ('appdescr_app_addNewInbound' + 'appdescr_app_removeAllInboundsExceptOne') are
+ * used for ABAP systems on UI5 1.142 or lower. CF projects always use the new type regardless of version.
+ * When the version cannot be determined on an ABAP system, legacy change types are used as a safe default
+ * since systems too old to expose a version service are almost certainly too old for 'appdescr_app_setInbounds'.
+ *
+ * @param systemUI5Version - The UI5 version string reported by the system (e.g. '1.142.0').
+ * @param isCfProject - Whether this is a Cloud Foundry adaptation project.
+ * @returns True when the legacy change types must be used.
+ */
+export function shouldUseLegacyInboundChangeTypes(systemUI5Version: string | undefined, isCfProject: boolean): boolean {
+    if (isCfProject) {
+        return false;
+    }
+    if (!systemUI5Version) {
+        return true;
+    }
+    return !isFeatureSupportedVersion(MIN_VERSION_FOR_SET_INBOUNDS, systemUI5Version);
+}
+
+/**
+ * Appends legacy inbound change entries ('appdescr_app_addNewInbound' +
+ * 'appdescr_app_removeAllInboundsExceptOne') for a single FLP configuration.
+ *
+ * @param flpConfig - The inbound configuration to write.
+ * @param appId - Application variant id.
+ * @param manifestChangeContent - Target array to push changes into.
+ * @param isFirst - Whether this is the first inbound in the list (controls removeAllInboundsExceptOne).
+ */
+function appendLegacyInboundChanges(
+    flpConfig: InternalInboundNavigation,
+    appId: string,
+    manifestChangeContent: Content[],
+    isFirst: boolean
+): void {
+    const inboundChangeContent = getInboundChangeContentWithNewInboundID(flpConfig, appId);
+    manifestChangeContent.push({
+        changeType: 'appdescr_app_addNewInbound',
+        content: {
+            inbound: {
+                [flpConfig.inboundId]: inboundChangeContent.inbounds[flpConfig.inboundId]
+            }
+        },
+        texts: {
+            'i18n': 'i18n/i18n.properties'
+        }
+    });
+    // Only emit 'removeAllInboundsExceptOne' after the first inbound is added.
+    // This change type wipes any inbounds inherited from the base app, keeping only
+    // the one just added. Subsequent inbounds in this loop are then stacked on top
+    // via additional 'appdescr_app_addNewInbound' entries. Emitting it later would
+    // race with the merge on the ABAP side.
+    if (isFirst) {
+        manifestChangeContent.push({
+            changeType: 'appdescr_app_removeAllInboundsExceptOne',
+            content: { inboundId: flpConfig.inboundId },
+            texts: {}
+        });
+    }
+}
+
+/**
+ * Appends a single 'appdescr_app_setInbounds' change entry for a single FLP configuration.
+ *
+ * @param flpConfig - The inbound configuration to write.
+ * @param appId - Application variant id.
+ * @param manifestChangeContent - Target array to push changes into.
+ */
+function appendSetInboundsChange(
+    flpConfig: InternalInboundNavigation,
+    appId: string,
+    manifestChangeContent: Content[]
+): void {
+    const inboundChangeContent = getInboundChangeContentWithNewInboundID(flpConfig, appId);
+    manifestChangeContent.push({
+        changeType: 'appdescr_app_setInbounds',
+        content: inboundChangeContent,
+        texts: {
+            'i18n': 'i18n/i18n.properties'
+        }
+    });
+}
+
+/**
  * Generate Inbound change content required for manifest.appdescriptor.
  *
  * @param flpConfigurations FLP cloud project configuration
  * @param appId Application variant id
  * @param manifestChangeContent Application variant change content
+ * @param useLegacyChangeTypes When true, use legacy 'appdescr_app_addNewInbound' +
+ *   'appdescr_app_removeAllInboundsExceptOne' change types instead of 'appdescr_app_setInbounds'.
  */
 export function enhanceManifestChangeContentWithFlpConfig(
     flpConfigurations: InternalInboundNavigation[],
     appId: string,
-    manifestChangeContent: Content[] = []
+    manifestChangeContent: Content[] = [],
+    useLegacyChangeTypes = false
 ): void {
-    flpConfigurations.forEach((flpConfig) => {
-        const inboundChangeContent = getInboundChangeContentWithNewInboundID(flpConfig, appId);
-
-        const addInboundChange = {
-            changeType: 'appdescr_app_setInbounds',
-            content: inboundChangeContent,
-            texts: {
-                'i18n': 'i18n/i18n.properties'
-            }
-        };
-        manifestChangeContent.push(addInboundChange);
+    const append = useLegacyChangeTypes ? appendLegacyInboundChanges : appendSetInboundsChange;
+    flpConfigurations.forEach((flpConfig, index) => {
+        append(flpConfig, appId, manifestChangeContent, index === 0);
     });
 }
 
@@ -376,10 +465,10 @@ export function enhanceUI5YamlWithFioriToolsMiddleware(ui5Config: UI5Config): vo
         url: UI5_CDN_URL
     };
 
-    // Add backend-proxy-middleware-cf as the first middleware (after compression)
+    // Add fiori-tools-proxy-cf as the first middleware (after compression)
     ui5Config.addCustomMiddleware([
         {
-            name: 'backend-proxy-middleware-cf',
+            name: 'fiori-tools-proxy-cf',
             afterMiddleware: 'compression',
             configuration: {
                 authenticationMethod: 'route',
@@ -397,7 +486,7 @@ export function enhanceUI5YamlWithFioriToolsMiddleware(ui5Config: UI5Config): vo
     ui5Config.addCustomMiddleware([
         {
             name: 'fiori-tools-appreload',
-            afterMiddleware: 'backend-proxy-middleware-cf',
+            afterMiddleware: 'fiori-tools-proxy-cf',
             configuration: {
                 port: 35729,
                 path: 'webapp',

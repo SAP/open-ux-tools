@@ -1,4 +1,4 @@
-import { removeEscapeSequences } from '../../src/parser/escaping';
+import { removeEscapeSequences } from '../../src/parser/escaping.js';
 
 describe('removeEscapeSequences', () => {
     it('', () => {

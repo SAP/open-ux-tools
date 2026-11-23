@@ -6,8 +6,8 @@ Object {
   "file": Object {
     "contentRange": Object {
       "end": Object {
-        "character": 49,
-        "line": 61,
+        "character": 3,
+        "line": 67,
       },
       "start": Object {
         "character": 0,
@@ -20,8 +20,8 @@ Object {
     },
     "range": Object {
       "end": Object {
-        "character": 49,
-        "line": 61,
+        "character": 3,
+        "line": 67,
       },
       "start": Object {
         "character": 0,
@@ -246,6 +246,12 @@ Object {
         "uri": "",
       },
       Object {
+        "alias": "Support",
+        "name": "com.sap.vocabularies.Support.v1",
+        "type": "reference",
+        "uri": "",
+      },
+      Object {
         "alias": "UI",
         "name": "com.sap.vocabularies.UI.v1",
         "type": "reference",
@@ -273,7 +279,7 @@ Object {
         },
         "range": Object {
           "end": Object {
-            "character": 23,
+            "character": 28,
             "line": 25,
           },
           "start": Object {
@@ -284,6 +290,21 @@ Object {
         "terms": Array [
           Object {
             "attributes": Object {
+              "Qualifier": Object {
+                "name": "Qualifier",
+                "type": "attribute",
+                "value": "test",
+                "valueRange": Object {
+                  "end": Object {
+                    "character": 28,
+                    "line": 25,
+                  },
+                  "start": Object {
+                    "character": 24,
+                    "line": 25,
+                  },
+                },
+              },
               "Term": Object {
                 "name": "Term",
                 "type": "attribute",
@@ -304,7 +325,7 @@ Object {
             "name": "Annotation",
             "range": Object {
               "end": Object {
-                "character": 23,
+                "character": 28,
                 "line": 25,
               },
               "start": Object {
@@ -317,7 +338,7 @@ Object {
         ],
         "termsRange": Object {
           "end": Object {
-            "character": 23,
+            "character": 28,
             "line": 25,
           },
           "start": Object {
@@ -1163,6 +1184,74 @@ Object {
         },
         "type": "target",
       },
+      Object {
+        "name": "sap.capire.bookshop.Orders",
+        "nameRange": Object {
+          "end": Object {
+            "character": 15,
+            "line": 64,
+          },
+          "start": Object {
+            "character": 9,
+            "line": 64,
+          },
+        },
+        "range": Object {
+          "end": Object {
+            "character": 3,
+            "line": 67,
+          },
+          "start": Object {
+            "character": 2,
+            "line": 65,
+          },
+        },
+        "terms": Array [
+          Object {
+            "attributes": Object {
+              "Term": Object {
+                "name": "Term",
+                "type": "attribute",
+                "value": "CDS.OdataDraftEnabled",
+                "valueRange": Object {
+                  "end": Object {
+                    "character": 17,
+                    "line": 66,
+                  },
+                  "start": Object {
+                    "character": 4,
+                    "line": 66,
+                  },
+                },
+              },
+            },
+            "content": Array [],
+            "name": "Annotation",
+            "range": Object {
+              "end": Object {
+                "character": 17,
+                "line": 66,
+              },
+              "start": Object {
+                "character": 4,
+                "line": 66,
+              },
+            },
+            "type": "element",
+          },
+        ],
+        "termsRange": Object {
+          "end": Object {
+            "character": 3,
+            "line": 67,
+          },
+          "start": Object {
+            "character": 2,
+            "line": 65,
+          },
+        },
+        "type": "target",
+      },
     ],
     "type": "annotation-file",
     "uri": "db/schema.cds",
@@ -1492,6 +1581,11 @@ Object {
       Object {
         "alias": "Session",
         "name": "com.sap.vocabularies.Session.v1",
+        "type": "reference",
+      },
+      Object {
+        "alias": "Support",
+        "name": "com.sap.vocabularies.Support.v1",
         "type": "reference",
       },
       Object {
@@ -4636,7 +4730,7 @@ Object {
                         "line": 44,
                       },
                       "start": Object {
-                        "character": 38,
+                        "character": 37,
                         "line": 44,
                       },
                     },

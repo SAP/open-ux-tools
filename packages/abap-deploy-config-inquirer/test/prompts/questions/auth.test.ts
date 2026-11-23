@@ -1,8 +1,26 @@
-import * as conditions from '../../../src/prompts/conditions';
-import * as validators from '../../../src/prompts/validators';
-import { initI18n, t } from '../../../src/i18n';
-import { getAuthPrompts } from '../../../src/prompts/questions';
-import { promptNames } from '../../../src/types';
+import { jest } from '@jest/globals';
+import { promptNames } from '../../../src/types.js';
+
+const mockShowUsernameQuestion = jest.fn<typeof actualConditions.showUsernameQuestion>();
+const mockShowPasswordQuestion = jest.fn<typeof actualConditions.showPasswordQuestion>();
+const mockValidateCredentials = jest.fn<typeof actualValidators.validateCredentials>();
+
+const actualConditions = await import('../../../src/prompts/conditions.js');
+const actualValidators = await import('../../../src/prompts/validators.js');
+
+jest.unstable_mockModule('../../../src/prompts/conditions', () => ({
+    ...actualConditions,
+    showUsernameQuestion: mockShowUsernameQuestion,
+    showPasswordQuestion: mockShowPasswordQuestion
+}));
+
+jest.unstable_mockModule('../../../src/prompts/validators', () => ({
+    ...actualValidators,
+    validateCredentials: mockValidateCredentials
+}));
+
+const { initI18n, t } = await import('../../../src/i18n.js');
+const { getAuthPrompts } = await import('../../../src/prompts/questions/auth.js');
 
 describe('getAuthPrompts', () => {
     beforeAll(async () => {
@@ -22,7 +40,9 @@ describe('getAuthPrompts', () => {
                 "when": [Function],
               },
               Object {
+                "default": "",
                 "guiOptions": Object {
+                  "applyDefaultWhenDirty": true,
                   "mandatory": true,
                   "type": "login",
                 },
@@ -37,8 +57,15 @@ describe('getAuthPrompts', () => {
         `);
     });
 
+    test('password prompt should have applyDefaultWhenDirty and empty default to prevent stale credentials on system change', () => {
+        const authPrompts = getAuthPrompts({});
+        const passwordPrompt = authPrompts.find((prompt) => prompt.name === promptNames.password);
+        expect(passwordPrompt?.guiOptions?.applyDefaultWhenDirty).toBe(true);
+        expect((passwordPrompt as any)?.default).toBe('');
+    });
+
     test('should return expected values from username prompt methods', async () => {
-        jest.spyOn(conditions, 'showUsernameQuestion').mockResolvedValueOnce(true);
+        mockShowUsernameQuestion.mockResolvedValueOnce(true);
 
         const authPrompts = getAuthPrompts({});
         const usernamePrompt = authPrompts.find((prompt) => prompt.name === promptNames.username);
@@ -50,8 +77,8 @@ describe('getAuthPrompts', () => {
     });
 
     test('should return expected values from password prompt methods', async () => {
-        jest.spyOn(conditions, 'showPasswordQuestion').mockReturnValue(true);
-        jest.spyOn(validators, 'validateCredentials').mockResolvedValueOnce(true);
+        mockShowPasswordQuestion.mockReturnValue(true);
+        mockValidateCredentials.mockResolvedValueOnce(true);
 
         const authPrompts = getAuthPrompts({});
         const passwordPrompt = authPrompts.find((prompt) => prompt.name === promptNames.password);

@@ -1,2 +1,2 @@
-export * from './constants';
-export * from './i18n';
+export * from './constants.js';
+export * from './i18n.js';

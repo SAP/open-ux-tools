@@ -11,9 +11,9 @@ import type {
     SemanticObjectPromptOptions,
     SubTitlePromptOptions,
     TitlePromptOptions
-} from '../../types';
-import { t } from '../../i18n';
-import { promptNames } from '../../types';
+} from '../../types.js';
+import { t } from '../../i18n.js';
+import { promptNames } from '../../types.js';
 import type { ManifestNamespace } from '@sap-ux/project-access';
 
 /**

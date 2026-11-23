@@ -1,0 +1,12 @@
+<mvc:View
+	xmlns:mvc="sap.ui.core.mvc"
+	xmlns="sap.m"
+	controllerName="fin.central.listreport.reuse.controller.App"
+	displayBlock="true"
+	height="100%" >
+
+	<App id="fioriContent"
+		 busy="{appView>/busy}"
+		 busyIndicatorDelay="{appView>/delay}"/>
+
+</mvc:View>

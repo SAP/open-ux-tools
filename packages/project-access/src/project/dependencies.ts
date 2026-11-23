@@ -1,8 +1,8 @@
 import { existsSync } from 'node:fs';
 import { dirname, isAbsolute, join, parse } from 'node:path';
-import { FileName } from '../constants';
-import { readJSON, updatePackageJSON } from '../file';
-import type { Package } from '../types';
+import { FileName } from '../constants.js';
+import { readJSON, updatePackageJSON } from '../file/index.js';
+import type { Package } from '../types/index.js';
 import type { Editor } from 'mem-fs-editor';
 
 /**

@@ -1,4 +1,4 @@
-import { propertiesToI18nEntry } from '../../../../src';
+import { propertiesToI18nEntry } from '../../../../src/index.js';
 describe('properties', () => {
     test('propertiesToI18nEntry', () => {
         // arrange

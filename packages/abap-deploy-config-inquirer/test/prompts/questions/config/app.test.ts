@@ -1,10 +1,27 @@
-import { initI18n, t } from '../../../../src/i18n';
-import { getAppConfigPrompts } from '../../../../src/prompts/questions';
-import * as conditions from '../../../../src/prompts/conditions';
-import * as validators from '../../../../src/prompts/validators';
-import type { TransportConfig } from '../../../../src/types';
-import { promptNames } from '../../../../src/types';
-import { PromptState } from '../../../../src/prompts/prompt-state';
+import { jest } from '@jest/globals';
+import { type TransportConfig, promptNames } from '../../../../src/types.js';
+
+const mockShowUi5AppDeployConfigQuestion = jest.fn<typeof actualConditions.showUi5AppDeployConfigQuestion>();
+const mockValidateUi5AbapRepoName = jest.fn<typeof actualValidators.validateUi5AbapRepoName>();
+const mockValidateAppDescription = jest.fn<typeof actualValidators.validateAppDescription>();
+
+const actualConditions = await import('../../../../src/prompts/conditions.js');
+const actualValidators = await import('../../../../src/prompts/validators.js');
+
+jest.unstable_mockModule('../../../../src/prompts/conditions', () => ({
+    ...actualConditions,
+    showUi5AppDeployConfigQuestion: mockShowUi5AppDeployConfigQuestion
+}));
+
+jest.unstable_mockModule('../../../../src/prompts/validators', () => ({
+    ...actualValidators,
+    validateUi5AbapRepoName: mockValidateUi5AbapRepoName,
+    validateAppDescription: mockValidateAppDescription
+}));
+
+const { initI18n, t } = await import('../../../../src/i18n.js');
+const { getAppConfigPrompts } = await import('../../../../src/prompts/questions/config/index.js');
+const { PromptState } = await import('../../../../src/prompts/prompt-state.js');
 
 describe('getConfirmPrompts', () => {
     beforeAll(async () => {
@@ -46,8 +63,8 @@ describe('getConfirmPrompts', () => {
     });
 
     test('should return expected values from ui5 abap repo prompt methods', async () => {
-        jest.spyOn(conditions, 'showUi5AppDeployConfigQuestion').mockReturnValueOnce(true);
-        jest.spyOn(validators, 'validateUi5AbapRepoName').mockReturnValueOnce(true);
+        mockShowUi5AppDeployConfigQuestion.mockReturnValueOnce(true);
+        mockValidateUi5AbapRepoName.mockReturnValueOnce(true);
 
         PromptState.transportAnswers = {
             transportConfig: {
@@ -77,8 +94,8 @@ describe('getConfirmPrompts', () => {
     });
 
     test('should return expected values from overwrite prompt methods', async () => {
-        jest.spyOn(conditions, 'showUi5AppDeployConfigQuestion').mockReturnValue(true);
-        jest.spyOn(validators, 'validateAppDescription').mockReturnValue(true);
+        mockShowUi5AppDeployConfigQuestion.mockReturnValue(true);
+        mockValidateAppDescription.mockReturnValue(true);
 
         const appConfigPrompts = getAppConfigPrompts({ description: { default: 'Mock description' } });
         const descriptionPrompt = appConfigPrompts.find((prompt) => prompt.name === promptNames.description);

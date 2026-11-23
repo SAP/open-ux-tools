@@ -13,9 +13,9 @@ import {
     getExistingFlpConfigInfoPrompt,
     getTileSettingsPrompts,
     getConfirmReplacePrompt
-} from './questions';
-import { promptNames } from '../types';
-import type { ExistingInboundRef, FLPConfigPromptOptions, FLPConfigQuestion, TileSettingsAnswers } from '../types';
+} from './questions/index.js';
+import { promptNames } from '../types.js';
+import type { ExistingInboundRef, FLPConfigPromptOptions, FLPConfigQuestion, TileSettingsAnswers } from '../types.js';
 import type { YUIQuestion } from '@sap-ux/inquirer-common';
 
 /**

@@ -1,9 +1,9 @@
 import { expect } from '@sap-ux-private/playwright';
 import { lt, satisfies } from 'semver';
 
-import { test } from '../../fixture';
-import { ADP_FIORI_ELEMENTS_V2 } from '../../project';
-import { AdaptationEditorShell, AdpDialog, ListReport, TableSettings, verifyChanges } from '../test-utils';
+import { test } from '../../fixture.js';
+import { ADP_FIORI_ELEMENTS_V2 } from '../../project/index.js';
+import { AdaptationEditorShell, AdpDialog, ListReport, TableSettings, verifyChanges } from '../test-utils.js';
 
 test.use({ projectConfig: ADP_FIORI_ELEMENTS_V2 });
 
@@ -64,7 +64,7 @@ test.describe(`@quick-actions @fe-v2 @list-report`, () => {
             const editor = new AdaptationEditorShell(page, ui5Version);
             await editor.quickActions.addControllerToPage.click();
 
-            await dialog.fillField('Controller Name', 'TestController');
+            await dialog.fillField('Name', 'TestController');
             await dialog.clickCreateButton();
 
             if (lt(ui5Version, '1.136.0')) {
@@ -95,11 +95,18 @@ test.describe(`@quick-actions @fe-v2 @list-report`, () => {
             await expect(editor.quickActions.showPageController).toBeVisible();
             await editor.quickActions.showPageController.click();
 
-            await expect(
-                previewFrame.getByText('adp.fiori.elements.v2/changes/coding/TestController.js'),
-                `Check filename \`adp.fiori.elements.v2/changes/coding/TestController.js\` is visible`
-            ).toBeVisible();
-            await dialog.openInVSCodeVisible();
+            if (lt(ui5Version, '1.143.0')) {
+                await expect(
+                    previewFrame.getByText('adp.fiori.elements.v2/changes/coding/TestController.js'),
+                    `Check filename \`adp.fiori.elements.v2/changes/coding/TestController.js\` is visible`
+                ).toBeVisible();
+                await dialog.openInVSCodeVisible();
+            } else {
+                await expect(
+                    previewFrame.getByText('Entity-Specific Controller'),
+                    'Check instance-specific controller option is shown for >= 1.143'
+                ).toBeVisible();
+            }
         }
     );
 

@@ -1,4 +1,4 @@
-import { indent } from '../../src/printer/indent';
+import { indent } from '../../src/printer/indent.js';
 
 describe('indent', () => {
     test('object in array', () => {

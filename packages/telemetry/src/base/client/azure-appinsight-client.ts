@@ -1,10 +1,16 @@
-import { Client } from './client';
+// Before the appInsights import:
+// Prevent applicationinsights from monkey-patching console and other modules via
+// diagnostic-channel. We use manual TelemetryClient, not auto-instrumentation,
+// so this channel provides no benefit and causes console.time/timeEnd warnings in
+// apps (e.g. CAP) that hold pre-existing console timers.
+process.env.APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL ??= 'true';
+import { Client } from './client.js';
 import * as appInsights from 'applicationinsights';
-import { EventHeader } from '../types/event-header';
-import { SampleRate } from '../types/sample-rate';
-import { configAzureTelemetryClient } from '../utils/azure-client-config';
-import { TelemetrySettings } from '../config-state';
-import type { TelemetryMeasurements, TelemetryProperties } from '../types';
+import { EventHeader } from '../types/event-header.js';
+import { SampleRate } from '../types/sample-rate.js';
+import { configAzureTelemetryClient } from '../utils/azure-client-config.js';
+import { TelemetrySettings } from '../config-state.js';
+import type { TelemetryMeasurements, TelemetryProperties } from '../types/index.js';
 
 /**
  *
@@ -130,24 +136,14 @@ class ApplicationInsightClient extends Client {
         client: appInsights.TelemetryClient,
         event: appInsights.Contracts.EventTelemetry
     ): Promise<void> {
-        if (process.env.SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY === 'true') {
-            return;
+        if (process.env.SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY !== 'true') {
+            client.trackEvent(event);
+            await client.flush();
         }
-
-        return new Promise((resolve, reject) => {
-            try {
-                client.trackEvent(event);
-                client.flush({
-                    callback: () => resolve()
-                });
-            } catch (error) {
-                reject(error);
-            }
-        });
     }
 
     /**
-     * Send teleemtry event in non-blocking fashion.
+     * Send telemetry event in non-blocking fashion.
      *
      * @param client Telemetry client instance
      * @param event Telemetry event
@@ -168,23 +164,23 @@ class ApplicationInsightClient extends Client {
      * @returns Telemetry client instance
      */
     private createTelemetryClient(sampleRate: SampleRate): appInsights.TelemetryClient {
-        let sampleRateNumer: number;
+        let sampleRateNumber: number;
 
         switch (sampleRate) {
             case SampleRate.OnePercent:
-                sampleRateNumer = 1;
+                sampleRateNumber = 1;
                 break;
             case SampleRate.TenPercent:
-                sampleRateNumer = 10;
+                sampleRateNumber = 10;
                 break;
             case SampleRate.NoSampling:
             default:
-                sampleRateNumer = 100;
+                sampleRateNumber = 100;
                 break;
         }
 
         const client: appInsights.TelemetryClient = new appInsights.TelemetryClient(this.applicationKey);
-        client.config.samplingPercentage = sampleRateNumer;
+        client.config.samplingPercentage = sampleRateNumber;
         configAzureTelemetryClient(client);
         return client;
     }

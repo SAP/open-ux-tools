@@ -28,8 +28,8 @@
                 "range": "[(1,4)..(14,5)]",
                 "colon": {
                     "type": "token",
-                    "value": ":",
-                    "range": "[(1,15)..(1,16)]"
+                    "range": "[(1,15)..(1,16)]",
+                    "value": ":"
                 },
                 "value": {
                     "type": "record",
@@ -467,8 +467,8 @@
                 "range": "[(15,4)..(15,25)]",
                 "colon": {
                     "type": "token",
-                    "value": ":",
-                    "range": "[(15,13)..(15,14)]"
+                    "range": "[(15,13)..(15,14)]",
+                    "value": ":"
                 },
                 "value": {
                     "type": "record",
@@ -546,8 +546,8 @@
                 "range": "[(16,4)..(16,29)]",
                 "colon": {
                     "type": "token",
-                    "value": ":",
-                    "range": "[(16,13)..(16,14)]"
+                    "range": "[(16,13)..(16,14)]",
+                    "value": ":"
                 },
                 "value": {
                     "type": "collection",

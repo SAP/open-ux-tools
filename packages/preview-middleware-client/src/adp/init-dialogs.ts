@@ -12,12 +12,12 @@ import FlUtils from 'sap/ui/fl/Utils';
 import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 
 import ManagedObject from 'sap/ui/base/ManagedObject';
-import { DialogFactory, DialogNames } from './dialog-factory';
-import type { IsReuseComponentApi } from '../cpe/types';
-import { getTextBundle, type TextBundle } from '../i18n';
-import { getReuseComponentChecker } from './utils';
-import type { Ui5VersionInfo } from '../utils/version';
-import { getSyncViewIds } from './sync-views-utils';
+import { DialogFactory, DialogNames } from './dialog-factory.js';
+import type { IsReuseComponentApi } from '../cpe/types.js';
+import { getTextBundle, type TextBundle } from '../i18n.js';
+import { getReuseComponentChecker } from './utils.js';
+import type { Ui5VersionInfo } from '../utils/version.js';
+import { getSyncViewIds } from './sync-views-utils.js';
 
 /**
  * Handler for enablement of Extend With Controller context menu entry

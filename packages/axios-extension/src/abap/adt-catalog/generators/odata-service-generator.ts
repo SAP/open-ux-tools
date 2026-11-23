@@ -1,6 +1,6 @@
-import type { GeneratorEntry } from './types';
-import type { ODataServiceTechnicalDetails, ValidationMessage } from '../../types';
-import { AdtService } from '../services';
+import type { GeneratorEntry } from './types.js';
+import type { ODataServiceTechnicalDetails, ValidationMessage } from '../../types/index.js';
+import { AdtService } from '../services/index.js';
 
 /**
  * Extension of the Generator service to generate OData services

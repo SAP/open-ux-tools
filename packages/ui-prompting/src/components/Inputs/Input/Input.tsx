@@ -1,7 +1,7 @@
 import React from 'react';
 import { UITextInput } from '@sap-ux/ui-components';
-import { useValue, getLabelRenderer } from '../../../utilities';
-import type { AnswerValue, InputPromptQuestion } from '../../../types';
+import { useValue, getLabelRenderer } from '../../../utilities/index.js';
+import type { AnswerValue, InputPromptQuestion } from '../../../types.js';
 
 export interface InputProps extends InputPromptQuestion {
     id?: string;

@@ -7,6 +7,7 @@
         "build": {
             "cache": true,
             "outputs": [
+                "{projectRoot}/dist",
                 "{projectRoot}/data/index.js",
                 "{projectRoot}/data/embeddings",
                 "{projectRoot}/data/search"

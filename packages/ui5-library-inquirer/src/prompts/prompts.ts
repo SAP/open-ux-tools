@@ -4,8 +4,8 @@ import { validateLibModuleName, validateNamespace, validateProjectFolder } from 
 import type { UI5Version } from '@sap-ux/ui5-info';
 import type { Answers, ListChoiceOptions, ListQuestion, Question } from 'inquirer';
 import type { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
-import { t } from '../i18n';
-import type { UI5LibraryAnswers, UI5LibraryPromptOptions } from '../types';
+import { t } from '../i18n.js';
+import type { UI5LibraryAnswers, UI5LibraryPromptOptions } from '../types.js';
 
 /**
  * Get the prompts for UI5 library generation.

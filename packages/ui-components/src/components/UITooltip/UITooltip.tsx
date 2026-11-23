@@ -8,7 +8,7 @@ import type {
     ITooltipProps
 } from '@fluentui/react';
 import { TooltipHost, TooltipDelay } from '@fluentui/react';
-import { getCalloutStyle, CALLOUT_STYLES } from '../UICallout';
+import { getCalloutStyle, CALLOUT_STYLES } from '../UICallout/index.js';
 
 export { TooltipDelay as UITooltipDelay, ITooltipProps as UIToolTipProps };
 
@@ -64,7 +64,8 @@ export class UITooltip extends React.Component<UITooltipProps, {}> {
                 // Apply some different styles
                 styles: {
                     root: {
-                        display: 'inline-block'
+                        display: 'inline-block',
+                        padding: 0
                     },
                     calloutMain: {
                         padding: 10,

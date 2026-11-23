@@ -1,10 +1,10 @@
 import type { Logger } from '@sap-ux/logger';
 import type { NewI18nEntry } from '@sap-ux/i18n';
-import type { I18nBundles } from '../i18n';
-import type { ApplicationStructure, I18nPropertiesPaths, Project, ProjectType } from '../info';
+import type { I18nBundles } from '../i18n/index.js';
+import type { ApplicationStructure, I18nPropertiesPaths, Project, ProjectType } from '../info/index.js';
 import type { Editor } from 'mem-fs-editor';
-import type { Package } from '../package';
-import type { AnnotationFile, Manifest } from '../webapp';
+import type { Package } from '../package/index.js';
+import type { AnnotationFile, Manifest } from '../webapp/index.js';
 
 interface BaseAccess {
     readonly project: Project;
@@ -75,6 +75,15 @@ export interface ApplicationAccess extends BaseAccess {
      * @returns boolean or exception
      */
     createCapI18nEntries(filePath: string, newI18nEntries: NewI18nEntry[]): Promise<boolean>;
+    /**
+     * Maintains new translation entries at a specific i18n properties file path.
+     * Use this when the target file is already known (e.g. chosen by the user from a picker).
+     *
+     * @param filePath absolute path to the target `.properties` file
+     * @param newEntries translation entries to write
+     * @returns boolean or exception
+     */
+    createI18nEntriesAtPath(filePath: string, newEntries: NewI18nEntry[]): Promise<boolean>;
     /**
      * Return the application id of this app, which is the relative path from the project root
      * to the app root.

@@ -1,13 +1,14 @@
-import type { CfSystemChoice } from '../types';
+import type { CfSystemChoice } from '../types.js';
 import {
     isAppStudio,
     listDestinations,
     getDisplayName,
     isAbapEnvironmentOnBtp,
+    isFullUrlDestination,
     type Destinations
 } from '@sap-ux/btp-utils';
-import LoggerHelper from '../logger-helper';
-import { t } from '../i18n';
+import LoggerHelper from '../logger-helper.js';
+import { t } from '../i18n.js';
 
 /**
  * Generates a sorted list of Cloud Foundry system destination choices from provided destinations.
@@ -26,7 +27,8 @@ function createDestinationChoices(destinations: Destinations = {}): CfSystemChoi
             name: `${getDisplayName(destination) ?? 'Unknown'} - ${destination.Host}`,
             value: destination.Name,
             scp: isAbapEnvironmentOnBtp(destination) || false,
-            url: destination.Host
+            url: destination.Host,
+            isFullUrl: isFullUrlDestination(destination)
         }));
 }
 

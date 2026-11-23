@@ -34,7 +34,7 @@ Command group for generating SAP Fiori applications. A subcommand is required.
 
 Usage: `npx --yes @sap-ux/create@latest generate [subcommand] [options]`
 
-The available subcommands are: `adaptation-project`
+The available subcommands are: `adaptation-project` and `opa5-tests`
 
 
 --------------------------------
@@ -59,6 +59,21 @@ Options:
 - `--ts` - Enable TypeScript support for the generated project.
 - `--package [package]` - The ABAP package to be used for deployments.
 - `--transport [transport]` - The ABAP transport to be used for deployments.
+
+--------------------------------
+
+## [`generate opa5-tests`](#generate-opa5-tests)
+
+Generate OPA5 integration tests for an existing SAP Fiori elements (OData V4) application.
+
+Example:
+
+`npx --yes @sap-ux/create@latest generate opa5-tests`
+
+Options:
+- `-t, --typescript` - Force generation of TypeScript test files. Otherwise, TypeScript is auto-detected from the presence of a `tsconfig.json`.
+- `-s, --simulate` - Simulate only. Do not write. Also, sets `--verbose`
+- `-v, --verbose` - Show verbose information.
 
 --------------------------------
 
@@ -288,15 +303,19 @@ Example:
 
 `npx --yes @sap-ux/create@latest add system --name "My System" --url https://my-sap.example.com --client 100 --username myuser`
 
+`npx --yes @sap-ux/create@latest add system` (interactive mode)
+
 Options:
-- `--name <string>` _(required)_ - Display name for the system
-- `--url <string>` _(required)_ - URL of the backend system
+- `--name <string>` - Display name for the system
+- `--url <string>` - URL of the backend system
 - `--client <string>` - SAP client number (optional)
 - `--type <string>` - System type (AbapCloud | OnPrem | Generic) _(default: `OnPrem`)_
 - `--auth <string>` - Authentication type (basic | reentranceTicket | oauth2 | oauth2ClientCredential) _(default: `basic`)_
 - `--connection-type <string>` - Connection type (abap_catalog | generic_host | odata_service) _(default: `abap_catalog`)_
 - `--username <string>` - Username for basic authentication
 - `--password <string>` - To avoid plain-text credentials in the shell's history, pass an env reference: --password env:MY_VAR
+- `--skip-credentials-prompt` - Skip credential prompts. No credentials will be saved, but may be added later if required
+- `--skip-connection-validation` - Skip connection verification before saving
 
 --------------------------------
 
@@ -398,9 +417,70 @@ Example:
 
 `npx --yes @sap-ux/create@latest remove system --url https://my-sap.example.com --client 100`
 
+`npx --yes @sap-ux/create@latest remove system` (interactive mode)
+
 Options:
-- `--url <string>` _(required)_ - URL of the backend system to remove
+- `--url <string>` - URL of the backend system to remove
 - `--client <string>` - SAP client number (optional)
+- `--force` - Skip confirmation prompt
+
+--------------------------------
+
+## [`update`](#update)
+
+Command group for updating saved resources. A subcommand is required.
+
+Usage: `npx --yes @sap-ux/create@latest update [subcommand] [options]`
+
+The available subcommands are: `system` and `service-metadata`
+
+
+--------------------------------
+
+## [`update system`](#update-system)
+
+Update an existing backend system in the saved systems store (`~/.fioritools`). The system is identified by its URL and optional SAP client.
+
+
+Example:
+
+`npx --yes @sap-ux/create@latest update system --url https://my-sap.example.com --name "New Name"`
+
+`npx --yes @sap-ux/create@latest update system --url https://my-sap.example.com --client 100 --username newuser`
+
+`npx --yes @sap-ux/create@latest update system` (interactive mode)
+
+Options:
+- `--url <string>` - URL of the backend system to update
+- `--client <string>` - SAP client number to identify the system (optional)
+- `--name <string>` - New display name for the system
+- `--username <string>` - New username
+- `--password <string>` - To avoid plain-text credentials in the shell's history, pass an env reference: --password env:MY_VAR
+- `--clear-credentials` - Remove stored credentials from the system
+- `--skip-connection-validation` - Skip connection verification before saving
+- `--skip-check` - (Deprecated: use --skip-connection-validation) Skip connection verification before saving
+
+--------------------------------
+
+## [`update service-metadata`](#update-service-metadata)
+
+Refresh the local OData service metadata.xml from the live backend for a Fiori application.
+Also fetches value-help (external) service metadata when available.
+
+Only supported for Fiori applications connected to an EDMX backend. CAP applications are not supported,
+as their service metadata is generated locally from the CDS model rather than fetched from a backend.
+
+Example:
+
+`npx --yes @sap-ux/create@latest update service-metadata /path/to/my-fiori-app`
+
+`npx --yes @sap-ux/create@latest update service-metadata /path/to/my-fiori-app --simulate`
+
+Options:
+- `--service <name>` - Name of the data source in manifest.json (defaults to mainService or first service)
+- `--no-value-help` - Skip fetching value-help (external) service metadata
+- `-s, --simulate` - Simulate only. Do not write. Also sets `--verbose`.
+- `-v, --verbose` - Show verbose information.
 
 --------------------------------
 
@@ -410,7 +490,7 @@ Command group for changing existing SAP Fiori applications. A subcommand is requ
 
 Usage: `npx --yes @sap-ux/create@latest change [subcommand] [options]`
 
-The available subcommands are: `data-source`, `inbound` and `system`
+The available subcommands are: `data-source` and `inbound`
 
 --------------------------------
 
@@ -444,27 +524,6 @@ Example:
 
 Options:
 - `-s, --simulate` - Simulate only. Do not write or install.
-
---------------------------------
-
-## [`change system`](#change-system)
-
-Update an existing backend system in the saved systems store (`~/.fioritools`). The system is identified by its URL and optional SAP client.
-
-
-Example:
-
-`npx --yes @sap-ux/create@latest change system --url https://my-sap.example.com --name "New Name"`
-
-`npx --yes @sap-ux/create@latest change system --url https://my-sap.example.com --client 100 --username newuser`
-
-Options:
-- `--url <string>` _(required)_ - URL of the backend system to update
-- `--client <string>` - SAP client number to identify the system (optional)
-- `--name <string>` - New display name for the system
-- `--username <string>` - New username
-- `--password <string>` - To avoid plain-text credentials in the shell's history, pass an env reference: --password env:MY_VAR
-- `--clear-credentials` - Remove stored credentials from the system
 
 --------------------------------
 
@@ -521,4 +580,19 @@ Options:
 - `--url <string>` _(required)_ - URL of the backend system.
 - `--client <string>` - SAP client number (optional).
 - `--json` - Output as JSON, which is useful for automation and MCP integrations.
+
+--------------------------------
+
+## [`migrate`](#migrate)
+
+Migrate legacy WebIDE Fiori project to modern Fiori tools format. In BAS, a destination is required. Outside BAS, hostname and client are required; destination is optional.
+
+Options:
+- `-d, --destination <name>` - SAP System destination name (required in BAS)
+- `-s, --sap-system-name <name>` - SAP System name (alias for destination)
+- `-H, --hostname <host>` - Backend hostname (required outside BAS unless resolved from a saved system)
+- `-c, --client <client>` - SAP Client (required outside BAS unless resolved from destination or saved system)
+- `-u, --ui5-version <version>` - UI5 version (defaults to source project version)
+- `-f, --force` - Force migration even if project is already a Fiori tools project
+- `-n, --skip-install` - Skip the `npm install` step after migration
 

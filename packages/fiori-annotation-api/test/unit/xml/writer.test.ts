@@ -13,18 +13,18 @@ import {
     createAttributeNode
 } from '@sap-ux/odata-annotation-core-types';
 
-import type { InsertElement, UpdateElementName, XMLDocumentChange } from '../../../src/xml/changes';
+import type { InsertElement, UpdateElementName, XMLDocumentChange } from '../../../src/xml/changes.js';
 import {
     REPLACE_ELEMENT_CONTENT,
     insertElement,
     UPDATE_ATTRIBUTE_NAME,
     MOVE_COLLECTION_VALUE
-} from '../../../src/xml/changes';
-import { XMLWriter } from '../../../src/xml/writer';
+} from '../../../src/xml/changes.js';
+import { XMLWriter } from '../../../src/xml/writer.js';
 
-import { applyTextEdits } from '../apply-edits';
-import type { Comment } from '../../../src/xml/comments';
-import { collectComments } from '../../../src/xml/comments';
+import { applyTextEdits } from '../apply-edits.js';
+import type { Comment } from '../../../src/xml/comments.js';
+import { collectComments } from '../../../src/xml/comments.js';
 import {
     DELETE_ATTRIBUTE,
     DELETE_ELEMENT,
@@ -32,7 +32,7 @@ import {
     INSERT_ELEMENT,
     UPDATE_ATTRIBUTE_VALUE,
     UPDATE_ELEMENT_NAME
-} from '../../../src/types';
+} from '../../../src/types/index.js';
 
 function parseXML(text: string): [XMLDocument, Comment[]] {
     const { cst, tokenVector } = parse(text);

@@ -1,1 +1,1 @@
-export * from './UIDialog';
+export * from './UIDialog.js';

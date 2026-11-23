@@ -1,5 +1,5 @@
 import { DEFAULT_TUNNEL_APP_NAME } from '@sap-ux/adp-tooling';
-import type { BackendProxyMiddlewareCfConfig, EffectiveOptions } from '../types';
+import type { BackendProxyMiddlewareCfConfig, EffectiveOptions } from '../types.js';
 
 export const DEFAULT_REWRITE_CONTENT_TYPES = [
     'text/html',

@@ -1,4 +1,4 @@
-import type { ServiceConfig, SystemSelectionAnswers } from '../types';
+import type { ServiceConfig, SystemSelectionAnswers } from '../types.js';
 
 /**
  * Much of the values returned by the ui service inquirer prompting are derived from prompt answers and are not direct answer values.

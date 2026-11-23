@@ -1,4 +1,4 @@
-import cloneDeep from 'lodash/cloneDeep';
+import cloneDeep from 'lodash/cloneDeep.js';
 
 /**
  * Definition of log method signature.

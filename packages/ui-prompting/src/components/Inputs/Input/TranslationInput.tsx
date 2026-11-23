@@ -1,18 +1,18 @@
 import React, { useCallback } from 'react';
 import { TranslationKeyGenerator, TranslationTextPattern, UITranslationInput } from '@sap-ux/ui-components';
 import type { TranslationEntry } from '@sap-ux/ui-components';
-import { useValue, getLabelRenderer } from '../../../utilities';
-import { useTranslation } from '../../../context/TranslationContext';
-import type { InputProps } from './Input';
-import { TRANSLATE_EVENT_UPDATE, TRANSLATE_EVENT_SHOW } from '../../../types';
-import type { TranslationProperties } from '../../../types';
+import { useValue, getLabelRenderer } from '../../../utilities/index.js';
+import { useTranslation } from '../../../context/TranslationContext.js';
+import type { InputProps } from './Input.js';
+import { TRANSLATE_EVENT_UPDATE, TRANSLATE_EVENT_SHOW } from '../../../types.js';
+import type { TranslationProperties } from '../../../types.js';
 
 export interface TranslationInputProps extends InputProps {
     properties: TranslationProperties;
 }
 
 export const TranslationInput = (props: TranslationInputProps) => {
-    const { bundle, onEvent: triggerEvent, pendingQuestions } = useTranslation();
+    const { bundle, onEvent: triggerEvent, pendingQuestions, translationInputProps } = useTranslation();
     const { name, onChange, guiOptions = {}, message, errorMessage, id, properties } = props;
     const { mandatory, hint, placeholder } = guiOptions;
     const [value, setValue] = useValue('', props.value);
@@ -44,6 +44,7 @@ export const TranslationInput = (props: TranslationInputProps) => {
 
     return (
         <UITranslationInput
+            {...translationInputProps}
             onRenderLabel={getLabelRenderer(hint)}
             required={mandatory}
             label={typeof message === 'string' ? message : name}

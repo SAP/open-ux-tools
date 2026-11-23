@@ -1,5 +1,5 @@
-import type { ODataVersion } from '../../base/odata-service';
-import { ODataService } from '../../base/odata-service';
+import type { ODataVersion } from '../../base/odata-service.js';
+import { ODataService } from '../../base/odata-service.js';
 
 export const ServiceType = {
     UI: 'UI',

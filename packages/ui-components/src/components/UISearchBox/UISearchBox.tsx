@@ -2,7 +2,7 @@ import React from 'react';
 
 import type { ISearchBoxProps, ISearchBoxStyleProps, ISearchBoxStyles } from '@fluentui/react';
 import { SearchBox } from '@fluentui/react';
-import { COMMON_INPUT_STYLES } from '../UIInput';
+import { COMMON_INPUT_STYLES } from '../UIInput/index.js';
 
 /**
  * UISearchBox component

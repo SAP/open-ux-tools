@@ -3,9 +3,9 @@ import { ApiHubType } from '@sap-ux/cf-deploy-config-sub-generator';
 import { FileName } from '@sap-ux/project-access';
 import { UI5Config } from '@sap-ux/ui5-config';
 import { join } from 'node:path';
-import { cfChoice, abapChoice } from './constants';
+import { cfChoice, abapChoice } from './constants.js';
 import type { Editor } from 'mem-fs-editor';
-import type { Target } from '../types';
+import type { Target } from '../types/index.js';
 import type { ApiHubConfig } from '@sap-ux/cf-deploy-config-sub-generator';
 
 /**

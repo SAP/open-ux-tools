@@ -1,5 +1,5 @@
 import Generator from 'yeoman-generator';
-import { initI18n } from '../utils';
+import { initI18n } from '../utils/index.js';
 import { DefaultLogger, LogWrapper, type ILogWrapper } from '@sap-ux/fiori-generator-shared';
 import type { LogLevel, IVSCodeExtLogger } from '@vscode-logging/logger';
 

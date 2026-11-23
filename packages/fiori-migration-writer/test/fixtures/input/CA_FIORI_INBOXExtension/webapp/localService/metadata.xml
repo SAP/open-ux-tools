@@ -1,0 +1,645 @@
+<!--
+
+    Copyright (C) 2009-2014 SAP SE or an SAP affiliate company. All rights reserved
+
+-->
+<edmx:Edmx Version="1.0" xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx"
+	xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" xmlns:sap="http://www.sap.com/Protocols/SAPData">
+	<edmx:DataServices m:DataServiceVersion="2.0">
+		<Schema Namespace="TASKPROCESSING" sap:schema-version="1" xml:lang="en" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
+			<EntityType Name="Subscription" sap:content-version="2" sap:semantics="subscriptions">
+				<Key>
+					<PropertyRef Name="SAP__Origin"/>
+					<PropertyRef Name="ID"/>
+				</Key>
+				<Property MaxLength="16" Name="SAP__Origin" Nullable="false" Type="Edm.String"/>
+				<Property MaxLength="32" Name="ID" Nullable="false" Type="Edm.String" sap:creatable="false" sap:filterable="false" sap:label="Sub. ID"
+					sap:updatable="false"/>
+				<Property MaxLength="12" Name="user" Type="Edm.String" m:FC_KeepInContent="false" m:FC_TargetPath="SyndicationAuthorName"
+					sap:creatable="false" sap:filterable="false" sap:label="User Name"/>
+				<Property Name="updated" Precision="0" Type="Edm.DateTime" m:FC_KeepInContent="false" m:FC_TargetPath="SyndicationUpdated"
+					sap:creatable="false" sap:filterable="false" sap:label="Time Stamp"/>
+				<Property MaxLength="255" Name="title" Type="Edm.String" m:FC_KeepInContent="false" m:FC_TargetPath="SyndicationTitle"
+					sap:filterable="false" sap:label="Title"/>
+				<Property Name="deliveryAddress" Type="Edm.String" sap:filterable="false" sap:label="Delivery Address"/>
+				<Property Name="persistNotifications" Type="Edm.Boolean" sap:filterable="false" sap:label="Persist Notification"/>
+				<Property MaxLength="40" Name="collection" Type="Edm.String" sap:filterable="false" sap:label="Collection"/>
+				<Property Name="filter" Type="Edm.String" sap:filterable="false" sap:label="Filter"/>
+				<Property MaxLength="255" Name="select" Type="Edm.String" sap:filterable="false" sap:label="Select"/>
+				<Property MaxLength="30" Name="changeType" Type="Edm.String" sap:label="Change Type"/>
+			</EntityType>
+			<EntityType Name="Notification" sap:content-version="2" sap:semantics="notifications">
+				<Key>
+					<PropertyRef Name="SAP__Origin"/>
+					<PropertyRef Name="ID"/>
+				</Key>
+				<Property MaxLength="16" Name="SAP__Origin" Nullable="false" Type="Edm.String"/>
+				<Property MaxLength="32" Name="ID" Nullable="false" Type="Edm.String" sap:label="Notification ID"/>
+				<Property MaxLength="40" Name="collection" Type="Edm.String" sap:label="Collection"/>
+				<Property Name="title" Type="Edm.String" m:FC_KeepInContent="false" m:FC_TargetPath="SyndicationTitle" sap:label="Notif. Text"/>
+				<Property Name="updated" Precision="0" Type="Edm.DateTime" m:FC_KeepInContent="false" m:FC_TargetPath="SyndicationUpdated"
+					sap:label="Time Stamp"/>
+				<Property MaxLength="30" Name="changeType" Type="Edm.String" sap:label="Change Type"/>
+				<Property Name="entriesOfInterest" Type="Edm.Int32" sap:label="No. of Entries"/>
+				<Property MaxLength="112" Name="recipient" Type="Edm.String" sap:creatable="false" sap:label="Recipient" sap:updatable="false"/>
+			</EntityType>
+			<EntityType Name="Task" m:HasStream="true" sap:content-version="2">
+				<Key>
+					<PropertyRef Name="SAP__Origin"/>
+					<PropertyRef Name="InstanceID"/>
+				</Key>
+				<Property Name="TaskSupports" Nullable="false" Type="TASKPROCESSING.TaskSupports"/>
+				<Property MaxLength="16" Name="SAP__Origin" Nullable="false" Type="Edm.String"/>
+				<Property Name="InstanceID" Nullable="false" Type="Edm.String" sap:label="Instance ID"/>
+				<Property Name="TaskDefinitionID" Type="Edm.String" sap:label="Task definition ID" sap:updatable="false"/>
+				<Property Name="TaskDefinitionName" Type="Edm.String" sap:label="Task definition name" sap:updatable="false"/>
+				<Property Name="TaskTitle" Type="Edm.String" sap:label="Task Title" sap:updatable="false"/>
+				<Property Name="Priority" Type="Edm.String" sap:label="Priority" sap:updatable="false"/>
+				<Property Name="Status" Type="Edm.String" sap:label="Status" sap:updatable="false"/>
+				<Property Name="StatusText" Type="Edm.String" sap:filterable="false" sap:label="Status Text" sap:sortable="false"/>
+				<Property Name="CreatedOn" Precision="0" Type="Edm.DateTime" sap:label="Created on" sap:updatable="false"/>
+				<Property Name="CreatedBy" Type="Edm.String" sap:label="Created by" sap:updatable="false"/>
+				<Property Name="CreatedByName" Type="Edm.String" sap:label="Created by Name" sap:semantics="name" sap:updatable="false"/>
+				<Property Name="Processor" Type="Edm.String" sap:label="Processor" sap:updatable="false"/>
+				<Property Name="ProcessorName" Type="Edm.String" sap:label="Processor Name" sap:semantics="name" sap:updatable="false"/>
+				<Property Name="SubstitutedUser" Type="Edm.String" sap:label="Substituted User" sap:semantics="name" sap:updatable="false"/>
+				<Property Name="SubstitutedUserName" Type="Edm.String" sap:label="Substituted User Name" sap:semantics="name" sap:updatable="false"/>
+				<Property Name="StartDeadLine" Precision="0" Type="Edm.DateTime" sap:label="Start Deadline" sap:updatable="false"/>
+				<Property Name="CompletionDeadLine" Precision="0" Type="Edm.DateTime" sap:label="Completion Deadline" sap:updatable="false"/>
+				<Property Name="ExpiryDate" Precision="0" Type="Edm.DateTime" sap:label="Expiry Date" sap:updatable="false"/>
+				<Property Name="IsEscalated" Type="Edm.Boolean" sap:label="Is Escalated" sap:updatable="false"/>
+				<Property Name="SupportsComments" Type="Edm.Boolean" sap:label="Supports Comments" sap:updatable="false"/>
+				<Property Name="HasComments" Type="Edm.Boolean" sap:label="Has Comments" sap:updatable="false"/>
+				<Property Name="SupportsAttachments" Type="Edm.Boolean" sap:label="Supports Attachments" sap:updatable="false"/>
+				<Property Name="HasAttachments" Type="Edm.Boolean" sap:label="Has Attachments" sap:updatable="false"/>
+				<Property Name="HasPotentialOwners" Type="Edm.Boolean" sap:label="Has Potential Owners" sap:updatable="false"/>
+				<Property Name="SupportsClaim" Type="Edm.Boolean" sap:label="Supports Claim" sap:updatable="false"/>
+				<Property Name="SupportsRelease" Type="Edm.Boolean" sap:label="Supports Release" sap:updatable="false"/>
+				<Property Name="SupportsForward" Type="Edm.Boolean" sap:updatable="false"/>
+				<Property MaxLength="128" Name="mime_type" Type="Edm.String" sap:filterable="false" sap:label="MIME Type" sap:sortable="false"/>
+				<Property Name="PriorityNumber" Type="Edm.Int16" sap:label="Priority Number" sap:updatable="false"/>
+				<Property Name="ScenarioID" Type="Edm.String" sap:label="Scenario ID" sap:updatable="false"/>
+				<Property Name="ForwardingUser" Type="Edm.String" sap:label="Forwarding User" sap:semantics="name" sap:updatable="false"/>
+				<Property Name="ForwardingUserName" Type="Edm.String" sap:label="Forwarding User Name" sap:semantics="name" sap:updatable="false"/>
+				<NavigationProperty FromRole="FromRole_TaskDefinitionData" Name="TaskDefinitionData" Relationship="TASKPROCESSING.TaskDefinitionData"
+					ToRole="ToRole_TaskDefinitionData"/>
+				<NavigationProperty FromRole="FromRole_Description" Name="Description" Relationship="TASKPROCESSING.Description" ToRole="ToRole_Description"/>
+				<NavigationProperty FromRole="FromRole_UIExecutionLink" Name="UIExecutionLink" Relationship="TASKPROCESSING.UIExecutionLink"
+					ToRole="ToRole_UIExecutionLink"/>
+				<NavigationProperty FromRole="FromRole_CustomAttributeData" Name="CustomAttributeData" Relationship="TASKPROCESSING.CustomAttributeData"
+					ToRole="ToRole_CustomAttributeData"/>
+				<NavigationProperty FromRole="FromRole_Comments" Name="Comments" Relationship="TASKPROCESSING.Comments" ToRole="ToRole_Comments"/>
+				<NavigationProperty FromRole="FromRole_Attachments" Name="Attachments" Relationship="TASKPROCESSING.Attachments" ToRole="ToRole_Attachments"/>
+				<NavigationProperty FromRole="FromRole_TaskCreatedBy" Name="CreatedByDetails" Relationship="TASKPROCESSING.TaskCreatedBy"
+					ToRole="ToRole_TaskCreatedBy"/>
+				<NavigationProperty FromRole="FromRole_TaskProcessor" Name="ProcessorDetails" Relationship="TASKPROCESSING.TaskProcessor"
+					ToRole="ToRole_TaskProcessor"/>
+				<NavigationProperty FromRole="FromRole_PossibleAgents" Name="PossibleAgents" Relationship="TASKPROCESSING.PossibleAgents"
+					ToRole="ToRole_PossibleAgents"/>
+				<NavigationProperty FromRole="FromRole_PotentialOwners" Name="PotentialOwners" Relationship="TASKPROCESSING.PotentialOwners"
+					ToRole="ToRole_PotentialOwners"/>
+				<NavigationProperty FromRole="FromRole_ProcessingLogs" Name="ProcessingLogs" Relationship="TASKPROCESSING.ProcessingLogs"
+					ToRole="ToRole_ProcessingLogs"/>
+				<NavigationProperty FromRole="FromRole_TaskObjects" Name="TaskObjects" Relationship="TASKPROCESSING.TaskObjects" ToRole="ToRole_TaskObjects"/>
+			</EntityType>
+			<EntityType Name="TaskDefinition" sap:content-version="2">
+				<Key>
+					<PropertyRef Name="SAP__Origin"/>
+					<PropertyRef Name="TaskDefinitionID"/>
+				</Key>
+				<Property MaxLength="16" Name="SAP__Origin" Nullable="false" Type="Edm.String"/>
+				<Property Name="TaskDefinitionID" Nullable="false" Type="Edm.String"/>
+				<Property Name="TaskName" Nullable="false" Type="Edm.String" sap:filterable="false" sap:sortable="false"/>
+				<Property Name="Category" Type="Edm.String" sap:filterable="false" sap:sortable="false"/>
+				<NavigationProperty FromRole="FromRole_CustomAttributeDefinitionData" Name="CustomAttributeDefinitionData"
+					Relationship="TASKPROCESSING.CustomAttributeDefinitionData" ToRole="ToRole_CustomAttributeDefinitionData"/>
+			</EntityType>
+			<EntityType Name="TaskDescription" sap:content-version="2">
+				<Key>
+					<PropertyRef Name="SAP__Origin"/>
+					<PropertyRef Name="InstanceID"/>
+				</Key>
+				<Property MaxLength="16" Name="SAP__Origin" Nullable="false" Type="Edm.String"/>
+				<Property Name="InstanceID" Nullable="false" Type="Edm.String" sap:filterable="false" sap:sortable="false"/>
+				<Property Name="Description" Nullable="false" Type="Edm.String" sap:filterable="false" sap:sortable="false"/>
+				<Property Name="DescriptionAsHtml" Type="Edm.String" sap:filterable="false" sap:sortable="false"/>
+			</EntityType>
+			<EntityType Name="UIExecution" sap:content-version="2">
+				<Key>
+					<PropertyRef Name="SAP__Origin"/>
+					<PropertyRef Name="InstanceID"/>
+				</Key>
+				<Property MaxLength="16" Name="SAP__Origin" Nullable="false" Type="Edm.String"/>
+				<Property Name="InstanceID" Nullable="false" Type="Edm.String" sap:filterable="false" sap:sortable="false"/>
+				<Property Name="GUI_Link" Nullable="false" Type="Edm.String" sap:filterable="false" sap:sortable="false"/>
+			</EntityType>
+			<EntityType Name="FilterOption" sap:content-version="2">
+				<Key>
+					<PropertyRef Name="SAP__Origin"/>
+					<PropertyRef Name="Type"/>
+					<PropertyRef Name="TechnicalName"/>
+				</Key>
+				<Property MaxLength="16" Name="SAP__Origin" Nullable="false" Type="Edm.String"/>
+				<Property MaxLength="10" Name="Type" Nullable="false" Type="Edm.String" sap:label="Filter Type"/>
+				<Property MaxLength="50" Name="TechnicalName" Nullable="false" Type="Edm.String" sap:label="Technical Name"/>
+				<Property MaxLength="32" Name="DisplayName" Type="Edm.String" sap:filterable="false" sap:label="Displayed Name" sap:sortable="false"/>
+			</EntityType>
+			<EntityType Name="CustomAttributeDefinition" sap:content-version="2">
+				<Key>
+					<PropertyRef Name="SAP__Origin"/>
+					<PropertyRef Name="TaskDefinitionID"/>
+					<PropertyRef Name="Name"/>
+				</Key>
+				<Property MaxLength="16" Name="SAP__Origin" Nullable="false" Type="Edm.String"/>
+				<Property Name="TaskDefinitionID" Nullable="false" Type="Edm.String" sap:filterable="false" sap:sortable="false"/>
+				<Property Name="Name" Nullable="false" Type="Edm.String" sap:filterable="false" sap:sortable="false"/>
+				<Property Name="Type" Type="Edm.String" sap:filterable="false" sap:sortable="false"/>
+				<Property Name="Label" Type="Edm.String" sap:filterable="false" sap:sortable="false"/>
+			</EntityType>
+			<EntityType Name="CustomAttribute" sap:content-version="2">
+				<Key>
+					<PropertyRef Name="SAP__Origin"/>
+					<PropertyRef Name="InstanceID"/>
+					<PropertyRef Name="Name"/>
+				</Key>
+				<Property MaxLength="16" Name="SAP__Origin" Nullable="false" Type="Edm.String"/>
+				<Property Name="InstanceID" Nullable="false" Type="Edm.String" sap:filterable="false" sap:sortable="false"/>
+				<Property Name="Name" Nullable="false" Type="Edm.String" sap:filterable="false" sap:sortable="false"/>
+				<Property Name="Value" Type="Edm.String" sap:filterable="false" sap:sortable="false"/>
+			</EntityType>
+			<EntityType Name="SubstitutionRule" sap:content-version="2">
+				<Key>
+					<PropertyRef Name="SAP__Origin"/>
+					<PropertyRef Name="SubstitutionRuleID"/>
+				</Key>
+				<Property MaxLength="16" Name="SAP__Origin" Nullable="false" Type="Edm.String"/>
+				<Property Name="SubstitutionRuleID" Nullable="false" Type="Edm.String"/>
+				<Property Name="User" Nullable="false" Type="Edm.String"/>
+				<Property Name="BeginDate" Nullable="false" Precision="0" Type="Edm.DateTime" sap:label="Time Stamp"/>
+				<Property Name="EndDate" Nullable="false" Precision="0" Type="Edm.DateTime" sap:label="Time Stamp"/>
+				<Property Name="FullName" Type="Edm.String" sap:filterable="false" sap:semantics="name" sap:sortable="false"/>
+				<Property Name="IsEnabled" Type="Edm.Boolean" sap:sortable="false"/>
+				<Property Name="SupportsDeleteSubstitutionRule" Type="Edm.Boolean" sap:filterable="false" sap:sortable="false"/>
+				<Property Name="SupportsEnableSubstitutionRule" Type="Edm.Boolean" sap:filterable="false" sap:sortable="false"/>
+				<Property Name="Mode" Type="Edm.String" sap:filterable="false" sap:sortable="false"/>
+				<Property Name="Profile" Type="Edm.String" sap:filterable="false" sap:sortable="false"/>
+				<Property Name="ProfileText" Type="Edm.String" sap:filterable="false" sap:sortable="false"/>
+			</EntityType>
+			<EntityType Name="SubstitutionProfile" sap:content-version="2">
+				<Key>
+					<PropertyRef Name="SAP__Origin"/>
+					<PropertyRef Name="Profile"/>
+				</Key>
+				<Property MaxLength="16" Name="SAP__Origin" Nullable="false" Type="Edm.String"/>
+				<Property MaxLength="12" Name="Profile" Nullable="false" Type="Edm.String" sap:filterable="false" sap:label="Substitute Profile"
+					sap:sortable="false"/>
+				<Property MaxLength="25" Name="ProfileText" Type="Edm.String" sap:filterable="false" sap:label="Substitute Profile" sap:sortable="false"/>
+			</EntityType>
+			<EntityType Name="Comment" sap:content-version="2">
+				<Key>
+					<PropertyRef Name="SAP__Origin"/>
+					<PropertyRef Name="InstanceID"/>
+					<PropertyRef Name="ID"/>
+				</Key>
+				<Property MaxLength="16" Name="SAP__Origin" Nullable="false" Type="Edm.String"/>
+				<Property Name="InstanceID" Nullable="false" Type="Edm.String" sap:filterable="false" sap:sortable="false"/>
+				<Property Name="ID" Nullable="false" Type="Edm.String" sap:filterable="false" sap:sortable="false"/>
+				<Property Name="CreatedAt" Precision="0" Type="Edm.DateTime" sap:filterable="false" sap:label="Time Stamp" sap:sortable="false"/>
+				<Property Name="CreatedBy" Type="Edm.String" sap:filterable="false" sap:sortable="false"/>
+				<Property Name="CreatedByName" Type="Edm.String" sap:filterable="false" sap:semantics="name" sap:sortable="false"/>
+				<Property Name="Text" Type="Edm.String" sap:filterable="false" sap:sortable="false"/>
+				<NavigationProperty FromRole="FromRole_CommentCreatedBy" Name="CreatedByDetails" Relationship="TASKPROCESSING.CommentCreatedBy"
+					ToRole="ToRole_CommentCreatedBy"/>
+			</EntityType>
+			<EntityType Name="Attachment" m:HasStream="true" sap:content-version="2">
+				<Key>
+					<PropertyRef Name="SAP__Origin"/>
+					<PropertyRef Name="InstanceID"/>
+					<PropertyRef Name="ID"/>
+				</Key>
+				<Property Name="AttachmentSupports" Nullable="false" Type="TASKPROCESSING.AttachmentSupports"/>
+				<Property MaxLength="16" Name="SAP__Origin" Nullable="false" Type="Edm.String"/>
+				<Property Name="InstanceID" Nullable="false" Type="Edm.String" sap:filterable="false" sap:sortable="false"/>
+				<Property Name="ID" Nullable="false" Type="Edm.String" sap:filterable="false" sap:sortable="false"/>
+				<Property Name="FileName" Type="Edm.String" sap:filterable="false" sap:sortable="false"/>
+				<Property Name="CreatedAt" Precision="0" Type="Edm.DateTime" sap:filterable="false" sap:label="Time Stamp" sap:sortable="false"/>
+				<Property Name="CreatedBy" Type="Edm.String" sap:filterable="false" sap:sortable="false"/>
+				<Property Name="CreatedByName" Type="Edm.String" sap:filterable="false" sap:semantics="name" sap:sortable="false"/>
+				<Property MaxLength="128" Name="mime_type" Type="Edm.String" sap:label="MIME Type"/>
+				<Property Name="FileSize" Type="Edm.Int32" sap:filterable="false" sap:sortable="false"/>
+				<Property Name="FileDisplayName" Type="Edm.String" sap:filterable="false" sap:sortable="false"/>
+				<NavigationProperty FromRole="FromRole_AttachmentCreatedBy" Name="CreatedByDetails" Relationship="TASKPROCESSING.AttachmentCreatedBy"
+					ToRole="ToRole_AttachmentCreatedBy"/>
+			</EntityType>
+			<EntityType Name="UserInfo" m:HasStream="true" sap:content-version="2">
+				<Key>
+					<PropertyRef Name="SAP__Origin"/>
+					<PropertyRef Name="UniqueName"/>
+				</Key>
+				<Property Name="Address" Nullable="false" Type="TASKPROCESSING.Address"/>
+				<Property MaxLength="16" Name="SAP__Origin" Nullable="false" Type="Edm.String"/>
+				<Property MaxLength="12" Name="UniqueName" Nullable="false" Type="Edm.String" sap:filterable="false"/>
+				<Property Name="DisplayName" Type="Edm.String" sap:filterable="false" sap:semantics="name" sap:sortable="false"/>
+				<Property Name="FirstName" Type="Edm.String" sap:filterable="false" sap:semantics="givenname" sap:sortable="false"/>
+				<Property Name="LastName" Type="Edm.String" sap:filterable="false" sap:semantics="familyname" sap:sortable="false"/>
+				<Property Name="Company" Type="Edm.String" sap:filterable="false" sap:sortable="false"/>
+				<Property Name="Department" Type="Edm.String" sap:filterable="false" sap:semantics="org-unit" sap:sortable="false"/>
+				<Property Name="Email" Type="Edm.String" sap:filterable="false" sap:semantics="email" sap:sortable="false"/>
+				<Property Name="WorkPhone" Type="Edm.String" sap:filterable="false" sap:semantics="tel;type=work" sap:sortable="false"/>
+				<Property Name="MobilePhone" Type="Edm.String" sap:filterable="false" sap:semantics="tel;type=cell" sap:sortable="false"/>
+				<Property Name="HomePhone" Type="Edm.String" sap:filterable="false" sap:semantics="tel" sap:sortable="false"/>
+				<Property MaxLength="128" Name="mime_type" Type="Edm.String"/>
+			</EntityType>
+			<EntityType Name="ConsumerScenario" m:HasStream="true" sap:content-version="2">
+				<Key>
+					<PropertyRef Name="SAP__Origin"/>
+					<PropertyRef Name="ConsumerType"/>
+					<PropertyRef Name="UniqueName"/>
+				</Key>
+				<Property MaxLength="16" Name="SAP__Origin" Nullable="false" Type="Edm.String"/>
+				<Property MaxLength="32" Name="ConsumerType" Nullable="false" Type="Edm.String" sap:label="Consumer Type"/>
+				<Property MaxLength="32" Name="UniqueName" Nullable="false" Type="Edm.String" sap:label="Scenario Identifier"/>
+				<Property MaxLength="255" Name="DisplayName" Type="Edm.String" sap:filterable="false" sap:label="Scenario Name" sap:sortable="false"/>
+				<Property Name="TotalItems" Type="Edm.Int32" sap:filterable="false" sap:label="Number" sap:sortable="false"/>
+				<Property Name="OrderNumber" Type="Edm.Int32" sap:filterable="false" sap:label="Scenario Order" sap:sortable="false"/>
+				<Property MaxLength="40" Name="SortBy" Type="Edm.String" sap:filterable="false" sap:label="Sort by Property" sap:sortable="false"/>
+				<Property Name="IsMassActionEnabled" Type="Edm.Boolean" sap:filterable="false" sap:sortable="false"/>
+				<Property Name="IsQuickActionEnabled" Type="Edm.Boolean" sap:filterable="false" sap:sortable="false"/>
+				<Property MaxLength="255" Name="ApplicationUrl" Type="Edm.String" sap:filterable="false" sap:label="Application URL" sap:sortable="false"/>
+				<Property MaxLength="128" Name="IconUrl" Type="Edm.String" sap:filterable="false" sap:label="Icon URL" sap:sortable="false"/>
+				<Property MaxLength="32" Name="Extension1" Type="Edm.String" sap:filterable="false" sap:label="Extension1" sap:sortable="false"/>
+				<Property MaxLength="64" Name="Extension2" Type="Edm.String" sap:filterable="false" sap:label="Extension2" sap:sortable="false"/>
+				<Property MaxLength="128" Name="Extension3" Type="Edm.String" sap:filterable="false" sap:label="Extension3" sap:sortable="false"/>
+				<Property Name="ScenarioServiceURL" Type="Edm.String"/>
+				<Property MaxLength="128" Name="mime_type" Type="Edm.String" sap:label="MIME Type"/>
+				<NavigationProperty FromRole="FromRole_Tasks" Name="Tasks" Relationship="TASKPROCESSING.Tasks" ToRole="ToRole_Tasks"/>
+			</EntityType>
+			<EntityType Name="Scenario" sap:content-version="2">
+				<Key>
+					<PropertyRef Name="SAP__Origin"/>
+					<PropertyRef Name="key"/>
+				</Key>
+				<Property MaxLength="16" Name="SAP__Origin" Nullable="false" Type="Edm.String"/>
+				<Property MaxLength="32" Name="key" Nullable="false" Type="Edm.String" sap:label="Scenario Identifier"/>
+				<Property Name="number" Type="Edm.Int32" sap:filterable="false" sap:label="Number" sap:sortable="false"/>
+				<Property MaxLength="255" Name="title" Type="Edm.String" sap:filterable="false" sap:label="Scenario Name" sap:sortable="false"/>
+				<Property Name="targetParams" Type="Edm.String" sap:filterable="false" sap:sortable="false"/>
+			</EntityType>
+			<EntityType Name="ProcessingLog" sap:content-version="2">
+				<Key>
+					<PropertyRef Name="SAP__Origin"/>
+					<PropertyRef Name="InstanceID"/>
+					<PropertyRef Name="OrderID"/>
+				</Key>
+				<Property MaxLength="16" Name="SAP__Origin" Nullable="false" Type="Edm.String"/>
+				<Property Name="InstanceID" Nullable="false" Type="Edm.String" sap:filterable="false" sap:sortable="false"/>
+				<Property Name="OrderID" Nullable="false" Type="Edm.Int32" sap:filterable="false" sap:sortable="false"/>
+				<Property Name="Timestamp" Precision="0" Type="Edm.DateTime" sap:filterable="false" sap:label="Time Stamp" sap:sortable="false"/>
+				<Property Name="ActionName" Type="Edm.String" sap:filterable="false" sap:sortable="false"/>
+				<Property Name="PerformedBy" Type="Edm.String" sap:filterable="false" sap:sortable="false"/>
+				<Property Name="PerformedByName" Type="Edm.String" sap:filterable="false" sap:semantics="name" sap:sortable="false"/>
+				<Property Name="Comments" Type="Edm.String" sap:filterable="false" sap:sortable="false"/>
+				<Property Name="TaskStatus" Type="Edm.String" sap:filterable="false" sap:sortable="false"/>
+			</EntityType>
+			<EntityType Name="SystemInfo" sap:content-version="2">
+				<Key>
+					<PropertyRef Name="SAP__Origin"/>
+					<PropertyRef Name="SystemAlias"/>
+				</Key>
+				<Property MaxLength="16" Name="SAP__Origin" Nullable="false" Type="Edm.String"/>
+				<Property Name="SystemAlias" Nullable="false" Type="Edm.String" sap:filterable="false" sap:sortable="false"/>
+				<Property Name="SystemType" Type="Edm.String" sap:filterable="false" sap:sortable="false"/>
+			</EntityType>
+			<EntityType Name="TaskObject" sap:content-version="2">
+				<Key>
+					<PropertyRef Name="SAP__Origin"/>
+					<PropertyRef Name="InstanceID"/>
+					<PropertyRef Name="ObjectId"/>
+				</Key>
+				<Property MaxLength="16" Name="SAP__Origin" Nullable="false" Type="Edm.String"/>
+				<Property Name="InstanceID" Nullable="false" Type="Edm.String" sap:filterable="false" sap:sortable="false"/>
+				<Property Name="ObjectId" Nullable="false" Type="Edm.String" sap:filterable="false" sap:sortable="false"/>
+				<Property Name="ObjectLink" Type="Edm.String" sap:filterable="false" sap:sortable="false"/>
+				<Property Name="Label" Type="Edm.String" sap:filterable="false" sap:sortable="false"/>
+			</EntityType>
+			<ComplexType Name="TaskSupports">
+				<Property Name="AddAttachments" Type="Edm.Boolean" sap:filterable="false" sap:sortable="false"/>
+				<Property Name="AddComments" Type="Edm.Boolean" sap:filterable="false" sap:sortable="false"/>
+				<Property Name="Attachments" Type="Edm.Boolean" sap:filterable="false" sap:sortable="false"/>
+				<Property Name="Comments" Type="Edm.Boolean" sap:filterable="false" sap:sortable="false"/>
+				<Property Name="CreatedByDetails" Type="Edm.Boolean" sap:filterable="false" sap:sortable="false"/>
+				<Property Name="CustomAttributeData" Type="Edm.Boolean" sap:filterable="false" sap:sortable="false"/>
+				<Property Name="Description" Type="Edm.Boolean" sap:filterable="false" sap:sortable="false"/>
+				<Property Name="PossibleAgents" Type="Edm.Boolean" sap:filterable="false" sap:sortable="false"/>
+				<Property Name="PotentialOwners" Type="Edm.Boolean" sap:filterable="false" sap:sortable="false"/>
+				<Property Name="ProcessingLogs" Type="Edm.Boolean" sap:filterable="false" sap:sortable="false"/>
+				<Property Name="ProcessorDetails" Type="Edm.Boolean" sap:filterable="false" sap:sortable="false"/>
+				<Property Name="TaskDefinitionData" Type="Edm.Boolean" sap:filterable="false" sap:sortable="false"/>
+				<Property Name="TaskObject" Type="Edm.Boolean" sap:filterable="false" sap:sortable="false"/>
+				<Property Name="UIExecutionLink" Type="Edm.Boolean" sap:filterable="false" sap:sortable="false"/>
+				<Property Name="CancelResubmission" Type="Edm.Boolean" sap:filterable="false" sap:sortable="false"/>
+				<Property Name="Confirm" Type="Edm.Boolean" sap:filterable="false" sap:sortable="false"/>
+				<Property Name="Claim" Type="Edm.Boolean" sap:filterable="false" sap:sortable="false"/>
+				<Property Name="Forward" Type="Edm.Boolean" sap:filterable="false" sap:sortable="false"/>
+				<Property Name="Release" Type="Edm.Boolean" sap:filterable="false" sap:sortable="false"/>
+				<Property Name="Resubmit" Type="Edm.Boolean" sap:filterable="false" sap:sortable="false"/>
+				<Property Name="SetPriority" Type="Edm.Boolean" sap:filterable="false" sap:sortable="false"/>
+			</ComplexType>
+			<ComplexType Name="AttachmentSupports">
+				<Property Name="Delete" Type="Edm.Boolean" sap:filterable="false" sap:sortable="false"/>
+			</ComplexType>
+			<ComplexType Name="Address">
+				<Property Name="Street" Type="Edm.String" sap:filterable="false" sap:semantics="street" sap:sortable="false"/>
+				<Property Name="StreetNumber" Type="Edm.String" sap:filterable="false" sap:sortable="false"/>
+				<Property Name="City" Type="Edm.String" sap:filterable="false" sap:semantics="city" sap:sortable="false"/>
+				<Property Name="PostalCode" Type="Edm.String" sap:filterable="false" sap:semantics="zip" sap:sortable="false"/>
+				<Property Name="State" Type="Edm.String" sap:filterable="false" sap:semantics="region" sap:sortable="false"/>
+				<Property Name="Country" Type="Edm.String" sap:filterable="false" sap:semantics="country" sap:sortable="false"/>
+			</ComplexType>
+			<ComplexType Name="DecisionOption">
+				<Property Name="InstanceID" Type="Edm.String"/>
+				<Property Name="DecisionKey" Type="Edm.String"/>
+				<Property Name="DecisionText" Type="Edm.String"/>
+				<Property Name="CommentMandatory" Type="Edm.Boolean"/>
+				<Property Name="Nature" Type="Edm.String"/>
+			</ComplexType>
+			<ComplexType Name="SubstitutionRuleReturn">
+				<Property Name="Deleted" Type="Edm.Boolean"/>
+			</ComplexType>
+			<Association Name="TaskDefinitionData" sap:content-version="2">
+				<End Multiplicity="*" Role="FromRole_TaskDefinitionData" Type="TASKPROCESSING.Task"/>
+				<End Multiplicity="1" Role="ToRole_TaskDefinitionData" Type="TASKPROCESSING.TaskDefinition"/>
+			</Association>
+			<Association Name="Description" sap:content-version="2">
+				<End Multiplicity="1" Role="FromRole_Description" Type="TASKPROCESSING.Task"/>
+				<End Multiplicity="0..1" Role="ToRole_Description" Type="TASKPROCESSING.TaskDescription"/>
+			</Association>
+			<Association Name="UIExecutionLink" sap:content-version="2">
+				<End Multiplicity="1" Role="FromRole_UIExecutionLink" Type="TASKPROCESSING.Task"/>
+				<End Multiplicity="1" Role="ToRole_UIExecutionLink" Type="TASKPROCESSING.UIExecution"/>
+			</Association>
+			<Association Name="CustomAttributeData" sap:content-version="2">
+				<End Multiplicity="1" Role="FromRole_CustomAttributeData" Type="TASKPROCESSING.Task"/>
+				<End Multiplicity="*" Role="ToRole_CustomAttributeData" Type="TASKPROCESSING.CustomAttribute"/>
+			</Association>
+			<Association Name="Comments" sap:content-version="2">
+				<End Multiplicity="1" Role="FromRole_Comments" Type="TASKPROCESSING.Task"/>
+				<End Multiplicity="*" Role="ToRole_Comments" Type="TASKPROCESSING.Comment"/>
+				<ReferentialConstraint>
+					<Principal Role="FromRole_Comments">
+						<PropertyRef Name="SAP__Origin"/>
+						<PropertyRef Name="InstanceID"/>
+					</Principal>
+					<Dependent Role="ToRole_Comments">
+						<PropertyRef Name="SAP__Origin"/>
+						<PropertyRef Name="InstanceID"/>
+					</Dependent>
+				</ReferentialConstraint>
+			</Association>
+			<Association Name="Attachments" sap:content-version="2">
+				<End Multiplicity="1" Role="FromRole_Attachments" Type="TASKPROCESSING.Task"/>
+				<End Multiplicity="*" Role="ToRole_Attachments" Type="TASKPROCESSING.Attachment"/>
+			</Association>
+			<Association Name="TaskCreatedBy" sap:content-version="2">
+				<End Multiplicity="*" Role="FromRole_TaskCreatedBy" Type="TASKPROCESSING.Task"/>
+				<End Multiplicity="0..1" Role="ToRole_TaskCreatedBy" Type="TASKPROCESSING.UserInfo"/>
+			</Association>
+			<Association Name="TaskProcessor" sap:content-version="2">
+				<End Multiplicity="*" Role="FromRole_TaskProcessor" Type="TASKPROCESSING.Task"/>
+				<End Multiplicity="0..1" Role="ToRole_TaskProcessor" Type="TASKPROCESSING.UserInfo"/>
+			</Association>
+			<Association Name="PossibleAgents" sap:content-version="2">
+				<End Multiplicity="1" Role="FromRole_PossibleAgents" Type="TASKPROCESSING.Task"/>
+				<End Multiplicity="*" Role="ToRole_PossibleAgents" Type="TASKPROCESSING.UserInfo"/>
+			</Association>
+			<Association Name="PotentialOwners" sap:content-version="2">
+				<End Multiplicity="1" Role="FromRole_PotentialOwners" Type="TASKPROCESSING.Task"/>
+				<End Multiplicity="*" Role="ToRole_PotentialOwners" Type="TASKPROCESSING.UserInfo"/>
+			</Association>
+			<Association Name="ProcessingLogs" sap:content-version="2">
+				<End Multiplicity="1" Role="FromRole_ProcessingLogs" Type="TASKPROCESSING.Task"/>
+				<End Multiplicity="*" Role="ToRole_ProcessingLogs" Type="TASKPROCESSING.ProcessingLog"/>
+			</Association>
+			<Association Name="TaskObjects" sap:content-version="2">
+				<End Multiplicity="1" Role="FromRole_TaskObjects" Type="TASKPROCESSING.Task"/>
+				<End Multiplicity="*" Role="ToRole_TaskObjects" Type="TASKPROCESSING.TaskObject"/>
+			</Association>
+			<Association Name="Tasks" sap:content-version="2">
+				<End Multiplicity="1" Role="FromRole_Tasks" Type="TASKPROCESSING.ConsumerScenario"/>
+				<End Multiplicity="*" Role="ToRole_Tasks" Type="TASKPROCESSING.Task"/>
+			</Association>
+			<Association Name="CommentCreatedBy" sap:content-version="2">
+				<End Multiplicity="*" Role="FromRole_CommentCreatedBy" Type="TASKPROCESSING.Comment"/>
+				<End Multiplicity="0..1" Role="ToRole_CommentCreatedBy" Type="TASKPROCESSING.UserInfo"/>
+			</Association>
+			<Association Name="AttachmentCreatedBy" sap:content-version="2">
+				<End Multiplicity="*" Role="FromRole_AttachmentCreatedBy" Type="TASKPROCESSING.Attachment"/>
+				<End Multiplicity="0..1" Role="ToRole_AttachmentCreatedBy" Type="TASKPROCESSING.UserInfo"/>
+			</Association>
+			<Association Name="CustomAttributeDefinitionData" sap:content-version="2">
+				<End Multiplicity="1" Role="FromRole_CustomAttributeDefinitionData" Type="TASKPROCESSING.TaskDefinition"/>
+				<End Multiplicity="*" Role="ToRole_CustomAttributeDefinitionData" Type="TASKPROCESSING.CustomAttributeDefinition"/>
+			</Association>
+			<EntityContainer Name="TASKPROCESSING_Entities" m:IsDefaultEntityContainer="true" sap:supported-formats="atom json xlsx">
+				<EntitySet EntityType="TASKPROCESSING.Notification" Name="NotificationCollection" sap:addressable="false" sap:content-version="2"
+					sap:creatable="false" sap:deletable="false" sap:updatable="false"/>
+				<EntitySet EntityType="TASKPROCESSING.Task" Name="TaskCollection" sap:content-version="2" sap:creatable="false" sap:deletable="false"
+					sap:updatable="false"/>
+				<EntitySet EntityType="TASKPROCESSING.TaskDefinition" Name="TaskDefinitionCollection" sap:content-version="2" sap:creatable="false"
+					sap:deletable="false" sap:updatable="false"/>
+				<EntitySet EntityType="TASKPROCESSING.TaskDescription" Name="TaskDescriptionCollection" sap:addressable="false" sap:content-version="2"
+					sap:creatable="false" sap:deletable="false" sap:pageable="false" sap:updatable="false"/>
+				<EntitySet EntityType="TASKPROCESSING.UIExecution" Name="UIExecutionCollection" sap:addressable="false" sap:content-version="2"
+					sap:deletable="false" sap:pageable="false" sap:updatable="false"/>
+				<EntitySet EntityType="TASKPROCESSING.FilterOption" Name="FilterOptionCollection" sap:content-version="2" sap:creatable="false"
+					sap:deletable="false" sap:updatable="false"/>
+				<EntitySet EntityType="TASKPROCESSING.CustomAttributeDefinition" Name="CustomAttributeDefinitionCollection" sap:addressable="false"
+					sap:content-version="2" sap:creatable="false" sap:deletable="false" sap:pageable="false" sap:updatable="false"/>
+				<EntitySet EntityType="TASKPROCESSING.CustomAttribute" Name="CustomAttributeCollection" sap:addressable="false" sap:content-version="2"
+					sap:creatable="false" sap:deletable="false" sap:pageable="false" sap:updatable="false"/>
+				<EntitySet EntityType="TASKPROCESSING.SubstitutionRule" Name="SubstitutionRuleCollection" sap:content-version="2"/>
+				<EntitySet EntityType="TASKPROCESSING.SubstitutionRule" Name="SubstitutesRuleCollection" sap:content-version="2"/>
+				<EntitySet EntityType="TASKPROCESSING.SubstitutionProfile" Name="SubstitutionProfileCollection" sap:content-version="2"
+					sap:creatable="false" sap:deletable="false" sap:updatable="false"/>
+				<EntitySet EntityType="TASKPROCESSING.Comment" Name="CommentCollection" sap:addressable="false" sap:content-version="2"
+					sap:deletable="false" sap:pageable="false" sap:updatable="false"/>
+				<EntitySet EntityType="TASKPROCESSING.Attachment" Name="AttachmentCollection" sap:addressable="false" sap:content-version="2"
+					sap:pageable="false"/>
+				<EntitySet EntityType="TASKPROCESSING.UserInfo" Name="UserInfoCollection" sap:addressable="false" sap:content-version="2"
+					sap:creatable="false" sap:deletable="false" sap:updatable="false"/>
+				<EntitySet EntityType="TASKPROCESSING.UserInfo" Name="SubstitutedUsersCollection" sap:addressable="false" sap:content-version="2"
+					sap:creatable="false" sap:deletable="false" sap:updatable="false"/>
+				<EntitySet EntityType="TASKPROCESSING.ConsumerScenario" Name="ConsumerScenarioCollection" sap:content-version="2" sap:creatable="false"
+					sap:deletable="false" sap:requires-filter="true" sap:updatable="false"/>
+				<EntitySet EntityType="TASKPROCESSING.Scenario" Name="ScenarioCollection" sap:content-version="2" sap:creatable="false"
+					sap:deletable="false" sap:requires-filter="true" sap:updatable="false"/>
+				<EntitySet EntityType="TASKPROCESSING.ProcessingLog" Name="ProcessingLogCollection" sap:addressable="false" sap:content-version="2"
+					sap:creatable="false" sap:deletable="false" sap:pageable="false" sap:updatable="false"/>
+				<EntitySet EntityType="TASKPROCESSING.SystemInfo" Name="SystemInfoCollection" sap:content-version="2" sap:creatable="false"
+					sap:deletable="false" sap:updatable="false"/>
+				<EntitySet EntityType="TASKPROCESSING.TaskObject" Name="TaskObjectCollection" sap:addressable="false" sap:content-version="2"
+					sap:creatable="false" sap:deletable="false" sap:pageable="false" sap:updatable="false"/>
+				<EntitySet EntityType="TASKPROCESSING.Subscription" Name="SubscriptionCollection" sap:content-version="2"/>
+				<AssociationSet Association="TASKPROCESSING.UIExecutionLink" Name="UIExecutionLink_AssocSet" sap:content-version="2" sap:creatable="false"
+					sap:deletable="false" sap:updatable="false">
+					<End EntitySet="TaskCollection" Role="FromRole_UIExecutionLink"/>
+					<End EntitySet="UIExecutionCollection" Role="ToRole_UIExecutionLink"/>
+				</AssociationSet>
+				<AssociationSet Association="TASKPROCESSING.CustomAttributeDefinitionData" Name="CustomAttributeDefinitionData_AssocSet"
+					sap:content-version="2" sap:creatable="false" sap:deletable="false" sap:updatable="false">
+					<End EntitySet="TaskDefinitionCollection" Role="FromRole_CustomAttributeDefinitionData"/>
+					<End EntitySet="CustomAttributeDefinitionCollection" Role="ToRole_CustomAttributeDefinitionData"/>
+				</AssociationSet>
+				<AssociationSet Association="TASKPROCESSING.CommentCreatedBy" Name="CommentCreatedBy_AssocSet" sap:content-version="2" sap:creatable="false"
+					sap:deletable="false" sap:updatable="false">
+					<End EntitySet="CommentCollection" Role="FromRole_CommentCreatedBy"/>
+					<End EntitySet="UserInfoCollection" Role="ToRole_CommentCreatedBy"/>
+				</AssociationSet>
+				<AssociationSet Association="TASKPROCESSING.AttachmentCreatedBy" Name="AttachmentCreatedBy_AssocSet" sap:content-version="2"
+					sap:creatable="false" sap:deletable="false" sap:updatable="false">
+					<End EntitySet="AttachmentCollection" Role="FromRole_AttachmentCreatedBy"/>
+					<End EntitySet="UserInfoCollection" Role="ToRole_AttachmentCreatedBy"/>
+				</AssociationSet>
+				<AssociationSet Association="TASKPROCESSING.Attachments" Name="Attachments_AssocSet" sap:content-version="2" sap:creatable="false"
+					sap:deletable="false" sap:updatable="false">
+					<End EntitySet="TaskCollection" Role="FromRole_Attachments"/>
+					<End EntitySet="AttachmentCollection" Role="ToRole_Attachments"/>
+				</AssociationSet>
+				<AssociationSet Association="TASKPROCESSING.ProcessingLogs" Name="ProcessingLogs_AssocSet" sap:content-version="2" sap:creatable="false"
+					sap:deletable="false" sap:updatable="false">
+					<End EntitySet="TaskCollection" Role="FromRole_ProcessingLogs"/>
+					<End EntitySet="ProcessingLogCollection" Role="ToRole_ProcessingLogs"/>
+				</AssociationSet>
+				<AssociationSet Association="TASKPROCESSING.Comments" Name="Comments_AssocSet" sap:content-version="2" sap:creatable="false"
+					sap:deletable="false" sap:updatable="false">
+					<End EntitySet="TaskCollection" Role="FromRole_Comments"/>
+					<End EntitySet="CommentCollection" Role="ToRole_Comments"/>
+				</AssociationSet>
+				<AssociationSet Association="TASKPROCESSING.Tasks" Name="Tasks_AssocSet" sap:content-version="2" sap:creatable="false" sap:deletable="false"
+					sap:updatable="false">
+					<End EntitySet="ConsumerScenarioCollection" Role="FromRole_Tasks"/>
+					<End EntitySet="TaskCollection" Role="ToRole_Tasks"/>
+				</AssociationSet>
+				<AssociationSet Association="TASKPROCESSING.PotentialOwners" Name="PotentialOwners_AssocSet" sap:content-version="2" sap:creatable="false"
+					sap:deletable="false" sap:updatable="false">
+					<End EntitySet="TaskCollection" Role="FromRole_PotentialOwners"/>
+					<End EntitySet="UserInfoCollection" Role="ToRole_PotentialOwners"/>
+				</AssociationSet>
+				<AssociationSet Association="TASKPROCESSING.TaskDefinitionData" Name="TaskDefinitionData_AssocSet" sap:content-version="2"
+					sap:creatable="false" sap:deletable="false" sap:updatable="false">
+					<End EntitySet="TaskCollection" Role="FromRole_TaskDefinitionData"/>
+					<End EntitySet="TaskDefinitionCollection" Role="ToRole_TaskDefinitionData"/>
+				</AssociationSet>
+				<AssociationSet Association="TASKPROCESSING.Description" Name="Description_AssocSet" sap:content-version="2" sap:creatable="false"
+					sap:deletable="false" sap:updatable="false">
+					<End EntitySet="TaskCollection" Role="FromRole_Description"/>
+					<End EntitySet="TaskDescriptionCollection" Role="ToRole_Description"/>
+				</AssociationSet>
+				<AssociationSet Association="TASKPROCESSING.TaskProcessor" Name="TaskProcessor_AssocSet" sap:content-version="2" sap:creatable="false"
+					sap:deletable="false" sap:updatable="false">
+					<End EntitySet="TaskCollection" Role="FromRole_TaskProcessor"/>
+					<End EntitySet="UserInfoCollection" Role="ToRole_TaskProcessor"/>
+				</AssociationSet>
+				<AssociationSet Association="TASKPROCESSING.TaskCreatedBy" Name="TaskCreatedBy_AssocSet" sap:content-version="2" sap:creatable="false"
+					sap:deletable="false" sap:updatable="false">
+					<End EntitySet="TaskCollection" Role="FromRole_TaskCreatedBy"/>
+					<End EntitySet="UserInfoCollection" Role="ToRole_TaskCreatedBy"/>
+				</AssociationSet>
+				<AssociationSet Association="TASKPROCESSING.PossibleAgents" Name="PossibleAgents_AssocSet" sap:content-version="2" sap:creatable="false"
+					sap:deletable="false" sap:updatable="false">
+					<End EntitySet="TaskCollection" Role="FromRole_PossibleAgents"/>
+					<End EntitySet="UserInfoCollection" Role="ToRole_PossibleAgents"/>
+				</AssociationSet>
+				<AssociationSet Association="TASKPROCESSING.TaskObjects" Name="TaskObjects_AssocSet" sap:content-version="2" sap:creatable="false"
+					sap:deletable="false" sap:updatable="false">
+					<End EntitySet="TaskCollection" Role="FromRole_TaskObjects"/>
+					<End EntitySet="TaskObjectCollection" Role="ToRole_TaskObjects"/>
+				</AssociationSet>
+				<AssociationSet Association="TASKPROCESSING.CustomAttributeData" Name="CustomAttributeData_AssocSet" sap:content-version="2"
+					sap:creatable="false" sap:deletable="false" sap:updatable="false">
+					<End EntitySet="TaskCollection" Role="FromRole_CustomAttributeData"/>
+					<End EntitySet="CustomAttributeCollection" Role="ToRole_CustomAttributeData"/>
+				</AssociationSet>
+				<FunctionImport EntitySet="TaskCollection" Name="Claim" ReturnType="TASKPROCESSING.Task" m:HttpMethod="POST"
+					sap:action-for="TASKPROCESSING.Task">
+					<Parameter MaxLength="16" Mode="In" Name="SAP__Origin" Nullable="true" Type="Edm.String"/>
+					<Parameter Mode="In" Name="InstanceID" Nullable="false" Type="Edm.String"/>
+					<Parameter Mode="In" Name="Comments" Nullable="true" Type="Edm.String"/>
+				</FunctionImport>
+				<FunctionImport EntitySet="TaskCollection" Name="Release" ReturnType="TASKPROCESSING.Task" m:HttpMethod="POST"
+					sap:action-for="TASKPROCESSING.Task">
+					<Parameter MaxLength="16" Mode="In" Name="SAP__Origin" Nullable="true" Type="Edm.String"/>
+					<Parameter Mode="In" Name="InstanceID" Nullable="false" Type="Edm.String"/>
+				</FunctionImport>
+				<FunctionImport EntitySet="TaskCollection" Name="Forward" ReturnType="TASKPROCESSING.Task" m:HttpMethod="POST"
+					sap:action-for="TASKPROCESSING.Task">
+					<Parameter MaxLength="16" Mode="In" Name="SAP__Origin" Nullable="true" Type="Edm.String"/>
+					<Parameter Mode="In" Name="InstanceID" Nullable="false" Type="Edm.String"/>
+					<Parameter Mode="In" Name="ForwardTo" Nullable="false" Type="Edm.String"/>
+					<Parameter Mode="In" Name="Comments" Nullable="true" Type="Edm.String"/>
+				</FunctionImport>
+				<FunctionImport EntitySet="TaskCollection" Name="Decision" ReturnType="TASKPROCESSING.Task" m:HttpMethod="POST"
+					sap:action-for="TASKPROCESSING.Task">
+					<Parameter MaxLength="16" Mode="In" Name="SAP__Origin" Nullable="true" Type="Edm.String"/>
+					<Parameter Mode="In" Name="InstanceID" Nullable="false" Type="Edm.String"/>
+					<Parameter Mode="In" Name="DecisionKey" Nullable="false" Type="Edm.String"/>
+					<Parameter Mode="In" Name="Comments" Nullable="true" Type="Edm.String"/>
+				</FunctionImport>
+				<FunctionImport Name="DecisionOptions" ReturnType="Collection(TASKPROCESSING.DecisionOption)" m:HttpMethod="GET"
+					sap:action-for="TASKPROCESSING.Task">
+					<Parameter MaxLength="16" Mode="In" Name="SAP__Origin" Nullable="true" Type="Edm.String"/>
+					<Parameter Mode="In" Name="InstanceID" Nullable="false" Type="Edm.String"/>
+				</FunctionImport>
+				<FunctionImport EntitySet="TaskCollection" Name="SetPriority" ReturnType="TASKPROCESSING.Task" m:HttpMethod="POST"
+					sap:action-for="TASKPROCESSING.Task">
+					<Parameter MaxLength="16" Mode="In" Name="SAP__Origin" Nullable="true" Type="Edm.String"/>
+					<Parameter Mode="In" Name="InstanceID" Nullable="false" Type="Edm.String"/>
+					<Parameter Mode="In" Name="Priority" Nullable="false" Type="Edm.String"/>
+				</FunctionImport>
+				<FunctionImport EntitySet="SubstitutionRuleCollection" Name="EnableSubstitutionRule" ReturnType="TASKPROCESSING.SubstitutionRule"
+					m:HttpMethod="POST" sap:action-for="TASKPROCESSING.SubstitutionRule">
+					<Parameter MaxLength="16" Mode="In" Name="SAP__Origin" Nullable="true" Type="Edm.String"/>
+					<Parameter Mode="In" Name="SubstitutionRuleID" Nullable="false" Type="Edm.String"/>
+					<Parameter Mode="In" Name="Enabled" Nullable="false" Type="Edm.Boolean"/>
+				</FunctionImport>
+				<FunctionImport Name="DeleteSubstitutionRule" ReturnType="TASKPROCESSING.SubstitutionRuleReturn" m:HttpMethod="POST"
+					sap:action-for="TASKPROCESSING.SubstitutionRule">
+					<Parameter MaxLength="16" Mode="In" Name="SAP__Origin" Nullable="true" Type="Edm.String"/>
+					<Parameter Mode="In" Name="SubstitutionRuleID" Nullable="false" Type="Edm.String"/>
+				</FunctionImport>
+				<FunctionImport EntitySet="CommentCollection" Name="AddComment" ReturnType="TASKPROCESSING.Comment" m:HttpMethod="POST"
+					sap:action-for="TASKPROCESSING.Comment">
+					<Parameter MaxLength="16" Mode="In" Name="SAP__Origin" Nullable="true" Type="Edm.String"/>
+					<Parameter Mode="In" Name="InstanceID" Nullable="false" Type="Edm.String"/>
+					<Parameter Mode="In" Name="Text" Nullable="false" Type="Edm.String"/>
+				</FunctionImport>
+				<FunctionImport EntitySet="UserInfoCollection" Name="SearchUsers" ReturnType="Collection(TASKPROCESSING.UserInfo)" m:HttpMethod="GET"
+					sap:action-for="TASKPROCESSING.UserInfo">
+					<Parameter MaxLength="16" Mode="In" Name="SAP__Origin" Nullable="true" Type="Edm.String"/>
+					<Parameter Mode="In" Name="SearchPattern" Nullable="true" Type="Edm.String"/>
+					<Parameter Mode="In" Name="MaxResults" Nullable="true" Type="Edm.Int16"/>
+				</FunctionImport>
+				<FunctionImport EntitySet="TaskCollection" Name="Confirm" ReturnType="TASKPROCESSING.Task" m:HttpMethod="POST"
+					sap:action-for="TASKPROCESSING.Task">
+					<Parameter MaxLength="16" Mode="In" Name="SAP__Origin" Nullable="true" Type="Edm.String"/>
+					<Parameter Mode="In" Name="InstanceID" Nullable="false" Type="Edm.String"/>
+				</FunctionImport>
+				<FunctionImport EntitySet="TaskCollection" Name="Resubmit" ReturnType="TASKPROCESSING.Task" m:HttpMethod="POST"
+					sap:action-for="TASKPROCESSING.Task">
+					<Parameter MaxLength="16" Mode="In" Name="SAP__Origin" Nullable="true" Type="Edm.String"/>
+					<Parameter Mode="In" Name="InstanceID" Nullable="false" Type="Edm.String"/>
+					<Parameter Mode="In" Name="ResubmissionDate" Nullable="false" Precision="0" Type="Edm.DateTime"/>
+				</FunctionImport>
+				<FunctionImport EntitySet="TaskCollection" Name="CancelResubmission" ReturnType="TASKPROCESSING.Task" m:HttpMethod="POST"
+					sap:action-for="TASKPROCESSING.Task">
+					<Parameter MaxLength="16" Mode="In" Name="SAP__Origin" Nullable="true" Type="Edm.String"/>
+					<Parameter Mode="In" Name="InstanceID" Nullable="false" Type="Edm.String"/>
+				</FunctionImport>
+			</EntityContainer>
+			<atom:link href="https://wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/$metadata" rel="self"
+				xmlns:atom="http://www.w3.org/2005/Atom"/>
+			<atom:link href="https://wdciuxs.example.com:44321/sap/opu/odata/IWPGW/TASKPROCESSING;mo;v=2/$metadata" rel="latest-version"
+				xmlns:atom="http://www.w3.org/2005/Atom"/>
+		</Schema>
+	</edmx:DataServices>
+</edmx:Edmx>

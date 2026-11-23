@@ -371,6 +371,306 @@ Object {
 }
 `;
 
+exports[`ObjectPage generate navigation with defaultSection CustomSection type 1`] = `
+Object {
+  "routes": Array [
+    Object {
+      "name": "RootEntityListReport",
+      "pattern": ":?query:",
+      "target": "TestListReport",
+    },
+    Object {
+      "name": "RootEntityObjectPage",
+      "pattern": "RootEntity({RootEntityKey}):?query:",
+      "target": "RootEntityObjectPage",
+    },
+    Object {
+      "name": "OtherEntityObjectPage",
+      "pattern": "OtherEntity({OtherEntityKey}):?query:",
+      "target": "OtherEntityObjectPage",
+    },
+  ],
+  "targets": Object {
+    "OtherEntityObjectPage": Object {
+      "id": "OtherEntityObjectPage",
+      "name": "sap.fe.templates.ObjectPage",
+      "options": Object {
+        "settings": Object {
+          "contextPath": "/OtherEntity",
+          "navigation": Object {},
+        },
+      },
+      "type": "Component",
+    },
+    "RootEntityListReport": Object {
+      "options": Object {
+        "settings": Object {
+          "navigation": Object {
+            "OtherEntity": Object {
+              "detail": Object {
+                "route": "OtherEntityObjectPage",
+                "targetControlId": "fe::CustomSection::MyCustomSection",
+              },
+            },
+          },
+        },
+      },
+    },
+    "RootEntityObjectPage": Object {},
+  },
+}
+`;
+
+exports[`ObjectPage generate navigation with defaultSection CustomSubSection type 1`] = `
+Object {
+  "routes": Array [
+    Object {
+      "name": "RootEntityListReport",
+      "pattern": ":?query:",
+      "target": "TestListReport",
+    },
+    Object {
+      "name": "RootEntityObjectPage",
+      "pattern": "RootEntity({RootEntityKey}):?query:",
+      "target": "RootEntityObjectPage",
+    },
+    Object {
+      "name": "OtherEntityObjectPage",
+      "pattern": "OtherEntity({OtherEntityKey}):?query:",
+      "target": "OtherEntityObjectPage",
+    },
+  ],
+  "targets": Object {
+    "OtherEntityObjectPage": Object {
+      "id": "OtherEntityObjectPage",
+      "name": "sap.fe.templates.ObjectPage",
+      "options": Object {
+        "settings": Object {
+          "contextPath": "/OtherEntity",
+          "navigation": Object {},
+        },
+      },
+      "type": "Component",
+    },
+    "RootEntityListReport": Object {
+      "options": Object {
+        "settings": Object {
+          "navigation": Object {
+            "OtherEntity": Object {
+              "detail": Object {
+                "route": "OtherEntityObjectPage",
+                "targetControlId": "fe::CustomSubSection::MyCustomSubSection",
+              },
+            },
+          },
+        },
+      },
+    },
+    "RootEntityObjectPage": Object {},
+  },
+}
+`;
+
+exports[`ObjectPage generate navigation with defaultSection FacetSection type 1`] = `
+Object {
+  "routes": Array [
+    Object {
+      "name": "RootEntityListReport",
+      "pattern": ":?query:",
+      "target": "TestListReport",
+    },
+    Object {
+      "name": "RootEntityObjectPage",
+      "pattern": "RootEntity({RootEntityKey}):?query:",
+      "target": "RootEntityObjectPage",
+    },
+    Object {
+      "name": "OtherEntityObjectPage",
+      "pattern": "OtherEntity({OtherEntityKey}):?query:",
+      "target": "OtherEntityObjectPage",
+    },
+  ],
+  "targets": Object {
+    "OtherEntityObjectPage": Object {
+      "id": "OtherEntityObjectPage",
+      "name": "sap.fe.templates.ObjectPage",
+      "options": Object {
+        "settings": Object {
+          "contextPath": "/OtherEntity",
+          "navigation": Object {},
+        },
+      },
+      "type": "Component",
+    },
+    "RootEntityListReport": Object {
+      "options": Object {
+        "settings": Object {
+          "navigation": Object {
+            "OtherEntity": Object {
+              "detail": Object {
+                "route": "OtherEntityObjectPage",
+                "targetControlId": "fe::FacetSection::GeneralInformation",
+              },
+            },
+          },
+        },
+      },
+    },
+    "RootEntityObjectPage": Object {},
+  },
+}
+`;
+
+exports[`ObjectPage generate navigation with defaultSection FacetSection type, nested navigation from object page 1`] = `
+Object {
+  "routes": Array [
+    Object {
+      "name": "RootEntityListReport",
+      "pattern": ":?query:",
+      "target": "TestListReport",
+    },
+    Object {
+      "name": "RootEntityObjectPage",
+      "pattern": "RootEntity({RootEntityKey}):?query:",
+      "target": "RootEntityObjectPage",
+    },
+    Object {
+      "name": "OtherEntityObjectPage",
+      "pattern": "RootEntity({RootEntityKey})/to_OtherEntity({to_OtherEntityKey}):?query:",
+      "target": "OtherEntityObjectPage",
+    },
+  ],
+  "targets": Object {
+    "OtherEntityObjectPage": Object {
+      "id": "OtherEntityObjectPage",
+      "name": "sap.fe.templates.ObjectPage",
+      "options": Object {
+        "settings": Object {
+          "contextPath": "/OtherEntity",
+          "navigation": Object {},
+        },
+      },
+      "type": "Component",
+    },
+    "RootEntityListReport": Object {},
+    "RootEntityObjectPage": Object {
+      "options": Object {
+        "settings": Object {
+          "navigation": Object {
+            "to_OtherEntity": Object {
+              "detail": Object {
+                "route": "OtherEntityObjectPage",
+                "targetControlId": "fe::FacetSection::GeneralInformation",
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+}
+`;
+
+exports[`ObjectPage generate navigation with defaultSection FacetSection type, plus optional page id 1`] = `
+Object {
+  "routes": Array [
+    Object {
+      "name": "RootEntityListReport",
+      "pattern": ":?query:",
+      "target": "TestListReport",
+    },
+    Object {
+      "name": "RootEntityObjectPage",
+      "pattern": "RootEntity({RootEntityKey}):?query:",
+      "target": "RootEntityObjectPage",
+    },
+    Object {
+      "name": "DummyPage",
+      "pattern": "OtherEntity({OtherEntityKey}):?query:",
+      "target": "DummyPage",
+    },
+  ],
+  "targets": Object {
+    "DummyPage": Object {
+      "id": "DummyPage",
+      "name": "sap.fe.templates.ObjectPage",
+      "options": Object {
+        "settings": Object {
+          "contextPath": "/OtherEntity",
+          "navigation": Object {},
+        },
+      },
+      "type": "Component",
+    },
+    "RootEntityListReport": Object {
+      "options": Object {
+        "settings": Object {
+          "navigation": Object {
+            "OtherEntity": Object {
+              "detail": Object {
+                "route": "DummyPage",
+                "targetControlId": "fe::FacetSection::GeneralInformation",
+              },
+            },
+          },
+        },
+      },
+    },
+    "RootEntityObjectPage": Object {},
+  },
+}
+`;
+
+exports[`ObjectPage generate navigation with defaultSection FacetSubSection type 1`] = `
+Object {
+  "routes": Array [
+    Object {
+      "name": "RootEntityListReport",
+      "pattern": ":?query:",
+      "target": "TestListReport",
+    },
+    Object {
+      "name": "RootEntityObjectPage",
+      "pattern": "RootEntity({RootEntityKey}):?query:",
+      "target": "RootEntityObjectPage",
+    },
+    Object {
+      "name": "OtherEntityObjectPage",
+      "pattern": "OtherEntity({OtherEntityKey}):?query:",
+      "target": "OtherEntityObjectPage",
+    },
+  ],
+  "targets": Object {
+    "OtherEntityObjectPage": Object {
+      "id": "OtherEntityObjectPage",
+      "name": "sap.fe.templates.ObjectPage",
+      "options": Object {
+        "settings": Object {
+          "contextPath": "/OtherEntity",
+          "navigation": Object {},
+        },
+      },
+      "type": "Component",
+    },
+    "RootEntityListReport": Object {
+      "options": Object {
+        "settings": Object {
+          "navigation": Object {
+            "OtherEntity": Object {
+              "detail": Object {
+                "route": "OtherEntityObjectPage",
+                "targetControlId": "fe::FacetSubSection::TechnicalData",
+              },
+            },
+          },
+        },
+      },
+    },
+    "RootEntityObjectPage": Object {},
+  },
+}
+`;
+
 exports[`ObjectPage generate simple inbound navigation 1`] = `
 Object {
   "routes": Array [

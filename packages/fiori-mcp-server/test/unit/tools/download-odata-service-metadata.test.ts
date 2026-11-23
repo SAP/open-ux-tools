@@ -1,0 +1,443 @@
+import { jest } from '@jest/globals';
+import type { DownloadODataServiceMetadataInput } from '../../../src/types/index.js';
+import path from 'node:path';
+
+// Mock dependencies
+const mockFindSystem = jest.fn<any>();
+const mockGetServiceMetadata = jest.fn<any>();
+jest.unstable_mockModule('../../../src/tools/services/sap-system', () => ({
+    findSystem: mockFindSystem,
+    getServiceMetadata: mockGetServiceMetadata
+}));
+
+const mockWriteFileSync = jest.fn<any>();
+const mockExistsSync = jest.fn<any>();
+const mockStatSync = jest.fn<any>();
+const actualFs = await import('node:fs');
+jest.unstable_mockModule('node:fs', () => ({
+    ...actualFs,
+    default: {
+        ...actualFs,
+        existsSync: mockExistsSync,
+        statSync: mockStatSync,
+        writeFileSync: mockWriteFileSync
+    },
+    existsSync: mockExistsSync,
+    statSync: mockStatSync,
+    writeFileSync: mockWriteFileSync
+}));
+jest.unstable_mockModule('fs', () => ({
+    ...actualFs,
+    default: {
+        ...actualFs,
+        existsSync: mockExistsSync,
+        statSync: mockStatSync,
+        writeFileSync: mockWriteFileSync
+    },
+    existsSync: mockExistsSync,
+    statSync: mockStatSync,
+    writeFileSync: mockWriteFileSync
+}));
+
+const mockIsAppStudio = jest.fn<() => boolean>().mockReturnValue(false);
+const actualBtpUtils = await import('@sap-ux/btp-utils');
+jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
+    ...actualBtpUtils,
+    isAppStudio: mockIsAppStudio
+}));
+
+const { downloadODataServiceMetadata } = await import('../../../src/tools/download-odata-service-metadata.js');
+
+/**
+ * Configures existsSync and statSync mocks for a given appPath scenario.
+ *
+ * Default behaviour simulates a valid empty target directory:
+ *   - appPath exists and is a directory
+ *   - metadata.xml does not yet exist inside appPath
+ *
+ * Override options only in tests that specifically exercise one of the fs guards.
+ * Paths not handled here fall through to the real fs implementation.
+ *
+ * @param appPath - the appPath value passed to the tool under test
+ * @param options - override options for specific guard scenarios (all default to happy-path values)
+ * @param options.appPathExists - whether appPath exists on the filesystem (default true)
+ * @param options.isDirectory - whether appPath is a directory; only checked when appPathExists is true (default true)
+ * @param options.metadataXmlExists - whether a metadata.xml already exists inside appPath (default false)
+ */
+function setupFsMocks(
+    appPath: string,
+    options: {
+        appPathExists?: boolean;
+        isDirectory?: boolean;
+        metadataXmlExists?: boolean;
+    } = {}
+): void {
+    const { appPathExists = true, isDirectory = true, metadataXmlExists = false } = options;
+    mockExistsSync.mockImplementation((p: unknown) => {
+        const pathStr = String(p);
+        if (pathStr === appPath) {
+            return appPathExists;
+        }
+        if (pathStr === path.join(appPath, 'metadata.xml')) {
+            return metadataXmlExists;
+        }
+        return actualFs.existsSync(pathStr);
+    });
+    mockStatSync.mockImplementation((p: unknown) =>
+        String(p) === appPath ? { isDirectory: () => isDirectory } : actualFs.statSync(String(p))
+    );
+}
+
+describe('downloadODataServiceMetadata', () => {
+    const mockAppPath = '/test/app/path';
+    const mockServicePath = '/sap/opu/odata4/test/service';
+    const mockMetadata = '<?xml version="1.0" encoding="utf-8"?><edmx:Edmx>...</edmx:Edmx>';
+    const mockSapSystem = {
+        name: 'TestSystem',
+        url: 'https://test.example.com',
+        client: '100',
+        username: 'user',
+        password: 'pass'
+    };
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+        mockIsAppStudio.mockReturnValue(false);
+        // Reset fs mocks to happy-path defaults (directory exists, no metadata.xml yet).
+        // Tests that exercise a specific fs guard call setupFsMocks() again with override options.
+        setupFsMocks(mockAppPath);
+        mockFindSystem.mockResolvedValue({ system: mockSapSystem });
+        mockGetServiceMetadata.mockResolvedValue(mockMetadata);
+        mockWriteFileSync.mockImplementation(() => {});
+    });
+
+    test('should successfully execute functionality with sapSystemQuery', async () => {
+        const params: DownloadODataServiceMetadataInput = {
+            appPath: mockAppPath,
+            sapSystemQuery: 'TestSystem',
+            servicePath: mockServicePath
+        };
+
+        const result = await downloadODataServiceMetadata(params);
+
+        expect(mockFindSystem).toHaveBeenCalledWith('TestSystem');
+        expect(mockGetServiceMetadata).toHaveBeenCalledWith(mockSapSystem, mockServicePath);
+        expect(mockWriteFileSync).toHaveBeenCalledWith(path.join(mockAppPath, 'metadata.xml'), mockMetadata, 'utf-8');
+        expect(result).toMatchObject({
+            status: 'Success',
+            message: 'Service metadata downloaded successfully.',
+            changes: [],
+            parameters: {
+                host: 'https://test.example.com',
+                client: '100',
+                servicePath: mockServicePath,
+                metadataFilePath: path.join(mockAppPath, 'metadata.xml') as string
+            },
+            appPath: mockAppPath
+        });
+        expect(result.timestamp).toBeDefined();
+    });
+
+    test('should successfully execute functionality with URL as sapSystemQuery', async () => {
+        const params: DownloadODataServiceMetadataInput = {
+            appPath: mockAppPath,
+            sapSystemQuery: 'https://test.example.com?sap-client=100',
+            servicePath: mockServicePath
+        };
+
+        const result = await downloadODataServiceMetadata(params);
+
+        expect(mockFindSystem).toHaveBeenCalledWith('https://test.example.com?sap-client=100');
+        expect(result.status).toBe('Success');
+    });
+
+    test('should successfully execute functionality without sapSystemQuery', async () => {
+        const params: DownloadODataServiceMetadataInput = {
+            appPath: mockAppPath,
+            servicePath: mockServicePath
+        };
+
+        const result = await downloadODataServiceMetadata(params);
+
+        expect(mockFindSystem).toHaveBeenCalledWith(mockServicePath);
+        expect(result.status).toBe('Success');
+    });
+
+    test('should successfully execute functionality with empty sapSystemQuery', async () => {
+        const params: DownloadODataServiceMetadataInput = {
+            appPath: mockAppPath,
+            sapSystemQuery: '',
+            servicePath: mockServicePath
+        };
+
+        const result = await downloadODataServiceMetadata(params);
+
+        expect(mockFindSystem).toHaveBeenCalledWith(mockServicePath);
+        expect(result.status).toBe('Success');
+    });
+
+    test('should return error when system not found', async () => {
+        mockFindSystem.mockResolvedValue({ system: undefined, message: 'No matching system found for: Unknown' });
+
+        const params: DownloadODataServiceMetadataInput = {
+            appPath: mockAppPath,
+            sapSystemQuery: 'Unknown',
+            servicePath: mockServicePath
+        };
+
+        const result = await downloadODataServiceMetadata(params);
+        expect(result.status).toBe('Error');
+        expect(result.message).toBe('No matching system found for: Unknown');
+        expect(mockGetServiceMetadata).not.toHaveBeenCalled();
+        expect(mockWriteFileSync).not.toHaveBeenCalled();
+    });
+
+    test('should return error when appPath does not exist', async () => {
+        setupFsMocks('/non/existent/path', { appPathExists: false });
+        const params: DownloadODataServiceMetadataInput = {
+            appPath: '/non/existent/path',
+            sapSystemQuery: 'TestSystem',
+            servicePath: mockServicePath
+        };
+
+        const result = await downloadODataServiceMetadata(params);
+        expect(result.status).toBe('Error');
+        expect(result.message).toContain('appPath does not exist or is not a directory: /non/existent/path');
+        expect(result.message).toContain('This tool does not create directories');
+        expect(mockFindSystem).not.toHaveBeenCalled();
+        expect(mockWriteFileSync).not.toHaveBeenCalled();
+    });
+
+    test('should return error when appPath points to a file instead of a directory', async () => {
+        setupFsMocks('/some/existing/file.txt', { isDirectory: false });
+        const params: DownloadODataServiceMetadataInput = {
+            appPath: '/some/existing/file.txt',
+            sapSystemQuery: 'TestSystem',
+            servicePath: mockServicePath
+        };
+
+        const result = await downloadODataServiceMetadata(params);
+        expect(result.status).toBe('Error');
+        expect(result.message).toContain('appPath does not exist or is not a directory: /some/existing/file.txt');
+        expect(mockFindSystem).not.toHaveBeenCalled();
+        expect(mockWriteFileSync).not.toHaveBeenCalled();
+    });
+
+    test('should return error when servicePath is missing', async () => {
+        const params: DownloadODataServiceMetadataInput = {
+            appPath: mockAppPath,
+            sapSystemQuery: 'TestSystem',
+            servicePath: undefined as any
+        };
+
+        const result = await downloadODataServiceMetadata(params);
+        expect(result.status).toBe('Error');
+        expect(result.message).toBe('Missing required parameter: servicePath must be provided');
+        expect(mockFindSystem).not.toHaveBeenCalled();
+        expect(mockGetServiceMetadata).not.toHaveBeenCalled();
+        expect(mockWriteFileSync).not.toHaveBeenCalled();
+    });
+
+    test('should return error when servicePath is empty string', async () => {
+        const params: DownloadODataServiceMetadataInput = {
+            appPath: mockAppPath,
+            sapSystemQuery: 'TestSystem',
+            servicePath: ''
+        };
+
+        const result = await downloadODataServiceMetadata(params);
+        expect(result.status).toBe('Error');
+        expect(result.message).toBe('Missing required parameter: servicePath must be provided');
+        expect(mockFindSystem).not.toHaveBeenCalled();
+    });
+
+    test('should return error when servicePath is whitespace only', async () => {
+        const params: DownloadODataServiceMetadataInput = {
+            appPath: mockAppPath,
+            sapSystemQuery: 'TestSystem',
+            servicePath: '   '
+        };
+
+        const result = await downloadODataServiceMetadata(params);
+        expect(result.status).toBe('Error');
+        expect(result.message).toBe('Missing required parameter: servicePath must be provided');
+    });
+
+    test('should return error response from findSystem failure', async () => {
+        mockFindSystem.mockRejectedValue(new Error('System not found'));
+
+        const params: DownloadODataServiceMetadataInput = {
+            appPath: mockAppPath,
+            sapSystemQuery: 'NonExistent',
+            servicePath: mockServicePath
+        };
+
+        const result = await downloadODataServiceMetadata(params);
+        expect(result.status).toBe('Error');
+        expect(result.message).toBe(`Could not fetch metadata for service '${mockServicePath}': System not found`);
+        expect(mockWriteFileSync).not.toHaveBeenCalled();
+    });
+
+    test('should return error response from getServiceMetadata failure', async () => {
+        mockGetServiceMetadata.mockRejectedValue(new Error('Metadata fetch failed'));
+
+        const params: DownloadODataServiceMetadataInput = {
+            appPath: mockAppPath,
+            sapSystemQuery: 'TestSystem',
+            servicePath: mockServicePath
+        };
+
+        const result = await downloadODataServiceMetadata(params);
+        expect(result.status).toBe('Error');
+        expect(result.message).toBe(`Could not fetch metadata for service '${mockServicePath}': Metadata fetch failed`);
+        expect(mockWriteFileSync).not.toHaveBeenCalled();
+    });
+
+    test('should handle system without client', async () => {
+        const systemWithoutClient = {
+            name: 'TestSystem',
+            url: 'https://test.example.com',
+            client: ''
+        };
+        mockFindSystem.mockResolvedValue({ system: systemWithoutClient });
+
+        const params: DownloadODataServiceMetadataInput = {
+            appPath: mockAppPath,
+            sapSystemQuery: 'TestSystem',
+            servicePath: mockServicePath
+        };
+
+        const result = await downloadODataServiceMetadata(params);
+
+        expect((result.parameters as any).client).toBe('');
+    });
+
+    test('should trim whitespace from parameters', async () => {
+        const params: DownloadODataServiceMetadataInput = {
+            appPath: mockAppPath,
+            sapSystemQuery: '  TestSystem  ',
+            servicePath: '  /sap/opu/odata4/test/service  '
+        };
+
+        await downloadODataServiceMetadata(params);
+
+        expect(mockFindSystem).toHaveBeenCalledWith('TestSystem');
+        expect(mockGetServiceMetadata).toHaveBeenCalledWith(mockSapSystem, '/sap/opu/odata4/test/service');
+    });
+
+    test('should return error when metadata.xml already exists at appPath', async () => {
+        setupFsMocks(mockAppPath, { metadataXmlExists: true });
+        const metadataXmlPath = path.join(mockAppPath, 'metadata.xml');
+
+        const params: DownloadODataServiceMetadataInput = {
+            appPath: mockAppPath,
+            sapSystemQuery: 'TestSystem',
+            servicePath: mockServicePath
+        };
+
+        const result = await downloadODataServiceMetadata(params);
+
+        expect(result.status).toBe('Error');
+        expect(result.message).toMatch(/search_docs.*update service metadata/i);
+        expect(result.message).toContain(metadataXmlPath);
+        expect(mockFindSystem).not.toHaveBeenCalled();
+        expect(mockGetServiceMetadata).not.toHaveBeenCalled();
+        expect(mockWriteFileSync).not.toHaveBeenCalled();
+    });
+
+    test('should write metadata file to correct path', async () => {
+        const customAppPath = '/custom/app/path';
+        setupFsMocks(customAppPath);
+        const params: DownloadODataServiceMetadataInput = {
+            appPath: customAppPath,
+            sapSystemQuery: 'TestSystem',
+            servicePath: mockServicePath
+        };
+
+        await downloadODataServiceMetadata(params);
+
+        expect(mockWriteFileSync).toHaveBeenCalledWith(path.join(customAppPath, 'metadata.xml'), mockMetadata, 'utf-8');
+    });
+
+    test('should handle non-string parameters gracefully', async () => {
+        const params: DownloadODataServiceMetadataInput = {
+            appPath: mockAppPath,
+            sapSystemQuery: 123 as any,
+            servicePath: 456 as any
+        };
+
+        await downloadODataServiceMetadata(params);
+
+        expect(mockFindSystem).toHaveBeenCalledWith('123');
+        expect(mockGetServiceMetadata).toHaveBeenCalledWith(mockSapSystem, '456');
+    });
+
+    test('should return timestamp in ISO format', async () => {
+        const params: DownloadODataServiceMetadataInput = {
+            appPath: mockAppPath,
+            sapSystemQuery: 'TestSystem',
+            servicePath: mockServicePath
+        };
+
+        const result = await downloadODataServiceMetadata(params);
+
+        expect(result.timestamp).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/);
+    });
+
+    describe('AppStudio (BAS) destination handling', () => {
+        const mockDestination = {
+            Name: 'MY_DESTINATION',
+            Host: 'https://bas-system.example.com',
+            'sap-client': '200',
+            Type: 'HTTP',
+            Authentication: 'BasicAuthentication'
+        };
+
+        beforeEach(() => {
+            mockIsAppStudio.mockReturnValue(true);
+            mockFindSystem.mockResolvedValue({ system: mockDestination });
+        });
+
+        test('should return error when isAppStudio is true', async () => {
+            const params: DownloadODataServiceMetadataInput = {
+                appPath: mockAppPath,
+                sapSystemQuery: 'MY_DESTINATION',
+                servicePath: mockServicePath
+            };
+
+            const result = await downloadODataServiceMetadata(params);
+
+            expect(result.status).toBe('Error');
+            expect(result.message).toContain('Service Center MCP');
+        });
+
+        test('should not call getServiceMetadata when isAppStudio is true', async () => {
+            const params: DownloadODataServiceMetadataInput = {
+                appPath: mockAppPath,
+                sapSystemQuery: 'MY_DESTINATION',
+                servicePath: mockServicePath
+            };
+
+            await downloadODataServiceMetadata(params);
+
+            expect(mockGetServiceMetadata).not.toHaveBeenCalled();
+        });
+
+        test('should work normally when isAppStudio is false', async () => {
+            mockIsAppStudio.mockReturnValue(false);
+            mockFindSystem.mockResolvedValue({ system: mockSapSystem });
+
+            const params: DownloadODataServiceMetadataInput = {
+                appPath: mockAppPath,
+                sapSystemQuery: 'TestSystem',
+                servicePath: mockServicePath
+            };
+
+            const result = await downloadODataServiceMetadata(params);
+
+            expect(result.status).toBe('Success');
+            expect((result.parameters as any).host).toBe('https://test.example.com');
+            expect((result.parameters as any).destination).toBeUndefined();
+        });
+    });
+});

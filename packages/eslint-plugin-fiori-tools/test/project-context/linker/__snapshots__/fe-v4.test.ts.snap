@@ -107,7 +107,7 @@ Object {
 
 exports[`FE V4 Linker - CAP linkTableSettings section level - object page orphan-node 1`] = `Object {}`;
 
-exports[`FE V4 Linker - CAP linkTableSettings section level - object page orphan-table 1`] = `
+exports[`FE V4 Linker - CAP linkTableSettings section level - object page orphan-table - has manifest config, no annotation 1`] = `
 Object {
   "condensedTableLayout": Object {
     "configurationPath": Array [
@@ -118,7 +118,7 @@ Object {
       "options",
       "settings",
       "controlConfiguration",
-      "@com.sap.vocabularies.UI.v1.LineItem",
+      "@com.sap.vocabularies.UI.v1.LineItem#orphanTable",
       "tableSettings",
       "condensedTableLayout",
     ],
@@ -136,7 +136,7 @@ Object {
       "options",
       "settings",
       "controlConfiguration",
-      "@com.sap.vocabularies.UI.v1.LineItem",
+      "@com.sap.vocabularies.UI.v1.LineItem#orphanTable",
       "tableSettings",
       "creationMode",
       "name",
@@ -155,7 +155,7 @@ Object {
       "options",
       "settings",
       "controlConfiguration",
-      "@com.sap.vocabularies.UI.v1.LineItem",
+      "@com.sap.vocabularies.UI.v1.LineItem#orphanTable",
       "tableSettings",
       "disableCopyToClipboard",
     ],
@@ -173,7 +173,7 @@ Object {
       "options",
       "settings",
       "controlConfiguration",
-      "@com.sap.vocabularies.UI.v1.LineItem",
+      "@com.sap.vocabularies.UI.v1.LineItem#orphanTable",
       "tableSettings",
       "enableExport",
     ],
@@ -191,7 +191,7 @@ Object {
       "options",
       "settings",
       "controlConfiguration",
-      "@com.sap.vocabularies.UI.v1.LineItem",
+      "@com.sap.vocabularies.UI.v1.LineItem#orphanTable",
       "tableSettings",
       "enablePaste",
     ],
@@ -209,7 +209,7 @@ Object {
       "options",
       "settings",
       "controlConfiguration",
-      "@com.sap.vocabularies.UI.v1.LineItem",
+      "@com.sap.vocabularies.UI.v1.LineItem#orphanTable",
       "tableSettings",
       "personalization",
     ],
@@ -228,7 +228,7 @@ Object {
       "options",
       "settings",
       "controlConfiguration",
-      "@com.sap.vocabularies.UI.v1.LineItem",
+      "@com.sap.vocabularies.UI.v1.LineItem#orphanTable",
       "tableSettings",
       "type",
     ],
@@ -248,7 +248,7 @@ Object {
       "options",
       "settings",
       "controlConfiguration",
-      "@com.sap.vocabularies.UI.v1.LineItem",
+      "@com.sap.vocabularies.UI.v1.LineItem#orphanTable",
       "tableSettings",
       "widthIncludingColumnHeader",
     ],
@@ -415,7 +415,7 @@ Object {
 
 exports[`FE V4 Linker - XML linkTableSettings section level - object page orphan-node 1`] = `Object {}`;
 
-exports[`FE V4 Linker - XML linkTableSettings section level - object page orphan-table 1`] = `
+exports[`FE V4 Linker - XML linkTableSettings section level - object page orphan-table - has manifest config, no annotation 1`] = `
 Object {
   "condensedTableLayout": Object {
     "configurationPath": Array [
@@ -426,7 +426,7 @@ Object {
       "options",
       "settings",
       "controlConfiguration",
-      "@com.sap.vocabularies.UI.v1.LineItem",
+      "@com.sap.vocabularies.UI.v1.LineItem#orphanTable",
       "tableSettings",
       "condensedTableLayout",
     ],
@@ -444,7 +444,7 @@ Object {
       "options",
       "settings",
       "controlConfiguration",
-      "@com.sap.vocabularies.UI.v1.LineItem",
+      "@com.sap.vocabularies.UI.v1.LineItem#orphanTable",
       "tableSettings",
       "creationMode",
       "name",
@@ -463,7 +463,7 @@ Object {
       "options",
       "settings",
       "controlConfiguration",
-      "@com.sap.vocabularies.UI.v1.LineItem",
+      "@com.sap.vocabularies.UI.v1.LineItem#orphanTable",
       "tableSettings",
       "disableCopyToClipboard",
     ],
@@ -481,7 +481,7 @@ Object {
       "options",
       "settings",
       "controlConfiguration",
-      "@com.sap.vocabularies.UI.v1.LineItem",
+      "@com.sap.vocabularies.UI.v1.LineItem#orphanTable",
       "tableSettings",
       "enableExport",
     ],
@@ -499,7 +499,7 @@ Object {
       "options",
       "settings",
       "controlConfiguration",
-      "@com.sap.vocabularies.UI.v1.LineItem",
+      "@com.sap.vocabularies.UI.v1.LineItem#orphanTable",
       "tableSettings",
       "enablePaste",
     ],
@@ -517,7 +517,7 @@ Object {
       "options",
       "settings",
       "controlConfiguration",
-      "@com.sap.vocabularies.UI.v1.LineItem",
+      "@com.sap.vocabularies.UI.v1.LineItem#orphanTable",
       "tableSettings",
       "personalization",
     ],
@@ -536,7 +536,7 @@ Object {
       "options",
       "settings",
       "controlConfiguration",
-      "@com.sap.vocabularies.UI.v1.LineItem",
+      "@com.sap.vocabularies.UI.v1.LineItem#orphanTable",
       "tableSettings",
       "type",
     ],
@@ -556,7 +556,7 @@ Object {
       "options",
       "settings",
       "controlConfiguration",
-      "@com.sap.vocabularies.UI.v1.LineItem",
+      "@com.sap.vocabularies.UI.v1.LineItem#orphanTable",
       "tableSettings",
       "widthIncludingColumnHeader",
     ],

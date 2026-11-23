@@ -1,12 +1,17 @@
-import type { ServiceOptions } from '../types';
-import type { BackendProviderRetrievalOptions, BackendSystemFilter, DataProvider, DataProviderConstructor } from '.';
-import type { DataAccess } from '../data-access';
+import type { ServiceOptions } from '../types.js';
+import type {
+    BackendProviderRetrievalOptions,
+    BackendSystemFilter,
+    DataProvider,
+    DataProviderConstructor
+} from './index.js';
+import type { DataAccess } from '../data-access/index.js';
 import type { Logger } from '@sap-ux/logger';
-import { getHybridStore } from '../data-access/hybrid';
-import { BackendSystem, BackendSystemKey } from '../entities/backend-system';
-import { Entities } from './constants';
-import { ConnectionType } from '../types';
-import { getBackendSystemType, getSapToolsDirectory, isMatch } from '../utils';
+import { getHybridStore } from '../data-access/hybrid.js';
+import { BackendSystem, BackendSystemKey } from '../entities/backend-system.js';
+import { Entities } from './constants.js';
+import { ConnectionType } from '../types.js';
+import { getBackendSystemType, getSapToolsDirectory, isMatch } from '../utils/index.js';
 import { join } from 'node:path';
 import { readFileSync, writeFileSync } from 'node:fs';
 

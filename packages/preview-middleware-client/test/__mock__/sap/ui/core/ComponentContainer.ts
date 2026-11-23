@@ -1,4 +1,4 @@
-import UIComponentMOck from './UIComponent';
+import UIComponentMOck from './UIComponent.js';
 
 export default class {
     getComponent() {

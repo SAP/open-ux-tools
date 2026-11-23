@@ -2,14 +2,14 @@ import { latestVersionString } from '@sap-ux/ui5-info';
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { coerce, gte } from 'semver';
-import { defaultProjectNumber, t } from '../i18n';
+import { defaultProjectNumber, t } from '../i18n.js';
 import {
     promptNames,
     type AddDeployPromptOptions,
     type UI5ApplicationCommonPromptOptions,
     type UI5ApplicationPromptOptions,
     type UI5ApplicationQuestion
-} from '../types';
+} from '../types.js';
 import type { CdsUi5PluginInfo } from '@sap-ux/project-access';
 
 /**
@@ -32,7 +32,7 @@ export function appPathExists(appName: string, targetPath?: string): boolean | s
 export function defaultAppName(targetPath: string, baseAppName?: string): string {
     let defProjNum = defaultProjectNumber;
     let defaultName = baseAppName || t('prompts.name.default');
-    while (exports.appPathExists(`${defaultName}`, targetPath)) {
+    while (appPathExists(`${defaultName}`, targetPath)) {
         if (baseAppName) {
             defaultName = `${baseAppName}${defProjNum++}`;
         } else {

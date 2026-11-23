@@ -11,16 +11,16 @@ import {
     getAdpConfig,
     ManifestService,
     ManifestServiceCF,
-    SystemLookup,
-    isCFEnvironment
+    isCFEnvironment,
+    isAuthRequired
 } from '@sap-ux/adp-tooling';
 
-import { initI18n } from '../utils/i18n';
-import SubGeneratorBase from './sub-gen-base';
-import type { GeneratorOpts } from '../utils/opts';
-import type { GeneratorTypes, Credentials } from '../types';
-import { getCredentialsPrompts } from './questions/credentials';
-import { getSubGenAuthPages } from '../utils/steps';
+import { initI18n } from '../utils/i18n.js';
+import SubGeneratorBase from './sub-gen-base.js';
+import type { GeneratorOpts } from '../utils/opts.js';
+import type { GeneratorTypes, Credentials } from '../types.js';
+import { getCredentialsPrompts } from './questions/credentials.js';
+import { getSubGenAuthPages } from '../utils/steps.js';
 
 /**
  * Base class for *sub* generators that need authentication handling.
@@ -56,10 +56,6 @@ export default class SubGeneratorWithAuthBase extends SubGeneratorBase {
      */
     protected variant: DescriptorVariant;
     /**
-     * The system lookup instance.
-     */
-    protected systemLookup: SystemLookup;
-    /**
      * Whether this is a CF project.
      */
     protected isCFProject = false;
@@ -92,7 +88,6 @@ export default class SubGeneratorWithAuthBase extends SubGeneratorBase {
     protected async onInit(): Promise<void> {
         await initI18n();
 
-        this.systemLookup = new SystemLookup(this.logger);
         this.isCFProject = await isCFEnvironment(this.projectPath);
 
         if (this.isCFProject) {
@@ -114,7 +109,7 @@ export default class SubGeneratorWithAuthBase extends SubGeneratorBase {
         this._registerPrompts(new Prompts(getSubGenAuthPages(this.generatorType, this.system)));
 
         try {
-            this.requiresAuth = await this.systemLookup.getSystemRequiresAuth(this.system);
+            this.requiresAuth = await isAuthRequired(this.system, this.logger);
             this.logger.log(`System ${this.system} requires authentication: ${this.requiresAuth}`);
 
             if (!this.requiresAuth) {
@@ -122,6 +117,8 @@ export default class SubGeneratorWithAuthBase extends SubGeneratorBase {
                 this.prompts.splice(0, 1, []);
             }
         } catch (error) {
+            // Remove the credential page in case an error occures.
+            this.prompts.splice(0, 1, []);
             await this.handleRuntimeCrash(error.message);
         }
     }

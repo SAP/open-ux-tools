@@ -1,6 +1,6 @@
 import type { TranslationEntry } from '@sap-ux/ui-components';
 import React, { createContext, useCallback, useContext, useMemo } from 'react';
-import type { TranslateEvent, TranslationProps } from '../types';
+import type { TranslateEvent, TranslationProps } from '../types.js';
 
 const TranslationContext = createContext<TranslationProps>({ bundle: {} });
 
@@ -22,9 +22,10 @@ export const TranslationProvider = <T extends TranslationEntry>(props: Translati
         () => ({
             bundle: props.bundle,
             onEvent: handleEvent,
-            pendingQuestions: props.pendingQuestions
+            pendingQuestions: props.pendingQuestions,
+            translationInputProps: props.translationInputProps
         }),
-        [props.bundle, handleEvent, props.pendingQuestions]
+        [props.bundle, handleEvent, props.pendingQuestions, props.translationInputProps]
     );
     return <TranslationContext.Provider value={value}>{props.children}</TranslationContext.Provider>;
 };

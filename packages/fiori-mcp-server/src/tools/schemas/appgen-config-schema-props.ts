@@ -1,14 +1,14 @@
 import * as z from 'zod';
-import { LATEST_UI5_VERSION } from '../../constant';
-import packageJson from '../../../package.json';
+import { PACKAGE_NAME, PACKAGE_VERSION } from '../../package-info.js';
+import { VIEW_NAME_REGEX, VIEW_NAME_MAX_LENGTH } from '@sap-ux/project-input-validator';
 
 // Extended type generators API use
 export const PREDEFINED_GENERATOR_VALUES = {
     // Config schema version
     version: '0.2',
     telemetryData: {
-        generationSourceName: packageJson.name,
-        generationSourceVersion: packageJson.version
+        generationSourceName: PACKAGE_NAME,
+        generationSourceVersion: PACKAGE_VERSION
     },
     project: {
         sapux: true
@@ -34,25 +34,79 @@ export const project = z.object({
         .regex(/^[a-z0-9-]+$/),
     title: z.optional(z.string()),
     description: z.string(),
-    targetFolder: z.string().describe('Absolute path to the project folder (projectPath).'),
-    ui5Version: z.string().default(LATEST_UI5_VERSION)
+    targetFolder: z
+        .string()
+        .describe(
+            'Absolute path to the project folder (projectPath). ' +
+                '🚨 The subfolder <targetFolder>/<project.name> MUST NOT already exist — ' +
+                'the generator will refuse to run if it does. ' +
+                'Do NOT pre-create that subfolder; only the parent targetFolder may exist.'
+        ),
+    ui5Version: z
+        .string()
+        .optional()
+        .describe(
+            'UI5 version to use for the generated application. If omitted, the MCP server resolves the latest stable UI5 version from ui5.sap.com.'
+        ),
+    enableTypeScript: z
+        .boolean()
+        .default(false)
+        .describe(
+            'Generate the application in TypeScript (true) or JavaScript (false, default). ' +
+                'JS↔TS is a whole-project scaffolding decision (views, controllers, tsconfig.json, build). ' +
+                'There is no supported conversion command — this can only be set at generation time.'
+        ),
+    namespace: z
+        .string()
+        .regex(
+            /^(?!sap$)(?!new)[a-z][a-z0-9_]*(\.[a-z_][a-z0-9_]*)*$/,
+            'Invalid namespace — must be lowercase dot-separated segments, not "sap" or start with "new".'
+        )
+        .optional()
+        .describe(
+            'Application namespace, e.g. "com.mycompany". Lowercase dot-separated segments only. ' +
+                'Must not be "sap" or start with "new". ' +
+                'Combined length of namespace + app name must not exceed 70 characters. ' +
+                'Cannot be changed after generation.'
+        ),
+    viewName: z
+        .string()
+        .min(1)
+        .max(VIEW_NAME_MAX_LENGTH)
+        .regex(
+            VIEW_NAME_REGEX,
+            `View name must start with a letter and contain only letters, digits, underscores, or hyphens (max ${VIEW_NAME_MAX_LENGTH} characters).`
+        )
+        .optional()
+        .describe(
+            'Initial view name (FF_SIMPLE floorplan only). ' +
+                'Sets the physical view and controller filenames at scaffold time. ' +
+                'Renaming these files later breaks manifest routing wiring.'
+        )
 });
 
 export const serviceOdata = z.object({
     servicePath: z
         .string()
         .describe(
-            'The odata endpoint. Required for all floorplans except FF_SIMPLE. If the parameter is not provided, the agent should ask the user for it.'
-        )
-        .meta({
-            examples: ['/sap/opu/odata/sap/<servicename>/', '/<servicename>/']
-        }),
+            '🚨 DO NOT CONSTRUCT - This is provided by download_odata_service_metadata tool! ' +
+                'The odata endpoint path returned from the metadata download tool. ' +
+                'NEVER construct this yourself - always get it from download_odata_service_metadata output. ' +
+                'Required for all floorplans except FF_SIMPLE.'
+        ),
     host: z
         .url()
         .describe(
             'The host of the OData service. Must be an HTTPS endpoint. If the parameter is not provided, the agent should ask the user for it.'
         ),
     client: z.optional(z.string().describe('The client to be used for the OData service.')),
+    destination: z.optional(
+        z
+            .string()
+            .describe(
+                'The BTP destination name to be used for the OData service. This must be provided on SAP Business Application Studio.'
+            )
+    ),
     metadataFilePath: z.optional(z.string().describe('Path to a local metadata.xml file.'))
 });
 
@@ -98,8 +152,23 @@ export const entityConfig = z.object({
             .describe(
                 'The name of the main entity. EntitySet Name attribute in OData Metadata. Required for all floorplans except FF_SIMPLE.'
             )
-            .meta({ examples: ["'SalesOrder'", "'PurchaseOrderHeader'", "'MyEntity'"] })
+            .meta({ examples: ['SalesOrder', 'PurchaseOrderHeader', 'MyEntity'] })
     }),
+    navigationEntity: z
+        .object({
+            EntitySet: z
+                .string()
+                .describe('The target EntitySet name from the navigation property in OData Metadata.')
+                .meta({ examples: ['Booking', 'SalesOrderItems', 'PurchaseOrderItems'] }),
+            Name: z
+                .string()
+                .describe('The navigation property name on the main entity.')
+                .meta({ examples: ['_Items', 'to_Item', 'Items'] })
+        })
+        .describe(
+            'Optional navigation entity. Defines the sub-entity reachable via a navigation property on the main entity.'
+        )
+        .optional(),
     generateFormAnnotations: z
         .boolean()
         .describe('Whether to generate form annotations for the main entity if none exist.')

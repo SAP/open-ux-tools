@@ -1,1 +1,1 @@
-export { SystemStatus } from './SystemStatus';
+export { SystemStatus } from './SystemStatus.js';

@@ -1,2 +1,2 @@
-export { ChangesPanel } from './ChangesPanel';
-export { FileChange } from './FileChange';
+export { ChangesPanel } from './ChangesPanel.js';
+export { FileChange } from './FileChange.js';

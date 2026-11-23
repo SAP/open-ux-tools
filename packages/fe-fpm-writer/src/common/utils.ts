@@ -1,12 +1,14 @@
+import type { Logger } from '@sap-ux/logger';
 import type { Editor } from 'mem-fs-editor';
 import os from 'node:os';
 import { join } from 'node:path';
 import { coerce, minor } from 'semver';
 import { getWebappPath } from '@sap-ux/project-access';
-import { getTemplatePath } from '../templates';
-import type { FileContentPosition, Manifest, ManifestData } from './types';
-import { copyTpl } from './file';
+import { getTemplatePath } from '../templates.js';
+import type { FileContentPosition, Manifest, ManifestData } from './types.js';
+import { copyTpl } from './file.js';
 import { DOMParser } from '@xmldom/xmldom';
+import { getDOMParserOptions } from '../building-block/prompts/utils/xml.js';
 
 /**
  * Method inserts passed text into content by char index position.
@@ -103,15 +105,30 @@ export async function getManifest(basePath: string, fs: Editor, validate = true)
 }
 
 /**
- * Method validates if passed id is available.
+ * Validates if the given id is not already used in the specified XML view or fragment file.
+ * If the file cannot be parsed, falls back to a regex search on the raw content.
  *
- * @param fs  - the file system object for reading files
+ * @param fs - the file system object for reading files
  * @param viewOrFragmentPath - path to fragment or view file
  * @param id - id to check/validate
- * @returns true if passed id is available.
+ * @param logger - optional logger for parse errors
+ * @returns true if the id is available, false if it is already in use.
  */
-export function isElementIdAvailable(fs: Editor, viewOrFragmentPath: string, id: string): boolean {
+export function isElementIdAvailable(fs: Editor, viewOrFragmentPath: string, id: string, logger?: Logger): boolean {
     const xmlContent = fs.read(viewOrFragmentPath).toString();
-    const xmlDocument = new DOMParser({ errorHandler: (): void => {} }).parseFromString(xmlContent, 'text/xml');
-    return xmlDocument.documentElement ? !xmlDocument.getElementById(id) : true;
+    try {
+        const xmlDocument = new DOMParser(getDOMParserOptions(undefined, () => {})).parseFromString(
+            xmlContent,
+            'text/xml'
+        );
+        return xmlDocument.documentElement ? !xmlDocument.getElementById(id) : true;
+    } catch (e) {
+        // xmldom 0.9+ throws ParseError for malformed XML — fall back to a regex search on the raw content
+        logger?.warn(
+            `isElementIdAvailable: failed to parse "${viewOrFragmentPath}", falling back to text search: ${e instanceof Error ? e.message : String(e)}`
+        );
+        return !new RegExp(
+            String.raw`(?<![a-zA-Z0-9_-])id\s*=\s*["']${id.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}["']`
+        ).test(xmlContent);
+    }
 }

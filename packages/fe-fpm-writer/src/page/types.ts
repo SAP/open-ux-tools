@@ -1,4 +1,5 @@
-import type { CustomElement, InternalCustomElement, WriterConfig } from '../common/types';
+import type { CustomElement, InternalCustomElement, WriterConfig } from '../common/types.js';
+import type { PageTemplateType } from '../building-block/types.js';
 
 /**
  * Incoming navigation configuration.
@@ -18,6 +19,14 @@ export interface Navigation {
      * If set to true, then the generated route will point to a specific entity, otherwise, it will point to a list of the entities.
      */
     navKey?: boolean;
+
+    /**
+     * Default section configuration for the navigation to the object page.
+     */
+    defaultSection?: {
+        type: 'FacetSection' | 'FacetSubSection' | 'CustomSection' | 'CustomSubSection';
+        id: string;
+    };
 }
 
 /**
@@ -72,12 +81,17 @@ export interface FpmPage {
      * UI5 Libraries that should be added to the application.
      */
     libraries?: Libraries;
+
+    /**
+     * If set to true then instead of creation of a new page the existing page with the provided id is relinked to the parent one
+     */
+    reuseExisting?: boolean;
 }
 
 /**
  * Configuration options for adding a list report page.
  */
-export interface ListReport extends FpmPage, WriterConfig {
+export interface ListReport extends Omit<FpmPage, 'reuseExisting'>, WriterConfig {
     /**
      * Optional settings for the ListReport page
      */
@@ -127,6 +141,11 @@ export interface CustomPage extends FpmPage, CustomElement {
      * If page building block title is defined then it will be used to automatically add a macro page to the generated custom page.
      */
     pageBuildingBlockTitle?: string;
+
+    /**
+     * The template type for the page building block. 'full' generates an enhanced layout with all aggregations; 'basic' is the default minimal tag.
+     */
+    pageBuildingBlockTemplateType?: PageTemplateType;
 }
 
 export interface FCL {
@@ -159,6 +178,39 @@ export enum PageType {
     CustomPage = 'CustomPage'
 }
 
+interface OutboundNavigationSettings {
+    /**
+     * Specifies outbound unique key or alias to describe intents that can be triggered from the application to navigate
+     */
+    outboundKey: string;
+    /**
+     * Intent details
+     */
+    crossNavigation?: {
+        /**
+         * Represents a business entity (such as 'Employee')
+         */
+        semanticObject: string;
+        /**
+         * Represents the action to perform on the business entity (such as 'display')
+         */
+        action: string;
+    };
+}
+/**
+ * Configuration options for adding/replacing an outbound navigation of a page.
+ */
+export interface OutboundNavigation extends FpmPage, WriterConfig {
+    /**
+     * Provides app outbound configuration information
+     */
+    settings: OutboundNavigationSettings;
+    /**
+     * Optional incoming navigation configuration. sourcePage and navEntity are used to create or delete outbound navigation links for pages.
+     */
+    navigation?: Navigation;
+}
+
 /**
  * Additional internal configuration options that will be calculated based on the provided input as well as the target application.
  */
@@ -167,3 +219,5 @@ export type InternalCustomPage = CustomPage & InternalFpmPage & InternalCustomEl
 export type InternalListReport = ListReport & InternalFpmPage & { name: PageType.ListReport; navigation?: Navigation };
 
 export type InternalObjectPage = ObjectPage & InternalFpmPage & { name: PageType.ObjectPage };
+
+export type TargetOptionsAddition = { options?: { settings?: { navigation?: { [key: string]: unknown } } } };

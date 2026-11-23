@@ -28,12 +28,12 @@ import {
     enableParallelDeployments,
     MAX_MTA_PREFIX_LENGTH,
     MAX_MTA_PREFIX_SHORT_LENGTH,
-    MAX_MTA_PREFIX_SHORTER_LENGTH,
     MAX_ABAP_SERVICE_PREFIX_LENGTH,
     MAX_ABAP_SERVICE_NAME_LENGTH,
-    MAX_MTA_ID_LENGTH
-} from '../constants';
-import { t } from '../i18n';
+    MAX_MTA_ID_LENGTH,
+    MAX_SERVICE_INSTANCE_NAME_LENGTH
+} from '../constants.js';
+import { t } from '../i18n.js';
 import type { Logger } from '@sap-ux/logger';
 import type { YAMLMap, YAMLSeq } from '@sap-ux/yaml';
 import {
@@ -44,8 +44,8 @@ import {
     type MTADestinationType,
     type SupportedResources,
     RouterModuleType
-} from '../types';
-import { renderTemplateToDisk } from './template-renderer';
+} from '../types/index.js';
+import { renderTemplateToDisk } from './template-renderer.js';
 
 /**
  * A class representing interactions with the MTA binary, found at https://sap.github.io/cloud-mta-build-tool/.
@@ -199,21 +199,24 @@ export class MtaConfig {
 
     private async addUaa(): Promise<void> {
         const resource: mta.Resource = {
-            name: `${this.prefix?.slice(0, MAX_MTA_PREFIX_LENGTH)}-uaa`,
+            name: `${this.prefix?.slice(0, MAX_MTA_PREFIX_LENGTH)}-auth`,
             type: 'org.cloudfoundry.managed-service',
             parameters: {
                 service: 'xsuaa',
                 'service-plan': 'application',
                 path: './xs-security.json',
-                'service-name': `${this.prefix?.slice(0, MAX_MTA_PREFIX_LENGTH)}-xsuaa-service`,
+                'service-name': this.buildServiceInstanceName('-xsuaa-service'),
                 config: {
-                    xsappname: `${this.prefix?.slice(0, MAX_MTA_PREFIX_LENGTH)}` + '-${space-guid}',
-                    'tenant-mode': 'dedicated'
+                    xsappname: `${this.prefix?.slice(0, MAX_MTA_PREFIX_LENGTH)}-\${org}-\${space}`,
+                    'tenant-mode': 'dedicated',
+                    'oauth2-configuration': {
+                        'credential-types': ['binding-secret', 'x509']
+                    }
                 }
             }
         };
         await this.mta?.addResource(resource);
-        this.resources.set('xsuaa', resource);
+        this.resources.set(ManagedXSUAA, resource);
         this.dirty = true;
     }
 
@@ -239,7 +242,7 @@ export class MtaConfig {
         if (resource && !resource.parameters?.['service-name']) {
             resource.parameters = {
                 ...(resource.parameters ?? {}),
-                'service-name': `${this.prefix?.slice(0, MAX_MTA_PREFIX_LENGTH)}-${serviceName}-service`
+                'service-name': this.buildServiceInstanceName(`-${serviceName}-service`)
             };
             await this.mta?.updateResource(resource);
             this.resources.set(resourceName, resource);
@@ -267,13 +270,27 @@ export class MtaConfig {
         return resource?.name;
     }
 
+    /**
+     * Builds a Cloud Foundry service instance name from the MTA prefix and a suffix, capped at the
+     * CF 50 character limit. The prefix is truncated (never the suffix) so the resulting `service-name`
+     * is used verbatim by the MTA deploy service instead of being silently renamed to `<mta-id>-<hash>`,
+     * which would otherwise break the matching `destination-content` ServiceInstanceName reference.
+     *
+     * @param {string} suffix - The service suffix including its leading dash (e.g. `-html5-service`)
+     * @returns {string} The service instance name, guaranteed to be at most 50 characters
+     */
+    private buildServiceInstanceName(suffix: string): string {
+        const maxPrefixLength = Math.max(0, MAX_SERVICE_INSTANCE_NAME_LENGTH - suffix.length);
+        return `${this.prefix?.slice(0, maxPrefixLength)}${suffix}`;
+    }
+
     private async addAppFrontResource(): Promise<void> {
         const resource: mta.Resource = {
             name: `${this.prefix?.slice(0, MAX_MTA_PREFIX_SHORT_LENGTH)}-app-front`,
             type: 'org.cloudfoundry.managed-service',
             parameters: {
                 service: 'app-front',
-                'service-name': `${this.prefix?.slice(0, MAX_MTA_PREFIX_SHORTER_LENGTH)}-app-front-service`,
+                'service-name': this.buildServiceInstanceName('-app-front-service'),
                 'service-plan': 'developer'
             }
         };
@@ -288,7 +305,7 @@ export class MtaConfig {
             name: html5host,
             type: 'org.cloudfoundry.managed-service',
             parameters: {
-                'service-name': `${this.prefix?.slice(0, MAX_MTA_PREFIX_LENGTH)}-html5-service`,
+                'service-name': this.buildServiceInstanceName('-html5-service'),
                 'service-plan': 'app-host',
                 service: 'html5-apps-repo'
             }
@@ -310,7 +327,7 @@ export class MtaConfig {
             type: 'org.cloudfoundry.managed-service',
             parameters: {
                 service: 'destination',
-                'service-name': destinationName,
+                'service-name': this.buildServiceInstanceName('-destination-service'),
                 'service-plan': 'lite',
                 config: {
                     ...DestinationServiceConfig.config,
@@ -385,36 +402,6 @@ export class MtaConfig {
             this.modules.set(moduleType, serverModule);
             this.dirty = true;
         }
-    }
-
-    /**
-     * Add a managed XSUAA service to the MTA.
-     *
-     * @private
-     */
-    private async addManagedUAAWithSecurity(): Promise<void> {
-        this.log?.debug(t('debug.addXsuaaService'));
-        const resource: mta.Resource = {
-            name: `${this.prefix?.slice(0, MAX_MTA_PREFIX_LENGTH)}-uaa`,
-            type: 'org.cloudfoundry.managed-service',
-            parameters: {
-                path: './xs-security.json',
-                service: 'xsuaa',
-                'service-name': `${this.prefix?.slice(0, MAX_MTA_PREFIX_LENGTH)}-xsuaa-service`,
-                'service-plan': 'application',
-                ...(this.modules.has('nodejs') && this.modules.has('com.sap.application.content:appfront')
-                    ? {
-                          config: {
-                              xsappname: `${this.prefix?.slice(0, MAX_MTA_PREFIX_LENGTH)}-\${org}-\${space}`,
-                              'tenant-mode': 'dedicated'
-                          }
-                      }
-                    : {})
-            }
-        };
-        await this.mta?.addResource(resource);
-        this.resources.set(ManagedXSUAA, resource);
-        this.dirty = true;
     }
 
     /**
@@ -798,12 +785,22 @@ export class MtaConfig {
     /**
      * Append the standalone app router module.
      *
+     * Skips adding a router when the mta.yaml already declares an `approuter.nodejs` module. Newer
+     * versions of `@sap/cds-dk` scaffold a standalone approuter into a `.deploy/app-router` folder and
+     * register it in mta.yaml, so adding another here would produce a duplicate router project. Projects
+     * generated by older cds versions (no approuter module) are unaffected and still get a router added.
+     *
      * @param {boolean} fromServerGenerator If true, the request is from the server generator, so the path changes.
-     * @returns {Promise<void>} A promise that resolves when the change request has been processed.
+     * @returns {Promise<boolean>} A promise that resolves to true if a router module was added, or false if an
+     * approuter already existed (or required resources were missing) and none was added.
      */
-    public async addStandaloneRouter(fromServerGenerator: boolean = false): Promise<void> {
+    public async addStandaloneRouter(fromServerGenerator: boolean = false): Promise<boolean> {
         this.log?.debug(t('debug.addingRouter', { routerType: RouterModuleType.Standard }));
-        if (!this.resources.has('xsuaa')) {
+        if (this.modules.has('approuter.nodejs')) {
+            this.log?.debug(t('debug.approuterExists', { path: this.standaloneRouterPath }));
+            return false;
+        }
+        if (!this.resources.has(ManagedXSUAA)) {
             await this.addUaa();
         }
         if (!this.resources.has('html5-apps-repo:app-runtime')) {
@@ -814,7 +811,7 @@ export class MtaConfig {
         }
 
         const appRuntimeName = this.resources.get('html5-apps-repo:app-runtime')?.name;
-        const xsuaaName = this.resources.get('xsuaa')?.name;
+        const xsuaaName = this.resources.get(ManagedXSUAA)?.name;
         const destinationName = this.resources.get('destination')?.name;
         if (destinationName && xsuaaName && appRuntimeName) {
             const router: mta.Module = {
@@ -838,7 +835,9 @@ export class MtaConfig {
             await this.mta?.addModule(router);
             this.modules.set('approuter.nodejs', router);
             this.dirty = true;
+            return true;
         }
+        return false;
     }
 
     /**
@@ -848,6 +847,16 @@ export class MtaConfig {
      */
     public hasManagedXsuaaResource(): boolean {
         return this.resources.has(ManagedXSUAA);
+    }
+
+    /**
+     * Validate if mta contains a specific resource i.e. destination
+     *
+     * @param resourceName
+     * @returns {boolean} true if the mta contains an XSUAA resource
+     */
+    public hasResource(resourceName: string): boolean {
+        return this.resources.has(resourceName);
     }
 
     /**
@@ -1045,7 +1054,7 @@ export class MtaConfig {
      */
     public async addAppFrontAppRouter(): Promise<void> {
         if (!this.resources.has(ManagedXSUAA)) {
-            await this.addManagedUAAWithSecurity();
+            await this.addUaa();
         }
         await this.updateServiceName('xsuaa', ManagedXSUAA);
         if (!this.resources.has(ManagedAppFront)) {
@@ -1098,7 +1107,7 @@ export class MtaConfig {
             await this.addDestinationResource(true);
         }
         if (!this.resources.has(ManagedXSUAA)) {
-            await this.addManagedUAAWithSecurity();
+            await this.addUaa();
         }
         if (!this.resources.has(HTML5RepoHost)) {
             await this.addHtml5Host();
@@ -1156,7 +1165,7 @@ export class MtaConfig {
                                     },
                                     {
                                         Authentication: 'OAuth2UserTokenExchange',
-                                        Name: `${this.prefix?.slice(0, MAX_MTA_PREFIX_LENGTH)}_uaa`,
+                                        Name: `${this.prefix?.slice(0, MAX_MTA_PREFIX_LENGTH)}_auth`,
                                         ServiceInstanceName: managedXSUAAServiceName,
                                         ServiceKeyName: `${managedXSUAAName}-key`,
                                         'sap.cloud.service': `${this.prefix?.slice(0, MAX_MTA_PREFIX_LENGTH)}`

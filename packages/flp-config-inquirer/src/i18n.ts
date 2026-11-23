@@ -2,7 +2,7 @@ import i18next from 'i18next';
 import type { i18n as i18nNext, TOptions } from 'i18next';
 import { addi18nResourceBundle as addProjectInputI18nResourceBundle } from '@sap-ux/project-input-validator';
 
-import translations from './translations/flp-config-inquirer.i18n.json';
+import translations from './translations/flp-config-inquirer.i18n.json' with { type: 'json' };
 
 export const FLP_CONFIG_NAMESPACE = 'flp-config-inquirer';
 export const i18n: i18nNext = i18next.createInstance();
@@ -21,8 +21,7 @@ export function addi18nResourceBundle(): void {
 export async function initI18n(): Promise<void> {
     await i18n.init({
         lng: 'en',
-        fallbackLng: 'en',
-        showSupportNotice: false
+        fallbackLng: 'en'
     });
     addi18nResourceBundle();
     // add the project-input-validator i18n resource bundle to ensure all translations are available
@@ -43,6 +42,4 @@ export function t(key: string, options?: TOptions): string {
     return (i18n.t as (key: string, opts?: TOptions) => string)(key, options);
 }
 
-initI18n().catch(() => {
-    // Needed for lint
-});
+void initI18n().catch(() => undefined);

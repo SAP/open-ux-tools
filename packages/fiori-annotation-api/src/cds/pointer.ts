@@ -1,10 +1,18 @@
-import type { RecordProperty, Annotation, Assignment, AnnotationValue } from '@sap-ux/cds-annotation-parser';
+import type {
+    RecordProperty,
+    Annotation,
+    Assignment,
+    AnnotationValue,
+    FlattenedExpression
+} from '@sap-ux/cds-annotation-parser';
 import {
     ReservedProperties,
     COLLECTION_TYPE,
     ANNOTATION_GROUP_TYPE,
     ANNOTATION_TYPE,
-    RECORD_TYPE
+    RECORD_TYPE,
+    FLATTENED_EXPRESSION_TYPE,
+    FLATTENED_ANNOTATION_SEGMENT_TYPE
 } from '@sap-ux/cds-annotation-parser';
 
 import type { Target } from '@sap-ux/cds-odata-annotation-converter';
@@ -19,14 +27,15 @@ import type {
     Range
 } from '@sap-ux/odata-annotation-core-types';
 import { ELEMENT_TYPE, Edm, TEXT_TYPE } from '@sap-ux/odata-annotation-core-types';
-import { ApiError } from '../error';
+import { ApiError } from '../error.js';
 
-import { PRIMITIVE_TYPE_NAMES } from '../utils';
+import { PRIMITIVE_TYPE_NAMES } from '../utils/index.js';
 
-import type { CDSDocument, AstNode } from './document';
+import type { CDSDocument, AstNode } from './document.js';
 
 interface ReturnValue {
     pointer: string[];
+    flattenedExpressionPathIndex?: number;
 }
 
 /**
@@ -44,22 +53,28 @@ class Visitor {
      * @param astNode - CDS document root.
      * @param node - Internal representation root.
      * @param pointer - Pointer segments.
+     * @param cdsTargetMapping
      * @returns Converted pointer.
      */
-    public document(astNode: CDSDocument, node: AnnotationFile, pointer: string[]): ReturnValue {
+    public document(
+        astNode: CDSDocument,
+        node: AnnotationFile,
+        pointer: string[],
+        cdsTargetMapping: number[]
+    ): ReturnValue {
         const [segment, indexSegment, ...segments] = pointer;
         const index = Number.parseInt(indexSegment, 10);
+        const cdsTargetIndex = cdsTargetMapping[index];
         if (!Number.isNaN(index)) {
             if (segment === 'targets') {
                 if (segments.length === 0) {
                     return {
-                        pointer: [segment, indexSegment]
+                        pointer: [segment, cdsTargetIndex.toFixed(0)]
                     };
                 }
-                const result = this.target(astNode.targets[index], node.targets[index], segments);
+                const result = this.target(astNode.targets[cdsTargetIndex], node.targets[index], segments);
                 if (result) {
-                    result.pointer = [segment, indexSegment, ...result.pointer];
-
+                    result.pointer = [segment, cdsTargetIndex.toFixed(0), ...result.pointer];
                     return result;
                 }
             }
@@ -109,15 +124,25 @@ class Visitor {
             const annotationIndex = findNodeIndexByRange(astNode.items.items, node.range);
             const annotation = astNode.items.items[annotationIndex];
             this.inVocabularyGroup = true;
-            const result = this.annotation(annotation, node, pointer);
+
+            const result =
+                annotation.type === FLATTENED_EXPRESSION_TYPE
+                    ? this.flattenedExpression(annotation, node, pointer)
+                    : this.annotation(annotation, node, pointer);
             if (result) {
                 result.pointer = ['items', 'items', annotationIndex.toString(), ...result.pointer];
-
                 return result;
             } else {
                 return {
                     pointer: ['items', 'items', annotationIndex.toString()]
                 };
+            }
+        } else if (astNode.type === FLATTENED_EXPRESSION_TYPE) {
+            const result = this.flattenedExpression(astNode, node, pointer);
+            if (result) {
+                return result;
+            } else {
+                return undefined;
             }
         }
         return undefined;
@@ -179,11 +204,11 @@ class Visitor {
     }
 
     private value(
-        astNode: AnnotationValue,
+        astNode: AnnotationValue | undefined,
         node: ElementChild | Attribute,
         pointer: string[]
     ): ReturnValue | undefined {
-        if (astNode.type === COLLECTION_TYPE && node.type === ELEMENT_TYPE && node.name === Edm.Collection) {
+        if (astNode?.type === COLLECTION_TYPE && node.type === ELEMENT_TYPE && node.name === Edm.Collection) {
             const [segment, indexSegment, ...segments] = pointer;
             const index = Number.parseInt(indexSegment, 10);
             if (!Number.isNaN(index)) {
@@ -205,7 +230,7 @@ class Visitor {
                 };
             }
         }
-        if (astNode.type === RECORD_TYPE && node.type === ELEMENT_TYPE && node.name === Edm.Record) {
+        if (astNode?.type === RECORD_TYPE && node.type === ELEMENT_TYPE && node.name === Edm.Record) {
             const [segment, indexSegment, ...segments] = pointer;
             const index = Number.parseInt(indexSegment, 10);
             if (!Number.isNaN(index)) {
@@ -224,12 +249,30 @@ class Visitor {
                             pointer: ['properties', propertyIndex.toString()]
                         };
                     }
+                    if (
+                        nextGenericNode.name === Edm.PropertyValue &&
+                        !property &&
+                        astNode.flattenedExpressions?.length
+                    ) {
+                        const propertyIndex = findNodeIndexByRange(astNode.flattenedExpressions, nextGenericNode.range);
+                        const expression = astNode.flattenedExpressions[propertyIndex];
+                        if (expression) {
+                            const result = this.flattenedExpression(expression, node, pointer);
+                            if (result) {
+                                result.pointer = ['flattenedExpressions', propertyIndex.toString(), ...result.pointer];
+                                return result;
+                            }
+                            return {
+                                pointer: ['flattenedExpressions', propertyIndex.toString()]
+                            };
+                        }
+                    }
 
                     if (nextGenericNode.name === Edm.Annotation && astNode.annotations) {
                         const annotationIndex = findNodeIndexByRange(astNode.annotations, nextGenericNode.range);
                         const annotation = astNode.annotations?.[annotationIndex];
                         if (annotation) {
-                            const result = this.annotation(annotation, nextGenericNode, segments, true);
+                            const result = this.annotation(annotation as Annotation, nextGenericNode, segments, true);
                             if (result) {
                                 result.pointer = ['annotations', annotationIndex.toString(), ...result.pointer];
                                 return result;
@@ -251,7 +294,7 @@ class Visitor {
                 }
             }
         }
-        if (astNode.type === RECORD_TYPE && node.type === ELEMENT_TYPE && node.name !== Edm.Record) {
+        if (astNode?.type === RECORD_TYPE && node.type === ELEMENT_TYPE && node.name !== Edm.Record) {
             if (node.range) {
                 const valuePropertyIndex = astNode.properties.findIndex(
                     (prop) => prop.name.value === ReservedProperties.Value
@@ -263,7 +306,7 @@ class Visitor {
                         const annotationIndex = findNodeIndexByRange(astNode.annotations, node.range);
                         const annotation = astNode.annotations?.[annotationIndex];
                         if (annotation) {
-                            const result = this.annotation(annotation, node, pointer, true);
+                            const result = this.annotation(annotation as Annotation, node, pointer, true);
                             if (result) {
                                 result.pointer = ['annotations', annotationIndex.toString(), ...result.pointer];
                                 return result;
@@ -319,7 +362,7 @@ class Visitor {
             }
         } else if (segment === 'content') {
             const index = Number.parseInt(indexSegment, 10);
-            if (!Number.isNaN(index) && segment === 'content' && astNode.value) {
+            if (!Number.isNaN(index) && astNode.value) {
                 if (this.flattenedSegments.length > 1) {
                     const result = this.flattenedProperty(astNode, node.content[index], segments);
 
@@ -353,7 +396,7 @@ class Visitor {
 
         if (segment === 'content') {
             const index = Number.parseInt(indexSegment, 10);
-            if (!Number.isNaN(index) && segment === 'content' && astNode.value) {
+            if (!Number.isNaN(index) && astNode.value) {
                 this.flattenedSegments.shift();
                 this.currentFlattenedSegmentIndexInPath++;
                 const result =
@@ -385,13 +428,10 @@ class Visitor {
         const [segment, indexSegment, ...segments] = pointer;
         if (segment === 'content') {
             const index = Number.parseInt(indexSegment, 10);
-            if (!Number.isNaN(index) && segment === 'content') {
+            if (!Number.isNaN(index)) {
                 this.flattenedSegments.shift();
                 this.currentFlattenedSegmentIndexInPath++;
                 const propertyValue = node.content[index];
-                if (segment.length === 0) {
-                    return undefined;
-                }
                 if (node.name === Edm.Record) {
                     return this.flattenedAnnotationPropertyValue(astNode, propertyValue, segments);
                 } else if (node.name === Edm.Annotation) {
@@ -399,6 +439,133 @@ class Visitor {
                 }
             }
         }
+        return undefined;
+    }
+
+    private flattenedExpression(
+        astNode: FlattenedExpression,
+        node: ElementChild,
+        pointer: string[]
+    ): ReturnValue | undefined {
+        this.flattenedSegments = astNode.path.segments.map((segment) =>
+            segment.type === FLATTENED_ANNOTATION_SEGMENT_TYPE ? segment.term.value : segment.name.value
+        );
+        this.containsFlattenedNodes = true;
+        this.currentFlattenedSegmentIndexInPath = 0;
+        const result = this.flattenedSegmentValue(astNode, node, pointer);
+        if (result) {
+            result.flattenedExpressionPathIndex = undefined;
+        }
+        return result;
+    }
+
+    private flattenedSegmentValue(
+        astNode: FlattenedExpression,
+        node: ElementChild,
+        pointer: string[]
+    ): ReturnValue | undefined {
+        if (node.type !== ELEMENT_TYPE || (node.name !== Edm.Record && node.name !== Edm.Annotation)) {
+            return undefined;
+        }
+        const [segment, indexSegment, ...segments] = pointer;
+        if (segment === 'content') {
+            const index = Number.parseInt(indexSegment, 10);
+            if (!Number.isNaN(index)) {
+                this.flattenedSegments.shift();
+                this.currentFlattenedSegmentIndexInPath++;
+                const propertyValue = node.content[index];
+                if (node.name === Edm.Record) {
+                    return this.flattenedPropertySegmentValue(astNode, propertyValue, segments);
+                } else if (node.name === Edm.Annotation) {
+                    return this.flattenedAnnotationSegmentValue(astNode, propertyValue, segments);
+                }
+            }
+        }
+        return undefined;
+    }
+
+    private flattenedPropertySegmentValue(
+        astNode: FlattenedExpression,
+        node: ElementChild,
+        pointer: string[]
+    ): ReturnValue | undefined {
+        if (node?.type !== ELEMENT_TYPE || node.name !== Edm.PropertyValue) {
+            return undefined;
+        }
+
+        if (pointer.length === 0 && this.flattenedSegments.length === 0) {
+            return { pointer: [], flattenedExpressionPathIndex: astNode.path.segments.length - 1 };
+        }
+        const [segment, indexSegment, ...segments] = pointer;
+        const index = Number.parseInt(indexSegment, 10);
+        if (!Number.isNaN(index) && segment === 'content') {
+            const next = node.content[index];
+            if (next?.type !== ELEMENT_TYPE) {
+                return undefined;
+            }
+
+            const result =
+                this.flattenedSegments.length > 0
+                    ? this.flattenedSegmentValue(astNode, next, segments)
+                    : this.value(astNode.value, next, segments);
+            if (result) {
+                result.pointer = [
+                    ...(typeof result.flattenedExpressionPathIndex === 'number' ? [] : ['value']),
+                    ...result.pointer
+                ];
+                result.flattenedExpressionPathIndex = this.currentFlattenedSegmentIndexInPath;
+                return result;
+            }
+        } else if (segment === 'attributes' && indexSegment === 'Property' && segments[0] === 'value') {
+            return {
+                pointer: [
+                    'path',
+                    'segments',
+                    (astNode.path.segments.length - 1 - this.flattenedSegments.length).toFixed(0)
+                ]
+            };
+        }
+        return undefined;
+    }
+
+    private flattenedAnnotationSegmentValue(
+        astNode: FlattenedExpression,
+        node: ElementChild,
+        pointer: string[]
+    ): ReturnValue | undefined {
+        if (node?.type !== ELEMENT_TYPE) {
+            return undefined;
+        }
+        if (pointer.length === 0) {
+            return {
+                pointer: this.flattenedSegments.length > 0 ? [] : ['value']
+            };
+        }
+        const [segment, indexSegment, ...segments] = pointer;
+        const index = Number.parseInt(indexSegment, 10);
+        if (!Number.isNaN(index) && segment === 'content') {
+            // value could also be a text node for primitive values
+            const next = node.content[index];
+            if (next?.type === TEXT_TYPE) {
+                return { pointer: ['value'] };
+            } else if (
+                next.type === ELEMENT_TYPE &&
+                next.name !== Edm.PropertyValue &&
+                this.flattenedSegments.length === 1
+            ) {
+                const result = this.value(astNode.value, next, segments);
+                return result
+                    ? {
+                          pointer: ['value', ...result.pointer]
+                      }
+                    : undefined;
+            } else if (next.name === Edm.PropertyValue) {
+                this.flattenedSegments.shift();
+                this.currentFlattenedSegmentIndexInPath++;
+                return this.flattenedPropertySegmentValue(astNode, next, segments);
+            }
+        }
+        // flattened structures after annotation are not supported
         return undefined;
     }
 
@@ -517,12 +684,14 @@ export function getAstNodesFromPointer(document: CDSDocument, pointer: string): 
  * @param annotationFile - Internal representation root.
  * @param pointer - Pointer pointing to a node in the internal representation tree.
  * @param cdsDocument - Internal representation root.
+ * @param cdsTargetMapping
  * @returns Converted pointer.
  */
 export function convertPointer(
     annotationFile: AnnotationFile,
     pointer: string,
-    cdsDocument: CDSDocument
+    cdsDocument: CDSDocument,
+    cdsTargetMapping: number[]
 ): {
     pointer: string;
     containsFlattenedNodes: boolean;
@@ -532,7 +701,7 @@ export function convertPointer(
         throw new ApiError(`Invalid pointer! ${pointer} must be absolute pointer starting with "/".`);
     }
     const visitor = new Visitor();
-    const result = visitor.document(cdsDocument, annotationFile, segments);
+    const result = visitor.document(cdsDocument, annotationFile, segments, cdsTargetMapping);
     if (result.pointer.length === 0) {
         throw new ApiError(`Could not convert pointer! ${pointer} must lead to existing node in annotation file.`);
     }

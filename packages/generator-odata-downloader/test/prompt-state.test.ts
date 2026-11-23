@@ -1,4 +1,4 @@
-import { PromptState } from '../src/data-download/prompt-state';
+import { PromptState } from '../src/data-download/prompt-state.js';
 
 describe('PromptState', () => {
     beforeEach(() => {

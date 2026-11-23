@@ -1,23 +1,23 @@
-import { t } from '../../../i18n';
+import { t } from '../../../i18n.js';
 import {
     defaultOrShowManualTransportQuestion,
     defaultOrShowTransportCreatedQuestion,
     defaultOrShowTransportListQuestion,
     showTransportInputChoice
-} from '../../conditions';
-import { getTransportChoices, shouldRunValidation } from '../../helpers';
-import { validateTransportChoiceInput, validateTransportQuestion } from '../../validators';
-import { PromptState } from '../../prompt-state';
-import { transportName } from '../../../service-provider-utils/transport-list';
-import { defaultTransportListChoice, defaultTransportRequestChoice } from '../../defaults';
+} from '../../conditions.js';
+import { getTransportChoices, shouldRunValidation } from '../../helpers.js';
+import { validateTransportChoiceInput, validateTransportQuestion } from '../../validators.js';
+import { PromptState } from '../../prompt-state.js';
+import { transportName } from '../../../service-provider-utils/transport-list.js';
+import { defaultTransportListChoice, defaultTransportRequestChoice } from '../../defaults.js';
 import {
     promptNames,
     type AbapDeployConfigAnswersInternal,
     type AbapDeployConfigPromptOptions,
     type TransportChoices
-} from '../../../types';
+} from '../../../types.js';
 import type { InputQuestion, ListQuestion, Question } from 'inquirer';
-import { useCreateTrDuringDeploy } from '../../../utils';
+import { useCreateTrDuringDeploy } from '../../../utils.js';
 import type { IValidationLink } from '@sap-devx/yeoman-ui-types';
 
 /**

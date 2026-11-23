@@ -3,8 +3,8 @@ import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { join } from 'node:path';
-import { enableFPM, MIN_VERSION } from '../../src/app';
-import type { Manifest } from '../../src/common/types';
+import { enableFPM, MIN_VERSION } from '../../src/app/index.js';
+import type { Manifest } from '../../src/common/types.js';
 
 type SAPUI5 = ManifestNamespace.JSONSchemaForSAPUI5Namespace;
 

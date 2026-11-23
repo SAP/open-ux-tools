@@ -1,17 +1,22 @@
 import type { CSSProperties } from 'react';
 import React, { useEffect, useRef, useState } from 'react';
 import { List } from 'react-movable';
-import { UIDefaultButton, UILoader } from '..';
-import { renderTitleRow, UIFlexibleTableRow } from './UIFlexibleTableRow';
-import type { UIFlexibleTableRowProps } from './UIFlexibleTableRow';
-import { UIFlexibleTableRowNoData } from './UIFlexibleTableRowNoData';
-import { UIFlexibleTableLayout } from './types';
-import type { NodeDragAndDropSortingParams, UIFlexibleTableProps, UIFlexibleTableRowType } from './types';
+import { UIDefaultButton, UILoader } from '../index.js';
+import { renderTitleRow, UIFlexibleTableRow } from './UIFlexibleTableRow.js';
+import type { UIFlexibleTableRowProps } from './UIFlexibleTableRow.js';
+import { UIFlexibleTableRowNoData } from './UIFlexibleTableRowNoData.js';
+import { UIFlexibleTableLayout } from './types.js';
+import type { NodeDragAndDropSortingParams, UIFlexibleTableProps, UIFlexibleTableRowType } from './types.js';
 
 import './UIFlexibleTable.scss';
-import { composeClassNames, getRowActionButtonId, getTableActionButtonId } from './utils';
-import { RowActions } from './RowActions';
-import { RowDataCells } from './RowData';
+import { composeClassNames, getRowActionButtonId, getTableActionButtonId } from './utils.js';
+import { RowActions } from './RowActions.js';
+import { RowDataCells } from './RowData.js';
+
+const ACTION_REORDER_BUTTONS_WIDTH = 44;
+const ACTION_BUTTON_WIDTH = 18;
+const ACTION_DIVIDER_WIDTH = 20;
+const ACTIONS_CONTAINER_PADDING = 10;
 
 /**
  * @class {ResizeObserver}
@@ -223,8 +228,10 @@ export function UIFlexibleTable<T>(props: Readonly<UIFlexibleTableProps<T>>): Re
     ]);
 
     const showTitleRow = props.showColumnTitles && isInRowLayout && !props.showColumnTitlesInCells;
+    const actionsMinWidth = calcActionsMinWidth(props);
     const tableRootElementStyle: CSSProperties = {
-        maxWidth: props.maxWidth ? `${props.maxWidth}px` : '100%'
+        maxWidth: props.maxWidth ? `${props.maxWidth}px` : '100%',
+        ['--flexible-table-actions-min-width' as string]: actionsMinWidth ? `${actionsMinWidth}px` : '0px'
     };
 
     const getCustomTableActions = (
@@ -403,4 +410,40 @@ function isRowFitsContainer(
         result = containerWidth >= inRowMinWidth;
     }
     return result;
+}
+
+/**
+ * Calculates the minimum width of the actions column based on which actions are visible.
+ * The result is used as a CSS custom property so title row and data rows stay in sync.
+ *
+ * @param props
+ * @param props.readonly
+ * @param props.onTableReorder
+ * @param props.onDeleteRow
+ * @param props.onRenderActions
+ * @returns {number} Minimum width in pixels, or 0 if no actions are rendered.
+ */
+function calcActionsMinWidth<T>(props: UIFlexibleTableProps<T>): number {
+    const isReadonly = !!props.readonly;
+    const hasReorder = !isReadonly && !!props.onTableReorder;
+    const hasDelete = !isReadonly && !!props.onDeleteRow;
+    const hasCustom = !!props.onRenderActions;
+
+    let width = 0;
+    if (hasCustom) {
+        width += ACTION_BUTTON_WIDTH;
+    }
+    if (hasReorder) {
+        if (width > 0) {
+            width += ACTION_DIVIDER_WIDTH;
+        }
+        width += ACTION_REORDER_BUTTONS_WIDTH;
+    }
+    if (hasDelete) {
+        if (width > 0) {
+            width += ACTION_DIVIDER_WIDTH;
+        }
+        width += ACTION_BUTTON_WIDTH;
+    }
+    return width > 0 ? width + ACTIONS_CONTAINER_PADDING : 0;
 }

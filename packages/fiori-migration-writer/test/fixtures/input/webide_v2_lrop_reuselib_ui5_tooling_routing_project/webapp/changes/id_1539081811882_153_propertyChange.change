@@ -1,0 +1,39 @@
+{
+	"fileName": "id_1539081811882_153_propertyChange",
+	"fileType": "change",
+	"changeType": "propertyChange",
+	"reference": "i2d.qm.defect.records1.Component",
+	"packageName": "$TMP",
+	"content": {
+		"property": "visible",
+		"newValue": false
+	},
+	"selector": {
+		"id": "i2d.qm.defect.records1::sap.suite.ui.generic.template.ObjectPage.view.Details::C_DefectRecord--DefectDataFacet2::action::QM_DEFECT_RECORD_SRV.QM_DEFECT_RECORD_SRV_Entities::A50C3043801EBEdit_active_i_qualitytasktp",
+		"type": "sap.m.Button",
+		"idIsLocal": false
+	},
+	"layer": "VENDOR",
+	"texts": {},
+	"namespace": "apps/i2d.qm.defect.records1/changes/",
+	"projectId": "i2d.qm.defect.records1",
+	"creation": "2018-10-09T10:43:33.316Z",
+	"originalLanguage": "EN",
+	"conditions": {},
+	"context": "",
+	"support": {
+		"generator": "Change.createInitialFileContent",
+		"service": "",
+		"user": "",
+		"sapui5Version": "1.59.0-SNAPSHOT",
+		"compositeCommand": ""
+	},
+	"oDataInformation": {},
+	"dependentSelector": {},
+	"validAppVersions": {
+		"creation": "${project.version}",
+		"from": "${project.version}",
+		"to": "${project.version}"
+	},
+	"jsOnly": false
+}

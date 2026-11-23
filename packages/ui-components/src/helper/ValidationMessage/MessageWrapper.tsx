@@ -1,8 +1,8 @@
 import React from 'react';
-import type { InputValidationMessageInfo } from './utils';
-import { ErrorMessageType, MESSAGE_TYPES_CLASSNAME_MAP } from './utils';
-import { UiIcons } from '../../components/Icons';
-import { UIIcon } from '../../components/UIIcon';
+import type { InputValidationMessageInfo } from './utils.js';
+import { ErrorMessageType, MESSAGE_TYPES_CLASSNAME_MAP } from './utils.js';
+import { UiIcons } from '../../components/Icons.js';
+import { UIIcon } from '../../components/UIIcon/index.js';
 
 import './MessageWrapper.scss';
 

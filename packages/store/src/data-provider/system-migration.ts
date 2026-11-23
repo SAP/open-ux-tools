@@ -1,10 +1,10 @@
-import type { DataProvider, DataProviderConstructor } from '.';
-import type { DataAccess } from '../data-access';
-import type { SystemMigrationStatus } from '../entities/system-migration-status';
-import { SystemMigrationStatusKey } from '../entities/system-migration-status';
+import type { DataProvider, DataProviderConstructor } from './index.js';
+import type { DataAccess } from '../data-access/index.js';
+import type { SystemMigrationStatus } from '../entities/system-migration-status.js';
+import { SystemMigrationStatusKey } from '../entities/system-migration-status.js';
 import type { Logger } from '@sap-ux/logger';
-import { Entities } from './constants';
-import { getFilesystemStore } from '../data-access/filesystem';
+import { Entities } from './constants.js';
+import { getFilesystemStore } from '../data-access/filesystem.js';
 
 export const SystemMigrationStatusDataProvider: DataProviderConstructor<
     SystemMigrationStatus,

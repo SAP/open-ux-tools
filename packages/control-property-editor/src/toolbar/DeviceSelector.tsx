@@ -2,10 +2,10 @@ import type { ReactElement } from 'react';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { DeviceType } from '../devices';
+import { DeviceType } from '../devices.js';
 
-import type { DeviceToggleProps } from './DeviceToggle';
-import { DeviceToggle } from './DeviceToggle';
+import type { DeviceToggleProps } from './DeviceToggle.js';
+import { DeviceToggle } from './DeviceToggle.js';
 
 /**
  * React element for Device Selector.

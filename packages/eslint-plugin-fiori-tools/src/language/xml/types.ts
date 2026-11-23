@@ -2,7 +2,7 @@ import type { RuleVisitor } from '@eslint/core';
 import type { CustomRuleDefinitionType, CustomRuleTypeDefinitions } from '@eslint/plugin-kit';
 import type { XMLAstNode, XMLToken } from '@xml-tools/ast';
 
-import type { FioriXMLSourceCode } from './source-code';
+import type { FioriXMLSourceCode } from './source-code.js';
 
 export type FioriXMLRuleDefinition<Options extends Partial<CustomRuleTypeDefinitions> = {}> = CustomRuleDefinitionType<
     {

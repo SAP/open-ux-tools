@@ -1,13 +1,13 @@
 import * as React from 'react';
 
-import { UIDefaultButton } from './UIDefaultButton';
-import { UIContextualMenu } from '../UIContextualMenu';
-import { UiIcons } from '../Icons';
-import type { UIContextualMenuProps, UIContextualMenuItem } from '../UIContextualMenu';
+import { UIDefaultButton } from './UIDefaultButton.js';
+import { UIContextualMenu } from '../UIContextualMenu/index.js';
+import { UiIcons } from '../Icons.js';
+import type { UIContextualMenuProps, UIContextualMenuItem } from '../UIContextualMenu/index.js';
+import type { UIBaseButtonProps } from './UIBaseButton.types.js';
+import { getUIId } from '../../utilities/index.js';
 
-import { getUIId } from '../../utilities';
-
-export interface UISplitButtonProps {
+export interface UISplitButtonProps extends UIBaseButtonProps {
     button: UIContextualMenuItem;
     menuItems: UIContextualMenuItem[];
     callback: (key: string) => void;
@@ -93,7 +93,8 @@ export class UISplitButton extends React.Component<UISplitButtonProps, UISplitBu
                 menuProps={this.state.menu}
                 menuIconProps={{ iconName: UiIcons.ArrowDown }}
                 menuAs={UIContextualMenu}
-                disabled={this.props.disabled}>
+                disabled={this.props.disabled}
+                propagateMenuOpenKeyDown={this.props.propagateMenuOpenKeyDown}>
                 {this.props.button.text}
             </UIDefaultButton>
         );

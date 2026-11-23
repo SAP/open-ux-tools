@@ -1,1 +1,1 @@
-export { createCapI18nEntries } from './create';
+export { createCapI18nEntries } from './create.js';

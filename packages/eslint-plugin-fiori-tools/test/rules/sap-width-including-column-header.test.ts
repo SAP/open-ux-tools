@@ -1,6 +1,6 @@
 import { RuleTester } from 'eslint';
-import widthIncludingColumnHeaderRule from '../../src/rules/sap-width-including-column-header';
-import { meta, languages } from '../../src/index';
+import widthIncludingColumnHeaderRule from '../../src/rules/sap-width-including-column-header.js';
+import { meta, languages } from '../../src/index.js';
 import {
     CAP_ANNOTATIONS,
     CAP_ANNOTATIONS_PATH,
@@ -8,6 +8,7 @@ import {
     CAP_FACETS_ANNOTATIONS,
     CAP_MANIFEST,
     CAP_MANIFEST_PATH,
+    CAP_SECOND_TABLE_ANNOTATION,
     getAnnotationsAsXmlCode,
     getManifestAsCode,
     setup,
@@ -16,7 +17,7 @@ import {
     V4_FACETS_ANNOTATIONS,
     V4_MANIFEST,
     V4_MANIFEST_PATH
-} from '../test-helper';
+} from '../test-helper.js';
 
 const ruleTester = new RuleTester({
     plugins: { ['@sap-ux/eslint-plugin-fiori-tools']: { ...meta, languages } },
@@ -162,7 +163,7 @@ ruleTester.run(`${TEST_NAME} - XML`, widthIncludingColumnHeaderRule, {
                 errors: [
                     {
                         message:
-                            'Small tables (< 6 columns) should use widthIncludingColumnHeader: true for improved calculation of the column width. Add it to the control configuration of the table.',
+                            'Small tables (< 6 columns) should use `widthIncludingColumnHeader: true` for improved calculation of the column width. Add it to the control configuration of the table.',
                         line: 124,
                         column: 19
                     }
@@ -201,7 +202,7 @@ ruleTester.run(`${TEST_NAME} - XML`, widthIncludingColumnHeaderRule, {
                 errors: [
                     {
                         message:
-                            'Small tables (< 6 columns) should use widthIncludingColumnHeader: true for improved calculation of the column width.',
+                            'Small tables (< 6 columns) should use `widthIncludingColumnHeader: true` for improved calculation of the column width.',
                         line: 29,
                         column: 18
                     }
@@ -247,7 +248,7 @@ ruleTester.run(`${TEST_NAME} - XML`, widthIncludingColumnHeaderRule, {
                 errors: [
                     {
                         message:
-                            'Small tables (< 6 columns) should use widthIncludingColumnHeader: true for improved calculation of the column width. Add it to the control configuration of the Products table.',
+                            'Small tables (< 6 columns) should use `widthIncludingColumnHeader: true` for improved calculation of the column width. Add it to the control configuration of the Products table.',
                         line: 139,
                         column: 13
                     }
@@ -374,7 +375,7 @@ ruleTester.run(`${TEST_NAME} - CAP`, widthIncludingColumnHeaderRule, {
                 errors: [
                     {
                         message:
-                            'Small tables (< 6 columns) should use widthIncludingColumnHeader: true for improved calculation of the column width. Add it to the control configuration of the table.',
+                            'Small tables (< 6 columns) should use `widthIncludingColumnHeader: true` for improved calculation of the column width. Add it to the control configuration of the table.',
                         line: 114,
                         column: 17
                     }
@@ -416,7 +417,7 @@ ruleTester.run(`${TEST_NAME} - CAP`, widthIncludingColumnHeaderRule, {
                 errors: [
                     {
                         message:
-                            'Small tables (< 6 columns) should use widthIncludingColumnHeader: true for improved calculation of the column width.',
+                            'Small tables (< 6 columns) should use `widthIncludingColumnHeader: true` for improved calculation of the column width.',
                         line: 53,
                         column: 38
                     }
@@ -467,7 +468,7 @@ ruleTester.run(`${TEST_NAME} - CAP`, widthIncludingColumnHeaderRule, {
                 errors: [
                     {
                         message:
-                            'Small tables (< 6 columns) should use widthIncludingColumnHeader: true for improved calculation of the column width. Add it to the control configuration of the table_section table.',
+                            'Small tables (< 6 columns) should use `widthIncludingColumnHeader: true` for improved calculation of the column width. Add it to the control configuration of the table_section table.',
                         line: 128,
                         column: 13
                     }
@@ -512,6 +513,90 @@ ruleTester.run(`${TEST_NAME} - CAP`, widthIncludingColumnHeaderRule, {
                 {
                     filename: CAP_ANNOTATIONS_PATH,
                     code: CAP_ANNOTATIONS + CAP_FACETS_ANNOTATIONS
+                }
+            ]
+        ),
+        createInvalidTestCAP(
+            {
+                name: 'multiview: widthIncludingColumnHeader not true for 2 small tables',
+                filename: CAP_MANIFEST_PATH,
+                code: getManifestAsCode(CAP_MANIFEST, [
+                    {
+                        path: ['sap.ui5', 'dependencies', 'minUI5Version'],
+                        value: '1.120.0'
+                    },
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsList',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            '/Incidents/@com.sap.vocabularies.UI.v1.LineItem#secondTable',
+                            'tableSettings'
+                        ],
+                        value: {
+                            widthIncludingColumnHeader: false
+                        }
+                    }
+                ]),
+                errors: [
+                    {
+                        message:
+                            'Small tables (< 6 columns) should use `widthIncludingColumnHeader: true` for improved calculation of the column width. Add it to the control configuration of the table.',
+                        line: 114,
+                        column: 17
+                    },
+                    {
+                        message:
+                            'Small tables (< 6 columns) should use `widthIncludingColumnHeader: true` for improved calculation of the column width. Add it to the control configuration of the table.',
+                        line: 117,
+                        column: 21
+                    }
+                ],
+                output: getManifestAsCode(CAP_MANIFEST, [
+                    {
+                        path: ['sap.ui5', 'dependencies', 'minUI5Version'],
+                        value: '1.120.0'
+                    },
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsList',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            '@com.sap.vocabularies.UI.v1.LineItem',
+                            'tableSettings',
+                            'widthIncludingColumnHeader'
+                        ],
+                        value: true
+                    },
+                    {
+                        path: [
+                            'sap.ui5',
+                            'routing',
+                            'targets',
+                            'IncidentsList',
+                            'options',
+                            'settings',
+                            'controlConfiguration',
+                            '/Incidents/@com.sap.vocabularies.UI.v1.LineItem#secondTable',
+                            'tableSettings',
+                            'widthIncludingColumnHeader'
+                        ],
+                        value: true
+                    }
+                ])
+            },
+            [
+                {
+                    filename: CAP_ANNOTATIONS_PATH,
+                    code: CAP_ANNOTATIONS + _3_COLUMS_CDS + CAP_SECOND_TABLE_ANNOTATION
                 }
             ]
         )

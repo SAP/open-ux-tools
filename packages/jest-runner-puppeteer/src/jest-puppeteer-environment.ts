@@ -1,30 +1,27 @@
 import chalk from 'chalk';
-import NodeEnvironment from 'jest-environment-node';
+import { TestEnvironment } from 'jest-environment-node';
 import puppeteer from 'puppeteer-core';
 import fs from 'node:fs';
 import os from 'node:os';
 import { join } from 'node:path';
-import type { Context } from 'node:vm';
 
 const DIR = join(os.tmpdir(), 'jest_puppeteer_global_setup');
 
 /**
- * PuppeteerEnvironment class extends NodeEnvironment and provides setup and teardown methods
+ * PuppeteerEnvironment class extends TestEnvironment (Jest 30 API) and provides setup and teardown methods
  * for Puppeteer integration in Jest tests.
  *
- * @extends NodeEnvironment
+ * @extends TestEnvironment
  */
-export class PuppeteerEnvironment extends NodeEnvironment {
+export class PuppeteerEnvironment extends TestEnvironment {
     /**
      * Creates an instance of PuppeteerEnvironment.
      *
-     * @param options options object containing globalConfig and projectConfig
-     * @param options.globalConfig global configuration
-     * @param options.projectConfig project configuration
-     * @param context the context object
+     * @param config Jest environment configuration
+     * @param context the environment context
      */
-    constructor({ globalConfig, projectConfig }, context) {
-        super({ globalConfig, projectConfig }, context);
+    constructor(config: any, context: any) {
+        super(config, context);
     }
 
     /**
@@ -64,9 +61,9 @@ export class PuppeteerEnvironment extends NodeEnvironment {
      *
      * @returns the context for the VM, or null if not available
      */
-    getVmContext(): Context | null {
+    getVmContext() {
         return super.getVmContext();
     }
 }
 
-module.exports = PuppeteerEnvironment;
+export default PuppeteerEnvironment;

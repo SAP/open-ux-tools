@@ -1,3 +1,3 @@
-export * from './app-studio';
-export * from './destination';
-export * from './service-info';
+export * from './app-studio.js';
+export * from './destination.js';
+export * from './service-info.js';

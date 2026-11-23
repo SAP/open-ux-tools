@@ -1,12 +1,1129 @@
 # @sap-ux/adp-tooling
 
+## 1.2.2
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/inquirer-common 1.0.54 → 1.0.55
+
+## 1.2.1
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/inquirer-common 1.0.53 → 1.0.54
+
+## 1.2.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-11-04
+
+#### Features
+
+- Expose adaptation-project manifest builder API (`getMergedManifest`, `downloadAppResources`) for building the merged app descriptor and downloading base app resources via the project's `@ui5/task-adaptation` build.
+
+    FIX: Ignore `.context`, `.session`, and `.adp` in generated adaptation project gitignore templates (CF and onPremise), keeping both templates identical. [[a9c5247](https://github.com/SAP/open-ux-tools/commit/a9c524741838a50be7c24e1aeef36a55b5cb95b7)]
+
+## 1.1.1
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.1.5 → 2.1.6
+- @sap-ux/odata-service-writer 1.0.29 → 1.0.29
+- @sap-ux/system-access 1.0.19 → 1.0.20
+- @sap-ux/inquirer-common 1.0.52 → 1.0.53
+
+## 1.1.0
+
+### Minor Changes
+
+#### Features
+
+- Automate mta.yaml creation for Adaptation Project on CF [[808fc4e](https://github.com/SAP/open-ux-tools/commit/808fc4e872b1e67a27b9a1e045e59856707844f2)]
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-02
+
+#### Workspace Updates
+
+- @sap-ux/inquirer-common 1.0.51 → 1.0.52
+- @sap-ux/i18n 1.0.6 → 1.0.7
+- @sap-ux/project-access 2.3.3 → 2.3.4
+- @sap-ux/axios-extension 2.1.5 → 2.1.5
+- @sap-ux/odata-service-writer 1.0.28 → 1.0.29
+- @sap-ux/project-input-validator 1.0.26 → 1.0.27
+- @sap-ux/system-access 1.0.19 → 1.0.19
+
+## 1.0.71
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-01
+
+#### Bug Fixes
+
+- Remove now-unnecessary eslint-disable comments for sonarjs/no-implicit-dependencies rule after eslint-plugin-sonarjs upgrade [[8fba055](https://github.com/SAP/open-ux-tools/commit/8fba0553289b4a033674c5181e9da8cad11bbe9d)]
+
+## 1.0.70
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade i18next 26.3.6 → 26.5.11 [[d5e9708](https://github.com/SAP/open-ux-tools/commit/d5e9708d60338e575b72fa2dcd64af87120270ef)]
+
+#### Workspace Updates
+
+- @sap-ux/inquirer-common 1.0.50 → 1.0.51
+- @sap-ux/nodejs-utils 1.0.13 → 1.0.14
+- @sap-ux/odata-service-writer 1.0.27 → 1.0.28
+- @sap-ux/project-input-validator 1.0.25 → 1.0.26
+- @sap-ux/store 2.0.7 → 2.0.8
+- @sap-ux/axios-extension 2.1.4 → 2.1.5
+- @sap-ux/system-access 1.0.18 → 1.0.19
+- @sap-ux/ui5-config 1.0.10 → 1.0.11
+- @sap-ux/project-access 2.3.2 → 2.3.3
+
+## 1.0.69
+
+### Patch Changes
+
+#### Bug Fixes
+
+- [ADP][Auth] Add backend api probe call the generator to relay on when the authentication status is determined. [[b90b0b4](https://github.com/SAP/open-ux-tools/commit/b90b0b4a0e7dd672e06e9805d9421cd707339991)]
+
+## 1.0.68
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.1.3 → 2.1.4
+- @sap-ux/odata-service-writer 1.0.26 → 1.0.27
+- @sap-ux/project-access 2.3.1 → 2.3.2
+- @sap-ux/nodejs-utils 1.0.12 → 1.0.13
+- @sap-ux/system-access 1.0.17 → 1.0.18
+- @sap-ux/inquirer-common 1.0.49 → 1.0.50
+- @sap-ux/project-input-validator 1.0.24 → 1.0.25
+
+## 1.0.67
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-26
+
+#### Features
+
+- Enable UShell Sandbox 2.0 for ADP preview on UI5 >= 1.151 [[1977942](https://github.com/SAP/open-ux-tools/commit/1977942e4732c9c90285eaee9f987fa96d545c9b)]
+
+## 1.0.66
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/btp-utils 2.0.7 → 2.0.8
+- @sap-ux/axios-extension 2.1.2 → 2.1.3
+- @sap-ux/inquirer-common 1.0.48 → 1.0.49
+- @sap-ux/nodejs-utils 1.0.11 → 1.0.12
+- @sap-ux/system-access 1.0.16 → 1.0.17
+- @sap-ux/odata-service-writer 1.0.26 → 1.0.26
+
+## 1.0.65
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade axios 1.18.1 → 1.20.0 [[192bae1](https://github.com/SAP/open-ux-tools/commit/192bae152640fb51741f16d77402719d0dde0979)]
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.1.1 → 2.1.2
+- @sap-ux/btp-utils 2.0.6 → 2.0.7
+- @sap-ux/inquirer-common 1.0.47 → 1.0.48
+- @sap-ux/ui5-config 1.0.9 → 1.0.10
+- @sap-ux/ui5-info 1.0.6 → 1.0.7
+- @sap-ux/i18n 1.0.5 → 1.0.6
+- @sap-ux/odata-service-writer 1.0.25 → 1.0.26
+- @sap-ux/system-access 1.0.15 → 1.0.16
+- @sap-ux/nodejs-utils 1.0.10 → 1.0.11
+- @sap-ux/project-access 2.3.0 → 2.3.1
+- @sap-ux/project-input-validator 1.0.23 → 1.0.24
+
+## 1.0.64
+
+### Patch Changes
+
+#### Bug Fixes
+
+- Resolve npm audit vulnerabilities — adm-zip 0.6.1, sanitize-html 2.17.7, @xmldom/xmldom 0.9.12, @sap/approuter 23.0.0, qs 6.16.0; add pnpm-workspace.yaml overrides for browserslist, hono, js-yaml, smol-toml, sharp, stream-json, csv-parse, pacote, and others; upgrade @modelcontextprotocol/sdk to 1.32.1 (GHSA-6qxp-vccf-f47h) [[33b98a5](https://github.com/SAP/open-ux-tools/commit/33b98a54ec2f1e2d937cdcd068017c76cc230080)]
+
+#### Features
+
+- Handle key-user changes with restricted views when importing them into an adaptation project — strip restrictions that cannot be represented in ADP, load the changes in the CLI (where the list prompt validation does not run) and warn in the terminal when imported changes have restricted views, and log in telemetry whether the user chose to import key-user changes [[fbee098](https://github.com/SAP/open-ux-tools/commit/fbee09852355f9c51820ccd4bfbc04553c78b308)]
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.1.0 → 2.1.1
+- @sap-ux/odata-service-writer 1.0.25 → 1.0.25
+- @sap-ux/system-access 1.0.14 → 1.0.15
+- @sap-ux/inquirer-common 1.0.46 → 1.0.47
+
+## 1.0.63
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.2.2 → 2.3.0
+- @sap-ux/axios-extension 2.1.0 → 2.1.0
+- @sap-ux/inquirer-common 1.0.45 → 1.0.46
+- @sap-ux/odata-service-writer 1.0.24 → 1.0.25
+- @sap-ux/project-input-validator 1.0.22 → 1.0.23
+- @sap-ux/system-access 1.0.14 → 1.0.14
+
+## 1.0.62
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-08
+
+#### Bug Fixes
+
+- [CF] Bundle @sap-ux/backend-proxy-middleware-cf and @sap-ux/create in @sap/ux-ui5-tooling.- #5241 [[9235c77](https://github.com/SAP/open-ux-tools/commit/9235c77eea1977bbc11ca54b6fd0f2e229f1920a)]
+
+## 1.0.61
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/i18n 1.0.4 → 1.0.5
+- @sap-ux/project-access 2.2.1 → 2.2.2
+- @sap-ux/axios-extension 2.1.0 → 2.1.0
+- @sap-ux/inquirer-common 1.0.44 → 1.0.45
+- @sap-ux/odata-service-writer 1.0.23 → 1.0.24
+- @sap-ux/project-input-validator 1.0.21 → 1.0.22
+- @sap-ux/system-access 1.0.14 → 1.0.14
+
+## 1.0.60
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-01
+
+#### Features
+
+- consolidate shared ADP utilities into @sap-ux/adp-tooling to eliminate duplicate implementations across packages [[27db0e7](https://github.com/SAP/open-ux-tools/commit/27db0e7339b8099513da5a42ad7fe8761d59302c)]
+
+## 1.0.59
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-input-validator 1.0.20 → 1.0.21
+
+## 1.0.58
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/i18n 1.0.3 → 1.0.4
+- @sap-ux/project-access 2.2.0 → 2.2.1
+- @sap-ux/axios-extension 2.1.0 → 2.1.0
+- @sap-ux/inquirer-common 1.0.43 → 1.0.44
+- @sap-ux/odata-service-writer 1.0.22 → 1.0.23
+- @sap-ux/project-input-validator 1.0.19 → 1.0.20
+- @sap-ux/system-access 1.0.14 → 1.0.14
+
+## 1.0.57
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/inquirer-common 1.0.42 → 1.0.43
+
+## 1.0.56
+
+### Patch Changes
+
+#### Features
+
+- Serve merged manifest.json via proxy in CF ADP preview mode [[3f822e1](https://github.com/SAP/open-ux-tools/commit/3f822e140aad6deb2df243295a25a917b7044929)]
+
+## 1.0.55
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/inquirer-common 1.0.41 → 1.0.42
+
+## 1.0.54
+
+### Patch Changes
+
+#### Release Date
+
+2026-09-16
+
+#### Bug Fixes
+
+- Route UI5 version validation and version-list requests through the proxy-aware HTTP layer so the Adaptation Project generator works behind a corporate proxy (no longer fails with HTTP 400 / "version not compatible") [[dfd321e](https://github.com/SAP/open-ux-tools/commit/dfd321ea484bdaffef0aa18cb5a48d1fc7045687)]
+
+#### Release Date
+
+2026-09-16
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.0.10 → 2.1.0
+- @sap-ux/odata-service-writer 1.0.22 → 1.0.22
+- @sap-ux/system-access 1.0.13 → 1.0.14
+- @sap-ux/inquirer-common 1.0.40 → 1.0.41
+
+## 1.0.53
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.13 → 2.2.0
+- @sap-ux/axios-extension 2.0.10 → 2.0.10
+- @sap-ux/inquirer-common 1.0.39 → 1.0.40
+- @sap-ux/odata-service-writer 1.0.21 → 1.0.22
+- @sap-ux/project-input-validator 1.0.18 → 1.0.19
+- @sap-ux/system-access 1.0.13 → 1.0.13
+
+## 1.0.52
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.0.9 → 2.0.10
+- @sap-ux/odata-service-writer 1.0.21 → 1.0.21
+- @sap-ux/system-access 1.0.12 → 1.0.13
+- @sap-ux/inquirer-common 1.0.38 → 1.0.39
+
+## 1.0.51
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/nodejs-utils 1.0.9 → 1.0.10
+- @sap-ux/inquirer-common 1.0.37 → 1.0.38
+
+## 1.0.50
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/inquirer-common 1.0.36 → 1.0.37
+
+## 1.0.49
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/store 2.0.6 → 2.0.7
+- @sap-ux/system-access 1.0.11 → 1.0.12
+- @sap-ux/ui5-config 1.0.9 → 1.0.9
+- @sap-ux/inquirer-common 1.0.35 → 1.0.36
+
+## 1.0.48
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-25
+
+#### Bug Fixes
+
+- Upgrade js-yaml 4.2.0 → 4.3.1 to address CVE (GHSA-pm4m-ph32-ghv5) [[4f93997](https://github.com/SAP/open-ux-tools/commit/4f9399792acd60f967908570fc8621ee4f8e62bb)]
+
+#### Workspace Updates
+
+- @sap-ux/ui5-config 1.0.8 → 1.0.9
+- @sap-ux/odata-service-writer 1.0.20 → 1.0.21
+- @sap-ux/project-access 2.1.12 → 2.1.13
+- @sap-ux/inquirer-common 1.0.34 → 1.0.35
+- @sap-ux/axios-extension 2.0.9 → 2.0.9
+- @sap-ux/project-input-validator 1.0.17 → 1.0.18
+- @sap-ux/system-access 1.0.11 → 1.0.11
+
+## 1.0.47
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-config 1.0.7 → 1.0.8
+- @sap-ux/project-access 2.1.11 → 2.1.12
+- @sap-ux/odata-service-writer 1.0.19 → 1.0.20
+- @sap-ux/axios-extension 2.0.9 → 2.0.9
+- @sap-ux/inquirer-common 1.0.33 → 1.0.34
+- @sap-ux/project-input-validator 1.0.16 → 1.0.17
+- @sap-ux/system-access 1.0.11 → 1.0.11
+- @sap-ux/i18n 1.0.2 → 1.0.3
+
+## 1.0.46
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/inquirer-common 1.0.32 → 1.0.33
+
+## 1.0.45
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/odata-service-writer 1.0.18 → 1.0.19
+- @sap-ux/axios-extension 2.0.8 → 2.0.9
+- @sap-ux/inquirer-common 1.0.31 → 1.0.32
+- @sap-ux/project-access 2.1.10 → 2.1.11
+- @sap-ux/system-access 1.0.10 → 1.0.11
+- @sap-ux/project-input-validator 1.0.15 → 1.0.16
+
+## 1.0.44
+
+### Patch Changes
+
+#### Features
+
+- Ability to create entity specific controller extensions [[57cb8f9](https://github.com/SAP/open-ux-tools/commit/57cb8f93bb625ca20a4a0096a4f7369bb1e3ec75)]
+
+## 1.0.43
+
+### Patch Changes
+
+#### Release Date
+
+2026-08-11
+
+#### Bug Fixes
+
+- Rewrite ui5:// manifest prefixes using the descriptor variant id instead of the base app name, so FLP Sandbox 2.0 resolves i18n enhanceWith bundles locally [[6fac8d4](https://github.com/SAP/open-ux-tools/commit/6fac8d45439a76e078fd6e6f6964b05d797e411e)]
+
+## 1.0.42
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/odata-service-writer 1.0.17 → 1.0.18
+- @sap-ux/inquirer-common 1.0.30 → 1.0.31
+
+## 1.0.41
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/inquirer-common 1.0.29 → 1.0.30
+
+## 1.0.40
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-config 1.0.6 → 1.0.7
+- @sap-ux/odata-service-writer 1.0.16 → 1.0.17
+- @sap-ux/project-access 2.1.9 → 2.1.10
+- @sap-ux/inquirer-common 1.0.28 → 1.0.29
+- @sap-ux/axios-extension 2.0.8 → 2.0.8
+- @sap-ux/project-input-validator 1.0.14 → 1.0.15
+- @sap-ux/system-access 1.0.10 → 1.0.10
+
+## 1.0.39
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/store 2.0.5 → 2.0.6
+- @sap-ux/system-access 1.0.9 → 1.0.10
+- @sap-ux/ui5-config 1.0.6 → 1.0.6
+- @sap-ux/inquirer-common 1.0.27 → 1.0.28
+
+## 1.0.38
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade @sap-devx/yeoman-ui-types 1.25.0 → 1.25.1 [[d0369f5](https://github.com/SAP/open-ux-tools/commit/d0369f5d61e5790453d39cb3119112b80d5cd006)]
+
+#### Workspace Updates
+
+- @sap-ux/btp-utils 2.0.5 → 2.0.6
+- @sap-ux/axios-extension 2.0.7 → 2.0.8
+- @sap-ux/inquirer-common 1.0.26 → 1.0.27
+- @sap-ux/nodejs-utils 1.0.8 → 1.0.9
+- @sap-ux/odata-service-writer 1.0.15 → 1.0.16
+- @sap-ux/project-access 2.1.8 → 2.1.9
+- @sap-ux/ui5-config 1.0.5 → 1.0.6
+- @sap-ux/ui5-info 1.0.5 → 1.0.6
+- @sap-ux/system-access 1.0.8 → 1.0.9
+- @sap-ux/project-input-validator 1.0.13 → 1.0.14
+
+## 1.0.37
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade i18next 25.10.10 → 26.3.6 [[28263d1](https://github.com/SAP/open-ux-tools/commit/28263d1cdcbb8599ee7b165c3482255b631604b8)]
+
+#### Workspace Updates
+
+- @sap-ux/inquirer-common 1.0.25 → 1.0.26
+- @sap-ux/nodejs-utils 1.0.7 → 1.0.8
+- @sap-ux/odata-service-writer 1.0.14 → 1.0.15
+- @sap-ux/project-input-validator 1.0.12 → 1.0.13
+- @sap-ux/store 2.0.4 → 2.0.5
+- @sap-ux/system-access 1.0.7 → 1.0.8
+- @sap-ux/ui5-config 1.0.5 → 1.0.5
+
+## 1.0.36
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-22
+
+#### Dependency Updates
+
+- Upgrade adm-zip 0.5.17 → 0.6.0 [[e07b300](https://github.com/SAP/open-ux-tools/commit/e07b3009552002d60344dbd46fee5b957b054f03)]
+
+## 1.0.35
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.7 → 2.1.8
+- @sap-ux/axios-extension 2.0.7 → 2.0.7
+- @sap-ux/inquirer-common 1.0.24 → 1.0.25
+- @sap-ux/odata-service-writer 1.0.13 → 1.0.14
+- @sap-ux/project-input-validator 1.0.11 → 1.0.12
+- @sap-ux/system-access 1.0.7 → 1.0.7
+
+## 1.0.34
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.6 → 2.1.7
+- @sap-ux/axios-extension 2.0.7 → 2.0.7
+- @sap-ux/inquirer-common 1.0.23 → 1.0.24
+- @sap-ux/odata-service-writer 1.0.12 → 1.0.13
+- @sap-ux/project-input-validator 1.0.10 → 1.0.11
+- @sap-ux/system-access 1.0.7 → 1.0.7
+
+## 1.0.33
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/inquirer-common 1.0.22 → 1.0.23
+
+## 1.0.32
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/inquirer-common 1.0.21 → 1.0.22
+
+## 1.0.31
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-14
+
+#### Bug Fixes
+
+- Pass i18n .properties requests through to the base app proxy in ADP preview
+
+    The ADP preview proxy used to 302-redirect any request whose path matched a file
+    in the ADP webapp folder. For i18n .properties files this incorrectly substituted
+    the partial ADP bundle for the base app's complete bundle, hiding all base
+    translations and breaking annotation-side `{@i18n>...}` bindings (e.g. column
+    header labels in `UI.LineItem`). The runtime descriptor merge
+    (`appdescr_ui5_addNewModelEnhanceWith`) already handles ADP enhancement at the
+    model layer; substituting the file at the proxy layer was wrong. Now i18n
+    .properties requests fall through to the next middleware so the base app's
+    complete bundle is loaded, and the ADP's customer-prefixed keys still merge in
+    correctly via the manifest change. Covers default bundles, locale variants
+    (`i18n_de.properties`), and per-page bundles
+    (`/i18n/ListReport/<entity>/i18n.properties`). [[c469419](https://github.com/SAP/open-ux-tools/commit/c46941946b2faf60ac19af4ac76dafe34209ea82)]
+
+## 1.0.30
+
+### Patch Changes
+
+#### Release Date
+
+2026-07-08
+
+#### Bug Fixes
+
+- Use legacy inbound change types for ABAP systems on UI5 1.142 or lower; CF projects always use the new 'appdescr_app_setInbounds' change type [[56fe433](https://github.com/SAP/open-ux-tools/commit/56fe433aebc72d91f2ad5f702ed0125c590f226c)]
+
+## 1.0.29
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/nodejs-utils 1.0.6 → 1.0.7
+- @sap-ux/logger 1.0.2 → 1.0.3
+- @sap-ux/inquirer-common 1.0.20 → 1.0.21
+- @sap-ux/axios-extension 2.0.6 → 2.0.7
+- @sap-ux/btp-utils 2.0.5 → 2.0.5
+- @sap-ux/project-access 2.1.6 → 2.1.6
+- @sap-ux/store 2.0.3 → 2.0.4
+- @sap-ux/system-access 1.0.6 → 1.0.7
+- @sap-ux/ui5-info 1.0.4 → 1.0.5
+- @sap-ux/odata-service-writer 1.0.12 → 1.0.12
+- @sap-ux/ui5-config 1.0.5 → 1.0.5
+
+## 1.0.28
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/inquirer-common 1.0.19 → 1.0.20
+
+## 1.0.27
+
+### Patch Changes
+
+#### Dependency Updates
+
+- upgrade axios dependency [[526d59b](https://github.com/SAP/open-ux-tools/commit/526d59b558a653635ab44ab10dbfedccb3c0dc43)]
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.0.5 → 2.0.6
+- @sap-ux/inquirer-common 1.0.18 → 1.0.19
+- @sap-ux/ui5-config 1.0.4 → 1.0.5
+- @sap-ux/btp-utils 2.0.4 → 2.0.5
+- @sap-ux/ui5-info 1.0.3 → 1.0.4
+- @sap-ux/odata-service-writer 1.0.11 → 1.0.12
+- @sap-ux/system-access 1.0.5 → 1.0.6
+- @sap-ux/project-access 2.1.5 → 2.1.6
+- @sap-ux/nodejs-utils 1.0.5 → 1.0.6
+- @sap-ux/project-input-validator 1.0.9 → 1.0.10
+
+## 1.0.26
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Bulk upgrade of minor dependencies and devDependencies [[5ce779c](https://github.com/SAP/open-ux-tools/commit/5ce779c43ae81d9a4ed85414bfb6f0ca8f882afc)]
+
+#### Workspace Updates
+
+- @sap-ux/odata-service-writer 1.0.10 → 1.0.11
+- @sap-ux/project-input-validator 1.0.8 → 1.0.9
+- @sap-ux/axios-extension 2.0.4 → 2.0.5
+- @sap-ux/inquirer-common 1.0.17 → 1.0.18
+- @sap-ux/project-access 2.1.4 → 2.1.5
+- @sap-ux/system-access 1.0.4 → 1.0.5
+- @sap-ux/nodejs-utils 1.0.4 → 1.0.5
+- @sap-ux/ui5-config 1.0.3 → 1.0.4
+- @sap-ux/btp-utils 2.0.3 → 2.0.4
+- @sap-ux/ui5-info 1.0.2 → 1.0.3
+- @sap-ux/logger 1.0.1 → 1.0.2
+- @sap-ux/store 2.0.2 → 2.0.3
+- @sap-ux/i18n 1.0.1 → 1.0.2
+
+## 1.0.25
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/inquirer-common 1.0.16 → 1.0.17
+
+## 1.0.24
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/inquirer-common 1.0.15 → 1.0.16
+
+## 1.0.23
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.3 → 2.1.4
+- @sap-ux/axios-extension 2.0.4 → 2.0.4
+- @sap-ux/inquirer-common 1.0.14 → 1.0.15
+- @sap-ux/odata-service-writer 1.0.9 → 1.0.10
+- @sap-ux/project-input-validator 1.0.7 → 1.0.8
+- @sap-ux/system-access 1.0.4 → 1.0.4
+
+## 1.0.22
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-29
+
+#### Bug Fixes
+
+- Revert the `/i18n/...properties` pass-through introduced in #4858.
+
+    In adaptation projects built on top of Fiori Elements V2 ListReport/ObjectPage base apps, FEV2's `TemplateComponent` rebuilds the `i18n` model on every template view, which shadows the ADP's local `i18n.properties` once requests fall through to the base app. Customer-defined keys are no longer reachable from inside the editor's bindings.
+    The proper fix requires moving customer keys to the FEV2-safe `@i18n` model (backend merger + generator changes) and cannot be safely downported in this release window. A corrected fix will be reapplied once that support is in place. [[e2ba3a4](https://github.com/SAP/open-ux-tools/commit/e2ba3a44eb8df65f16187b86a382e9eb34387054)]
+
+## 1.0.21
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade patch-level dependencies [[aed328d](https://github.com/SAP/open-ux-tools/commit/aed328da8a5c93e226c58e4d7dc14c7c82756259)]
+
+#### Workspace Updates
+
+- @sap-ux/odata-service-writer 1.0.8 → 1.0.9
+- @sap-ux/axios-extension 2.0.3 → 2.0.4
+- @sap-ux/system-access 1.0.3 → 1.0.4
+- @sap-ux/btp-utils 2.0.2 → 2.0.3
+- @sap-ux/ui5-info 1.0.1 → 1.0.2
+- @sap-ux/store 2.0.1 → 2.0.2
+- @sap-ux/inquirer-common 1.0.13 → 1.0.14
+- @sap-ux/nodejs-utils 1.0.3 → 1.0.4
+- @sap-ux/ui5-config 1.0.3 → 1.0.3
+
+## 1.0.20
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.1.2 → 2.1.3
+- @sap-ux/axios-extension 2.0.3 → 2.0.3
+- @sap-ux/inquirer-common 1.0.12 → 1.0.13
+- @sap-ux/odata-service-writer 1.0.7 → 1.0.8
+- @sap-ux/project-input-validator 1.0.6 → 1.0.7
+- @sap-ux/system-access 1.0.3 → 1.0.3
+
+## 1.0.19
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-24
+
+#### Bug Fixes
+
+- Pass i18n .properties requests through to the base app proxy in ADP preview
+
+    The ADP preview proxy used to 302-redirect any request whose path matched a file
+    in the ADP webapp folder. For i18n .properties files this incorrectly substituted
+    the partial ADP bundle for the base app's complete bundle, hiding all base
+    translations and breaking annotation-side `{@i18n>...}` bindings (e.g. column
+    header labels in `UI.LineItem`). The runtime descriptor merge
+    (`appdescr_ui5_addNewModelEnhanceWith`) already handles ADP enhancement at the
+    model layer; substituting the file at the proxy layer was wrong. Now i18n
+    .properties requests fall through to the next middleware so the base app's
+    complete bundle is loaded, and the ADP's customer-prefixed keys still merge in
+    correctly via the manifest change. Covers default bundles, locale variants
+    (`i18n_de.properties`), and per-page bundles
+    (`/i18n/ListReport/<entity>/i18n.properties`). [[662e3c3](https://github.com/SAP/open-ux-tools/commit/662e3c358e90a6d0a85c2f1840751301347894af)]
+
+## 1.0.18
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-19
+
+#### Bug Fixes
+
+- Revert getPackageJSONInfo to previous approach, removing getTemplatePath dependency [[2020302](https://github.com/SAP/open-ux-tools/commit/2020302469fc97a6aa25eab85b59f9ff9d2d52f8)]
+
+## 1.0.17
+
+### Patch Changes
+
+#### Release Date
+
+2026-06-17
+
+#### Features
+
+- centralize template path resolution via getTemplatePath helper [[28730f7](https://github.com/SAP/open-ux-tools/commit/28730f7804c4f10cc5642248b54716a186c0046d)]
+
+#### Bug Fixes
+
+- write key-user changes with the file suffix matching their `fileType` (e.g. `.ctrl_variant`, `.annotation_change`) instead of a hardcoded `.change`. The UI5 Flex frontend routes change files by their suffix, so taking over annotation or control-variant key-user changes now reaches the correct handler. Falls back to `.change` when `fileType` is missing on a payload. [[0b1cab4](https://github.com/SAP/open-ux-tools/commit/0b1cab464d9b1b14c76517c4e6542f370ae9d99e)]
+
+#### Release Date
+
+2026-06-17
+
+#### Workspace Updates
+
+- @sap-ux/odata-service-writer 1.0.6 → 1.0.7
+- @sap-ux/inquirer-common 1.0.11 → 1.0.12
+
+## 1.0.16
+
+_Released: 2026-06-14T10:40:09Z_
+
+### Patch Changes
+
+- adae40d: fix: restore LocalStorageConnector for non-ADP projects
+
+    PR #4122 removed LocalStorageConnector globally but it should only be omitted for adaptation projects (ADP). Non-ADP Fiori projects still need the connector for local variant storage on CUSTOMER/USER layers.
+
+## 1.0.15
+
+_Released: 2026-06-12T10:49:08Z_
+
+### Patch Changes
+
+- 6e4a71a: fix: detect `appdescr_app_setInbounds` in `flpConfigurationExists` so the FLP configuration sub-generator shows the existing-FLP-config info text for cloud ADP projects (regression from #4633).
+
+## 1.0.14
+
+_Released: 2026-06-12T06:53:23Z_
+
+### Patch Changes
+
+- @sap-ux/axios-extension@2.0.3
+- @sap-ux/inquirer-common@1.0.11
+- @sap-ux/odata-service-writer@1.0.6
+- @sap-ux/system-access@1.0.3
+
+## 1.0.13
+
+_Released: 2026-06-11T13:37:16Z_
+
+### Patch Changes
+
+- e66a8a9: fix: append builder.resources.excludes to generated ui5.yaml
+
+## 1.0.12
+
+_Released: 2026-06-11T10:54:17Z_
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@1.0.10
+
+## 1.0.11
+
+_Released: 2026-06-10T09:57:42Z_
+
+### Patch Changes
+
+- c8e8f7e: fix: write builder.resources.excludes to base ui5.yaml as well as ui5-deploy.yaml
+- Updated dependencies [c8e8f7e]
+    - @sap-ux/ui5-config@1.0.3
+    - @sap-ux/odata-service-writer@1.0.6
+    - @sap-ux/project-access@2.1.2
+    - @sap-ux/inquirer-common@1.0.9
+    - @sap-ux/axios-extension@2.0.2
+    - @sap-ux/project-input-validator@1.0.6
+    - @sap-ux/system-access@1.0.2
+
+## 1.0.10
+
+_Released: 2026-06-09T14:35:01Z_
+
+### Patch Changes
+
+- Updated dependencies [0fa8305]
+    - @sap-ux/btp-utils@2.0.2
+    - @sap-ux/axios-extension@2.0.2
+    - @sap-ux/inquirer-common@1.0.8
+    - @sap-ux/nodejs-utils@1.0.3
+    - @sap-ux/system-access@1.0.2
+    - @sap-ux/odata-service-writer@1.0.5
+
+## 1.0.9
+
+_Released: 2026-06-09T13:18:16Z_
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@1.0.7
+
+## 1.0.8
+
+_Released: 2026-06-04T13:54:21Z_
+
+### Patch Changes
+
+- Updated dependencies [fff7490]
+    - @sap-ux/project-access@2.1.1
+    - @sap-ux/axios-extension@2.0.1
+    - @sap-ux/inquirer-common@1.0.6
+    - @sap-ux/odata-service-writer@1.0.5
+    - @sap-ux/project-input-validator@1.0.5
+    - @sap-ux/system-access@1.0.1
+
+## 1.0.7
+
+_Released: 2026-06-04T12:10:05Z_
+
+### Patch Changes
+
+- fb84c0e: chore: enhance incomplete destination service key credentials error message
+
+## 1.0.6
+
+_Released: 2026-06-04T10:19:37Z_
+
+### Patch Changes
+
+- Updated dependencies [b326a9a]
+    - @sap-ux/project-access@2.1.0
+    - @sap-ux/axios-extension@2.0.1
+    - @sap-ux/inquirer-common@1.0.5
+    - @sap-ux/odata-service-writer@1.0.4
+    - @sap-ux/project-input-validator@1.0.4
+    - @sap-ux/system-access@1.0.1
+
+## 1.0.5
+
+_Released: 2026-06-03T14:58:37Z_
+
+### Patch Changes
+
+- 21a3de7: FIX: TypeScript type errors in test files (ESM migration follow-up)
+- Updated dependencies [21a3de7]
+    - @sap-ux/project-input-validator@1.0.3
+    - @sap-ux/odata-service-writer@1.0.3
+    - @sap-ux/axios-extension@2.0.1
+    - @sap-ux/inquirer-common@1.0.4
+    - @sap-ux/project-access@2.0.3
+    - @sap-ux/system-access@1.0.1
+    - @sap-ux/nodejs-utils@1.0.2
+    - @sap-ux/ui5-config@1.0.2
+    - @sap-ux/btp-utils@2.0.1
+    - @sap-ux/ui5-info@1.0.1
+    - @sap-ux/logger@1.0.1
+    - @sap-ux/store@2.0.1
+    - @sap-ux/i18n@1.0.1
+
+## 1.0.4
+
+_Released: 2026-06-03T13:52:44Z_
+
+### Patch Changes
+
+- Updated dependencies [9580241]
+    - @sap-ux/ui5-config@1.0.1
+    - @sap-ux/odata-service-writer@1.0.2
+    - @sap-ux/project-access@2.0.2
+    - @sap-ux/inquirer-common@1.0.3
+    - @sap-ux/axios-extension@2.0.0
+    - @sap-ux/project-input-validator@1.0.2
+    - @sap-ux/system-access@1.0.0
+
+## 1.0.3
+
+_Released: 2026-06-02T11:35:17Z_
+
+### Patch Changes
+
+- Updated dependencies [41f327a]
+    - @sap-ux/nodejs-utils@1.0.1
+    - @sap-ux/inquirer-common@1.0.2
+
+## 1.0.2
+
+_Released: 2026-06-02T08:56:31Z_
+
+### Patch Changes
+
+- a8e4cf0: fix: handle both nested (`{ uaa: {...} }`) and flat destination-service credential shapes when fetching BTP destinations and when checking for OnPremise destinations during adaptation-project startup. A new `getDestinationServiceUaa` helper in `@sap-ux/adp-tooling` is reused by `@sap-ux/backend-proxy-middleware-cf` to avoid duplicate shape-handling logic.
+
+## 1.0.1
+
+_Released: 2026-06-01T15:15:26Z_
+
+### Patch Changes
+
+- Updated dependencies [aed799d]
+    - @sap-ux/project-access@2.0.1
+    - @sap-ux/axios-extension@2.0.0
+    - @sap-ux/inquirer-common@1.0.1
+    - @sap-ux/odata-service-writer@1.0.1
+    - @sap-ux/project-input-validator@1.0.1
+    - @sap-ux/system-access@1.0.0
+
+## 1.0.0
+
+_Released: 2026-05-30T20:54:07Z_
+
+### Major Changes
+
+- 32609a7: # Migration to ECMAScript Modules (ESM)
+
+    Packages in the SAP Open UX Tools monorepo have been migrated from CommonJS (CJS) to ECMAScript Modules (ESM) with NodeNext module resolution.
+
+    '@sap-ux/backend-proxy-middleware-cf' is experimental and will remain at major version 0.
+    '@sap-ux/generator-odata-downloader' is a top level yeoman generator and will remain as CJS until validation as ESM is done.
+
+    ## What Changed
+    - **Module System**: Most packages now use native ESM (`"type": "module"` in package.json)
+    - **TypeScript Configuration**: Updated to `module: "NodeNext"` and `moduleResolution: "NodeNext"`
+    - **Import Statements**: All relative imports now include explicit `.js` extensions (per ESM spec)
+    - **Build Output**: Generated JavaScript files are now ESM modules
+    - **Node.js Requirement**: Minimum Node.js version remains >=22.x
+
+    ### Jest Configuration (for Testing)
+
+    If your project tests code that imports these packages, update your Jest configuration:
+
+    ```js
+    export default {
+        extensionsToTreatAsEsm: ['.ts'],
+        transform: {
+            '^.+\\.ts$': ['ts-jest', { useESM: true }]
+        }
+    };
+    ```
+
+    And run Jest with: `NODE_OPTIONS='--experimental-vm-modules' jest`
+
+### Patch Changes
+
+- Updated dependencies [32609a7]
+    - @sap-ux/project-input-validator@1.0.0
+    - @sap-ux/odata-service-writer@1.0.0
+    - @sap-ux/axios-extension@2.0.0
+    - @sap-ux/inquirer-common@1.0.0
+    - @sap-ux/project-access@2.0.0
+    - @sap-ux/system-access@1.0.0
+    - @sap-ux/nodejs-utils@1.0.0
+    - @sap-ux/ui5-config@1.0.0
+    - @sap-ux/btp-utils@2.0.0
+    - @sap-ux/ui5-info@1.0.0
+    - @sap-ux/logger@1.0.0
+    - @sap-ux/store@2.0.0
+    - @sap-ux/i18n@1.0.0
+
+## 0.19.11
+
+_Released: 2026-05-29T12:50:34Z_
+
+### Patch Changes
+
+- @sap-ux/inquirer-common@0.13.6
+
+## 0.19.10
+
+_Released: 2026-05-29T06:59:27Z_
+
+### Patch Changes
+
+- 9a980a9: fix: Prioritize local workspace fragments over deployed versions in adaptation project editor
+
+    When previewing an adaptation project connected to an ABAP system, locally created fragments and controllers are now correctly prioritized over their deployed counterparts. The LREP flex data response from the ABAP system includes inlined module content (fragment XMLs, controller JS) which prevented UI5 from requesting local workspace versions. The fix strips these inlined modules from the response so that UI5 falls back to HTTP requests, which the existing ADP proxy serves from the local workspace. Flex changes are left untouched as UI5 deduplicates them natively by fileName.
+
+## 0.19.9
+
+_Released: 2026-05-27T11:39:21Z_
+
+### Patch Changes
+
+- Updated dependencies [ea9cbb1]
+    - @sap-ux/nodejs-utils@0.3.2
+    - @sap-ux/inquirer-common@0.13.5
+
+## 0.19.8
+
+_Released: 2026-05-27T10:42:47Z_
+
+### Patch Changes
+
+- Updated dependencies [c12420a]
+    - @sap-ux/store@1.6.1
+    - @sap-ux/system-access@0.8.2
+    - @sap-ux/ui5-config@0.31.1
+    - @sap-ux/inquirer-common@0.13.4
+
+## 0.19.7
+
+_Released: 2026-05-26T16:40:21Z_
+
+### Patch Changes
+
+- 01b70ca: chore: upgrade @sap/bas-sdk 3.13.6 → 3.13.7, @sap/approuter ^21.5.0 → ^22.0.0 (security: ws vulnerability)
+- Updated dependencies [01b70ca]
+- Updated dependencies [01b70ca]
+    - @sap-ux/axios-extension@1.26.1
+    - @sap-ux/btp-utils@1.2.1
+    - @sap-ux/odata-service-writer@0.32.2
+    - @sap-ux/system-access@0.8.1
+    - @sap-ux/inquirer-common@0.13.3
+    - @sap-ux/nodejs-utils@0.3.1
+
 ## 0.19.6
+
+_Released: 2026-05-22T13:30:05Z_
 
 ### Patch Changes
 
 - 758b0d4: fix: show error message when fetching destination fails
 
 ## 0.19.5
+
+_Released: 2026-05-21T16:21:11Z_
 
 ### Patch Changes
 
@@ -21,11 +1138,15 @@
 
 ## 0.19.4
 
+_Released: 2026-05-21T14:58:44Z_
+
 ### Patch Changes
 
 - dab1aa2: fix: When we get the service uri from the ui5.yaml > adp > target object we use the context to determine whether to use the destination in the target or the url.
 
 ## 0.19.3
+
+_Released: 2026-05-19T15:16:46Z_
 
 ### Patch Changes
 
@@ -39,11 +1160,15 @@
 
 ## 0.19.2
 
+_Released: 2026-05-18T08:15:14Z_
+
 ### Patch Changes
 
 - 342c544: chore: bump used versions in adaptation project for Cloud Foundry
 
 ## 0.19.1
+
+_Released: 2026-05-15T13:12:06Z_
 
 ### Patch Changes
 
@@ -52,6 +1177,8 @@
     - @sap-ux/inquirer-common@0.13.0
 
 ## 0.19.0
+
+_Released: 2026-05-15T08:12:20Z_
 
 ### Minor Changes
 
@@ -76,6 +1203,8 @@
 
 ## 0.18.134
 
+_Released: 2026-05-14T21:28:41Z_
+
 ### Patch Changes
 
 - Updated dependencies [138246a]
@@ -84,11 +1213,15 @@
 
 ## 0.18.133
 
+_Released: 2026-05-14T14:16:50Z_
+
 ### Patch Changes
 
 - 8c4185a: fix: change used change type for inbounds
 
 ## 0.18.132
+
+_Released: 2026-05-14T11:45:51Z_
 
 ### Patch Changes
 
@@ -110,6 +1243,8 @@
 
 ## 0.18.131
 
+_Released: 2026-05-13T09:36:59Z_
+
 ### Patch Changes
 
 - Updated dependencies [21abda3]
@@ -122,11 +1257,15 @@
 
 ## 0.18.130
 
+_Released: 2026-05-12T18:00:39Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.11.45
 
 ## 0.18.129
+
+_Released: 2026-05-06T23:02:00Z_
 
 ### Patch Changes
 
@@ -146,17 +1285,23 @@
 
 ## 0.18.128
 
+_Released: 2026-05-01T15:46:09Z_
+
 ### Patch Changes
 
 - b2ffc7e: fix(mbt): bump mbt to ^1.2.49 to avoid suspicious 1.2.48 release (#4616)
 
 ## 0.18.127
 
+_Released: 2026-04-30T19:47:20Z_
+
 ### Patch Changes
 
 - fcaa70c: fix(adp-tooling): Improve logging for Cloud Foundry setup
 
 ## 0.18.126
+
+_Released: 2026-04-30T14:23:24Z_
 
 ### Patch Changes
 
@@ -171,12 +1316,16 @@
 
 ## 0.18.125
 
+_Released: 2026-04-30T13:10:33Z_
+
 ### Patch Changes
 
 - Updated dependencies [a4b90ca]
     - @sap-ux/project-input-validator@0.6.80
 
 ## 0.18.124
+
+_Released: 2026-04-29T15:24:37Z_
 
 ### Patch Changes
 
@@ -191,6 +1340,8 @@
 
 ## 0.18.123
 
+_Released: 2026-04-27T19:47:46Z_
+
 ### Patch Changes
 
 - Updated dependencies [1d60871]
@@ -203,11 +1354,15 @@
 
 ## 0.18.122
 
+_Released: 2026-04-27T07:30:24Z_
+
 ### Patch Changes
 
 - 10847a1: fix: Translation texts for Add Data Source and SAPUI5 Model title and subtitle
 
 ## 0.18.121
+
+_Released: 2026-04-23T12:54:21Z_
 
 ### Patch Changes
 
@@ -221,6 +1376,8 @@
 
 ## 0.18.120
 
+_Released: 2026-04-23T06:48:55Z_
+
 ### Patch Changes
 
 - Updated dependencies [237371b]
@@ -231,6 +1388,8 @@
 
 ## 0.18.119
 
+_Released: 2026-04-22T12:38:46Z_
+
 ### Patch Changes
 
 - Updated dependencies [9a48e63]
@@ -239,6 +1398,8 @@
 
 ## 0.18.118
 
+_Released: 2026-04-15T11:53:17Z_
+
 ### Patch Changes
 
 - 67d1f8b: Bump dotenv and configure "quiet" option
@@ -246,11 +1407,15 @@
 
 ## 0.18.117
 
+_Released: 2026-04-15T08:11:32Z_
+
 ### Patch Changes
 
 - 8fb08a2: feat: Extend add-new-model generator to support external services for CF projects
 
 ## 0.18.116
+
+_Released: 2026-04-14T20:26:28Z_
 
 ### Patch Changes
 
@@ -263,6 +1428,8 @@
     - @sap-ux/odata-service-writer@0.31.7
 
 ## 0.18.115
+
+_Released: 2026-04-14T12:35:35Z_
 
 ### Patch Changes
 
@@ -281,17 +1448,23 @@
 
 ## 0.18.114
 
+_Released: 2026-04-14T11:39:16Z_
+
 ### Patch Changes
 
 - 497317c: feat: Adjust deployment wizard behavior for CF scenario
 
 ## 0.18.113
 
+_Released: 2026-04-09T07:00:16Z_
+
 ### Patch Changes
 
 - 7a8613b: feat: Enable SSH tunnel in CF backend middleware for OnPremise destinations
 
 ## 0.18.112
+
+_Released: 2026-04-08T13:10:18Z_
 
 ### Patch Changes
 
@@ -312,17 +1485,23 @@
 
 ## 0.18.111
 
+_Released: 2026-04-07T11:09:34Z_
+
 ### Patch Changes
 
 - 1b10e9f: feat: Adapt CF ADP project structure to work with approuter backend middleware
 
 ## 0.18.110
 
+_Released: 2026-04-01T14:51:40Z_
+
 ### Patch Changes
 
 - 6b74074: feat: Change `backend-proxy-middleware-cf` to use `approuter` instead of token exchange
 
 ## 0.18.109
+
+_Released: 2026-04-01T11:49:37Z_
 
 ### Patch Changes
 
@@ -336,11 +1515,15 @@
 
 ## 0.18.108
 
+_Released: 2026-04-01T06:34:51Z_
+
 ### Patch Changes
 
 - 68b5523: feat: Adjust FLP configuration wizard for CF scenario
 
 ## 0.18.107
+
+_Released: 2026-03-30T22:24:11Z_
 
 ### Patch Changes
 
@@ -366,11 +1549,15 @@
 
 ## 0.18.106
 
+_Released: 2026-03-27T15:37:24Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.11.31
 
 ## 0.18.105
+
+_Released: 2026-03-27T11:58:49Z_
 
 ### Patch Changes
 
@@ -384,6 +1571,8 @@
 
 ## 0.18.104
 
+_Released: 2026-03-26T20:06:10Z_
+
 ### Patch Changes
 
 - Updated dependencies [b66e827]
@@ -396,17 +1585,23 @@
 
 ## 0.18.103
 
+_Released: 2026-03-26T16:48:32Z_
+
 ### Patch Changes
 
 - 96a689b: fix(ADP): Change prompt's order, first appear applications then projectType if applicable.
 
 ## 0.18.102
 
+_Released: 2026-03-26T15:15:10Z_
+
 ### Patch Changes
 
 - 3dcd3f7: Annotation changes are not generated from Replace OData
 
 ## 0.18.101
+
+_Released: 2026-03-26T12:07:04Z_
 
 ### Patch Changes
 
@@ -439,6 +1634,8 @@
 
 ## 0.18.100
 
+_Released: 2026-03-25T12:56:41Z_
+
 ### Patch Changes
 
 - Updated dependencies [f384ace]
@@ -451,6 +1648,8 @@
 
 ## 0.18.99
 
+_Released: 2026-03-23T18:25:40Z_
+
 ### Patch Changes
 
 - Updated dependencies [c0e05ab]
@@ -460,11 +1659,15 @@
 
 ## 0.18.98
 
+_Released: 2026-03-23T10:51:10Z_
+
 ### Patch Changes
 
 - 2cd2544: feat: Change the way business service credentials are retrieved in the ADP generator
 
 ## 0.18.97
+
+_Released: 2026-03-20T16:07:49Z_
 
 ### Patch Changes
 
@@ -479,11 +1682,15 @@
 
 ## 0.18.96
 
+_Released: 2026-03-18T16:51:44Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.11.25
 
 ## 0.18.95
+
+_Released: 2026-03-18T15:22:00Z_
 
 ### Patch Changes
 
@@ -491,11 +1698,15 @@
 
 ## 0.18.94
 
+_Released: 2026-03-17T08:35:25Z_
+
 ### Patch Changes
 
 - 3626b55: fix: Add New Card flow broken for OVP adaptation projects
 
 ## 0.18.93
+
+_Released: 2026-03-17T07:55:04Z_
 
 ### Patch Changes
 
@@ -506,6 +1717,8 @@
     - @sap-ux/system-access@0.6.66
 
 ## 0.18.92
+
+_Released: 2026-03-17T01:04:22Z_
 
 ### Patch Changes
 
@@ -526,17 +1739,23 @@
 
 ## 0.18.91
 
+_Released: 2026-03-13T07:45:50Z_
+
 ### Patch Changes
 
 - 53af342: feat: Create service keys
 
 ## 0.18.90
 
+_Released: 2026-03-10T13:28:49Z_
+
 ### Patch Changes
 
 - 05f3f4c: fix: Various ADP Generator fixes for CF flow
 
 ## 0.18.89
+
+_Released: 2026-03-06T13:19:33Z_
 
 ### Patch Changes
 
@@ -546,11 +1765,15 @@
 
 ## 0.18.88
 
+_Released: 2026-03-06T10:26:32Z_
+
 ### Patch Changes
 
 - f14a3d1: fix: Use the cloudDevAdaptationStatus property in the app filter only for cloud apps.
 
 ## 0.18.87
+
+_Released: 2026-03-05T23:21:37Z_
 
 ### Patch Changes
 
@@ -560,6 +1783,8 @@
     - @sap-ux/system-access@0.6.64
 
 ## 0.18.86
+
+_Released: 2026-03-05T16:08:22Z_
 
 ### Patch Changes
 
@@ -573,11 +1798,15 @@
 
 ## 0.18.85
 
+_Released: 2026-03-05T15:09:36Z_
+
 ### Patch Changes
 
 - 5d458c7: fix(deps): update dependency uuid to v13
 
 ## 0.18.84
+
+_Released: 2026-03-05T12:30:25Z_
 
 ### Patch Changes
 
@@ -594,6 +1823,8 @@
 
 ## 0.18.83
 
+_Released: 2026-03-05T10:41:09Z_
+
 ### Patch Changes
 
 - Updated dependencies [5aff25c]
@@ -601,6 +1832,8 @@
     - @sap-ux/inquirer-common@0.11.20
 
 ## 0.18.82
+
+_Released: 2026-03-04T22:42:20Z_
 
 ### Patch Changes
 
@@ -622,6 +1855,8 @@
 
 ## 0.18.81
 
+_Released: 2026-03-04T15:52:08Z_
+
 ### Patch Changes
 
 - Updated dependencies [2302698]
@@ -632,6 +1867,8 @@
     - @sap-ux/system-access@0.6.61
 
 ## 0.18.80
+
+_Released: 2026-03-04T14:39:10Z_
 
 ### Patch Changes
 
@@ -647,11 +1884,15 @@
 
 ## 0.18.79
 
+_Released: 2026-03-04T11:03:29Z_
+
 ### Patch Changes
 
 - 2d42592: fix: Various fixes for Adaptation Project for Cloud Foundry scenario
 
 ## 0.18.78
+
+_Released: 2026-03-03T08:27:12Z_
 
 ### Patch Changes
 
@@ -662,6 +1903,8 @@
     - @sap-ux/system-access@0.6.60
 
 ## 0.18.77
+
+_Released: 2026-02-27T15:42:39Z_
 
 ### Patch Changes
 
@@ -674,6 +1917,8 @@
     - @sap-ux/project-input-validator@0.6.64
 
 ## 0.18.76
+
+_Released: 2026-02-26T10:46:59Z_
 
 ### Patch Changes
 
@@ -688,11 +1933,15 @@
 
 ## 0.18.75
 
+_Released: 2026-02-25T14:21:41Z_
+
 ### Patch Changes
 
 - ed1399d: Fix: Change custom column creation in v4 from addXML to appDescr change
 
 ## 0.18.74
+
+_Released: 2026-02-23T22:35:31Z_
 
 ### Patch Changes
 
@@ -710,6 +1959,8 @@
 
 ## 0.18.73
 
+_Released: 2026-02-23T19:07:48Z_
+
 ### Patch Changes
 
 - Updated dependencies [0ecc5f1]
@@ -724,11 +1975,15 @@
 
 ## 0.18.72
 
+_Released: 2026-02-23T15:13:48Z_
+
 ### Patch Changes
 
 - ce9f074: chore: bump adaptation project for cf dependency versions
 
 ## 0.18.71
+
+_Released: 2026-02-20T21:31:31Z_
 
 ### Patch Changes
 
@@ -743,6 +1998,8 @@
 
 ## 0.18.70
 
+_Released: 2026-02-20T20:20:17Z_
+
 ### Patch Changes
 
 - d588c26: fix(deps): update dependency rimraf to v6.1.3
@@ -754,6 +2011,8 @@
     - @sap-ux/axios-extension@1.25.15
 
 ## 0.18.69
+
+_Released: 2026-02-20T16:17:11Z_
 
 ### Patch Changes
 
@@ -767,6 +2026,8 @@
     - @sap-ux/ui5-config@0.29.18
 
 ## 0.18.68
+
+_Released: 2026-02-20T13:46:55Z_
 
 ### Patch Changes
 
@@ -784,11 +2045,15 @@
 
 ## 0.18.67
 
+_Released: 2026-02-20T11:22:50Z_
+
 ### Patch Changes
 
 - d1b13c4: fix: rewrite URLs based on xs-app.json in backend-proxy-middleware-cf
 
 ## 0.18.66
+
+_Released: 2026-02-18T21:45:35Z_
 
 ### Patch Changes
 
@@ -802,6 +2067,8 @@
 
 ## 0.18.65
 
+_Released: 2026-02-16T18:48:13Z_
+
 ### Patch Changes
 
 - dd2131c: Axios upgrade from bas-sdk
@@ -814,6 +2081,8 @@
     - @sap-ux/odata-service-writer@0.29.19
 
 ## 0.18.64
+
+_Released: 2026-02-16T16:08:11Z_
 
 ### Patch Changes
 
@@ -830,6 +2099,8 @@
 
 ## 0.18.63
 
+_Released: 2026-02-13T16:18:58Z_
+
 ### Patch Changes
 
 - Updated dependencies [9f94937]
@@ -839,6 +2110,8 @@
     - @sap-ux/inquirer-common@0.11.5
 
 ## 0.18.62
+
+_Released: 2026-02-13T09:54:38Z_
 
 ### Patch Changes
 
@@ -853,6 +2126,8 @@
 
 ## 0.18.61
 
+_Released: 2026-02-12T10:29:41Z_
+
 ### Patch Changes
 
 - Updated dependencies [d2b772d]
@@ -864,6 +2139,8 @@
     - @sap-ux/system-access@0.6.50
 
 ## 0.18.60
+
+_Released: 2026-02-10T23:50:15Z_
 
 ### Patch Changes
 
@@ -882,12 +2159,16 @@
 
 ## 0.18.59
 
+_Released: 2026-02-09T15:13:41Z_
+
 ### Patch Changes
 
 - Updated dependencies [1ad56d1]
     - @sap-ux/inquirer-common@0.11.1
 
 ## 0.18.58
+
+_Released: 2026-02-09T11:21:43Z_
 
 ### Patch Changes
 
@@ -901,6 +2182,8 @@
 
 ## 0.18.57
 
+_Released: 2026-02-05T20:09:45Z_
+
 ### Patch Changes
 
 - Updated dependencies [467e6aa]
@@ -913,6 +2196,8 @@
 
 ## 0.18.56
 
+_Released: 2026-02-05T13:53:56Z_
+
 ### Patch Changes
 
 - Updated dependencies [38e215e]
@@ -923,11 +2208,15 @@
 
 ## 0.18.55
 
+_Released: 2026-02-05T13:02:56Z_
+
 ### Patch Changes
 
 - df61c3a: feat: Prompt for credentials when not available in VSCode for adp generator
 
 ## 0.18.54
+
+_Released: 2026-02-05T11:39:04Z_
 
 ### Patch Changes
 
@@ -939,11 +2228,15 @@
 
 ## 0.18.53
 
+_Released: 2026-02-05T09:48:57Z_
+
 ### Patch Changes
 
 - 8a56942: update "@sap/approuter": "^20.8.0" in cf template
 
 ## 0.18.52
+
+_Released: 2026-02-05T08:38:39Z_
 
 ### Patch Changes
 
@@ -960,11 +2253,15 @@
 
 ## 0.18.51
 
+_Released: 2026-02-05T06:48:22Z_
+
 ### Patch Changes
 
 - f1e6ed6: fix: Incorrect Adaptation Project configuration for Cloud Foundry projects
 
 ## 0.18.50
+
+_Released: 2026-02-04T22:31:27Z_
 
 ### Patch Changes
 
@@ -979,6 +2276,8 @@
 
 ## 0.18.49
 
+_Released: 2026-02-03T15:42:23Z_
+
 ### Patch Changes
 
 - Updated dependencies [89175fe]
@@ -990,6 +2289,8 @@
     - @sap-ux/project-input-validator@0.6.49
 
 ## 0.18.48
+
+_Released: 2026-01-30T16:59:27Z_
 
 ### Patch Changes
 
@@ -1009,6 +2310,8 @@
 
 ## 0.18.47
 
+_Released: 2026-01-29T14:02:02Z_
+
 ### Patch Changes
 
 - Updated dependencies [6d71400]
@@ -1022,6 +2325,8 @@
 
 ## 0.18.46
 
+_Released: 2026-01-28T00:19:05Z_
+
 ### Patch Changes
 
 - Updated dependencies [be6ea11]
@@ -1031,6 +2336,8 @@
     - @sap-ux/inquirer-common@0.10.18
 
 ## 0.18.45
+
+_Released: 2026-01-26T09:14:13Z_
 
 ### Patch Changes
 
@@ -1042,12 +2349,16 @@
 
 ## 0.18.44
 
+_Released: 2026-01-23T23:57:30Z_
+
 ### Patch Changes
 
 - c707af1: fix(deps): update dependency dotenv to v16.6.1
     - @sap-ux/inquirer-common@0.10.17
 
 ## 0.18.43
+
+_Released: 2026-01-23T22:30:10Z_
 
 ### Patch Changes
 
@@ -1059,6 +2370,8 @@
 
 ## 0.18.42
 
+_Released: 2026-01-23T12:49:27Z_
+
 ### Patch Changes
 
 - Updated dependencies [32f8644]
@@ -1069,6 +2382,8 @@
 
 ## 0.18.41
 
+_Released: 2026-01-19T12:47:48Z_
+
 ### Patch Changes
 
 - Updated dependencies [9aad34c]
@@ -1076,6 +2391,8 @@
     - @sap-ux/inquirer-common@0.10.14
 
 ## 0.18.40
+
+_Released: 2026-01-16T13:57:39Z_
 
 ### Patch Changes
 
@@ -1091,6 +2408,8 @@
 
 ## 0.18.39
 
+_Released: 2026-01-16T12:32:24Z_
+
 ### Patch Changes
 
 - Updated dependencies [c9fd939]
@@ -1100,6 +2419,8 @@
     - @sap-ux/inquirer-common@0.10.12
 
 ## 0.18.38
+
+_Released: 2026-01-15T14:14:39Z_
 
 ### Patch Changes
 
@@ -1113,6 +2434,8 @@
 
 ## 0.18.37
 
+_Released: 2026-01-14T17:56:49Z_
+
 ### Patch Changes
 
 - Updated dependencies [b132944]
@@ -1125,11 +2448,15 @@
 
 ## 0.18.36
 
+_Released: 2026-01-14T13:30:42Z_
+
 ### Patch Changes
 
 - ce4b29c: Upgrade qs/body-parser/express
 
 ## 0.18.35
+
+_Released: 2026-01-12T12:01:34Z_
 
 ### Patch Changes
 
@@ -1142,6 +2469,8 @@
     - @sap-ux/inquirer-common@0.10.9
 
 ## 0.18.34
+
+_Released: 2026-01-09T11:35:48Z_
 
 ### Patch Changes
 
@@ -1156,6 +2485,8 @@
 
 ## 0.18.33
 
+_Released: 2026-01-08T17:12:17Z_
+
 ### Patch Changes
 
 - Updated dependencies [2204ad3]
@@ -1166,6 +2497,8 @@
 
 ## 0.18.32
 
+_Released: 2026-01-07T16:03:58Z_
+
 ### Patch Changes
 
 - Updated dependencies [4e0f204]
@@ -1175,12 +2508,16 @@
 
 ## 0.18.31
 
+_Released: 2026-01-07T10:20:40Z_
+
 ### Patch Changes
 
 - Updated dependencies [6382440]
     - @sap-ux/inquirer-common@0.10.6
 
 ## 0.18.30
+
+_Released: 2026-01-06T14:37:31Z_
 
 ### Patch Changes
 
@@ -1190,11 +2527,15 @@
 
 ## 0.18.29
 
+_Released: 2026-01-05T14:16:22Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.10.4
 
 ## 0.18.28
+
+_Released: 2025-12-22T17:36:43Z_
 
 ### Patch Changes
 
@@ -1204,6 +2545,8 @@
     - @sap-ux/system-access@0.6.37
 
 ## 0.18.27
+
+_Released: 2025-12-19T11:36:13Z_
 
 ### Patch Changes
 
@@ -1223,6 +2566,8 @@
     - @sap-ux/ui5-config@0.29.12
 
 ## 0.18.26
+
+_Released: 2025-12-18T21:05:02Z_
 
 ### Patch Changes
 
@@ -1244,6 +2589,8 @@
 
 ## 0.18.25
 
+_Released: 2025-12-18T13:13:52Z_
+
 ### Patch Changes
 
 - Updated dependencies [691ab27]
@@ -1251,6 +2598,8 @@
     - @sap-ux/inquirer-common@0.10.1
 
 ## 0.18.24
+
+_Released: 2025-12-18T08:56:52Z_
 
 ### Patch Changes
 
@@ -1262,11 +2611,15 @@
 
 ## 0.18.23
 
+_Released: 2025-12-17T13:45:40Z_
+
 ### Patch Changes
 
 - a79eb1b: feat: Adding points of telemetry data for ADP generator
 
 ## 0.18.22
+
+_Released: 2025-12-16T11:43:52Z_
 
 ### Patch Changes
 
@@ -1277,6 +2630,8 @@
     - @sap-ux/inquirer-common@0.9.17
 
 ## 0.18.21
+
+_Released: 2025-12-15T10:50:50Z_
 
 ### Patch Changes
 
@@ -1298,6 +2653,8 @@
 
 ## 0.18.20
 
+_Released: 2025-12-12T12:38:21Z_
+
 ### Patch Changes
 
 - Updated dependencies [7217d7d]
@@ -1310,6 +2667,8 @@
 
 ## 0.18.19
 
+_Released: 2025-12-12T09:02:37Z_
+
 ### Patch Changes
 
 - Updated dependencies [e1647fe]
@@ -1317,6 +2676,8 @@
     - @sap-ux/inquirer-common@0.9.14
 
 ## 0.18.18
+
+_Released: 2025-12-10T20:04:51Z_
 
 ### Patch Changes
 
@@ -1330,6 +2691,8 @@
 
 ## 0.18.17
 
+_Released: 2025-12-10T09:08:56Z_
+
 ### Patch Changes
 
 - Updated dependencies [985223a]
@@ -1341,6 +2704,8 @@
     - @sap-ux/inquirer-common@0.9.12
 
 ## 0.18.16
+
+_Released: 2025-12-08T17:56:48Z_
 
 ### Patch Changes
 
@@ -1356,6 +2721,8 @@
 
 ## 0.18.15
 
+_Released: 2025-12-08T11:51:00Z_
+
 ### Patch Changes
 
 - Updated dependencies [f71a139]
@@ -1365,11 +2732,15 @@
 
 ## 0.18.14
 
+_Released: 2025-12-05T12:18:49Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.9.10
 
 ## 0.18.13
+
+_Released: 2025-12-04T10:42:12Z_
 
 ### Patch Changes
 
@@ -1383,17 +2754,23 @@
 
 ## 0.18.12
 
+_Released: 2025-12-04T07:10:48Z_
+
 ### Patch Changes
 
 - 324d8ed: feat: Enable Adaptation Editor for CF projects
 
 ## 0.18.11
 
+_Released: 2025-11-28T13:51:14Z_
+
 ### Patch Changes
 
 - 9c66de4: fix: remove hard coded usage of webapp folder name
 
 ## 0.18.10
+
+_Released: 2025-11-27T14:58:09Z_
 
 ### Patch Changes
 
@@ -1406,6 +2783,8 @@
     - @sap-ux/inquirer-common@0.9.8
 
 ## 0.18.9
+
+_Released: 2025-11-26T14:39:37Z_
 
 ### Patch Changes
 
@@ -1420,6 +2799,8 @@
 
 ## 0.18.8
 
+_Released: 2025-11-26T12:17:21Z_
+
 ### Patch Changes
 
 - Updated dependencies [1c45a4d]
@@ -1428,12 +2809,16 @@
 
 ## 0.18.7
 
+_Released: 2025-11-26T00:12:42Z_
+
 ### Patch Changes
 
 - Updated dependencies [597834f]
     - @sap-ux/inquirer-common@0.9.5
 
 ## 0.18.6
+
+_Released: 2025-11-24T12:45:14Z_
 
 ### Patch Changes
 
@@ -1448,11 +2833,15 @@
 
 ## 0.18.5
 
+_Released: 2025-11-21T15:52:30Z_
+
 ### Patch Changes
 
 - 6872b31: fix: System SAPUI5 version not available for selection in ADP generator
 
 ## 0.18.4
+
+_Released: 2025-11-18T12:29:09Z_
 
 ### Patch Changes
 
@@ -1460,11 +2849,15 @@
 
 ## 0.18.3
 
+_Released: 2025-11-12T16:47:06Z_
+
 ### Patch Changes
 
 - 744fa93: Updating @ui5/cli references to v4 and align version
 
 ## 0.18.2
+
+_Released: 2025-11-12T13:11:21Z_
 
 ### Patch Changes
 
@@ -1472,17 +2865,23 @@
 
 ## 0.18.1
 
+_Released: 2025-11-12T08:08:16Z_
+
 ### Patch Changes
 
 - 3017ce7: chore: Update @sap/cf-tools version to latest to avoid security issues
 
 ## 0.18.0
 
+_Released: 2025-11-10T14:56:50Z_
+
 ### Minor Changes
 
 - aa2c7df: Bump specVersion
 
 ## 0.17.8
+
+_Released: 2025-11-07T13:23:57Z_
 
 ### Patch Changes
 
@@ -1492,11 +2891,15 @@
 
 ## 0.17.7
 
+_Released: 2025-11-06T15:12:51Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.9.2
 
 ## 0.17.6
+
+_Released: 2025-11-05T06:53:42Z_
 
 ### Patch Changes
 
@@ -1518,12 +2921,16 @@
 
 ## 0.17.5
 
+_Released: 2025-11-03T10:50:00Z_
+
 ### Patch Changes
 
 - Updated dependencies [4ddcff3]
     - @sap-ux/inquirer-common@0.9.0
 
 ## 0.17.4
+
+_Released: 2025-10-31T13:35:34Z_
 
 ### Patch Changes
 
@@ -1535,6 +2942,8 @@
 
 ## 0.17.3
 
+_Released: 2025-10-30T10:09:21Z_
+
 ### Patch Changes
 
 - Updated dependencies [3253294]
@@ -1542,6 +2951,8 @@
     - @sap-ux/system-access@0.6.26
 
 ## 0.17.2
+
+_Released: 2025-10-29T17:02:38Z_
 
 ### Patch Changes
 
@@ -1553,6 +2964,8 @@
 
 ## 0.17.1
 
+_Released: 2025-10-29T11:04:17Z_
+
 ### Patch Changes
 
 - Updated dependencies [36b0f19]
@@ -1562,6 +2975,8 @@
     - @sap-ux/inquirer-common@0.8.8
 
 ## 0.17.0
+
+_Released: 2025-10-28T13:36:39Z_
 
 ### Minor Changes
 
@@ -1575,11 +2990,15 @@
 
 ## 0.16.14
 
+_Released: 2025-10-28T09:08:24Z_
+
 ### Patch Changes
 
 - 05ecba6: feat: Adapt CF projects' structure to work with preview-middleware
 
 ## 0.16.13
+
+_Released: 2025-10-27T13:41:31Z_
 
 ### Patch Changes
 
@@ -1593,6 +3012,8 @@
 
 ## 0.16.12
 
+_Released: 2025-10-22T18:56:41Z_
+
 ### Patch Changes
 
 - fa9580c: chore - Rimraf upgrade
@@ -1602,11 +3023,15 @@
 
 ## 0.16.11
 
+_Released: 2025-10-22T12:44:17Z_
+
 ### Patch Changes
 
 - 27fb53e: fix: CF integration tests and sonar issues
 
 ## 0.16.10
+
+_Released: 2025-10-22T09:32:12Z_
 
 ### Patch Changes
 
@@ -1620,12 +3045,16 @@
 
 ## 0.16.9
 
+_Released: 2025-10-21T09:37:06Z_
+
 ### Patch Changes
 
 - Updated dependencies [06bc541]
     - @sap-ux/inquirer-common@0.8.4
 
 ## 0.16.8
+
+_Released: 2025-10-21T07:47:50Z_
 
 ### Patch Changes
 
@@ -1639,11 +3068,15 @@
 
 ## 0.16.7
 
+_Released: 2025-10-17T14:58:57Z_
+
 ### Patch Changes
 
 - 233259c: fix: Remove sap-appvar-id parameter from FLP configuration changes for ADP
 
 ## 0.16.6
+
+_Released: 2025-10-17T11:37:38Z_
 
 ### Patch Changes
 
@@ -1655,11 +3088,15 @@
 
 ## 0.16.5
 
+_Released: 2025-10-17T09:45:11Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.8.1
 
 ## 0.16.4
+
+_Released: 2025-10-15T16:45:46Z_
 
 ### Patch Changes
 
@@ -1668,17 +3105,23 @@
 
 ## 0.16.3
 
+_Released: 2025-10-15T14:30:03Z_
+
 ### Patch Changes
 
 - 441be86: fix: Remove CF flow from the ADP Generator and fix template resolution problem
 
 ## 0.16.2
 
+_Released: 2025-10-14T15:08:41Z_
+
 ### Patch Changes
 
 - 3e4bf96: axios update 1.12.2
 
 ## 0.16.1
+
+_Released: 2025-10-14T13:22:30Z_
 
 ### Patch Changes
 
@@ -1691,6 +3134,8 @@
 
 ## 0.16.0
 
+_Released: 2025-10-13T14:40:48Z_
+
 ### Minor Changes
 
 - 247a5a9: feat: Add ADP Generator Cloud Foundry prompting code
@@ -1702,11 +3147,15 @@
 
 ## 0.15.38
 
+_Released: 2025-10-13T07:04:12Z_
+
 ### Patch Changes
 
 - 1df9184: fix: Add SAPUI5 Component Usage wizard generates file with wrong property
 
 ## 0.15.37
+
+_Released: 2025-10-10T13:53:56Z_
 
 ### Patch Changes
 
@@ -1715,6 +3164,8 @@
     - @sap-ux/inquirer-common@0.7.50
 
 ## 0.15.36
+
+_Released: 2025-10-10T12:22:06Z_
 
 ### Patch Changes
 
@@ -1729,11 +3180,15 @@
 
 ## 0.15.35
 
+_Released: 2025-10-10T09:39:17Z_
+
 ### Patch Changes
 
 - e015869: chore: patch inquirer dependency
 
 ## 0.15.34
+
+_Released: 2025-10-07T13:15:25Z_
 
 ### Patch Changes
 
@@ -1742,6 +3197,8 @@
     - @sap-ux/inquirer-common@0.7.48
 
 ## 0.15.33
+
+_Released: 2025-10-06T17:09:01Z_
 
 ### Patch Changes
 
@@ -1762,6 +3219,8 @@
 
 ## 0.15.32
 
+_Released: 2025-10-06T10:53:53Z_
+
 ### Patch Changes
 
 - Updated dependencies [d866995]
@@ -1775,6 +3234,8 @@
 
 ## 0.15.31
 
+_Released: 2025-09-23T20:14:56Z_
+
 ### Patch Changes
 
 - Updated dependencies [998954b]
@@ -1785,6 +3246,8 @@
     - @sap-ux/system-access@0.6.18
 
 ## 0.15.30
+
+_Released: 2025-09-19T16:36:41Z_
 
 ### Patch Changes
 
@@ -1802,6 +3265,8 @@
 
 ## 0.15.29
 
+_Released: 2025-09-19T00:44:48Z_
+
 ### Patch Changes
 
 - Updated dependencies [f9b4afe]
@@ -1814,6 +3279,8 @@
 
 ## 0.15.28
 
+_Released: 2025-09-18T07:30:28Z_
+
 ### Patch Changes
 
 - Updated dependencies [c385a76]
@@ -1825,6 +3292,8 @@
     - @sap-ux/inquirer-common@0.7.42
 
 ## 0.15.27
+
+_Released: 2025-09-16T06:28:11Z_
 
 ### Patch Changes
 
@@ -1839,17 +3308,23 @@
 
 ## 0.15.26
 
+_Released: 2025-09-11T11:04:24Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.7.40
 
 ## 0.15.25
 
+_Released: 2025-09-03T14:26:25Z_
+
 ### Patch Changes
 
 - f46dd02: fix: Deploy Config generator does not allow package with CloudReady and OnPremise project types
 
 ## 0.15.24
+
+_Released: 2025-09-02T13:22:05Z_
 
 ### Patch Changes
 
@@ -1858,6 +3333,8 @@
 - @sap-ux/system-access@0.6.16
 
 ## 0.15.23
+
+_Released: 2025-09-01T12:06:20Z_
 
 ### Patch Changes
 
@@ -1868,6 +3345,8 @@
     - @sap-ux/inquirer-common@0.7.38
 
 ## 0.15.22
+
+_Released: 2025-08-28T13:37:07Z_
 
 ### Patch Changes
 
@@ -1885,11 +3364,15 @@
 
 ## 0.15.21
 
+_Released: 2025-08-25T12:19:51Z_
+
 ### Patch Changes
 
 - 384bb40: fix: Deploy Config generator does not show cloud-specific prompts for ADP when login is required
 
 ## 0.15.20
+
+_Released: 2025-08-21T14:27:46Z_
 
 ### Patch Changes
 
@@ -1901,17 +3384,23 @@
 
 ## 0.15.19
 
+_Released: 2025-08-20T12:18:39Z_
+
 ### Patch Changes
 
 - 0729936: fix: ADP Generator templates / sub-generator resolution problem
 
 ## 0.15.18
 
+_Released: 2025-08-20T06:12:11Z_
+
 ### Patch Changes
 
 - 9f84298: fix: corrected path parameter to use project path instead of web app path
 
 ## 0.15.17
+
+_Released: 2025-08-14T14:36:13Z_
 
 ### Patch Changes
 
@@ -1927,6 +3416,8 @@
 
 ## 0.15.16
 
+_Released: 2025-08-13T10:00:10Z_
+
 ### Patch Changes
 
 - @sap-ux/i18n@0.3.3
@@ -1939,11 +3430,15 @@
 
 ## 0.15.15
 
+_Released: 2025-08-12T14:05:27Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.7.33
 
 ## 0.15.14
+
+_Released: 2025-08-07T06:27:29Z_
 
 ### Patch Changes
 
@@ -1951,11 +3446,15 @@
 
 ## 0.15.13
 
+_Released: 2025-08-04T07:58:35Z_
+
 ### Patch Changes
 
 - 98fbd93: Store fragment parent control info in fragment body
 
 ## 0.15.12
+
+_Released: 2025-08-01T13:45:39Z_
 
 ### Patch Changes
 
@@ -1964,6 +3463,8 @@
     - @sap-ux/system-access@0.6.12
 
 ## 0.15.11
+
+_Released: 2025-08-01T09:39:39Z_
 
 ### Patch Changes
 
@@ -1978,12 +3479,16 @@
 
 ## 0.15.10
 
+_Released: 2025-07-31T11:23:22Z_
+
 ### Patch Changes
 
 - Updated dependencies [9fa7f0b]
     - @sap-ux/inquirer-common@0.7.30
 
 ## 0.15.9
+
+_Released: 2025-07-30T19:33:46Z_
 
 ### Patch Changes
 
@@ -1998,6 +3503,8 @@
 
 ## 0.15.8
 
+_Released: 2025-07-28T22:57:52Z_
+
 ### Patch Changes
 
 - Updated dependencies [4e0bd83]
@@ -2010,6 +3517,8 @@
 
 ## 0.15.7
 
+_Released: 2025-07-28T08:36:50Z_
+
 ### Patch Changes
 
 - Updated dependencies [ffac61c]
@@ -2018,11 +3527,15 @@
 
 ## 0.15.6
 
+_Released: 2025-07-25T11:40:41Z_
+
 ### Patch Changes
 
 - e25ee86: fix: remove filtering of parameters for inbounds
 
 ## 0.15.5
+
+_Released: 2025-07-25T09:16:43Z_
 
 ### Patch Changes
 
@@ -2030,11 +3543,15 @@
 
 ## 0.15.4
 
+_Released: 2025-07-22T13:05:35Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.7.27
 
 ## 0.15.3
+
+_Released: 2025-07-21T13:01:41Z_
 
 ### Patch Changes
 
@@ -2044,6 +3561,8 @@
 
 ## 0.15.2
 
+_Released: 2025-07-17T13:47:26Z_
+
 ### Patch Changes
 
 - Updated dependencies [84a8d56]
@@ -2051,11 +3570,15 @@
 
 ## 0.15.1
 
+_Released: 2025-07-17T08:59:54Z_
+
 ### Patch Changes
 
 - 52ac1b0: feat: Add ADP manifest change wizard sub-generators
 
 ## 0.15.0
+
+_Released: 2025-07-16T14:40:22Z_
 
 ### Minor Changes
 
@@ -2063,11 +3586,15 @@
 
 ## 0.14.44
 
+_Released: 2025-07-16T12:23:18Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.7.25
 
 ## 0.14.43
+
+_Released: 2025-07-11T15:10:00Z_
 
 ### Patch Changes
 
@@ -2076,11 +3603,15 @@
 
 ## 0.14.42
 
+_Released: 2025-07-10T11:49:34Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.7.24
 
 ## 0.14.41
+
+_Released: 2025-07-08T12:06:04Z_
 
 ### Patch Changes
 
@@ -2094,11 +3625,15 @@
 
 ## 0.14.40
 
+_Released: 2025-07-07T08:44:59Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.7.22
 
 ## 0.14.39
+
+_Released: 2025-07-04T15:18:17Z_
 
 ### Patch Changes
 
@@ -2113,11 +3648,15 @@
 
 ## 0.14.38
 
+_Released: 2025-07-04T10:48:56Z_
+
 ### Patch Changes
 
 - e9beeb4: fix: Various bugs in FLP config generator for Adaptation Project
 
 ## 0.14.37
+
+_Released: 2025-07-04T09:34:59Z_
 
 ### Patch Changes
 
@@ -2132,6 +3671,8 @@
 
 ## 0.14.36
 
+_Released: 2025-07-03T12:14:55Z_
+
 ### Patch Changes
 
 - Updated dependencies [7a4543e]
@@ -2144,11 +3685,15 @@
 
 ## 0.14.35
 
+_Released: 2025-07-02T05:46:03Z_
+
 ### Patch Changes
 
 - 6c2d08a: Create app descriptor changes for v4 add custom section quick action
 
 ## 0.14.34
+
+_Released: 2025-06-30T08:46:50Z_
 
 ### Patch Changes
 
@@ -2159,6 +3704,8 @@
     - @sap-ux/inquirer-common@0.7.18
 
 ## 0.14.33
+
+_Released: 2025-06-27T16:39:38Z_
 
 ### Patch Changes
 
@@ -2173,6 +3720,8 @@
 
 ## 0.14.32
 
+_Released: 2025-06-27T07:08:06Z_
+
 ### Patch Changes
 
 - Updated dependencies [77b3b22]
@@ -2183,6 +3732,8 @@
 
 ## 0.14.31
 
+_Released: 2025-06-25T10:51:12Z_
+
 ### Patch Changes
 
 - 83109eb: feat(generator-adp): Various bug fixes and improvements for ADP generator
@@ -2191,11 +3742,15 @@
 
 ## 0.14.30
 
+_Released: 2025-06-24T14:02:12Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.7.15
 
 ## 0.14.29
+
+_Released: 2025-06-24T07:18:46Z_
 
 ### Patch Changes
 
@@ -2211,6 +3766,8 @@
 
 ## 0.14.28
 
+_Released: 2025-06-23T22:19:01Z_
+
 ### Patch Changes
 
 - Updated dependencies [14214a3]
@@ -2218,6 +3775,8 @@
     - @sap-ux/system-access@0.6.7
 
 ## 0.14.27
+
+_Released: 2025-06-19T10:31:56Z_
 
 ### Patch Changes
 
@@ -2227,6 +3786,8 @@
 
 ## 0.14.26
 
+_Released: 2025-06-19T04:44:24Z_
+
 ### Patch Changes
 
 - Updated dependencies [aaf0c14]
@@ -2235,6 +3796,8 @@
 
 ## 0.14.25
 
+_Released: 2025-06-17T13:40:19Z_
+
 ### Patch Changes
 
 - Updated dependencies [c9f79c1]
@@ -2242,11 +3805,15 @@
 
 ## 0.14.24
 
+_Released: 2025-06-17T07:58:40Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.7.13
 
 ## 0.14.23
+
+_Released: 2025-06-16T09:52:52Z_
 
 ### Patch Changes
 
@@ -2256,11 +3823,15 @@
 
 ## 0.14.22
 
+_Released: 2025-06-16T05:54:38Z_
+
 ### Patch Changes
 
 - 65edfba: feat(generator-adp): Align @ui5/cli with latest v4 release
 
 ## 0.14.21
+
+_Released: 2025-06-13T14:12:57Z_
 
 ### Patch Changes
 
@@ -2270,12 +3841,16 @@
 
 ## 0.14.20
 
+_Released: 2025-06-13T10:58:52Z_
+
 ### Patch Changes
 
 - Updated dependencies [bf752f3]
     - @sap-ux/inquirer-common@0.7.10
 
 ## 0.14.19
+
+_Released: 2025-06-11T12:23:45Z_
 
 ### Patch Changes
 
@@ -2285,6 +3860,8 @@
 
 ## 0.14.18
 
+_Released: 2025-06-10T17:08:16Z_
+
 ### Patch Changes
 
 - Updated dependencies [4303f99]
@@ -2293,17 +3870,23 @@
 
 ## 0.14.17
 
+_Released: 2025-06-10T09:28:31Z_
+
 ### Patch Changes
 
 - f4439f1: feat(generator-adp): Consume FLP generator and Deployment generator
 
 ## 0.14.16
 
+_Released: 2025-06-10T07:40:27Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.7.9
 
 ## 0.14.15
+
+_Released: 2025-06-09T09:48:34Z_
 
 ### Patch Changes
 
@@ -2313,17 +3896,23 @@
 
 ## 0.14.14
 
+_Released: 2025-06-05T12:32:35Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.7.7
 
 ## 0.14.13
 
+_Released: 2025-06-05T07:23:07Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.7.6
 
 ## 0.14.12
+
+_Released: 2025-06-04T10:59:54Z_
 
 ### Patch Changes
 
@@ -2333,11 +3922,15 @@
 
 ## 0.14.11
 
+_Released: 2025-05-30T09:02:15Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.7.5
 
 ## 0.14.10
+
+_Released: 2025-05-30T07:18:36Z_
 
 ### Patch Changes
 
@@ -2353,6 +3946,8 @@
 
 ## 0.14.9
 
+_Released: 2025-05-29T08:13:17Z_
+
 ### Patch Changes
 
 - Updated dependencies [f9e4913]
@@ -2360,11 +3955,15 @@
 
 ## 0.14.8
 
+_Released: 2025-05-27T17:59:17Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.7.3
 
 ## 0.14.7
+
+_Released: 2025-05-27T15:05:11Z_
 
 ### Patch Changes
 
@@ -2373,12 +3972,16 @@
 
 ## 0.14.6
 
+_Released: 2025-05-26T11:57:48Z_
+
 ### Patch Changes
 
 - Updated dependencies [6e2ef66]
     - @sap-ux/odata-service-writer@0.27.3
 
 ## 0.14.5
+
+_Released: 2025-05-23T13:35:39Z_
 
 ### Patch Changes
 
@@ -2388,11 +3991,15 @@
 
 ## 0.14.4
 
+_Released: 2025-05-23T12:26:54Z_
+
 ### Patch Changes
 
 - 8e44d02: fix: reuse ABAP service provider in create annotation file handler
 
 ## 0.14.3
+
+_Released: 2025-05-22T16:20:10Z_
 
 ### Patch Changes
 
@@ -2401,11 +4008,15 @@
 
 ## 0.14.2
 
+_Released: 2025-05-15T14:05:09Z_
+
 ### Patch Changes
 
 - 5f3aa03: feat: Integration of ExtendControllerPlugin in Adaptation Editor
 
 ## 0.14.1
+
+_Released: 2025-05-15T13:36:04Z_
 
 ### Patch Changes
 
@@ -2420,6 +4031,8 @@
     - @sap-ux/system-access@0.6.0
 
 ## 0.14.0
+
+_Released: 2025-05-14T22:35:53Z_
 
 ### Minor Changes
 
@@ -2443,11 +4056,15 @@
 
 ## 0.13.45
 
+_Released: 2025-05-14T12:10:48Z_
+
 ### Patch Changes
 
 - 2ba9fe9: feat: Improve ADP generator writer by refactoring its logic
 
 ## 0.13.44
+
+_Released: 2025-05-13T10:46:10Z_
 
 ### Patch Changes
 
@@ -2457,6 +4074,8 @@
 
 ## 0.13.43
 
+_Released: 2025-05-08T10:12:31Z_
+
 ### Patch Changes
 
 - 6cb23c8: feat: Add the Extension Project functionality and internal support information
@@ -2464,6 +4083,8 @@
     - @sap-ux/project-input-validator@0.5.6
 
 ## 0.13.42
+
+_Released: 2025-05-05T13:48:20Z_
 
 ### Patch Changes
 
@@ -2477,6 +4098,8 @@
 
 ## 0.13.41
 
+_Released: 2025-05-02T10:00:21Z_
+
 ### Patch Changes
 
 - Updated dependencies [1a01c5e]
@@ -2485,11 +4108,15 @@
 
 ## 0.13.40
 
+_Released: 2025-05-02T07:45:43Z_
+
 ### Patch Changes
 
 - 9e7fa23: fix: Issues for Adaptation Projects using TypeScipt
 
 ## 0.13.39
+
+_Released: 2025-05-01T13:52:16Z_
 
 ### Patch Changes
 
@@ -2497,12 +4124,16 @@
 
 ## 0.13.38
 
+_Released: 2025-04-30T10:38:47Z_
+
 ### Patch Changes
 
 - Updated dependencies [8d4bca6]
     - @sap-ux/odata-service-writer@0.26.17
 
 ## 0.13.37
+
+_Released: 2025-04-30T08:50:36Z_
 
 ### Patch Changes
 
@@ -2512,17 +4143,23 @@
 
 ## 0.13.36
 
+_Released: 2025-04-28T14:29:23Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.6.40
 
 ## 0.13.35
 
+_Released: 2025-04-25T13:08:37Z_
+
 ### Patch Changes
 
 - 258ecca: refactor: Enhance XML Fragment context menu control with addXMLPlugin Integration
 
 ## 0.13.34
+
+_Released: 2025-04-24T15:01:01Z_
 
 ### Patch Changes
 
@@ -2537,6 +4174,8 @@
 
 ## 0.13.33
 
+_Released: 2025-04-23T15:22:38Z_
+
 ### Patch Changes
 
 - Updated dependencies [294bbe3]
@@ -2549,6 +4188,8 @@
     - @sap-ux/inquirer-common@0.6.38
 
 ## 0.13.32
+
+_Released: 2025-04-23T13:59:14Z_
 
 ### Patch Changes
 
@@ -2563,11 +4204,15 @@
 
 ## 0.13.31
 
+_Released: 2025-04-17T12:52:13Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.6.36
 
 ## 0.13.30
+
+_Released: 2025-04-17T09:03:34Z_
 
 ### Patch Changes
 
@@ -2577,6 +4222,8 @@
 
 ## 0.13.29
 
+_Released: 2025-04-15T14:18:17Z_
+
 ### Patch Changes
 
 - Updated dependencies [28c6594]
@@ -2585,11 +4232,15 @@
 
 ## 0.13.28
 
+_Released: 2025-04-15T10:10:52Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.6.35
 
 ## 0.13.27
+
+_Released: 2025-04-14T22:24:07Z_
 
 ### Patch Changes
 
@@ -2602,11 +4253,15 @@
 
 ## 0.13.26
 
+_Released: 2025-04-11T08:09:06Z_
+
 ### Patch Changes
 
 - c4278fb: Change build and deploy scripts for cloud ready adaptation projects
 
 ## 0.13.25
+
+_Released: 2025-04-10T13:52:38Z_
 
 ### Patch Changes
 
@@ -2614,11 +4269,15 @@
 
 ## 0.13.24
 
+_Released: 2025-04-09T06:44:54Z_
+
 ### Patch Changes
 
 - c81864a: fix: ADP Generator integration test mocking
 
 ## 0.13.23
+
+_Released: 2025-04-08T13:20:49Z_
 
 ### Patch Changes
 
@@ -2626,11 +4285,15 @@
 
 ## 0.13.22
 
+_Released: 2025-03-30T09:30:38Z_
+
 ### Patch Changes
 
 - fbdf2d0: fix(generator-adp): Generator running in the CLI context
 
 ## 0.13.21
+
+_Released: 2025-03-26T12:15:41Z_
 
 ### Patch Changes
 
@@ -2642,6 +4305,8 @@
 
 ## 0.13.20
 
+_Released: 2025-03-26T09:06:26Z_
+
 ### Patch Changes
 
 - Updated dependencies [ab81490]
@@ -2649,11 +4314,15 @@
 
 ## 0.13.19
 
+_Released: 2025-03-25T15:09:56Z_
+
 ### Patch Changes
 
 - 93f07bc: fix: Adaptation Editor opens multiple re-entrance ticket tabs for Cloud systems
 
 ## 0.13.18
+
+_Released: 2025-03-22T09:43:02Z_
 
 ### Patch Changes
 
@@ -2662,11 +4331,15 @@
 
 ## 0.13.17
 
+_Released: 2025-03-19T11:14:07Z_
+
 ### Patch Changes
 
 - e754cb0: fix: disable "Add New Annotation File" Quick Action with tooltip, when 'metadata' is not loaded
 
 ## 0.13.16
+
+_Released: 2025-03-19T08:54:25Z_
 
 ### Patch Changes
 
@@ -2679,6 +4352,8 @@
 
 ## 0.13.15
 
+_Released: 2025-03-18T09:41:03Z_
+
 ### Patch Changes
 
 - Updated dependencies [224494c]
@@ -2690,6 +4365,8 @@
     - @sap-ux/inquirer-common@0.6.30
 
 ## 0.13.14
+
+_Released: 2025-03-10T20:40:35Z_
 
 ### Patch Changes
 
@@ -2705,6 +4382,8 @@
 
 ## 0.13.13
 
+_Released: 2025-03-06T16:16:20Z_
+
 ### Patch Changes
 
 - Updated dependencies [1ce7fe9]
@@ -2716,11 +4395,15 @@
 
 ## 0.13.12
 
+_Released: 2025-03-06T08:13:39Z_
+
 ### Patch Changes
 
 - 1c07ab9: Allow controller extensions for reuse components on OnPremise systems
 
 ## 0.13.11
+
+_Released: 2025-03-05T11:16:53Z_
 
 ### Patch Changes
 
@@ -2733,11 +4416,15 @@
 
 ## 0.13.10
 
+_Released: 2025-03-05T09:53:57Z_
+
 ### Patch Changes
 
 - 14bec21: feat: Change "Add Local Annotation File" wizard dropdown option text in @sap-ux/adp-tooling
 
 ## 0.13.9
+
+_Released: 2025-03-05T09:14:02Z_
 
 ### Patch Changes
 
@@ -2751,6 +4438,8 @@
 
 ## 0.13.8
 
+_Released: 2025-03-04T08:55:15Z_
+
 ### Patch Changes
 
 - Updated dependencies [cf05ceb]
@@ -2763,11 +4452,15 @@
 
 ## 0.13.7
 
+_Released: 2025-03-03T11:06:12Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.6.24
 
 ## 0.13.6
+
+_Released: 2025-03-03T08:50:39Z_
 
 ### Patch Changes
 
@@ -2776,6 +4469,8 @@
     - @sap-ux/system-access@0.5.32
 
 ## 0.13.5
+
+_Released: 2025-02-28T15:10:48Z_
 
 ### Patch Changes
 
@@ -2788,17 +4483,23 @@
 
 ## 0.13.4
 
+_Released: 2025-02-28T08:16:02Z_
+
 ### Patch Changes
 
 - 78dd2c2: fix: TypeScript template causes the iframe to break when controller extension is loaded
 
 ## 0.13.3
 
+_Released: 2025-02-27T19:24:50Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.6.22
 
 ## 0.13.2
+
+_Released: 2025-02-27T14:15:03Z_
 
 ### Patch Changes
 
@@ -2813,6 +4514,8 @@
 
 ## 0.13.1
 
+_Released: 2025-02-27T08:22:17Z_
+
 ### Patch Changes
 
 - Updated dependencies [c8c292c]
@@ -2824,11 +4527,15 @@
 
 ## 0.13.0
 
+_Released: 2025-02-26T11:38:25Z_
+
 ### Minor Changes
 
 - 127bd12: feat: Add Typescript support for Adaptation Project
 
 ## 0.12.138
+
+_Released: 2025-02-24T09:17:17Z_
 
 ### Patch Changes
 
@@ -2836,17 +4543,23 @@
 
 ## 0.12.137
 
+_Released: 2025-02-20T16:17:08Z_
+
 ### Patch Changes
 
 - df8d790: fix: 'Add Custom Table Column' CPE quick action is generating incorrect column fragment for Grid and Tree tables
 
 ## 0.12.136
 
+_Released: 2025-02-19T07:51:13Z_
+
 ### Patch Changes
 
 - bb38bef: fix: Change fileName for the manifest change editors writers differs from the actual real file name
 
 ## 0.12.135
+
+_Released: 2025-02-18T18:24:37Z_
 
 ### Patch Changes
 
@@ -2855,17 +4568,23 @@
 
 ## 0.12.134
 
+_Released: 2025-02-18T13:48:13Z_
+
 ### Patch Changes
 
 - 8930179: fix: New column created by "Add Table Custom Column" quick action not being displayed, due to incomplete column data in the fragment
 
 ## 0.12.133
 
+_Released: 2025-02-17T16:12:15Z_
+
 ### Patch Changes
 
 - @sap-ux/odata-service-writer@0.26.2
 
 ## 0.12.132
+
+_Released: 2025-02-17T13:42:22Z_
 
 ### Patch Changes
 
@@ -2878,6 +4597,8 @@
 
 ## 0.12.131
 
+_Released: 2025-02-17T11:44:22Z_
+
 ### Patch Changes
 
 - Updated dependencies [4fd3029]
@@ -2886,6 +4607,8 @@
 
 ## 0.12.130
 
+_Released: 2025-02-14T10:07:13Z_
+
 ### Patch Changes
 
 - Updated dependencies [f1f9cbe]
@@ -2893,11 +4616,15 @@
 
 ## 0.12.129
 
+_Released: 2025-02-13T17:39:11Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.6.17
 
 ## 0.12.128
+
+_Released: 2025-02-13T10:58:34Z_
 
 ### Patch Changes
 
@@ -2909,6 +4636,8 @@
     - @sap-ux/inquirer-common@0.6.16
 
 ## 0.12.127
+
+_Released: 2025-02-07T19:58:32Z_
 
 ### Patch Changes
 
@@ -2922,11 +4651,15 @@
 
 ## 0.12.126
 
+_Released: 2025-02-06T22:08:41Z_
+
 ### Patch Changes
 
 - 59453ba: fix(security): security findings from github
 
 ## 0.12.125
+
+_Released: 2025-02-05T17:08:20Z_
 
 ### Patch Changes
 
@@ -2941,12 +4674,16 @@
 
 ## 0.12.124
 
+_Released: 2025-02-05T15:41:32Z_
+
 ### Patch Changes
 
 - Updated dependencies [4a90030]
     - @sap-ux/odata-service-writer@0.25.7
 
 ## 0.12.123
+
+_Released: 2025-02-05T14:44:29Z_
 
 ### Patch Changes
 
@@ -2958,12 +4695,16 @@
 
 ## 0.12.122
 
+_Released: 2025-02-05T09:24:10Z_
+
 ### Patch Changes
 
 - Updated dependencies [f349f56]
     - @sap-ux/odata-service-writer@0.25.6
 
 ## 0.12.121
+
+_Released: 2025-02-04T15:39:07Z_
 
 ### Patch Changes
 
@@ -2976,6 +4717,8 @@
 
 ## 0.12.120
 
+_Released: 2025-02-04T14:25:43Z_
+
 ### Patch Changes
 
 - Updated dependencies [9980073]
@@ -2985,6 +4728,8 @@
     - @sap-ux/system-access@0.5.29
 
 ## 0.12.119
+
+_Released: 2025-01-30T10:04:50Z_
 
 ### Patch Changes
 
@@ -2997,12 +4742,16 @@
 
 ## 0.12.118
 
+_Released: 2025-01-29T17:41:08Z_
+
 ### Patch Changes
 
 - Updated dependencies [5e3a5f8]
     - @sap-ux/inquirer-common@0.6.9
 
 ## 0.12.117
+
+_Released: 2025-01-29T13:31:31Z_
 
 ### Patch Changes
 
@@ -3014,12 +4763,16 @@
 
 ## 0.12.116
 
+_Released: 2025-01-28T17:41:21Z_
+
 ### Patch Changes
 
 - Updated dependencies [9910e7f]
     - @sap-ux/odata-service-writer@0.25.5
 
 ## 0.12.115
+
+_Released: 2025-01-28T10:44:06Z_
 
 ### Patch Changes
 
@@ -3028,6 +4781,8 @@
     - @sap-ux/system-access@0.5.27
 
 ## 0.12.114
+
+_Released: 2025-01-28T09:20:06Z_
 
 ### Patch Changes
 
@@ -3039,6 +4794,8 @@
     - @sap-ux/inquirer-common@0.6.7
 
 ## 0.12.113
+
+_Released: 2025-01-27T18:57:16Z_
 
 ### Patch Changes
 
@@ -3052,6 +4809,8 @@
 
 ## 0.12.112
 
+_Released: 2025-01-22T17:11:37Z_
+
 ### Patch Changes
 
 - Updated dependencies [080bda2]
@@ -3059,12 +4818,16 @@
 
 ## 0.12.111
 
+_Released: 2025-01-17T09:30:45Z_
+
 ### Patch Changes
 
 - Updated dependencies [625bca8]
     - @sap-ux/odata-service-writer@0.25.3
 
 ## 0.12.110
+
+_Released: 2025-01-16T02:22:29Z_
 
 ### Patch Changes
 
@@ -3077,6 +4840,8 @@
 
 ## 0.12.109
 
+_Released: 2025-01-14T16:54:17Z_
+
 ### Patch Changes
 
 - Updated dependencies [1559aee]
@@ -3085,17 +4850,23 @@
 
 ## 0.12.108
 
+_Released: 2025-01-13T18:05:42Z_
+
 ### Patch Changes
 
 - f115bfa: fix: remove unused api routes and implementation for annotation file creation
 
 ## 0.12.107
 
+_Released: 2025-01-10T12:45:00Z_
+
 ### Patch Changes
 
 - 030857d: fix: Hide semantic object & action FLP prompts when there are inbounds for an Adaptation Project
 
 ## 0.12.106
+
+_Released: 2025-01-09T12:31:59Z_
 
 ### Patch Changes
 
@@ -3104,11 +4875,15 @@
 
 ## 0.12.105
 
+_Released: 2025-01-08T17:16:17Z_
+
 ### Patch Changes
 
 - 19d51f3: feat: Quick Action For Add New Annotation File
 
 ## 0.12.104
+
+_Released: 2025-01-08T15:30:03Z_
 
 ### Patch Changes
 
@@ -3117,12 +4892,16 @@
 
 ## 0.12.103
 
+_Released: 2025-01-08T11:51:44Z_
+
 ### Patch Changes
 
 - Updated dependencies [dac696a]
     - @sap-ux/inquirer-common@0.6.2
 
 ## 0.12.102
+
+_Released: 2025-01-08T10:44:36Z_
 
 ### Patch Changes
 
@@ -3132,11 +4911,15 @@
 
 ## 0.12.101
 
+_Released: 2024-12-20T15:43:15Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.6.1
 
 ## 0.12.100
+
+_Released: 2024-12-19T17:24:19Z_
 
 ### Patch Changes
 
@@ -3145,12 +4928,16 @@
 
 ## 0.12.99
 
+_Released: 2024-12-18T10:32:41Z_
+
 ### Patch Changes
 
 - Updated dependencies [f8dda3b]
     - @sap-ux/inquirer-common@0.5.15
 
 ## 0.12.98
+
+_Released: 2024-12-17T15:31:53Z_
 
 ### Patch Changes
 
@@ -3162,6 +4949,8 @@
 
 ## 0.12.97
 
+_Released: 2024-12-17T13:32:02Z_
+
 ### Patch Changes
 
 - Updated dependencies [cb54b44]
@@ -3172,6 +4961,8 @@
 
 ## 0.12.96
 
+_Released: 2024-12-10T16:04:29Z_
+
 ### Patch Changes
 
 - 3ebd767: Replace keytar with @zowe/secrets-for-zowe-sdk
@@ -3181,6 +4972,8 @@
 
 ## 0.12.95
 
+_Released: 2024-12-10T14:32:00Z_
+
 ### Patch Changes
 
 - 0c64478: feat: Enhance extracted FLP prompts to support ADP scenario
@@ -3189,11 +4982,15 @@
 
 ## 0.12.94
 
+_Released: 2024-12-10T11:51:29Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.5.10
 
 ## 0.12.93
+
+_Released: 2024-12-10T10:48:59Z_
 
 ### Patch Changes
 
@@ -3202,6 +4999,8 @@
     - @sap-ux/system-access@0.5.22
 
 ## 0.12.92
+
+_Released: 2024-12-06T21:07:01Z_
 
 ### Patch Changes
 
@@ -3213,6 +5012,8 @@
 
 ## 0.12.91
 
+_Released: 2024-12-04T15:30:32Z_
+
 ### Patch Changes
 
 - Updated dependencies [307706e]
@@ -3220,11 +5021,15 @@
 
 ## 0.12.90
 
+_Released: 2024-12-04T14:21:28Z_
+
 ### Patch Changes
 
 - 3805f2e: add request options to manifest-service
 
 ## 0.12.89
+
+_Released: 2024-12-04T12:27:41Z_
 
 ### Patch Changes
 
@@ -3236,6 +5041,8 @@
 
 ## 0.12.88
 
+_Released: 2024-12-04T11:05:53Z_
+
 ### Patch Changes
 
 - @sap-ux/axios-extension@1.17.5
@@ -3244,11 +5051,15 @@
 
 ## 0.12.87
 
+_Released: 2024-12-02T20:00:53Z_
+
 ### Patch Changes
 
 - 14163cd: Update deploy scripts and ui5.yaml with latest ui5 builder configurations
 
 ## 0.12.86
+
+_Released: 2024-12-02T16:28:38Z_
 
 ### Patch Changes
 
@@ -3261,6 +5072,8 @@
 
 ## 0.12.85
 
+_Released: 2024-11-27T12:48:07Z_
+
 ### Patch Changes
 
 - Updated dependencies [cfdd442]
@@ -3268,17 +5081,23 @@
 
 ## 0.12.84
 
+_Released: 2024-11-27T11:23:07Z_
+
 ### Patch Changes
 
 - 6e60bdf: Store manifest change files to /changes directory
 
 ## 0.12.83
 
+_Released: 2024-11-25T12:18:22Z_
+
 ### Patch Changes
 
 - 09a58bb: chore: upgrade vocabularies-types + pnpm updates
 
 ## 0.12.82
+
+_Released: 2024-11-21T11:48:14Z_
 
 ### Patch Changes
 
@@ -3287,17 +5106,23 @@
 
 ## 0.12.81
 
+_Released: 2024-11-19T15:25:45Z_
+
 ### Patch Changes
 
 - 2a72ad2: chore - Fix audit issues
 
 ## 0.12.80
 
+_Released: 2024-11-19T13:21:01Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.5.3
 
 ## 0.12.79
+
+_Released: 2024-11-18T22:28:16Z_
 
 ### Patch Changes
 
@@ -3308,6 +5133,8 @@
     - @sap-ux/system-access@0.5.19
 
 ## 0.12.78
+
+_Released: 2024-11-18T20:38:37Z_
 
 ### Patch Changes
 
@@ -3320,6 +5147,8 @@
 
 ## 0.12.77
 
+_Released: 2024-11-17T22:14:47Z_
+
 ### Patch Changes
 
 - 8237f83: feat: add namespaces to annotation template
@@ -3329,12 +5158,16 @@
 
 ## 0.12.76
 
+_Released: 2024-11-14T17:04:56Z_
+
 ### Patch Changes
 
 - Updated dependencies [2886db3]
     - @sap-ux/inquirer-common@0.5.0
 
 ## 0.12.75
+
+_Released: 2024-11-11T17:55:13Z_
 
 ### Patch Changes
 
@@ -3345,11 +5178,15 @@
 
 ## 0.12.74
 
+_Released: 2024-11-11T16:15:22Z_
+
 ### Patch Changes
 
 - 48dd15d: fix: refresh descriptor after manifest changes
 
 ## 0.12.73
+
+_Released: 2024-11-08T15:21:08Z_
 
 ### Patch Changes
 
@@ -3358,6 +5195,8 @@
     - @sap-ux/system-access@0.5.16
 
 ## 0.12.72
+
+_Released: 2024-11-08T08:58:34Z_
 
 ### Patch Changes
 
@@ -3368,6 +5207,8 @@
 
 ## 0.12.71
 
+_Released: 2024-11-07T09:36:42Z_
+
 ### Patch Changes
 
 - Updated dependencies [0120dda]
@@ -3375,6 +5216,8 @@
     - @sap-ux/system-access@0.5.15
 
 ## 0.12.70
+
+_Released: 2024-11-05T21:46:19Z_
 
 ### Patch Changes
 
@@ -3386,6 +5229,8 @@
 
 ## 0.12.69
 
+_Released: 2024-11-05T13:50:29Z_
+
 ### Patch Changes
 
 - Updated dependencies [5a68903]
@@ -3395,6 +5240,8 @@
 
 ## 0.12.68
 
+_Released: 2024-11-01T22:26:57Z_
+
 ### Patch Changes
 
 - @sap-ux/system-access@0.5.14
@@ -3402,11 +5249,15 @@
 
 ## 0.12.67
 
+_Released: 2024-11-01T07:47:25Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.4.10
 
 ## 0.12.66
+
+_Released: 2024-10-31T07:40:48Z_
 
 ### Patch Changes
 
@@ -3417,11 +5268,15 @@
 
 ## 0.12.65
 
+_Released: 2024-10-30T16:46:53Z_
+
 ### Patch Changes
 
 - df6fd7f: Quick action added to create custom table columns
 
 ## 0.12.64
+
+_Released: 2024-10-30T13:01:12Z_
 
 ### Patch Changes
 
@@ -3429,11 +5284,15 @@
 
 ## 0.12.63
 
+_Released: 2024-10-30T10:01:08Z_
+
 ### Patch Changes
 
 - 29a4ef6: feat: create page and table action quick actions for OData(v4) applications
 
 ## 0.12.62
+
+_Released: 2024-10-24T14:04:35Z_
 
 ### Patch Changes
 
@@ -3442,12 +5301,16 @@
 
 ## 0.12.61
 
+_Released: 2024-10-23T12:50:19Z_
+
 ### Patch Changes
 
 - Updated dependencies [d29b1a3]
     - @sap-ux/inquirer-common@0.4.7
 
 ## 0.12.60
+
+_Released: 2024-10-22T09:03:13Z_
 
 ### Patch Changes
 
@@ -3458,6 +5321,8 @@
 
 ## 0.12.59
 
+_Released: 2024-10-16T08:21:13Z_
+
 ### Patch Changes
 
 - Updated dependencies [eb38e5b]
@@ -3466,6 +5331,8 @@
     - @sap-ux/system-access@0.5.12
 
 ## 0.12.58
+
+_Released: 2024-10-14T21:48:37Z_
 
 ### Patch Changes
 
@@ -3476,6 +5343,8 @@
 
 ## 0.12.57
 
+_Released: 2024-10-14T16:41:16Z_
+
 ### Patch Changes
 
 - Updated dependencies [15e6959]
@@ -3484,6 +5353,8 @@
     - @sap-ux/system-access@0.5.12
 
 ## 0.12.56
+
+_Released: 2024-10-08T10:16:01Z_
 
 ### Patch Changes
 
@@ -3494,12 +5365,16 @@
 
 ## 0.12.55
 
+_Released: 2024-10-04T15:21:13Z_
+
 ### Patch Changes
 
 - @sap-ux/system-access@0.5.12
 - @sap-ux/ui5-config@0.25.0
 
 ## 0.12.54
+
+_Released: 2024-10-02T14:28:15Z_
 
 ### Patch Changes
 
@@ -3510,17 +5385,23 @@
 
 ## 0.12.53
 
+_Released: 2024-10-02T11:32:12Z_
+
 ### Patch Changes
 
 - 7479bd3: fix: add page and table quick actions v2 app
 
 ## 0.12.52
 
+_Released: 2024-09-25T13:19:11Z_
+
 ### Patch Changes
 
 - 595bdea: feat: enhance "add-header-field" quick action with the template
 
 ## 0.12.51
+
+_Released: 2024-09-23T10:02:33Z_
 
 ### Patch Changes
 
@@ -3532,11 +5413,15 @@
 
 ## 0.12.50
 
+_Released: 2024-09-19T21:55:12Z_
+
 ### Patch Changes
 
 - 00e1835: Fixed manifest changes not visible in preview after reload
 
 ## 0.12.49
+
+_Released: 2024-09-18T14:01:49Z_
 
 ### Patch Changes
 
@@ -3547,11 +5432,15 @@
 
 ## 0.12.48
 
+_Released: 2024-09-17T10:23:36Z_
+
 ### Patch Changes
 
 - 2fd82b1: Object Page Add Custom Section quick action support
 
 ## 0.12.47
+
+_Released: 2024-09-12T09:42:45Z_
 
 ### Patch Changes
 
@@ -3562,6 +5451,8 @@
 
 ## 0.12.46
 
+_Released: 2024-09-11T10:59:39Z_
+
 ### Patch Changes
 
 - aa72f3c: Fix preview adp project with component dependencies
@@ -3570,6 +5461,8 @@
     - @sap-ux/system-access@0.5.11
 
 ## 0.12.45
+
+_Released: 2024-09-03T19:06:21Z_
 
 ### Patch Changes
 
@@ -3580,11 +5473,15 @@
 
 ## 0.12.44
 
+_Released: 2024-08-30T11:32:43Z_
+
 ### Patch Changes
 
 - 1294b1c: fix: URI validation not executed for Replace OData prompting
 
 ## 0.12.43
+
+_Released: 2024-08-30T06:05:30Z_
 
 ### Patch Changes
 
@@ -3594,6 +5491,8 @@
     - @sap-ux/system-access@0.5.10
 
 ## 0.12.42
+
+_Released: 2024-08-28T11:16:50Z_
 
 ### Patch Changes
 
@@ -3605,6 +5504,8 @@
 
 ## 0.12.41
 
+_Released: 2024-08-23T10:57:41Z_
+
 ### Patch Changes
 
 - Updated dependencies [d3dafeb]
@@ -3614,11 +5515,15 @@
 
 ## 0.12.40
 
+_Released: 2024-08-21T08:00:39Z_
+
 ### Patch Changes
 
 - 6419b2c: Clean separation between prompting and writing in adp-tooling
 
 ## 0.12.39
+
+_Released: 2024-08-20T10:06:29Z_
 
 ### Patch Changes
 
@@ -3628,6 +5533,8 @@
     - @sap-ux/system-access@0.5.9
 
 ## 0.12.38
+
+_Released: 2024-08-19T11:34:45Z_
 
 ### Patch Changes
 
@@ -3639,6 +5546,8 @@
 
 ## 0.12.37
 
+_Released: 2024-08-19T09:48:14Z_
+
 ### Patch Changes
 
 - Updated dependencies [9c8dc5c]
@@ -3649,6 +5558,8 @@
 
 ## 0.12.36
 
+_Released: 2024-08-16T14:27:07Z_
+
 ### Patch Changes
 
 - @sap-ux/system-access@0.5.8
@@ -3656,17 +5567,23 @@
 
 ## 0.12.35
 
+_Released: 2024-08-16T10:46:05Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.4.5
 
 ## 0.12.34
 
+_Released: 2024-08-16T06:54:30Z_
+
 ### Patch Changes
 
 - b813843: Fix validation in change-inbound prompts
 
 ## 0.12.33
+
+_Released: 2024-08-14T12:04:43Z_
 
 ### Patch Changes
 
@@ -3675,12 +5592,16 @@
 
 ## 0.12.32
 
+_Released: 2024-08-14T08:37:46Z_
+
 ### Patch Changes
 
 - @sap-ux/system-access@0.5.6
 - @sap-ux/ui5-config@0.23.1
 
 ## 0.12.31
+
+_Released: 2024-08-12T10:50:52Z_
 
 ### Patch Changes
 
@@ -3691,11 +5612,15 @@
 
 ## 0.12.30
 
+_Released: 2024-08-08T13:01:35Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.4.4
 
 ## 0.12.29
+
+_Released: 2024-08-08T07:33:51Z_
 
 ### Patch Changes
 
@@ -3706,6 +5631,8 @@
 
 ## 0.12.28
 
+_Released: 2024-08-07T14:42:33Z_
+
 ### Patch Changes
 
 - 593ad0f: Adp-tooling prompting validations
@@ -3713,6 +5640,8 @@
     - @sap-ux/project-input-validator@0.3.3
 
 ## 0.12.27
+
+_Released: 2024-08-07T11:06:05Z_
 
 ### Patch Changes
 
@@ -3722,6 +5651,8 @@
 
 ## 0.12.26
 
+_Released: 2024-08-07T08:31:04Z_
+
 ### Patch Changes
 
 - Updated dependencies [0084205]
@@ -3730,11 +5661,15 @@
 
 ## 0.12.25
 
+_Released: 2024-08-02T08:51:32Z_
+
 ### Patch Changes
 
 - c473d24: feat: Add Adaptation Project's Component Usages prompting
 
 ## 0.12.24
+
+_Released: 2024-08-01T18:27:11Z_
 
 ### Patch Changes
 
@@ -3744,6 +5679,8 @@
     - @sap-ux/system-access@0.5.4
 
 ## 0.12.23
+
+_Released: 2024-08-01T17:28:17Z_
 
 ### Patch Changes
 
@@ -3755,6 +5692,8 @@
 
 ## 0.12.22
 
+_Released: 2024-08-01T16:21:31Z_
+
 ### Patch Changes
 
 - Updated dependencies [a986655]
@@ -3763,6 +5702,8 @@
     - @sap-ux/system-access@0.5.3
 
 ## 0.12.21
+
+_Released: 2024-08-01T14:53:05Z_
 
 ### Patch Changes
 
@@ -3773,6 +5714,8 @@
 
 ## 0.12.20
 
+_Released: 2024-08-01T12:24:50Z_
+
 ### Patch Changes
 
 - Updated dependencies [99b7b5f]
@@ -3781,6 +5724,8 @@
     - @sap-ux/system-access@0.5.3
 
 ## 0.12.19
+
+_Released: 2024-08-01T10:59:20Z_
 
 ### Patch Changes
 
@@ -3791,11 +5736,15 @@
 
 ## 0.12.18
 
+_Released: 2024-07-29T11:52:46Z_
+
 ### Patch Changes
 
 - 2a7d3c4: Add Change Inbound prompting and cli command
 
 ## 0.12.17
+
+_Released: 2024-07-25T12:05:28Z_
 
 ### Patch Changes
 
@@ -3804,6 +5753,8 @@
     - @sap-ux/system-access@0.5.3
 
 ## 0.12.16
+
+_Released: 2024-07-23T09:01:05Z_
 
 ### Patch Changes
 
@@ -3814,11 +5765,15 @@
 
 ## 0.12.15
 
+_Released: 2024-07-22T13:28:51Z_
+
 ### Patch Changes
 
 - @sap-ux/inquirer-common@0.4.2
 
 ## 0.12.14
+
+_Released: 2024-07-18T16:34:38Z_
 
 ### Patch Changes
 
@@ -3829,11 +5784,15 @@
 
 ## 0.12.13
 
+_Released: 2024-07-18T14:39:01Z_
+
 ### Patch Changes
 
 - 4c06318: Add Adaptation Project's Add Annotations To OData generator prompting
 
 ## 0.12.12
+
+_Released: 2024-07-18T11:50:01Z_
 
 ### Patch Changes
 
@@ -3842,6 +5801,8 @@
 
 ## 0.12.11
 
+_Released: 2024-07-18T09:34:40Z_
+
 ### Patch Changes
 
 - Updated dependencies [3a878f3]
@@ -3849,6 +5810,8 @@
     - @sap-ux/system-access@0.5.2
 
 ## 0.12.10
+
+_Released: 2024-07-17T10:08:55Z_
 
 ### Patch Changes
 
@@ -3859,6 +5822,8 @@
 
 ## 0.12.9
 
+_Released: 2024-07-12T15:28:30Z_
+
 ### Patch Changes
 
 - Updated dependencies [173b5f2]
@@ -3868,11 +5833,15 @@
 
 ## 0.12.8
 
+_Released: 2024-07-12T11:17:30Z_
+
 ### Patch Changes
 
 - 9e4ce4d: Remove safeMode from adp-tooling types and change order of ui5.yaml custom configuration
 
 ## 0.12.7
+
+_Released: 2024-07-12T09:20:42Z_
 
 ### Patch Changes
 
@@ -3882,6 +5851,8 @@
     - @sap-ux/system-access@0.5.1
 
 ## 0.12.6
+
+_Released: 2024-07-12T08:50:08Z_
 
 ### Patch Changes
 
@@ -3894,6 +5865,8 @@
 
 ## 0.12.5
 
+_Released: 2024-07-10T11:59:21Z_
+
 ### Patch Changes
 
 - Updated dependencies [0f3cf6b]
@@ -3903,11 +5876,15 @@
 
 ## 0.12.4
 
+_Released: 2024-07-10T08:16:28Z_
+
 ### Patch Changes
 
 - 5f074a7: Add toolsId in ui5.yaml for Adaptation Project writers and remove safeMode
 
 ## 0.12.3
+
+_Released: 2024-07-09T12:14:56Z_
 
 ### Patch Changes
 
@@ -3918,6 +5895,8 @@
 
 ## 0.12.2
 
+_Released: 2024-07-09T08:05:42Z_
+
 ### Patch Changes
 
 - Updated dependencies [0ae685e]
@@ -3927,6 +5906,8 @@
 
 ## 0.12.1
 
+_Released: 2024-07-05T16:16:30Z_
+
 ### Patch Changes
 
 - Updated dependencies [abf491a7]
@@ -3934,6 +5915,8 @@
     - @sap-ux/system-access@0.5.1
 
 ## 0.12.0
+
+_Released: 2024-07-05T15:03:05Z_
 
 ### Minor Changes
 
@@ -3952,6 +5935,8 @@
 
 ## 0.11.13
 
+_Released: 2024-07-03T10:48:46Z_
+
 ### Patch Changes
 
 - 9ea58ad4: fix: Release version of @sap-ux/project-access with filterDataSourcesByType
@@ -3962,11 +5947,15 @@
 
 ## 0.11.12
 
+_Released: 2024-07-03T08:02:05Z_
+
 ### Patch Changes
 
 - fa4c088c: fix: Incorrect change mapping for 'reference' property for Adaptation Project's writers
 
 ## 0.11.11
+
+_Released: 2024-07-02T09:14:08Z_
 
 ### Patch Changes
 
@@ -3974,11 +5963,15 @@
 
 ## 0.11.10
 
+_Released: 2024-07-02T06:37:55Z_
+
 ### Patch Changes
 
 - c442d2bc: fix: Duplicate i18n model in manifest.appdescr_variant for Adp Project
 
 ## 0.11.9
+
+_Released: 2024-07-01T14:53:05Z_
 
 ### Patch Changes
 
@@ -3988,6 +5981,8 @@
 
 ## 0.11.8
 
+_Released: 2024-07-01T13:51:23Z_
+
 ### Patch Changes
 
 - Updated dependencies [d5d3626c]
@@ -3995,6 +5990,8 @@
     - @sap-ux/system-access@0.4.6
 
 ## 0.11.7
+
+_Released: 2024-06-27T07:14:34Z_
 
 ### Patch Changes
 
@@ -4006,6 +6003,8 @@
 
 ## 0.11.6
 
+_Released: 2024-06-26T13:30:18Z_
+
 ### Patch Changes
 
 - Updated dependencies [1a1baeb0]
@@ -4016,6 +6015,8 @@
 
 ## 0.11.5
 
+_Released: 2024-06-26T11:28:03Z_
+
 ### Patch Changes
 
 - Updated dependencies [844e79c4]
@@ -4024,6 +6025,8 @@
 
 ## 0.11.4
 
+_Released: 2024-06-26T10:58:33Z_
+
 ### Patch Changes
 
 - Updated dependencies [31cc53f8]
@@ -4031,6 +6034,8 @@
     - @sap-ux/system-access@0.4.3
 
 ## 0.11.3
+
+_Released: 2024-06-25T14:41:22Z_
 
 ### Patch Changes
 
@@ -4042,12 +6047,16 @@
 
 ## 0.11.2
 
+_Released: 2024-06-19T15:33:01Z_
+
 ### Patch Changes
 
 - @sap-ux/system-access@0.4.2
 - @sap-ux/ui5-config@0.22.8
 
 ## 0.11.1
+
+_Released: 2024-06-18T15:06:09Z_
 
 ### Patch Changes
 
@@ -4060,6 +6069,8 @@
 
 ## 0.11.0
 
+_Released: 2024-06-17T14:16:04Z_
+
 ### Minor Changes
 
 - 7f8bc980: Adds writer functionality for generation of OnPremise and Cloud Adaptation Projects
@@ -4071,12 +6082,16 @@
 
 ## 0.10.23
 
+_Released: 2024-06-14T11:31:19Z_
+
 ### Patch Changes
 
 - Updated dependencies [a48a8c0b]
     - @sap-ux/system-access@0.4.0
 
 ## 0.10.22
+
+_Released: 2024-06-13T16:04:23Z_
 
 ### Patch Changes
 
@@ -4086,6 +6101,8 @@
     - @sap-ux/system-access@0.3.34
 
 ## 0.10.21
+
+_Released: 2024-06-12T15:20:44Z_
 
 ### Patch Changes
 
@@ -4097,6 +6114,8 @@
 
 ## 0.10.20
 
+_Released: 2024-06-11T10:45:47Z_
+
 ### Patch Changes
 
 - Updated dependencies [869c1c0d]
@@ -4105,11 +6124,15 @@
 
 ## 0.10.19
 
+_Released: 2024-06-10T07:24:32Z_
+
 ### Patch Changes
 
 - 98b5aaee: Add new model writer has misspelled property that breaks the validation of the change
 
 ## 0.10.18
+
+_Released: 2024-06-07T14:16:07Z_
 
 ### Patch Changes
 
@@ -4120,6 +6143,8 @@
 
 ## 0.10.17
 
+_Released: 2024-06-06T11:57:02Z_
+
 ### Patch Changes
 
 - Updated dependencies [b2ee99fc]
@@ -4127,6 +6152,8 @@
     - @sap-ux/system-access@0.3.33
 
 ## 0.10.16
+
+_Released: 2024-06-04T12:43:36Z_
 
 ### Patch Changes
 
@@ -4137,6 +6164,8 @@
 
 ## 0.10.15
 
+_Released: 2024-06-04T12:14:54Z_
+
 ### Patch Changes
 
 - Updated dependencies [a7d78229]
@@ -4146,6 +6175,8 @@
 
 ## 0.10.14
 
+_Released: 2024-05-31T13:42:35Z_
+
 ### Patch Changes
 
 - @sap-ux/project-access@1.20.3
@@ -4153,6 +6184,8 @@
 - @sap-ux/system-access@0.3.32
 
 ## 0.10.13
+
+_Released: 2024-05-29T14:07:16Z_
 
 ### Patch Changes
 
@@ -4163,6 +6196,8 @@
 
 ## 0.10.12
 
+_Released: 2024-05-29T09:49:51Z_
+
 ### Patch Changes
 
 - Updated dependencies [558891c2]
@@ -4171,6 +6206,8 @@
 
 ## 0.10.11
 
+_Released: 2024-05-29T09:17:16Z_
+
 ### Patch Changes
 
 - Updated dependencies [69282b7d]
@@ -4178,6 +6215,8 @@
     - @sap-ux/system-access@0.3.31
 
 ## 0.10.10
+
+_Released: 2024-05-27T13:04:53Z_
 
 ### Patch Changes
 
@@ -4189,6 +6228,8 @@
 
 ## 0.10.9
 
+_Released: 2024-05-27T09:27:40Z_
+
 ### Patch Changes
 
 - Updated dependencies [96de8f25]
@@ -4196,12 +6237,16 @@
 
 ## 0.10.8
 
+_Released: 2024-05-24T10:00:10Z_
+
 ### Patch Changes
 
 - Updated dependencies [895ee259]
     - @sap-ux/system-access@0.3.29
 
 ## 0.10.7
+
+_Released: 2024-05-22T13:22:39Z_
 
 ### Patch Changes
 
@@ -4212,17 +6257,23 @@
 
 ## 0.10.6
 
+_Released: 2024-05-21T08:32:40Z_
+
 ### Patch Changes
 
 - da5d9f0b: Fragment files are not created together with an addXML change in onChangeRequest handler
 
 ## 0.10.5
 
+_Released: 2024-05-15T07:25:15Z_
+
 ### Patch Changes
 
 - c87fcc91: Fix project migration
 
 ## 0.10.4
+
+_Released: 2024-05-14T08:36:35Z_
 
 ### Patch Changes
 
@@ -4234,6 +6285,8 @@
 
 ## 0.10.3
 
+_Released: 2024-05-14T06:33:50Z_
+
 ### Patch Changes
 
 - Updated dependencies [19ec0f01]
@@ -4241,6 +6294,8 @@
     - @sap-ux/system-access@0.3.27
 
 ## 0.10.2
+
+_Released: 2024-05-14T05:14:21Z_
 
 ### Patch Changes
 
@@ -4250,17 +6305,23 @@
 
 ## 0.10.1
 
+_Released: 2024-05-13T14:57:08Z_
+
 ### Patch Changes
 
 - f361f3b4: export migrate adt
 
 ## 0.10.0
 
+_Released: 2024-05-13T11:37:03Z_
+
 ### Minor Changes
 
 - 9ccbaded: add migration adp writer
 
 ## 0.9.28
+
+_Released: 2024-05-10T13:30:56Z_
 
 ### Patch Changes
 
@@ -4270,6 +6331,8 @@
 
 ## 0.9.27
 
+_Released: 2024-05-08T23:06:17Z_
+
 ### Patch Changes
 
 - Updated dependencies [312919ec]
@@ -4278,11 +6341,15 @@
 
 ## 0.9.26
 
+_Released: 2024-05-07T14:01:29Z_
+
 ### Patch Changes
 
 - 4e267684: chore - ejs upgrade
 
 ## 0.9.25
+
+_Released: 2024-05-06T12:14:11Z_
 
 ### Patch Changes
 
@@ -4293,6 +6360,8 @@
 
 ## 0.9.24
 
+_Released: 2024-05-03T11:18:51Z_
+
 ### Patch Changes
 
 - Updated dependencies [56b77fd9]
@@ -4300,6 +6369,8 @@
     - @sap-ux/system-access@0.3.22
 
 ## 0.9.23
+
+_Released: 2024-05-02T14:43:18Z_
 
 ### Patch Changes
 
@@ -4311,6 +6382,8 @@
 
 ## 0.9.22
 
+_Released: 2024-04-26T19:12:20Z_
+
 ### Patch Changes
 
 - Updated dependencies [99bca62c]
@@ -4319,6 +6392,8 @@
     - @sap-ux/system-access@0.3.21
 
 ## 0.9.21
+
+_Released: 2024-04-23T22:35:35Z_
 
 ### Patch Changes
 
@@ -4330,11 +6405,15 @@
 
 ## 0.9.20
 
+_Released: 2024-04-23T12:10:47Z_
+
 ### Patch Changes
 
 - 00cf3025: Alternative approach to have a consistent save for XML Fragments
 
 ## 0.9.19
+
+_Released: 2024-04-23T07:22:50Z_
 
 ### Patch Changes
 
@@ -4345,6 +6424,8 @@
 
 ## 0.9.18
 
+_Released: 2024-04-23T06:17:08Z_
+
 ### Patch Changes
 
 - Updated dependencies [31f5027c]
@@ -4353,11 +6434,15 @@
 
 ## 0.9.17
 
+_Released: 2024-04-18T11:40:00Z_
+
 ### Patch Changes
 
 - fc55fd6b: Component Usages writer produces incorrect content of a change
 
 ## 0.9.16
+
+_Released: 2024-04-18T07:12:06Z_
 
 ### Patch Changes
 
@@ -4368,6 +6453,8 @@
 
 ## 0.9.15
 
+_Released: 2024-04-17T07:44:37Z_
+
 ### Patch Changes
 
 - Updated dependencies [ee76e47f]
@@ -4377,11 +6464,15 @@
 
 ## 0.9.14
 
+_Released: 2024-04-16T06:40:59Z_
+
 ### Patch Changes
 
 - 6291bc37: chore - update dependencies to fix audit warnings
 
 ## 0.9.13
+
+_Released: 2024-04-15T19:27:29Z_
 
 ### Patch Changes
 
@@ -4390,6 +6481,8 @@
 - @sap-ux/system-access@0.3.20
 
 ## 0.9.12
+
+_Released: 2024-04-15T16:20:25Z_
 
 ### Patch Changes
 
@@ -4401,6 +6494,8 @@
 
 ## 0.9.11
 
+_Released: 2024-04-12T08:47:33Z_
+
 ### Patch Changes
 
 - Updated dependencies [080e7b06]
@@ -4408,6 +6503,8 @@
     - @sap-ux/system-access@0.3.20
 
 ## 0.9.10
+
+_Released: 2024-04-10T11:03:28Z_
 
 ### Patch Changes
 
@@ -4417,11 +6514,15 @@
 
 ## 0.9.9
 
+_Released: 2024-04-10T08:23:35Z_
+
 ### Patch Changes
 
 - 4cbb1639: "Open in VS Code" button for Controller Extension dialog does not work in BAS
 
 ## 0.9.8
+
+_Released: 2024-04-04T14:37:58Z_
 
 ### Patch Changes
 
@@ -4433,6 +6534,8 @@
 
 ## 0.9.7
 
+_Released: 2024-04-04T13:19:16Z_
+
 ### Patch Changes
 
 - Updated dependencies [efa35ddd]
@@ -4441,6 +6544,8 @@
     - @sap-ux/system-access@0.3.18
 
 ## 0.9.6
+
+_Released: 2024-03-22T08:51:54Z_
 
 ### Patch Changes
 
@@ -4451,6 +6556,8 @@
 
 ## 0.9.5
 
+_Released: 2024-03-21T16:21:01Z_
+
 ### Patch Changes
 
 - Updated dependencies [ec509c40]
@@ -4460,11 +6567,15 @@
 
 ## 0.9.4
 
+_Released: 2024-03-15T14:41:45Z_
+
 ### Patch Changes
 
 - 4b29ddcc: Update TypeScript templates, eslint config and ui5 devDependencies
 
 ## 0.9.3
+
+_Released: 2024-03-13T08:53:45Z_
 
 ### Patch Changes
 
@@ -4472,11 +6583,15 @@
 
 ## 0.9.2
 
+_Released: 2024-03-12T09:08:05Z_
+
 ### Patch Changes
 
 - 212d54ed: Removed unnecessary peer dependency of the adp-tooling and corrected the integration into the preview-middleware
 
 ## 0.9.1
+
+_Released: 2024-03-06T14:41:52Z_
 
 ### Patch Changes
 
@@ -4484,11 +6599,15 @@
 
 ## 0.9.0
 
+_Released: 2024-03-06T12:49:42Z_
+
 ### Minor Changes
 
 - cf842794: Adds writer functionality for Adaptation Project's manifest change editors
 
 ## 0.8.11
+
+_Released: 2024-02-28T11:01:55Z_
 
 ### Patch Changes
 
@@ -4496,6 +6615,8 @@
 - @sap-ux/system-access@0.3.16
 
 ## 0.8.10
+
+_Released: 2024-02-27T22:07:50Z_
 
 ### Patch Changes
 
@@ -4508,11 +6629,15 @@
 
 ## 0.8.9
 
+_Released: 2024-02-26T14:30:46Z_
+
 ### Patch Changes
 
 - 05953a48: FIX: preview of controller extensions in typescript
 
 ## 0.8.8
+
+_Released: 2024-02-23T08:01:15Z_
 
 ### Patch Changes
 
@@ -4522,6 +6647,8 @@
 
 ## 0.8.7
 
+_Released: 2024-02-21T13:16:24Z_
+
 ### Patch Changes
 
 - Updated dependencies [0f6e0e1b]
@@ -4530,6 +6657,8 @@
 
 ## 0.8.6
 
+_Released: 2024-02-20T12:39:56Z_
+
 ### Patch Changes
 
 - Updated dependencies [64f9c513]
@@ -4537,6 +6666,8 @@
     - @sap-ux/system-access@0.3.12
 
 ## 0.8.5
+
+_Released: 2024-02-08T13:37:06Z_
 
 ### Patch Changes
 
@@ -4547,17 +6678,23 @@
 
 ## 0.8.4
 
+_Released: 2024-02-07T14:23:48Z_
+
 ### Patch Changes
 
 - 2bedc697: chore(deps): update dependency @types/adm-zip to v0.5.5
 
 ## 0.8.3
 
+_Released: 2024-02-07T11:10:48Z_
+
 ### Patch Changes
 
 - @sap-ux/system-access@0.3.10
 
 ## 0.8.2
+
+_Released: 2024-02-06T22:32:34Z_
 
 ### Patch Changes
 
@@ -4567,6 +6704,8 @@
 
 ## 0.8.1
 
+_Released: 2024-02-06T09:17:39Z_
+
 ### Patch Changes
 
 - Updated dependencies [de8a4878]
@@ -4575,11 +6714,15 @@
 
 ## 0.8.0
 
+_Released: 2024-01-17T13:38:34Z_
+
 ### Minor Changes
 
 - 349fff1a: Connect to the backend during prompting to determine the layer and offer available apps
 
 ## 0.7.4
+
+_Released: 2024-01-16T14:33:35Z_
 
 ### Patch Changes
 
@@ -4589,6 +6732,8 @@
 
 ## 0.7.3
 
+_Released: 2024-01-16T12:59:00Z_
+
 ### Patch Changes
 
 - Updated dependencies [62232236]
@@ -4597,17 +6742,23 @@
 
 ## 0.7.2
 
+_Released: 2023-11-29T20:16:25Z_
+
 ### Patch Changes
 
 - 5a1eb6ed: Correctly escape quote for windows support
 
 ## 0.7.1
 
+_Released: 2023-11-24T08:39:41Z_
+
 ### Patch Changes
 
 - de818954: Enhance the error message for the user when he tries to create a new controller extension
 
 ## 0.7.0
+
+_Released: 2023-11-22T08:53:28Z_
 
 ### Minor Changes
 
@@ -4622,11 +6773,15 @@
 
 ## 0.6.0
 
+_Released: 2023-11-13T14:11:36Z_
+
 ### Minor Changes
 
 - 793f846b: Open existing controller from project files instead of creating a new one
 
 ## 0.5.5
+
+_Released: 2023-11-13T08:06:13Z_
 
 ### Patch Changes
 
@@ -4636,6 +6791,8 @@
 
 ## 0.5.4
 
+_Released: 2023-11-09T16:10:49Z_
+
 ### Patch Changes
 
 - Updated dependencies [db918804]
@@ -4644,6 +6801,8 @@
 
 ## 0.5.3
 
+_Released: 2023-10-25T10:10:33Z_
+
 ### Patch Changes
 
 - Updated dependencies [fa4537b2]
@@ -4651,6 +6810,8 @@
     - @sap-ux/system-access@0.3.3
 
 ## 0.5.2
+
+_Released: 2023-10-20T09:47:31Z_
 
 ### Patch Changes
 
@@ -4661,6 +6822,8 @@
 
 ## 0.5.1
 
+_Released: 2023-10-19T14:36:06Z_
+
 ### Patch Changes
 
 - Updated dependencies [3cfaba52]
@@ -4668,6 +6831,8 @@
     - @sap-ux/system-access@0.3.1
 
 ## 0.5.0
+
+_Released: 2023-10-19T12:06:19Z_
 
 ### Minor Changes
 
@@ -4683,11 +6848,15 @@
 
 ## 0.4.5
 
+_Released: 2023-10-18T13:59:49Z_
+
 ### Patch Changes
 
 - @sap-ux/system-access@0.2.11
 
 ## 0.4.4
+
+_Released: 2023-10-17T08:28:48Z_
 
 ### Patch Changes
 
@@ -4699,6 +6868,8 @@
 
 ## 0.4.3
 
+_Released: 2023-10-16T17:12:59Z_
+
 ### Patch Changes
 
 - Updated dependencies [d7492b53]
@@ -4706,6 +6877,8 @@
     - @sap-ux/system-access@0.2.9
 
 ## 0.4.2
+
+_Released: 2023-10-09T17:37:13Z_
 
 ### Patch Changes
 
@@ -4716,11 +6889,15 @@
 
 ## 0.4.1
 
+_Released: 2023-10-09T05:48:20Z_
+
 ### Patch Changes
 
 - 5747ca18: Fix: build and editor script for generated projects
 
 ## 0.4.0
+
+_Released: 2023-10-02T11:21:02Z_
 
 ### Minor Changes
 
@@ -4728,11 +6905,15 @@
 
 ## 0.3.4
 
+_Released: 2023-09-29T05:47:52Z_
+
 ### Patch Changes
 
 - 9d0140fa: Make express peer dependency
 
 ## 0.3.3
+
+_Released: 2023-09-25T15:52:06Z_
 
 ### Patch Changes
 
@@ -4740,11 +6921,15 @@
 
 ## 0.3.2
 
+_Released: 2023-09-25T13:57:39Z_
+
 ### Patch Changes
 
 - b3baa9a1: Fixes/removes the express dependency
 
 ## 0.3.1
+
+_Released: 2023-09-20T15:32:03Z_
 
 ### Patch Changes
 
@@ -4754,11 +6939,15 @@
 
 ## 0.3.0
 
+_Released: 2023-09-20T14:21:57Z_
+
 ### Minor Changes
 
 - ac0adb21: Enhancing the preview-middleware with new functionality such as adding an XML Fragment (creating "addXML" change).
 
 ## 0.2.5
+
+_Released: 2023-09-20T13:13:51Z_
 
 ### Patch Changes
 
@@ -4771,6 +6960,8 @@
 
 ## 0.2.4
 
+_Released: 2023-09-19T16:14:25Z_
+
 ### Patch Changes
 
 - Updated dependencies [7b156515]
@@ -4778,6 +6969,8 @@
     - @sap-ux/system-access@0.2.6
 
 ## 0.2.3
+
+_Released: 2023-09-19T15:51:30Z_
 
 ### Patch Changes
 
@@ -4789,11 +6982,15 @@
 
 ## 0.2.2
 
+_Released: 2023-09-19T15:06:34Z_
+
 ### Patch Changes
 
 - @sap-ux/system-access@0.2.4
 
 ## 0.2.1
+
+_Released: 2023-09-19T14:02:55Z_
 
 ### Patch Changes
 
@@ -4804,11 +7001,15 @@
 
 ## 0.2.0
 
+_Released: 2023-09-12T13:07:12Z_
+
 ### Minor Changes
 
 - 62148b07: Improving the generated ui5.yaml and package.json
 
 ## 0.1.8
+
+_Released: 2023-09-08T14:35:37Z_
 
 ### Patch Changes
 
@@ -4818,6 +7019,8 @@
 
 ## 0.1.7
 
+_Released: 2023-09-01T07:49:28Z_
+
 ### Patch Changes
 
 - Updated dependencies [6e403f27]
@@ -4825,6 +7028,8 @@
     - @sap-ux/system-access@0.2.2
 
 ## 0.1.6
+
+_Released: 2023-08-24T15:31:47Z_
 
 ### Patch Changes
 
@@ -4834,12 +7039,16 @@
 
 ## 0.1.5
 
+_Released: 2023-08-11T10:26:43Z_
+
 ### Patch Changes
 
 - Updated dependencies [290b6b59]
     - @sap-ux/system-access@0.2.0
 
 ## 0.1.4
+
+_Released: 2023-08-11T09:14:46Z_
 
 ### Patch Changes
 
@@ -4849,6 +7058,8 @@
 
 ## 0.1.3
 
+_Released: 2023-08-10T12:54:14Z_
+
 ### Patch Changes
 
 - Updated dependencies [24e45780]
@@ -4857,11 +7068,15 @@
 
 ## 0.1.2
 
+_Released: 2023-08-08T09:21:00Z_
+
 ### Patch Changes
 
 - a256cd54: FIX: 'Trying to copy from a source that does not exist' error
 
 ## 0.1.1
+
+_Released: 2023-08-02T13:52:19Z_
 
 ### Patch Changes
 

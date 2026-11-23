@@ -1,0 +1,18 @@
+<core:FragmentDefinition
+	xmlns="sap.m"
+	xmlns:f="sap.ui.layout.form"
+	xmlns:core="sap.ui.core">
+	<ResponsivePopover
+		showHeader="true"
+		title="{i18n>QualityTaskProcessorNotesLabel}"
+		showCloseButton="true"
+		class="sapUiPopupWithPadding"
+		placement="Bottom"
+		contentWidth="40%" >
+		<content>
+			<VBox>
+				<Text  id="QualityTaskProcessorNotes"/>
+			</VBox>
+		</content>
+	</ResponsivePopover>
+</core:FragmentDefinition>

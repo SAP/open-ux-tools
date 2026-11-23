@@ -1,0 +1,96 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Migration Integration Tests LROP v2 Migration should migrate tool_suite_beta_lrop_v2_project 1`] = `
+"{
+    \\"version\\": \\"0.2.0\\",
+    \\"configurations\\": [
+        {
+            \\"name\\": \\"Start tool_suite_beta_lrop_v2_project\\",
+            \\"type\\": \\"node\\",
+            \\"request\\": \\"launch\\",
+            \\"runtimeExecutable\\": \\"npm\\",
+            \\"cwd\\": \\"\${workspaceFolder}\\",
+            \\"windows\\": {
+                \\"runtimeExecutable\\": \\"npm.cmd\\"
+            },
+            \\"runtimeArgs\\": [
+                \\"run-script\\",
+                \\"start\\"
+            ],
+            \\"console\\": \\"integratedTerminal\\",
+            \\"internalConsoleOptions\\": \\"neverOpen\\",
+            \\"noDebug\\": true,
+            \\"port\\": 9229,
+            \\"env\\": {
+                \\"DEBUG\\": \\"--inspect\\"
+            }
+        },
+        {
+            \\"name\\": \\"Start tool_suite_beta_lrop_v2_project with UI5 Version\\",
+            \\"type\\": \\"node\\",
+            \\"request\\": \\"launch\\",
+            \\"runtimeExecutable\\": \\"npm\\",
+            \\"cwd\\": \\"\${workspaceFolder}\\",
+            \\"windows\\": {
+                \\"runtimeExecutable\\": \\"npm.cmd\\"
+            },
+            \\"runtimeArgs\\": [
+                \\"run-script\\",
+                \\"start\\",
+                \\"\${input:UI5Version}\\"
+            ],
+            \\"console\\": \\"integratedTerminal\\",
+            \\"internalConsoleOptions\\": \\"neverOpen\\",
+            \\"noDebug\\": true,
+            \\"port\\": 9229,
+            \\"env\\": {
+                \\"DEBUG\\": \\"--inspect\\"
+            }
+        },
+        {
+            \\"name\\": \\"Start tool_suite_beta_lrop_v2_project Mock\\",
+            \\"type\\": \\"node\\",
+            \\"request\\": \\"launch\\",
+            \\"cwd\\": \\"\${workspaceFolder}\\",
+            \\"runtimeExecutable\\": \\"npm\\",
+            \\"windows\\": {
+                \\"runtimeExecutable\\": \\"npm.cmd\\"
+            },
+            \\"runtimeArgs\\": [
+                \\"run-script\\",
+                \\"start-mock\\"
+            ],
+            \\"console\\": \\"integratedTerminal\\",
+            \\"internalConsoleOptions\\": \\"neverOpen\\",
+            \\"noDebug\\": true,
+            \\"port\\": 9229
+        },
+        {
+            \\"name\\": \\"Start tool_suite_beta_lrop_v2_project Mock with UI5 Version\\",
+            \\"type\\": \\"node\\",
+            \\"request\\": \\"launch\\",
+            \\"cwd\\": \\"\${workspaceFolder}\\",
+            \\"runtimeExecutable\\": \\"npm\\",
+            \\"windows\\": {
+                \\"runtimeExecutable\\": \\"npm.cmd\\"
+            },
+            \\"runtimeArgs\\": [
+                \\"run-script\\",
+                \\"start-mock\\",
+                \\"\${input:UI5Version}\\"
+            ],
+            \\"console\\": \\"integratedTerminal\\",
+            \\"internalConsoleOptions\\": \\"neverOpen\\",
+            \\"noDebug\\": true,
+            \\"port\\": 9229
+        }
+    ],
+    \\"inputs\\": [
+        {
+            \\"id\\": \\"UI5Version\\",
+            \\"type\\": \\"command\\",
+            \\"command\\": \\"sap.ux.appGenerator.ui5Version\\"
+        }
+    ]
+}"
+`;

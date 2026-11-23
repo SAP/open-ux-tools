@@ -3,13 +3,13 @@ import type { RawAnnotation, AnnotationList } from '@sap-ux/vocabularies-types';
 import { Edm } from '@sap-ux/odata-annotation-core-types';
 import type { AliasInformation, AnnotationFile, Element, Target } from '@sap-ux/odata-annotation-core-types';
 
-import type { AnnotationReference } from '../types';
+import type { AnnotationReference } from '../types/index.js';
 import { getElementAttributeValue, parsePath, resolveName, toFullyQualifiedPath } from '@sap-ux/odata-annotation-core';
-import { ApiErrorCode, ApiError } from '../error';
-import { annotationReferenceToString } from '../utils';
-import type { NamespaceMap } from './utils';
-import type { AVTNode } from './types';
-import { convertPointerInAnnotationToInternal } from './pointer';
+import { ApiErrorCode, ApiError } from '../error.js';
+import { annotationReferenceToString } from '../utils/index.js';
+import type { NamespaceMap } from './utils.js';
+import type { AVTNode } from './types.js';
+import { convertPointerInAnnotationToInternal } from './pointer.js';
 
 /**
  * Finds a node matching to the pointer from root.

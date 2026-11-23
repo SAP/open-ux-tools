@@ -2,10 +2,10 @@ import type AdmZip from 'adm-zip';
 
 import type { ToolsLogger } from '@sap-ux/logger';
 
-import { t } from '../../i18n';
-import { extractXSApp } from '../utils';
-import { getFDCApps } from '../services/api';
-import type { CfConfig, CFApp, ServiceKeys, XsApp } from '../../types';
+import { t } from '../../i18n.js';
+import { extractXSApp } from '../utils/index.js';
+import { getFDCApps } from '../services/api.js';
+import type { CfConfig, CFApp, ServiceKeys, XsApp } from '../../types.js';
 
 /**
  * Get the app host ids from service keys.

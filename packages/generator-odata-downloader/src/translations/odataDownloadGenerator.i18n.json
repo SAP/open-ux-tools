@@ -30,7 +30,8 @@
             }
         },
         "relatedEntitySelection": {
-            "message": "Select entities for data download (pre-selected entities are referenced by the application)"
+            "message": "Select entities for data download (pre-selected entities are referenced by the application)",
+            "openLogs": "Show Logs"
         },
         "toggleSelection": {
             "message": "Reset selection",

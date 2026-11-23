@@ -1,4 +1,4 @@
-import type { Logger } from './types';
+import type { Logger } from './types.js';
 
 export interface PostMessageCommunication<T> {
     sendAction: (action: T) => void;

@@ -1,0 +1,413 @@
+<mvc:View 
+	xmlns:mvc="sap.ui.core.mvc"
+	xmlns:core="sap.ui.core"
+	xmlns="sap.m"
+	xmlns:f="sap.f"
+	xmlns:layout="sap.ui.layout" 
+	xmlns:table="sap.ui.table"
+	xmlns:smartfilterbar="sap.ui.comp.smartfilterbar" 
+	xmlns:smarttable="sap.ui.comp.smarttable"
+	xmlns:smartlink="sap.ui.comp.navpopover"
+	xmlns:variants="sap.ui.comp.smartvariants" 
+	xmlns:unified="sap.ui.unified"
+	xmlns:semantic="sap.m.semantic"
+	xmlns:ushell="sap.ushell.ui"
+	xmlns:plugins="sap.ui.table.plugins"
+	xmlns:data="http://schemas.sap.com/sapui5/extension/sap.ui.core.CustomData/1"
+	controllerName="fin.central.listreport.reuse.controller.List">
+
+	<f:DynamicPage id="DynamicPage" preserveHeaderStateOnScroll="false" showFooter="{= ${message>/}.length > 0 }" fitContent="true">
+		<f:dependents>
+			<core:CommandExecution id="fin.central.listreport.reuse.ShareCommand" command="Share" enabled="true" execute=".onShareButtonPressed"/>
+			<core:CommandExecution id="fin.central.listreport.reuse.EnterCommand" command="Enter" enabled="true" execute=".onSearch"/>
+		</f:dependents>
+		<f:title>
+			<f:DynamicPageTitle id="DynamicPageTitle">
+				<f:heading>
+					<variants:SmartVariantManagement id="PageVariant" persistencyKey="fiori.test.application2.view.PageVariant" showShare="true"
+						showExecuteOnSelection="true"/>
+				</f:heading>
+				<f:actions>
+					<ToolbarSpacer/>
+					<Button id="ShareButton" icon="sap-icon://action" tooltip="{i18n>SHARE_BUTTON}" type="Transparent" press="cmd:Share"/>
+				</f:actions>
+				<f:snappedContent>
+					<Text id="FilterText" wrapping="false"></Text>
+				</f:snappedContent>
+			</f:DynamicPageTitle>
+		</f:title>
+		<f:header>
+			<f:DynamicPageHeader id="DynamicPageHeader" pinnable="false">
+				<f:content>
+					<smartfilterbar:SmartFilterBar id="fin.central.listreport.reuse.SmartFilterBar"
+						entitySet="Items" showClearButton="true" search="cmd:Enter" useDateRangeType="true"
+						reset="onReset" beforeVariantFetch="onBeforeVariantFetch" afterVariantLoad="onAfterVariantLoad" 
+						initialise="onInitSmartFilterBar" persistencyKey="fin.central.listreport.reuse.view.List"
+						smartVariant="PageVariant" useToolbar="false" assignedFiltersChanged="onAssignedFiltersChanged">
+						<smartfilterbar:customData>
+							<core:CustomData key="defaultDropDownDisplayBehaviour"
+								value="descriptionOnly" />
+							<core:CustomData key="defaultTokenDisplayBehaviour"
+								value="idAndDescription" />
+							<core:CustomData key="dateFormatSettings"
+								value='\{"UTC":true,"style":"short"\}' />
+							<core:CustomData key="executeStandardVariantOnSelect"
+								value="true" />
+						</smartfilterbar:customData>
+						<smartfilterbar:controlConfiguration>
+							<smartfilterbar:ControlConfiguration
+								id="fin.central.listreport.reuse.ValueHelpCustomer" key="Customer"
+								index="0" groupId="_BASIC" />
+							<smartfilterbar:ControlConfiguration
+								id="fin.central.listreport.reuse.ValueHelpCompany" key="CompanyCode"
+								index="1" groupId="_BASIC" />
+							<smartfilterbar:ControlConfiguration
+								id="fin.central.listreport.reuse.DateClearingDate" key="ClearingDate"
+								controlType="date" filterType="interval" index="3" hasTypeAhead="false"
+								groupId="_BASIC" visible="false" />
+							<smartfilterbar:ControlConfiguration
+								id="fin.central.listreport.reuse.DateKeyDate" key="KeyDate"
+								controlType="date" index="4" hasTypeAhead="false" groupId="_BASIC" />
+							<smartfilterbar:ControlConfiguration
+								id="fin.central.listreport.reuse.InputFiscalYearPeriodInterval"
+								key="FiscalYearPeriod" controlType="input" index="5" groupId="_BASIC"
+								visible="false" />
+							<smartfilterbar:ControlConfiguration
+								id="fin.central.listreport.reuse.DatePostingDate" key="PostingDate"
+								controlType="date" filterType="interval" index="6" hasTypeAhead="false"
+								groupId="_BASIC" visible="false" />
+							<smartfilterbar:ControlConfiguration
+								id="fin.central.listreport.reuse.DateEntryDate" key="AccountingDocumentCreationDate"
+								controlType="date" filterType="interval" index="98" hasTypeAhead="false"
+								groupId="sample.ar.lineitems.display.AccountingDocumentGroup" />
+							<smartfilterbar:ControlConfiguration
+								id="fin.central.listreport.reuse.FinancialAccountType" key="FinancialAccountType"
+								index="99" historyEnabled="true"
+								groupId="sample.ar.lineitems.display.AccountingDocumentGroup" />
+						</smartfilterbar:controlConfiguration>
+						<smartfilterbar:layoutData>
+							<FlexItemData shrinkFactor="0" />
+						</smartfilterbar:layoutData>
+					</smartfilterbar:SmartFilterBar>
+				</f:content>
+			</f:DynamicPageHeader>
+		</f:header>
+		<f:content>
+			<smarttable:SmartTable id="fin.central.listreport.reuse.SmartTable"
+				entitySet="Items" smartFilterId="fin.central.listreport.reuse.SmartFilterBar" ignoredFields=""
+				tableType="AnalyticalTable" 
+				header="Line Items" persistencyKey="fin.central.listreport.reuse.view.List"
+				beforeRebindTable="onBeforeRebindTable"
+				afterVariantSave="onAfterTableVariantSave" afterVariantApply="onAfterApplyTableVariant">
+				<smarttable:customData>
+					<core:CustomData key="dateFormatSettings"
+						value='\{"UTC":true,"style":"short"\}' />
+				</smarttable:customData>
+				<smarttable:layoutData>
+					<FlexItemData id="fin.central.listreport.reuse.tableItemData1" growFactor="1" baseSize="0%"/>
+				</smarttable:layoutData>
+				<smarttable:semanticObjectController>
+					<smartlink:SemanticObjectController
+						beforePopoverOpens="onBeforePopoverOpens" navigate="onSmartLinkNavigate"
+						navigationTargetsObtained="onNavTargetsObtained" ignoredFields="" />
+				</smarttable:semanticObjectController>
+				<smarttable:customToolbar >
+					<OverflowToolbar id="fin.central.listreport.reuse.list.OverflowToolbar" design="Transparent" height="3rem">
+						<core:ExtensionPoint name="fin.central.listreport.reuse.ExtensionPointTableToolbar" />
+					</OverflowToolbar>
+				</smarttable:customToolbar>
+
+				<table:AnalyticalTable id="fin.central.listreport.reuse.list"
+					busyIndicatorDelay="{listView>/tableBusyDelay}"
+					visibleRowCountMode="Auto" 
+					showColumnVisibilityMenu="false" selectionMode="MultiToggle" 
+					enableColumnFreeze="true" enableCellFilter="true">
+					<table:plugins>
+						<plugins:MultiSelectionPlugin
+							limit="100" enableNotification="true"/>
+					</table:plugins>
+					<table:columns>
+						<core:ExtensionPoint name="fin.central.listreport.reuse.ExtensionPointTableColumnStart"></core:ExtensionPoint>						
+						<table:AnalyticalColumn grouped="false"
+							summed="false" autoResizable="true" width="150px" hAlign="Left"
+							id="fin.central.listreport.reuse.ColumnCustomer" inResult="true"
+							leadingProperty="Customer" sortProperty="Customer"
+							filterProperty="Customer">
+							<Label text="{/#Item/Customer/@sap:label}"></Label>
+							<table:template>
+								<smartlink:SmartLink
+									id="fin.central.listreport.reuse.LinkCustomer" semanticObject="Customer"
+									text="{Customer}" >
+								</smartlink:SmartLink>
+							</table:template>
+							<table:customData>
+								<core:CustomData key="p13nData" 
+									value='\{"columnKey": "Customer", "additionalProperty": "CustomerName", "maxLength": "10"}' />
+							</table:customData>
+						</table:AnalyticalColumn>
+						<table:AnalyticalColumn visible="false"
+							width="150px" id="fin.central.listreport.reuse.ColumnCustomerName"
+							grouped="false" summed="false" autoResizable="true" hAlign="Left"
+							inResult="true" leadingProperty="CustomerName" sortProperty="CustomerName"
+							filterProperty="CustomerName">
+							<Label text="{/#Item/CustomerName/@sap:label}"></Label>
+							<table:template>
+								<Text text="{CustomerName}" wrapping="false"></Text>
+							</table:template>
+							<table:customData>
+								<core:CustomData key="p13nData"
+									value='\{"columnKey": "CustomerName"}' />
+							</table:customData>
+						</table:AnalyticalColumn>
+
+						<table:AnalyticalColumn grouped="false"
+							autoResizable="true" width="6em" hAlign="Left"
+							id="fin.central.listreport.reuse.ColumnCompanyCode" inResult="true"
+							summed="false" leadingProperty="CompanyCode" sortProperty="CompanyCode"
+							filterProperty="CompanyCode">
+							<Label text="{/#Item/CompanyCode/@sap:label}"></Label>
+							<table:template>
+								<Text text="{CompanyCode}" wrapping="false"></Text>
+							</table:template>
+							<table:customData>
+								<core:CustomData key="p13nData" 
+									value='\{"columnKey": "CompanyCode", "additionalProperty": "CompanyName", "maxLength": "4"}' />
+							</table:customData>
+						</table:AnalyticalColumn>
+
+						<table:AnalyticalColumn grouped="false"
+							hAlign="Left" id="fin.central.listreport.reuse.ColumnCompanyName"
+							visible="false" autoResizable="true" width="150px" inResult="true"
+							summed="false" leadingProperty="CompanyName" sortProperty="CompanyName"
+							filterProperty="CompanyName">
+							<Label text="{/#Item/CompanyName/@sap:label}"></Label>
+							<table:template>
+								<Text text="{CompanyName}" wrapping="false"></Text>
+							</table:template>
+							<table:customData>
+								<core:CustomData key="p13nData"
+									value='\{"columnKey": "CompanyName"}' />
+							</table:customData>
+						</table:AnalyticalColumn>
+
+						<table:AnalyticalColumn
+							id="fin.central.listreport.reuse.ColumnClearingDate" visible="false"
+							grouped="false" autoResizable="true" hAlign="Left" summed="false"
+							width="10em" leadingProperty="ClearingDate" sortProperty="ClearingDate"
+							filterProperty="ClearingDate"
+							filterType="\{type:'sap.ui.model.type.Date', formatOptions:\{UTC: true\}\}">
+							<Label text="{/#Item/ClearingDate/@sap:label}"></Label>
+							<table:template>
+								<smartlink:SmartLink
+									id="fin.central.listreport.reuse.LinkClearingDate"
+									semanticObject="AccountingDocument" mapFieldToSemanticObject="false"
+									text="{ClearingDate}" >
+								</smartlink:SmartLink>
+							</table:template>
+							<table:customData>
+								<core:CustomData key="p13nData"
+									value='\{"columnKey": "ClearingDate", "type": "date"}' />
+							</table:customData>
+						</table:AnalyticalColumn>
+
+						<table:AnalyticalColumn grouped="false"
+							autoResizable="true" summed="false" hAlign="Center"
+							id="fin.central.listreport.reuse.ColumnClearingStatusIcon"
+							leadingProperty="ClearingStatus" sortProperty="ClearingStatus"
+							filterProperty="" showFilterMenuEntry="false" width="5em">
+							<Label text="{/#Item/ClearingStatus/@sap:label}"></Label>
+							<table:template>
+								<core:Icon color="{ClearingStatus}" src="{ClearingStatus}"
+									tooltip="{ClearingStatus}">
+								</core:Icon>
+							</table:template>
+							<table:customData>
+								<core:CustomData key="p13nData"
+									value='\{"columnKey": "ClearingStatus"}' />
+							</table:customData>
+						</table:AnalyticalColumn>
+
+						<table:AnalyticalColumn width="150px"
+							autoResizable="true" grouped="false" hAlign="Left" summed="false"
+							id="fin.central.listreport.reuse.ColumnAssignmentReference"
+							leadingProperty="AssignmentReference" sortProperty="AssignmentReference"
+							filterProperty="AssignmentReference">
+							<Label text="{/#Item/AssignmentReference/@sap:label}"></Label>
+							<table:template>
+								<Text text="{AssignmentReference}" wrapping="false"></Text>
+							</table:template>
+							<table:customData>
+								<core:CustomData key="p13nData"
+									value='\{"columnKey": "AssignmentReference", "maxLength": "18"}' />
+							</table:customData>
+						</table:AnalyticalColumn>
+
+						<table:AnalyticalColumn summed="false"
+							grouped="false" autoResizable="true" width="10em" hAlign="Left"
+							id="fin.central.listreport.reuse.ColumnDocumentDate"
+							filterType="\{type:'sap.ui.model.type.Date', formatOptions:\{UTC: true\}\}"
+							leadingProperty="DocumentDate" sortProperty="DocumentDate"
+							filterProperty="DocumentDate" sorted="true" sortOrder="Descending">
+							<Label text="{/#Item/DocumentDate/@sap:label}"></Label>
+							<table:template>
+								<Label text="{DocumentDate}"></Label>
+							</table:template>
+							<table:customData>
+								<core:CustomData key="p13nData"
+									value='\{"columnKey": "DocumentDate", "type": "date"}' />
+							</table:customData>
+						</table:AnalyticalColumn>
+
+						<table:AnalyticalColumn width="150px"
+							autoResizable="true" grouped="false" hAlign="Left"
+							id="fin.central.listreport.reuse.ColumnAccountingDocument"
+							inResult="true" summed="false" leadingProperty="AccountingDocument"
+							sortProperty="AccountingDocument" filterProperty="AccountingDocument"
+							sorted="true" sortOrder="Descending">
+							<Label text="{/#Item/AccountingDocument/@sap:label}"></Label>
+							<table:template>
+								<smartlink:SmartLink
+									id="fin.central.listreport.reuse.LinkCustomerAccountingDocument"
+									semanticObject="AccountingDocument" text="{AccountingDocument}" >
+								</smartlink:SmartLink>
+							</table:template>
+							<table:customData>
+								<core:CustomData key="p13nData"
+									value='\{"columnKey": "AccountingDocument", "maxLength": "10"}' />
+							</table:customData>
+						</table:AnalyticalColumn>
+
+						<table:AnalyticalColumn grouped="false"
+							autoResizable="true" width="150px" inResult="true" summed="false"
+							hAlign="Left"
+							id="fin.central.listreport.reuse.ColumnAccountingDocumentItem"
+							visible="false" leadingProperty="AccountingDocumentItem"
+							sortProperty="AccountingDocumentItem" filterProperty="AccountingDocumentItem">
+							<Label text="{/#Item/AccountingDocumentItem/@sap:label}"></Label>
+							<table:template>
+								<Text text="{AccountingDocumentItem}" wrapping="false"></Text>
+							</table:template>
+							<table:customData>
+								<core:CustomData key="p13nData"
+									value='\{"columnKey": "AccountingDocumentItem", "maxLength": "3"}' />
+							</table:customData>
+						</table:AnalyticalColumn>
+
+						<table:AnalyticalColumn autoResizable="true"
+							width="6em" grouped="false" hAlign="Left"
+							id="fin.central.listreport.reuse.ColumnAccountingDocumentType"
+							summed="false" leadingProperty="AccountingDocumentType"
+							sortProperty="AccountingDocumentType" filterProperty="AccountingDocumentType">
+							<Label text="{/#Item/AccountingDocumentType/@sap:label}"></Label>
+							<table:template>
+								<Text text="{AccountingDocumentType}" wrapping="false"></Text>
+							</table:template>
+							<table:customData>
+								<core:CustomData key="p13nData"
+									value='\{"columnKey": "AccountingDocumentType", "maxLength": "2"}' />
+							</table:customData>
+						</table:AnalyticalColumn>
+
+						<table:AnalyticalColumn autoResizable="true"
+							width="5em" grouped="false" hAlign="Left" summed="false"
+							id="fin.central.listreport.reuse.ColumnSpecialGeneralLedgerCode"
+							leadingProperty="SpecialGeneralLedgerCode" sortProperty="SpecialGeneralLedgerCode"
+							filterProperty="SpecialGeneralLedgerCode">
+							<Label text="{/#Item/SpecialGeneralLedgerCode/@sap:label}"></Label>
+							<table:template>
+								<Text text="{SpecialGeneralLedgerCode}" wrapping="false"></Text>
+							</table:template>
+							<table:customData>
+								<core:CustomData key="p13nData"
+									value='\{"columnKey": "SpecialGeneralLedgerCode", "maxLength": "1"}' />
+							</table:customData>
+						</table:AnalyticalColumn>
+
+						<table:AnalyticalColumn grouped="false"
+							autoResizable="true" width="5em" summed="false" hAlign="Center"
+							id="fin.central.listreport.reuse.ColumnDueNetSymbol"
+							leadingProperty="DueNetSymbol" sortProperty="DueNetSymbol"
+							filterProperty="" showFilterMenuEntry="false">
+							<Label text="{/#Item/DueNetSymbol/@sap:label}"></Label>
+							<table:template>
+								<core:Icon color="{DueNetSymbol}" src="{DueNetSymbol}"
+									tooltip="{DueNetSymbol}">
+								</core:Icon>
+							</table:template>
+							<table:customData>
+								<core:CustomData key="p13nData"
+									value='\{"columnKey": "DueNetSymbol"}' />
+							</table:customData>
+						</table:AnalyticalColumn>
+
+						<table:AnalyticalColumn grouped="false"
+							autoResizable="true" summed="false" hAlign="Center"
+							id="fin.central.listreport.reuse.ColumnCashDateDueNetSymbol"
+							leadingProperty="CashDateDueNetSymbol" sortProperty="CashDateDueNetSymbol"
+							filterProperty="" showFilterMenuEntry="false" width="5em"
+							visible="false">
+							<Label text="{/#Item/CashDateDueNetSymbol/@sap:label}"></Label>
+							<table:template>
+								<core:Icon color="{CashDateDueNetSymbol}" src="{CashDateDueNetSymbol}"
+									tooltip="{CashDateDueNetSymbol}">
+								</core:Icon>
+							</table:template>
+							<table:customData>
+								<core:CustomData key="p13nData"
+									value='\{"columnKey": "CashDateDueNetSymbol"}' />
+							</table:customData>
+						</table:AnalyticalColumn>
+
+						<table:AnalyticalColumn grouped="false"
+							autoResizable="true" width="150px" hAlign="Right" summed="true"
+							id="fin.central.listreport.reuse.ColumnAmountInCompanyCodeCurrency"
+							leadingProperty="AmountInCompanyCodeCurrency" sortProperty="AmountInCompanyCodeCurrency"
+							filterProperty="AmountInCompanyCodeCurrency">
+							<Label text="{/#Item/AmountInCompanyCodeCurrency/@sap:label}" textAlign="End"></Label>
+							<table:template>
+								<unified:Currency
+									value="{path:'AmountInCompanyCodeCurrency', type:'sap.ui.model.type.String'}"
+									currency="{CompanyCodeCurrency}" useSymbol="false" />
+							</table:template>
+							<table:customData>
+								<core:CustomData key="p13nData"
+									value='\{"columnKey": "AmountInCompanyCodeCurrency", "type": "numeric", "precision": "24", "scale": "3", 
+									         "isCurrency": true, "unit": "CompanyCodeCurrency"}' />
+							</table:customData>
+						</table:AnalyticalColumn>
+
+						<table:AnalyticalColumn autoResizable="true"
+							width="150px" grouped="false" hAlign="Left" summed="false"
+							id="fin.central.listreport.reuse.ColumnClearingAccountingDocument"
+							inResult="true" leadingProperty="ClearingAccountingDocument"
+							sortProperty="ClearingAccountingDocument" filterProperty="ClearingAccountingDocument">
+							<Label text="{/#Item/ClearingAccountingDocument/@sap:label}"></Label>
+							<table:template>
+								<smartlink:SmartLink
+									id="fin.central.listreport.reuse.LinkClearingAccountingDocument"
+									semanticObject="AccountingDocument" mapFieldToSemanticObject="false"
+									text="{ClearingAccountingDocument}" 
+									navigationTargetsObtained="onNavTargetsObtained">
+								</smartlink:SmartLink>
+							</table:template>
+							<table:customData>
+								<core:CustomData key="p13nData"
+									value='\{"columnKey": "ClearingAccountingDocument", "maxLength": "10" }' />
+							</table:customData>
+						</table:AnalyticalColumn>
+						<core:ExtensionPoint name="fin.central.listreport.reuse.ExtensionPointTableColumnEnd"></core:ExtensionPoint>						
+					</table:columns>
+				</table:AnalyticalTable>
+			</smarttable:SmartTable>
+		</f:content>
+
+		<!-- FOOTER -->
+		<f:footer>
+			<OverflowToolbar id="OverflowToolbar">
+				<Button id="MessagePopover" icon="sap-icon://alert" text="{= ${message>/}.length }" type="Emphasized" visible="{= !!${message>/}.length }"
+						press="handleMessagePopoverPress"/>
+			</OverflowToolbar>
+		</f:footer>
+
+	</f:DynamicPage>
+</mvc:View>

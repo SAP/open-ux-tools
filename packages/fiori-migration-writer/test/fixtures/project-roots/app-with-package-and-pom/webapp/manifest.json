@@ -1,0 +1,18 @@
+{
+  "_version": "1.12.0",
+  "sap.app": {
+    "id": "test.app.withboth",
+    "type": "application",
+    "title": "Test App with Both Markers",
+    "applicationVersion": {
+      "version": "1.0.0"
+    }
+  },
+  "sap.ui5": {
+    "dependencies": {
+      "libs": {
+        "sap.m": {}
+      }
+    }
+  }
+}

@@ -1,8 +1,9 @@
+import { jest } from '@jest/globals';
 import type { DocumentNode, MemberNode } from '@humanwhocodes/momoa';
 import { parse } from '@humanwhocodes/momoa';
-import type { JSONRuleContext } from '../../src/language/rule-factory';
-import { createJsonFixer } from '../../src/language/rule-fixer';
-import type { DeepestExistingPathResult } from '../../src/utils/helpers';
+import type { JSONRuleContext } from '../../src/language/rule-factory.js';
+import { createJsonFixer } from '../../src/language/rule-fixer.js';
+import type { DeepestExistingPathResult } from '../../src/utils/helpers.js';
 
 /**
  * Helper function to create a MemberNode from JSON text and a property path.

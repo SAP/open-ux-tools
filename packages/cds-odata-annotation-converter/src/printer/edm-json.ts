@@ -1,8 +1,8 @@
 import type { Attributes, Element, FormatterOptions, TextNode, ElementChild } from '@sap-ux/odata-annotation-core';
 import { Edm, TEXT_TYPE, ELEMENT_TYPE } from '@sap-ux/odata-annotation-core';
 
-import { indent } from './indent';
-import type { ContainerItemType } from './primitives';
+import { indent } from './indent.js';
+import type { ContainerItemType } from './primitives.js';
 import {
     collection,
     keyAlone,
@@ -11,7 +11,7 @@ import {
     stringLiteral,
     struct,
     valuePair
-} from './primitives';
+} from './primitives.js';
 
 interface EdmJsonOptions extends FormatterOptions {
     includeEdmJson?: boolean;

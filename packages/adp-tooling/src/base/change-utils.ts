@@ -4,6 +4,8 @@ import type { Editor } from 'mem-fs-editor';
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 
 import { DirName, getWebappPath } from '@sap-ux/project-access';
+import type { KeyUserChangeContent } from '@sap-ux/axios-extension';
+import { getTemplatePath } from '../templates.js';
 import {
     FlexLayer,
     TemplateFileName,
@@ -15,15 +17,31 @@ import {
     type PropertyValueType,
     ChangeTypeMap,
     type AdpWriterConfig
-} from '../types';
+} from '../types.js';
 import { renderFile } from 'ejs';
-import { replaceTextsWithI18nBindings, writeKeyUserTranslations } from '../writer/i18n/key-user-translations';
+import { replaceTextsWithI18nBindings, writeKeyUserTranslations } from '../writer/i18n/key-user-translations.js';
 
 export type ChangeMetadata = Pick<DescriptorVariant, 'id' | 'layer' | 'namespace'>;
 
 type InboundChangeData = { filePath: string; changeWithInboundId: InboundChange | undefined };
 interface InboundChange extends ManifestChangeProperties {
     content: InboundContent;
+}
+
+/**
+ * Returns the change file extension matching the change's `fileType` (e.g. `.ctrl_variant`,
+ * `.annotation_change`, `.change`). Falls back to `.change` when `fileType` is missing or
+ * empty so malformed or legacy payloads do not produce extension-less files.
+ *
+ * The UI5 Flex frontend routes change files by their suffix; the suffix must match the
+ * embedded `fileType`, otherwise non-`change` types (e.g. `ctrl_variant`, `annotation_change`)
+ * are misclassified at runtime.
+ *
+ * @param fileType - The change's `fileType` value, if present.
+ * @returns The file extension, including the leading dot.
+ */
+function getChangeFileExtension(fileType: string | undefined): string {
+    return fileType ? `.${fileType}` : '.change';
 }
 
 /**
@@ -51,7 +69,7 @@ export async function writeAnnotationChange(
         const annotationsFolderPath = path.join(changesFolderPath, DirName.Annotations);
 
         if (change) {
-            const changeFileName = `${change.fileName}.change`;
+            const changeFileName = `${change.fileName}${getChangeFileExtension(change.fileType)}`;
             const changeFilePath = path.join(changesFolderPath, changeFileName);
             writeChangeToFile(changeFilePath, change, fs);
         }
@@ -59,7 +77,7 @@ export async function writeAnnotationChange(
         if (!annotation.filePath) {
             const annotationsTemplate = templatesPath
                 ? path.join(templatesPath, 'changes', TemplateFileName.Annotation)
-                : path.join(__dirname, '..', '..', 'templates', 'changes', TemplateFileName.Annotation);
+                : getTemplatePath(`changes/${TemplateFileName.Annotation}`);
             const { namespaces, serviceUrl } = annotation;
             const schemaNamespace = `local_${timestamp}`;
             renderFile(annotationsTemplate, { namespaces, path: serviceUrl, schemaNamespace }, {}, (err, str) => {
@@ -98,7 +116,7 @@ export async function writeKeyUserChanges(projectPath: string, config: AdpWriter
         }
 
         const change = { ...entry.content };
-        if (!change['fileName']) {
+        if (!change['fileName'] || isViewRestrictionOnlyChange(change)) {
             continue;
         }
 
@@ -127,10 +145,10 @@ export async function writeKeyUserChanges(projectPath: string, config: AdpWriter
  * @returns {Record<string, unknown>} The transformed change object.
  */
 export function transformKeyUserChangeForAdp(
-    change: Record<string, unknown>,
+    change: KeyUserChangeContent['content'],
     appId: string,
     layer: FlexLayer | undefined
-): Record<string, unknown> {
+): KeyUserChangeContent['content'] {
     const transformed = { ...change };
 
     transformed.layer = layer ?? FlexLayer.CUSTOMER_BASE;
@@ -145,10 +163,42 @@ export function transformKeyUserChangeForAdp(
 
     delete transformed.adaptationId;
     delete transformed.version;
-    delete transformed.context;
+    delete transformed.contexts;
+    delete transformed.content?.contexts;
     delete transformed.versionId;
 
     return transformed;
+}
+
+/**
+ * Determines whether a key-user change exists solely to apply a view restriction and must be
+ * skipped when importing into an adaptation project.
+ *
+ * Two cases are skipped:
+ * - An `updateVariant` change whose `content` holds nothing but `contexts` and which carries no
+ *   text translations (the restriction is its only payload, so removing the restriction would
+ *   leave an empty, meaningless change).
+ * - A `ctrl_variant_change` with change type `setContexts` (a dedicated restriction change).
+ *
+ * @param change - The key-user change payload from the backend.
+ * @returns {boolean} `true` if the change should be skipped, otherwise `false`.
+ */
+export function isViewRestrictionOnlyChange(change: KeyUserChangeContent['content']): boolean {
+    const texts = change['texts'] as Record<string, unknown> | undefined;
+    const hasTexts = !!texts && Object.keys(texts).length > 0;
+
+    const content: KeyUserChangeContent['content']['content'] | undefined = change.content;
+    const hasOnlyContexts = content != null && Object.keys(content).length === 1 && 'contexts' in content;
+
+    if (change.changeType === 'updateVariant' && hasOnlyContexts && !hasTexts) {
+        return true;
+    }
+
+    if (change.fileType === 'ctrl_variant_change' && change.changeType === 'setContexts') {
+        return true;
+    }
+
+    return false;
 }
 
 /**
@@ -175,7 +225,7 @@ export async function writeChangeToFolder(
             targetFolderPath = path.join(targetFolderPath, dir);
         }
 
-        const fileName = `${change.fileName}.change`;
+        const fileName = `${change.fileName}${getChangeFileExtension(change.fileType)}`;
         const filePath = path.join(targetFolderPath, fileName);
         writeChangeToFile(filePath, change, fs);
     } catch (e) {

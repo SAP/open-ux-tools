@@ -1,5 +1,5 @@
 import { existsSync, readFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { createSyncFn } from 'synckit';
@@ -9,12 +9,12 @@ import { normalizePath, type FoundFioriArtifacts, type Manifest } from '@sap-ux/
 import type { AnnotationFile } from '@sap-ux/odata-annotation-core';
 import type { XMLDocument } from '@xml-tools/ast';
 
-import type { WorkerResult } from './types';
-import type { ParsedApp, ParsedProject, ParsedService } from './parser';
-import { ApplicationParser } from './parser';
-import { DiagnosticCache } from '../language/diagnostic-cache';
-import type { LinkedModel } from './linker';
-import { linkProject } from './linker';
+import type { WorkerResult } from './types.js';
+import type { ParsedApp, ParsedProject, ParsedService } from './parser/index.js';
+import { ApplicationParser } from './parser/index.js';
+import { DiagnosticCache } from '../language/diagnostic-cache.js';
+import type { LinkedModel } from './linker/index.js';
+import { linkProject } from './linker/index.js';
 
 // Sync function for worker calls
 let artifactWorker: (file: string) => WorkerResult;
@@ -27,12 +27,18 @@ let artifactWorker: (file: string) => WorkerResult;
  */
 function getWorkerPath(name: string): string {
     // Create sync function to call the working draft-toggle-worker
-    const currentDir = __dirname;
+    const currentDir = dirname(fileURLToPath(import.meta.url));
 
-    // Try multiple possible worker locations
+    // Try multiple possible worker locations.
+    // import.meta.url differs by build tool:
+    //   tsc:     lib/project-context/project-context.js  → currentDir = lib/project-context/
+    //   esbuild: lib/index.js                            → currentDir = lib/
+    // Path 2 (../../lib/project-context/) only resolves correctly for tsc inside the workspace;
+    // when installed in node_modules ../../ exits the package root entirely.
     const workerPaths = [
-        join(currentDir, name), // src location
-        join(currentDir, '..', '..', 'lib', 'project-context', name) // dist location
+        join(currentDir, name), // tsc: lib/project-context/ → lib/project-context/artifacts.js
+        join(currentDir, 'project-context', name), // esbuild: lib/ → lib/project-context/artifacts.js
+        join(currentDir, '..', '..', 'lib', 'project-context', name) // ts-node from src/ during development
     ];
 
     let workerPath = null;
@@ -140,7 +146,14 @@ export class ProjectContext {
      */
     public reindex(uri: string, content: string): void {
         ProjectContext.fileCache.set(uri, content);
-        const { diagnostics, index } = ProjectContext.parser.reparse(uri, this.index, ProjectContext.fileCacheProxy);
+        const { i18nPathsByApp } = ProjectContext.findFioriArtifacts(uri);
+        const { diagnostics, index } = ProjectContext.parser.reparse(
+            uri,
+            this.index,
+            i18nPathsByApp,
+            this.index.appRoot,
+            ProjectContext.fileCacheProxy
+        );
 
         for (const diagnostic of diagnostics) {
             DiagnosticCache.addMessage(uri, diagnostic.type, diagnostic);
@@ -173,25 +186,32 @@ export class ProjectContext {
      */
     private static findFioriArtifacts(_uri: string): WorkerResult {
         // potential issue when called from application modeler or via ESLint API
-        const root = normalizePath(process.cwd());
+        const appRoot = normalizePath(process.cwd());
         try {
-            const cachedValue = this.projectArtifactCache.get(root);
-            if (cachedValue) {
+            const cachedValue = this.projectArtifactCache.get(appRoot);
+            if (cachedValue?.appRoot === appRoot) {
                 return cachedValue;
             }
-            const artifacts = getArtifactWorker()(root);
-            this.projectArtifactCache.set(root, artifacts);
+            const artifacts = getArtifactWorker()(appRoot);
+            this.projectArtifactCache.set(appRoot, artifacts);
             return artifacts;
         } catch (error) {
             console.error('Error finding Fiori artifacts:', error);
-            return { artifacts: {}, projectType: 'EDMXBackend' };
+            return {
+                artifacts: {},
+                projectType: 'EDMXBackend',
+                i18nPathsByApp: {},
+                appRoot: '',
+                projectRoot: ''
+            };
         }
     }
 
     /**
      * If set to true, forces re-indexing on the first update of a file.
+     * If updated file is not found in cache, forceReindexOnFirstUpdate is set to true.
      */
-    public static forceReindexOnFirstUpdate = false; // NOSONAR - Property must be mutable for test setup
+    private static forceReindexOnFirstUpdate = false;
 
     /**
      * Creates a ProjectContext for the given file path.
@@ -215,6 +235,8 @@ export class ProjectContext {
      * @returns The ProjectContext instance for the file
      */
     public static updateFile(uri: string, content: string): ProjectContext {
+        const existingContent = this.fileCache.get(uri);
+        this.forceReindexOnFirstUpdate = !existingContent || existingContent !== content;
         this.fileCache.set(uri, content);
         const numberOfUpdates = this.updateCache.get(uri) ?? 0;
         this.updateCache.set(uri, numberOfUpdates + 1);
@@ -228,7 +250,18 @@ export class ProjectContext {
 
         return context;
     }
-    private static readonly fileCache = new Map<string, string>();
+    public static fileCache = new Map<string, string>(); // NOSONAR - Property must be mutable for test setup
+
+    /**
+     * Clears all static caches so tests run in isolation regardless of execution order.
+     */
+    public static resetForTesting(): void {
+        this.fileCache.clear();
+        this.instanceCache.clear();
+        this.updateCache.clear();
+        this.appRoots.clear();
+        this.projectArtifactCache.clear();
+    }
     private static readonly fileCacheProxy = new Proxy(this.fileCache, {
         get: (target, prop: string) => {
             if (prop === 'get') {
@@ -258,19 +291,24 @@ export class ProjectContext {
     private static createForFile(uri: string): ProjectContext {
         // not all project files might be indexed, but eslint still will pick it up
         // try to assign the file to the closest known app root and avoid re-indexing
-        for (const appRoot of this.appRoots.values()) {
-            if (uri.startsWith(appRoot)) {
-                const cachedValue = this.instanceCache.get(appRoot);
-                if (cachedValue) {
+        for (const appRootUri of this.appRoots.values()) {
+            if (uri.startsWith(appRootUri)) {
+                const cachedValue = this.instanceCache.get(appRootUri);
+                if (cachedValue?.index.appRoot === fileURLToPath(appRootUri)) {
                     this.instanceCache.set(uri, cachedValue);
                     return cachedValue;
                 }
             }
         }
 
-        const { artifacts, projectType } = this.findFioriArtifacts(uri);
-
-        const { diagnostics, index } = this.parser.parse(projectType, artifacts, this.fileCacheProxy);
+        const { artifacts, projectType, i18nPathsByApp, appRoot } = this.findFioriArtifacts(uri);
+        const { diagnostics, index } = this.parser.parse(
+            projectType,
+            artifacts,
+            i18nPathsByApp,
+            appRoot,
+            this.fileCacheProxy
+        );
 
         for (const diagnostic of diagnostics) {
             DiagnosticCache.addMessage(uri, diagnostic.type, diagnostic);

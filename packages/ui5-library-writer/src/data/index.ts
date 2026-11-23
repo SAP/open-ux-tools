@@ -1,5 +1,5 @@
-import type { UI5LibInput, UI5LibConfig } from '../types';
-import { validate } from './validators';
+import type { UI5LibInput, UI5LibConfig } from '../types.js';
+import { validate } from './validators.js';
 
 /**
  * Merges UI5LibConfig instance with default properties.

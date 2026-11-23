@@ -1,4 +1,4 @@
-import { getUi5Version, isLowerThanMinimalUi5Version } from '../utils/version';
+import { getUi5Version, isLowerThanMinimalUi5Version } from '../utils/version.js';
 
 /**
  * Initializes UI5 connectors based on the current UI5 version.

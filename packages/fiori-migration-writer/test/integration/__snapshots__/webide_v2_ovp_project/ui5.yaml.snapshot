@@ -1,0 +1,36 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Migration Integration Tests OVP Migration should migrate webide_v2_ovp_project 1`] = `
+"specVersion: \\"4.0\\"
+metadata:
+  name: namespace1.ovpmigration1
+type: application
+server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertErrors: false
+        backend:
+          - path: /sap
+            url: https://backend.example.com:44300
+            client: \\"815\\"
+            destination: SAMPLE_BACKEND_815
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+        delay: 300
+    - name: fiori-tools-preview
+      afterMiddleware: fiori-tools-appreload
+      configuration:
+        component: namespace1.ovpmigration1
+        ui5Theme: sap_fiori_3
+"
+`;

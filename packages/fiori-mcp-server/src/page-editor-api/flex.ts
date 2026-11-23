@@ -4,7 +4,7 @@ import { readdir, mkdir } from 'node:fs/promises';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import type { Editor } from 'mem-fs-editor';
-import { logger } from '../utils/logger';
+import { logger } from '../utils/logger.js';
 
 /**
  * Internal interface to work with flex changes. This is not the full specification of a flex change,

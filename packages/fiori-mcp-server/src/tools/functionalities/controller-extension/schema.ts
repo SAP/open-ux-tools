@@ -1,6 +1,6 @@
 import * as zod from 'zod';
-import type { SapuxFtfsFileIO } from '../../../page-editor-api';
-import { EXTENSION_FILE_NAME_PATTERN } from '../../../constant';
+import type { SapuxFtfsFileIO } from '../../../page-editor-api/index.js';
+import { EXTENSION_FILE_NAME_PATTERN } from '../../../constant.js';
 
 /**
  * Schema for creating a controller extension.

@@ -1,0 +1,294 @@
+import type { Command } from 'commander';
+import { isAppStudio } from '@sap-ux/btp-utils';
+import type { BackendSystem } from '@sap-ux/store';
+import { getService, BackendSystemKey, isSystemNameInUse } from '@sap-ux/store';
+import { replaceEnvVariables } from '@sap-ux/ui5-config';
+import { config as loadEnvConfig } from 'dotenv';
+import { getLogger } from '../../tracing/index.js';
+import {
+    promptForSystemIdentifier,
+    promptForUpdateFields,
+    promptForFieldUpdates,
+    ClearCredentialsCancelledError
+} from '../utils/system-prompts.js';
+import { checkConnectionOrPrompt } from '../utils/system-connection.js';
+import { findSystemByUrl } from '../utils/system-lookup.js';
+import { t } from '../../i18n.js';
+
+/**
+ * Add the "update system" subcommand to a passed command.
+ * Updates an existing backend system in the saved systems store (~/.fioritools).
+ * The system is identified by URL and optional SAP client.
+ *
+ * @param cmd - commander command to attach the system subcommand to
+ */
+export function addSystemUpdateCommand(cmd: Command): void {
+    cmd.command('system')
+        .description(
+            `Update an existing backend system in the saved systems store (\`~/.fioritools\`). The system is identified by its URL and optional SAP client.\n
+
+Example:
+    \`npx --yes @sap-ux/create@latest update system --url https://my-sap.example.com --name "New Name"\`
+    \`npx --yes @sap-ux/create@latest update system --url https://my-sap.example.com --client 100 --username newuser\`
+    \`npx --yes @sap-ux/create@latest update system\` (interactive mode)`
+        )
+        .option('--url <string>', 'URL of the backend system to update')
+        .option('--client <string>', 'SAP client number to identify the system (optional)')
+        .option('--name <string>', 'New display name for the system')
+        .option('--username <string>', 'New username')
+        .option(
+            '--password <string>',
+            "To avoid plain-text credentials in the shell's history, pass an env reference: --password env:MY_VAR"
+        )
+        .option('--clear-credentials', 'Remove stored credentials from the system')
+        .option('--skip-connection-validation', 'Skip connection verification before saving')
+        .option(
+            '--skip-check',
+            '(Deprecated: use --skip-connection-validation) Skip connection verification before saving'
+        )
+        .action(async (options) => {
+            loadEnvConfig();
+            await updateSystem({
+                url: options.url,
+                client: options.client,
+                name: options.name,
+                username: options.username,
+                password: options.password,
+                clearCredentials: !!options.clearCredentials,
+                skipConnectionValidation: !!options.skipConnectionValidation || !!options.skipCheck
+            });
+        });
+}
+
+/**
+ * Validates and builds patch record from explicit parameters.
+ *
+ * @param params - update parameters
+ * @param params.name - new display name
+ * @param params.username - new username
+ * @param params.password - new password
+ * @param params.clearCredentials - whether to clear credentials
+ * @param existing - existing system
+ * @param logger - logger instance
+ * @returns patch record or null if validation fails
+ */
+async function buildPatchFromParams(
+    params: { name?: string; username?: string; password?: string; clearCredentials: boolean },
+    existing: BackendSystem,
+    logger: ReturnType<typeof getLogger>
+): Promise<Record<string, unknown> | null> {
+    const patchRecord: Record<string, unknown> = {};
+
+    if (params.name !== undefined) {
+        if (params.name.trim().length === 0) {
+            logger.error('System name cannot be empty or whitespace-only.');
+            return null;
+        }
+
+        const nameExists = await isSystemNameInUse(params.name);
+        // Allow keeping the same name (case-insensitive comparison)
+        const isSameName = existing.name.trim().toLowerCase() === params.name.trim().toLowerCase();
+        if (nameExists && !isSameName) {
+            logger.error(`A system with the name '${params.name}' already exists. Please choose a different name.`);
+            return null;
+        }
+        patchRecord.name = params.name;
+    }
+
+    if (params.clearCredentials) {
+        patchRecord.username = '';
+        patchRecord.password = '';
+    } else {
+        if (params.username !== undefined) {
+            patchRecord.username = params.username;
+        }
+        if (params.password !== undefined) {
+            patchRecord.password = params.password;
+        }
+    }
+
+    return patchRecord;
+}
+
+/**
+ * Determines the patch to apply to the system.
+ *
+ * @param params - update parameters
+ * @param params.name - new display name
+ * @param params.username - new username
+ * @param params.password - new password
+ * @param params.clearCredentials - whether to clear credentials
+ * @param existing - existing system
+ * @param logger - logger instance
+ * @returns patch record or null if cancelled/failed
+ */
+async function determinePatch(
+    params: {
+        name?: string;
+        username?: string;
+        password?: string;
+        clearCredentials: boolean;
+    },
+    existing: BackendSystem,
+    logger: ReturnType<typeof getLogger>
+): Promise<Record<string, unknown> | null> {
+    const hasExplicitUpdates =
+        params.name !== undefined ||
+        params.username !== undefined ||
+        params.password !== undefined ||
+        params.clearCredentials;
+
+    if (hasExplicitUpdates) {
+        return await buildPatchFromParams(params, existing, logger);
+    }
+
+    const fieldsToUpdate = await promptForUpdateFields(existing);
+    let updateValues: Record<string, unknown>;
+    try {
+        updateValues = await promptForFieldUpdates(fieldsToUpdate, existing);
+    } catch (err) {
+        // User cancelled credential clearing operation
+        if (err instanceof ClearCredentialsCancelledError) {
+            logger.info(t('systemActions.operationCancelled'));
+            return null;
+        }
+        throw err;
+    }
+
+    // Check if clearCredentials was selected in interactive mode
+    if (updateValues.clearCredentials) {
+        updateValues.username = '';
+        updateValues.password = '';
+        delete updateValues.clearCredentials;
+    }
+
+    return updateValues;
+}
+
+/**
+ * Verifies connection if credentials are being updated.
+ *
+ * @param patch - patch to apply
+ * @param existing - existing system
+ * @param params - update parameters
+ * @param params.clearCredentials - whether credentials are being cleared
+ * @param params.skipConnectionValidation - whether to skip connection check
+ * @returns true if should proceed, false otherwise
+ */
+async function verifyCredentialsUpdate(
+    patch: Partial<BackendSystem>,
+    existing: BackendSystem,
+    params: { clearCredentials: boolean; skipConnectionValidation?: boolean }
+): Promise<boolean> {
+    // Check if credentials are being updated (set to new values or cleared)
+    const hasUsernameChange = patch.username !== undefined;
+    const hasPasswordChange = patch.password !== undefined;
+    const updatingCredentials = hasUsernameChange || hasPasswordChange;
+
+    // Skip verification if:
+    // 1. No credential changes at all, OR
+    // 2. Explicitly clearing credentials (--clear-credentials flag), OR
+    // 3. Setting both to empty strings (clearing via interactive prompts)
+    if (!updatingCredentials) {
+        return true;
+    }
+
+    const clearingCredentials = params.clearCredentials || (patch.username === '' && patch.password === '');
+
+    if (clearingCredentials) {
+        return true;
+    }
+
+    // Otherwise, verify the new credentials work
+    return await checkConnectionOrPrompt(
+        {
+            url: existing.url,
+            client: existing.client,
+            systemType: existing.systemType,
+            authenticationType: existing.authenticationType || 'basic',
+            connectionType: existing.connectionType,
+            username: (patch.username as string) ?? existing.username,
+            password: (patch.password as string) ?? existing.password
+        },
+        params.skipConnectionValidation || false
+    );
+}
+
+/**
+ * Updates a backend system in the saved systems store.
+ *
+ * @param params - update parameters
+ * @param params.url - URL identifying the system
+ * @param params.client - optional SAP client identifying the system
+ * @param params.name - optional new display name
+ * @param params.username - optional new username
+ * @param params.password - optional new password
+ * @param params.clearCredentials - if true, clears stored credentials
+ * @param params.skipConnectionValidation - skip connection verification
+ */
+async function updateSystem(params: {
+    url?: string;
+    client?: string;
+    name?: string;
+    username?: string;
+    password?: string;
+    clearCredentials: boolean;
+    skipConnectionValidation?: boolean;
+}): Promise<void> {
+    const logger = getLogger();
+    try {
+        if (isAppStudio()) {
+            logger.error(
+                'System management using the CLI is not supported in SAP Business Application Studio. Use the built-in system management instead.'
+            );
+            return;
+        }
+
+        const identifier = await promptForSystemIdentifier({
+            url: params.url,
+            client: params.client
+        });
+
+        const service = await getService<BackendSystem, BackendSystemKey>({ entityName: 'system' });
+
+        // Use smart lookup to handle client mismatch scenarios
+        const existing = await findSystemByUrl(identifier.url, identifier.client, service);
+
+        if (!existing) {
+            const key = new BackendSystemKey({ url: identifier.url, client: identifier.client });
+            logger.error(`System not found: ${key.getId()}`);
+            return;
+        }
+
+        const patchRecord = await determinePatch(params, existing, logger);
+
+        if (!patchRecord) {
+            logger.info(t('systemActions.systemNotUpdated'));
+            return;
+        }
+
+        replaceEnvVariables(patchRecord);
+
+        if (!Object.keys(patchRecord).length) {
+            logger.error(
+                'No fields to update. Provide at least one of: --name, --username, --password, --clear-credentials'
+            );
+            logger.info(t('systemActions.systemNotUpdated'));
+            return;
+        }
+
+        const patch = patchRecord as Partial<BackendSystem>;
+
+        if (!(await verifyCredentialsUpdate(patch, existing, params))) {
+            logger.info(t('systemActions.systemNotUpdated'));
+            return;
+        }
+
+        const key = new BackendSystemKey({ url: existing.url, client: existing.client });
+        await service.partialUpdate(key, patch);
+        logger.info(t('systemActions.systemUpdated', { name: existing.name }));
+    } catch (error) {
+        logger.error((error as Error).message);
+        logger.debug(error);
+    }
+}

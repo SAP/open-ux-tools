@@ -4,8 +4,8 @@ import type Dialog from 'sap/m/Dialog';
 import type Event from 'sap/ui/base/Event';
 
 import type SimpleForm from 'sap/ui/layout/form/SimpleForm';
-import BaseDialog from './BaseDialog.controller';
-import { getResourceModel } from '../../i18n';
+import BaseDialog from './BaseDialog.controller.js';
+import { getResourceModel } from '../../i18n.js';
 
 export interface FileExistsDialogOptions {
     title: string;

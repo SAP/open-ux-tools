@@ -1,7 +1,7 @@
-import { toContainAllFilesIn } from '../toContainAllFilesIn';
-import { toMatchFilesIn } from '../toMatchFilesIn';
-import type { MatcherOptions } from '../types';
-import { extractMessage } from '../utils';
+import { toContainAllFilesIn } from '../toContainAllFilesIn/index.js';
+import { toMatchFilesIn } from '../toMatchFilesIn/index.js';
+import type { MatcherOptions } from '../types.js';
+import { extractMessage } from '../utils.js';
 
 /**
  * Matcher to assert that the files and file content match are the same in `receivedFolder` and `expectedFolder`.

@@ -1,14 +1,16 @@
-import path from 'node:path';
-
+import path, { dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { ToolsLogger } from '@sap-ux/logger';
 
-import { getExtensionRoutes, loadExtensions, toExtensionModule } from '../../../src/approuter/extensions';
+const __testdir = dirname(fileURLToPath(import.meta.url));
+
+import { getExtensionRoutes, loadExtensions, toExtensionModule } from '../../../src/approuter/extensions.js';
 
 describe('extensions', () => {
     const logger = { warn: jest.fn() } as unknown as ToolsLogger;
 
-    const rootPath = __dirname;
-    const fixturesDir = path.join(__dirname, '../../fixtures/extensions');
+    const rootPath = __testdir;
+    const fixturesDir = path.join(__testdir, '../../fixtures/extensions');
 
     describe('loadExtensions', () => {
         test('returns empty modules and routes when extensions is undefined', () => {

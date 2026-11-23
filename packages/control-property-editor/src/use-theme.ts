@@ -1,6 +1,6 @@
 import type React from 'react';
 import { useEffect } from 'react';
-import { useLocalStorage } from './use-local-storage';
+import { useLocalStorage } from './use-local-storage.js';
 
 export type ThemeName = 'dark modern' | 'light modern' | 'high contrast black';
 /**

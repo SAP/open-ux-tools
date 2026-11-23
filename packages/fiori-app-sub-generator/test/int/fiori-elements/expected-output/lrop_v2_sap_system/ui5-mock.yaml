@@ -2,7 +2,7 @@
 
 specVersion: "4.0"
 metadata:
-  name: testNameSpace.lropv2sapsystem
+  name: testnamespace.lropv2sapsystem
 type: application
 server:
   customMiddleware:
@@ -40,3 +40,8 @@ server:
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**

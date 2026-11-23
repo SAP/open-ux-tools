@@ -1,12 +1,13 @@
 import { join as joinPosix } from 'node:path/posix';
+import { isAxiosError } from 'axios';
 
-import { ODataVersion } from '../base/odata-service';
-import { ServiceProvider } from '../base/service-provider';
-import { AdtCatalogService } from './adt-catalog/adt-catalog-service';
-import { AppIndexService } from './app-index-service';
-import type { CatalogService } from './catalog';
-import { V2CatalogService, V4CatalogService } from './catalog';
-import { LayeredRepositoryService } from './lrep-service';
+import { ODataVersion } from '../base/odata-service.js';
+import { ServiceProvider } from '../base/service-provider.js';
+import { AdtCatalogService } from './adt-catalog/adt-catalog-service.js';
+import { AppIndexService } from './app-index-service.js';
+import type { CatalogService } from './catalog/index.js';
+import { V2CatalogService, V4CatalogService } from './catalog/index.js';
+import { LayeredRepositoryService } from './lrep-service.js';
 import type {
     AbapCDSView,
     AtoSettings,
@@ -14,17 +15,17 @@ import type {
     ExternalService,
     ExternalServiceReference,
     SystemInfo
-} from './types';
-import { TenantType } from './types';
-import { Ui5AbapRepositoryService } from './ui5-abap-repository-service';
+} from './types/index.js';
+import { TenantType } from './types/index.js';
+import { Ui5AbapRepositoryService } from './ui5-abap-repository-service.js';
 // Can't use an `import type` here. We need the classname at runtime to create object instances:
 
-import { ODataServiceGenerator } from './adt-catalog/generators/odata-service-generator';
-import type { GeneratorEntry } from './adt-catalog/generators/types';
-import { UiServiceGenerator } from './adt-catalog/generators/ui-service-generator';
-import { type AdtService, AtoService, GeneratorService, RapGeneratorService } from './adt-catalog/services';
-import { SystemInfoService } from './adt-catalog/services/systeminfo-service';
-import { UI5VersionService } from './ui5-version-service';
+import { ODataServiceGenerator } from './adt-catalog/generators/odata-service-generator.js';
+import type { GeneratorEntry } from './adt-catalog/generators/types.js';
+import { UiServiceGenerator } from './adt-catalog/generators/ui-service-generator.js';
+import { type AdtService, AtoService, GeneratorService, RapGeneratorService } from './adt-catalog/services/index.js';
+import { SystemInfoService } from './adt-catalog/services/systeminfo-service.js';
+import { UI5VersionService } from './ui5-version-service.js';
 
 /**
  * Extension of the service provider for ABAP services.
@@ -301,11 +302,18 @@ export class AbapServiceProvider extends ServiceProvider {
      * Collects ValueListReferences annotation values from the service metadata and annotation files.
      *
      * @param references - Service references for which metadata should be fetched.
+     * @param waitForFirst - When true and more than one reference is provided, the first request is awaited before
+     *   the remaining requests are fired in parallel. An authentication failure (401/403) on the first request
+     *   aborts the entire fetch — useful to prevent cascading redirects in SSO/ReentranceTicket auth flows.
      * @returns A list of ValueListReferences found in the metadata and annotations.
      */
-    public async fetchExternalServices(references: ExternalServiceReference[]): Promise<ExternalService[]> {
+    public async fetchExternalServices(
+        references: ExternalServiceReference[],
+        waitForFirst = false
+    ): Promise<ExternalService[]> {
         const valueListReferences: ExternalService[] = [];
-        const allPromises = references.map(async (reference) => {
+
+        const fetchOne = async (reference: ExternalServiceReference, rejectOnAuthError = false): Promise<void> => {
             const { serviceRootPath, value } = reference;
             const externalServicePath = joinPosix(serviceRootPath, value).replace('/$metadata', '');
             const externalService = this.service(externalServicePath);
@@ -326,13 +334,30 @@ export class AbapServiceProvider extends ServiceProvider {
                     });
                 }
             } catch (error) {
+                const status = isAxiosError(error) ? error.response?.status : undefined;
+                if (rejectOnAuthError && (status === 401 || status === 403)) {
+                    throw error;
+                }
                 this.log.warn(
-                    `Could not fetch value list reference metadata from ${externalServicePath}, ${error.message}`
+                    `Could not fetch value list reference metadata from ${externalServicePath}, ${(error as Error).message}`
                 );
             }
-        });
+        };
 
-        await Promise.allSettled(allPromises);
+        if (waitForFirst) {
+            const [first, ...rest] = references;
+            try {
+                await fetchOne(first, true);
+            } catch {
+                this.log.warn('Authentication failure fetching external service metadata, aborting remaining requests');
+                return valueListReferences;
+            }
+            if (rest.length > 0) {
+                await Promise.allSettled(rest.map((ref) => fetchOne(ref)));
+            }
+        } else {
+            await Promise.allSettled(references.map((ref) => fetchOne(ref)));
+        }
 
         return valueListReferences;
     }

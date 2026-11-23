@@ -1,14 +1,20 @@
 import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { Command, type Option } from 'commander';
-import { getLogger } from '../tracing';
-import { getAddCommands } from './add';
-import { getRemoveCommands } from './remove';
-import { getGenerateCommands } from './generate';
-import { getChangeCommands } from './change';
-import { getConvertCommands } from './convert';
-import { getListCommands } from './list';
-import { getGetCommands } from './get';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+import { getLogger } from '../tracing/index.js';
+import { initI18n } from '../i18n.js';
+import { getAddCommands } from './add/index.js';
+import { getRemoveCommands } from './remove/index.js';
+import { getGenerateCommands } from './generate/index.js';
+import { getChangeCommands } from './change/index.js';
+import { getConvertCommands } from './convert/index.js';
+import { getListCommands } from './list/index.js';
+import { getGetCommands } from './get/index.js';
+import { getUpdateCommands } from './update/index.js';
+import { getMigrateCommand } from './migrate/index.js';
 
 /*
  * We've chosen 'commander' over 'minimist' and 'yargs' for this CLI implementation. Reasons:
@@ -23,14 +29,16 @@ import { getGetCommands } from './get';
  *
  * @param argv - arguments, typically 'process.argv'
  */
-export function handleCreateFioriCommand(argv: string[]): void {
+export async function handleCreateFioriCommand(argv: string[]): Promise<void> {
     const logger = getLogger();
     if (!Array.isArray(argv) || argv.length < 2) {
         throw Error(`This function must be called from command line interface (cli). Or provide meaningful arguments.`);
     }
     try {
+        // Initialize i18n before executing commands
+        await initI18n();
         const program = getCommanderProgram();
-        program.parse(argv);
+        await program.parseAsync(argv);
     } catch (error) {
         // Commander report meaningful error messages, output only if log level is set to debug
         logger.debug(error as string | object);
@@ -102,6 +110,15 @@ function getCommanderProgram(): Command {
     );
     program.addCommand(removeCommands);
 
+    // Handler for create-fiori update <feature> ..
+    const updateCommands = getUpdateCommands();
+    updateCommands.description(
+        `Command group for updating saved resources. A subcommand is required.
+                    Usage: \`npx --yes @sap-ux/create@latest update [subcommand] [options]\`
+                    The available subcommands are: ${getFeatureSummary(updateCommands.commands)}\n`
+    );
+    program.addCommand(updateCommands);
+
     // Handler for create-fiori change <feature> ..
     const changeCommands = getChangeCommands();
     changeCommands.description(
@@ -128,6 +145,9 @@ function getCommanderProgram(): Command {
                     The available subcommands are: ${getFeatureSummary(getCommands.commands)}\n`
     );
     program.addCommand(getCommands);
+
+    // Handler for create-fiori migrate ..
+    program.addCommand(getMigrateCommand());
 
     return program;
 }

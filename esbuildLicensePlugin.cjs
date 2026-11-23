@@ -1,0 +1,121 @@
+'use strict';
+
+const { readFileSync, writeFileSync } = require('node:fs');
+const { dirname, join, isAbsolute } = require('node:path');
+
+/**
+ * esbuild plugin that collects license information from every bundled
+ * node_modules package via the build metafile and writes a LICENSES.txt
+ * alongside each output file.
+ *
+ * Requires `metafile: true` on the esbuild options object.
+ */
+function makeLicensePlugin() {
+    return {
+        name: 'license-collector',
+        setup(build) {
+            build.onEnd((result) => {
+                if (!result.metafile) {
+                    throw new Error(
+                        '[license-collector] metafile is not available — LICENSES.txt cannot be generated. ' +
+                        'Set metafile: true in esbuild options and do not pass --metafile=false.'
+                    );
+                }
+
+                const outputLicenses = new Map();
+
+                for (const [outFile, outMeta] of Object.entries(result.metafile.outputs)) {
+                    const pkgMap = new Map();
+                    // Track already-read nmRoot paths to avoid redundant readFileSync calls
+                    // when many source files come from the same package.
+                    const readRoots = new Set();
+
+                    for (const inputPath of Object.keys(outMeta.inputs)) {
+                        const normalised = inputPath.replace(/\\/g, '/');
+                        const nmIdx = normalised.lastIndexOf('node_modules/');
+                        if (nmIdx === -1) continue;
+
+                        const rel = normalised.slice(nmIdx + 'node_modules/'.length);
+                        const parts = rel.split('/');
+                        if (!parts[0]) continue;
+                        const pkgName = parts[0].startsWith('@')
+                            ? (parts[1] ? `${parts[0]}/${parts[1]}` : null)
+                            : parts[0];
+                        if (!pkgName) continue;
+
+                        const nmRoot = normalised.slice(0, nmIdx + 'node_modules/'.length) + pkgName;
+                        if (readRoots.has(nmRoot)) continue;
+                        readRoots.add(nmRoot);
+
+                        const directPkgJson = join(process.cwd(), nmRoot, 'package.json');
+                        let pkg = null;
+                        try {
+                            pkg = JSON.parse(readFileSync(directPkgJson, 'utf8'));
+                        } catch {
+                            let dir = dirname(join(process.cwd(), inputPath));
+                            while (dir !== dirname(dir)) {
+                                const candidate = join(dir, 'package.json');
+                                try {
+                                    const raw = JSON.parse(readFileSync(candidate, 'utf8'));
+                                    if (raw.name === pkgName) { pkg = raw; break; }
+                                } catch { /* keep walking */ }
+                                dir = dirname(dir);
+                            }
+                        }
+                        if (!pkg) continue;
+
+                        const name = pkg.name ?? pkgName;
+                        const version = pkg.version ?? 'unknown';
+                        const id = `${name}@${version}`;
+                        if (pkgMap.has(id)) continue;
+
+                        // Normalise license: prefer the SPDX 'license' string; fall back to the
+                        // deprecated 'licenses' array (e.g. fuzzy@0.1.3 has [{type:'MIT'}]).
+                        let license = 'unknown';
+                        if (typeof pkg.license === 'string') {
+                            license = pkg.license;
+                        } else if (Array.isArray(pkg.licenses)) {
+                            license = pkg.licenses
+                                .map((l) => (typeof l === 'string' ? l : (l.type ?? 'unknown')))
+                                .join(', ');
+                        } else if (pkg.license) {
+                            license = String(pkg.license);
+                        }
+
+                        pkgMap.set(id, {
+                            name,
+                            version,
+                            license,
+                            repository: pkg.repository
+                                ? (typeof pkg.repository === 'string' ? pkg.repository : pkg.repository.url ?? '')
+                                : ''
+                        });
+                    }
+
+                    if (pkgMap.size > 0) {
+                        outputLicenses.set(outFile, pkgMap);
+                    }
+                }
+
+                for (const [outFile, pkgMap] of outputLicenses) {
+                    const sorted = [...pkgMap.values()].sort((a, b) => a.name.localeCompare(b.name));
+                    const lines = [
+                        `Third-party licenses for bundled dependencies`,
+                        `Generated by esbuildLicensePlugin — do not edit manually`,
+                        ``,
+                        ...sorted.flatMap((p) => {
+                            const entry = [`${p.name}@${p.version}`, `  License:    ${p.license}`];
+                            if (p.repository) entry.push(`  Repository: ${p.repository}`);
+                            entry.push('');
+                            return entry;
+                        })
+                    ];
+                    const licenseFile = (isAbsolute(outFile) ? outFile : join(process.cwd(), outFile)) + '.LICENSES.txt';
+                    writeFileSync(licenseFile, lines.join('\n') + '\n');
+                }
+            });
+        }
+    };
+}
+
+module.exports = { makeLicensePlugin };

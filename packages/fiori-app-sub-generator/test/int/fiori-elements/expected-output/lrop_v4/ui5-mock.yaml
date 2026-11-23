@@ -2,7 +2,7 @@
 
 specVersion: "4.0"
 metadata:
-  name: testNameSpace.lropv4
+  name: testnamespace.lropv4
 type: application
 server:
   customMiddleware:
@@ -43,3 +43,8 @@ server:
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
