@@ -39,9 +39,6 @@ export const DIALOG_STYLES = {
     boxShadow: 'var(--ui-box-shadow-medium)',
     borderColor: 'var(--vscode-editorWidget-border)',
     borderRadius: 'var(--vscode-cornerRadius-small, 4px)',
-    vPadding: 20,
-    vPaddingHalf: 10,
-    hPadding: 50,
     title: {
         color: 'var(--vscode-panelTitle-activeForeground)'
     },
