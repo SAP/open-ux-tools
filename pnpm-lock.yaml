@@ -172,8 +172,8 @@ importers:
         specifier: 10.0.1
         version: 10.0.1(eslint@10.13.0(supports-color@8.1.1))
       '@playwright/test':
-        specifier: 1.60.0
-        version: 1.60.0
+        specifier: 1.65.1
+        version: 1.65.1
       '@types/jest':
         specifier: 30.0.0
         version: 30.0.0
@@ -251,10 +251,10 @@ importers:
         version: 4.2.2(prettier@3.9.10)
       react-select:
         specifier: 5.10.2
-        version: 5.10.2(@types/react@16.14.69)(react-dom@16.14.0(react@19.2.4))(react@19.2.4)(supports-color@8.1.1)
+        version: 5.10.2(@types/react@18.3.23)(react-dom@18.3.1(react@19.2.4))(react@19.2.4)(supports-color@8.1.1)
       react-virtualized:
         specifier: 9.22.6
-        version: 9.22.6(react-dom@16.14.0(react@19.2.4))(react@19.2.4)
+        version: 9.22.6(react-dom@18.3.1(react@19.2.4))(react@19.2.4)
       rimraf:
         specifier: 6.1.3
         version: 6.1.3
@@ -379,7 +379,7 @@ importers:
         version: link:../../packages/ui-prompting
       react-markdown:
         specifier: 5.0.3
-        version: 5.0.3(@types/react@16.14.69)(react@16.14.0)(supports-color@8.1.1)
+        version: 5.0.3(@types/react@18.3.23)(react@18.3.1)(supports-color@8.1.1)
       sanitize-html:
         specifier: '>=2.17.7'
         version: 2.18.0
@@ -410,10 +410,10 @@ importers:
         version: link:../../packages/project-access
       '@storybook/react':
         specifier: 10.5.1
-        version: 10.5.1(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.3)(@types/react@16.14.69)(prettier@3.9.10)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(supports-color@8.1.1)(typescript@6.0.3)
+        version: 10.5.1(@types/react-dom@18.3.7(@types/react@18.3.23))(@types/react@18.3.23)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.3)(@types/react@18.3.23)(prettier@3.9.10)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(supports-color@8.1.1)(typescript@6.0.3)
       '@storybook/react-webpack5':
         specifier: 10.5.1
-        version: 10.5.1(@swc/core@1.15.46(@swc/helpers@0.5.19))(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.32)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.3)(@types/react@16.14.69)(prettier@3.9.10)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(supports-color@8.1.1)(typescript@6.0.3)(uglify-js@3.19.3)
+        version: 10.5.1(@swc/core@1.15.46(@swc/helpers@0.5.19))(@types/react-dom@18.3.7(@types/react@18.3.23))(@types/react@18.3.23)(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.32)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.3)(@types/react@18.3.23)(prettier@3.9.10)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(supports-color@8.1.1)(typescript@6.0.3)(uglify-js@3.19.3)
       '@types/inquirer':
         specifier: 8.2.6
         version: 8.2.6
@@ -424,11 +424,11 @@ importers:
         specifier: 7.0.1
         version: 7.0.1
       '@types/react':
-        specifier: 16.14.69
-        version: 16.14.69
+        specifier: 18.3.23
+        version: 18.3.23
       '@types/react-dom':
-        specifier: 16.9.25
-        version: 16.9.25(@types/react@16.14.69)
+        specifier: 18.3.7
+        version: 18.3.7(@types/react@18.3.23)
       '@types/sanitize-html':
         specifier: 2.16.2
         version: 2.16.2
@@ -466,11 +466,11 @@ importers:
         specifier: 9.0.4
         version: 9.0.4
       react:
-        specifier: 16.14.0
-        version: 16.14.0
+        specifier: 18.3.1
+        version: 18.3.1
       react-dom:
-        specifier: 16.14.0
-        version: 16.14.0(react@16.14.0)
+        specifier: 18.3.1
+        version: 18.3.1(react@18.3.1)
       sass:
         specifier: 1.102.0
         version: 1.102.0
@@ -479,7 +479,7 @@ importers:
         version: 16.0.7(sass-embedded@1.97.3)(sass@1.102.0)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.32)(uglify-js@3.19.3))
       storybook:
         specifier: 10.5.1
-        version: 10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.3)(@types/react@16.14.69)(prettier@3.9.10)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
+        version: 10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.3)(@types/react@18.3.23)(prettier@3.9.10)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       storybook-addon-turbo-build:
         specifier: 2.0.1
         version: 2.0.1(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.32)(uglify-js@3.19.3))
@@ -1537,16 +1537,16 @@ importers:
         version: 0.2.2(esbuild@0.28.2)
       '@fluentui/react':
         specifier: 8.125.8
-        version: 8.125.8(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
+        version: 8.125.8(@types/react-dom@18.3.7(@types/react@18.3.23))(@types/react@18.3.23)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@fluentui/react-hooks':
         specifier: 8.10.3
-        version: 8.10.3(@types/react@16.14.69)(react@16.14.0)
+        version: 8.10.3(@types/react@18.3.23)(react@18.3.1)
       '@jest/globals':
         specifier: 30.5.2
         version: 30.5.2(supports-color@8.1.1)
       '@reduxjs/toolkit':
         specifier: 1.6.1
-        version: 1.6.1(react-redux@7.2.9(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(react@16.14.0)
+        version: 1.6.1(react-redux@7.2.9(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)
       '@sap-ux-private/control-property-editor-common':
         specifier: workspace:*
         version: link:../control-property-editor-common
@@ -1561,13 +1561,13 @@ importers:
         version: 6.9.1
       '@testing-library/react':
         specifier: 12.1.5
-        version: 12.1.5(@types/react@16.14.69)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
+        version: 12.1.5(@types/react@18.3.23)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@types/react':
-        specifier: 16.14.69
-        version: 16.14.69
+        specifier: 18.3.23
+        version: 18.3.23
       '@types/react-dom':
-        specifier: 16.9.25
-        version: 16.9.25(@types/react@16.14.69)
+        specifier: 18.3.7
+        version: 18.3.7(@types/react@18.3.23)
       '@types/react-redux':
         specifier: 7.1.34
         version: 7.1.34
@@ -1617,17 +1617,17 @@ importers:
         specifier: 6.0.1
         version: 6.0.1(postcss@8.5.32)
       react:
-        specifier: 16.14.0
-        version: 16.14.0
+        specifier: 18.3.1
+        version: 18.3.1
       react-dom:
-        specifier: 16.14.0
-        version: 16.14.0(react@16.14.0)
+        specifier: 18.3.1
+        version: 18.3.1(react@18.3.1)
       react-i18next:
         specifier: 15.7.4
-        version: 15.7.4(i18next@26.5.11(typescript@6.0.3))(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(typescript@6.0.3)
+        version: 15.7.4(i18next@26.5.11(typescript@6.0.3))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@6.0.3)
       react-redux:
         specifier: 7.2.9
-        version: 7.2.9(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
+        version: 7.2.9(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       redux:
         specifier: 4.0.4
         version: 4.0.4
@@ -2740,7 +2740,7 @@ importers:
         version: 1.3.1(@opentelemetry/api@1.9.1)(@opentelemetry/exporter-trace-otlp-proto@0.221.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.10.0(@opentelemetry/api@1.9.1))(openai@7.32.0(@aws-sdk/credential-provider-node@3.972.86)(@smithy/signature-v4@5.7.4)(undici@8.11.2)(ws@8.21.0)(zod@4.6.7))(ws@8.21.0)
       '@langchain/mcp-adapters':
         specifier: 2.0.1
-        version: 2.0.1(@langchain/core@1.3.1(@opentelemetry/api@1.9.1)(@opentelemetry/exporter-trace-otlp-proto@0.221.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.10.0(@opentelemetry/api@1.9.1))(openai@7.32.0(@aws-sdk/credential-provider-node@3.972.86)(@smithy/signature-v4@5.7.4)(undici@8.11.2)(ws@8.21.0)(zod@4.6.7))(ws@8.21.0))(@langchain/langgraph@1.7.3(@langchain/core@1.3.1(@opentelemetry/api@1.9.1)(@opentelemetry/exporter-trace-otlp-proto@0.221.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.10.0(@opentelemetry/api@1.9.1))(openai@7.32.0(@aws-sdk/credential-provider-node@3.972.86)(@smithy/signature-v4@5.7.4)(undici@8.11.2)(ws@8.21.0)(zod@4.6.7))(ws@8.21.0))(react-dom@16.14.0(react@19.2.4))(react@19.2.4)(zod@4.6.7))
+        version: 2.0.1(@langchain/core@1.3.1(@opentelemetry/api@1.9.1)(@opentelemetry/exporter-trace-otlp-proto@0.221.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.10.0(@opentelemetry/api@1.9.1))(openai@7.32.0(@aws-sdk/credential-provider-node@3.972.86)(@smithy/signature-v4@5.7.4)(undici@8.11.2)(ws@8.21.0)(zod@4.6.7))(ws@8.21.0))(@langchain/langgraph@1.5.3(@langchain/core@1.3.1(@opentelemetry/api@1.9.1)(@opentelemetry/exporter-trace-otlp-proto@0.221.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.10.0(@opentelemetry/api@1.9.1))(openai@7.32.0(@aws-sdk/credential-provider-node@3.972.86)(@smithy/signature-v4@5.7.4)(undici@8.11.2)(ws@8.21.0)(zod@4.6.7))(ws@8.21.0))(react-dom@18.3.1(react@19.2.4))(react@19.2.4)(zod@4.6.7))
       '@modelcontextprotocol/sdk':
         specifier: '>=1.31.0'
         version: 1.32.1(@cfworker/json-schema@4.1.1)(supports-color@8.1.1)(zod@4.6.7)
@@ -2765,6 +2765,9 @@ importers:
       '@sap-ux/edmx-parser':
         specifier: 0.10.0
         version: 0.10.0
+      '@sap-ux/fe-fpm-writer':
+        specifier: workspace:*
+        version: link:../fe-fpm-writer
       '@sap-ux/feature-toggle':
         specifier: workspace:*
         version: link:../feature-toggle
@@ -3876,8 +3879,8 @@ importers:
   packages/playwright:
     dependencies:
       '@playwright/test':
-        specifier: 1.60.0
-        version: 1.60.0
+        specifier: 1.65.1
+        version: 1.65.1
       '@sap-ux/logger':
         specifier: workspace:*
         version: link:../logger
@@ -4410,7 +4413,7 @@ importers:
         version: 30.5.2(supports-color@8.1.1)
       '@reduxjs/toolkit':
         specifier: 1.6.1
-        version: 1.6.1(react-redux@7.2.9(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(react@16.14.0)
+        version: 1.6.1(react-redux@7.2.9(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)
       '@sap-ux/sap-systems-ext-types':
         specifier: workspace:*
         version: link:../sap-systems-ext-types
@@ -4428,16 +4431,16 @@ importers:
         version: 6.9.1
       '@testing-library/react':
         specifier: 12.1.5
-        version: 12.1.5(@types/react@16.14.69)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
+        version: 12.1.5(@types/react@18.3.23)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@testing-library/user-event':
         specifier: 14.6.8
         version: 14.6.8(@testing-library/dom@9.3.4)
       '@types/react':
-        specifier: 16.14.69
-        version: 16.14.69
+        specifier: 18.3.23
+        version: 18.3.23
       '@types/react-dom':
-        specifier: 16.9.25
-        version: 16.9.25(@types/react@16.14.69)
+        specifier: 18.3.7
+        version: 18.3.7(@types/react@18.3.23)
       '@types/react-redux':
         specifier: 7.1.34
         version: 7.1.34
@@ -4454,17 +4457,17 @@ importers:
         specifier: 1.0.4
         version: 1.0.4(babel-jest@30.5.2(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))
       react:
-        specifier: 16.14.0
-        version: 16.14.0
+        specifier: 18.3.1
+        version: 18.3.1
       react-dom:
-        specifier: 16.14.0
-        version: 16.14.0(react@16.14.0)
+        specifier: 18.3.1
+        version: 18.3.1(react@18.3.1)
       react-i18next:
         specifier: 15.7.4
-        version: 15.7.4(i18next@26.5.11(typescript@6.0.3))(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(typescript@6.0.3)
+        version: 15.7.4(i18next@26.5.11(typescript@6.0.3))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@6.0.3)
       react-redux:
         specifier: 7.2.9
-        version: 7.2.9(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
+        version: 7.2.9(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       redux:
         specifier: 4.0.4
         version: 4.0.4
@@ -4631,16 +4634,16 @@ importers:
     dependencies:
       '@fluentui/react':
         specifier: 8.125.8
-        version: 8.125.8(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
+        version: 8.125.8(@types/react-dom@18.3.7(@types/react@18.3.23))(@types/react@18.3.23)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react-movable:
         specifier: 3.4.1
-        version: 3.4.1(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
+        version: 3.4.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react-select:
         specifier: 5.10.2
-        version: 5.10.2(@types/react@16.14.69)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(supports-color@8.1.1)
+        version: 5.10.2(@types/react@18.3.23)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(supports-color@8.1.1)
       react-virtualized:
         specifier: 9.22.6
-        version: 9.22.6(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
+        version: 9.22.6(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       sanitize-html:
         specifier: '>=2.17.7'
         version: 2.18.0
@@ -4668,22 +4671,22 @@ importers:
         version: 30.5.2(supports-color@8.1.1)
       '@storybook/react':
         specifier: 10.5.1
-        version: 10.5.1(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.11.3)(@types/react@16.14.69)(prettier@3.9.10)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(supports-color@8.1.1)(typescript@6.0.3)
+        version: 10.5.1(@types/react-dom@18.3.7(@types/react@18.3.23))(@types/react@18.3.23)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.3)(@types/react@18.3.23)(prettier@3.9.10)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(supports-color@8.1.1)(typescript@6.0.3)
       '@storybook/react-webpack5':
         specifier: 10.5.1
-        version: 10.5.1(@swc/core@1.15.46(@swc/helpers@0.5.19))(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.32)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.11.3)(@types/react@16.14.69)(prettier@3.9.10)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(supports-color@8.1.1)(typescript@6.0.3)(uglify-js@3.19.3)
+        version: 10.5.1(@swc/core@1.15.46(@swc/helpers@0.5.19))(@types/react-dom@18.3.7(@types/react@18.3.23))(@types/react@18.3.23)(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.32)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.3)(@types/react@18.3.23)(prettier@3.9.10)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(supports-color@8.1.1)(typescript@6.0.3)(uglify-js@3.19.3)
       '@testing-library/jest-dom':
         specifier: 6.9.1
         version: 6.9.1
       '@testing-library/react':
         specifier: 12.1.5
-        version: 12.1.5(@types/react@16.14.69)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
+        version: 12.1.5(@types/react@18.3.23)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@types/react':
-        specifier: 16.14.69
-        version: 16.14.69
+        specifier: 18.3.23
+        version: 18.3.23
       '@types/react-dom':
-        specifier: 16.9.25
-        version: 16.9.25(@types/react@16.14.69)
+        specifier: 18.3.7
+        version: 18.3.7(@types/react@18.3.23)
       '@types/react-virtualized':
         specifier: 9.22.4
         version: 9.22.4
@@ -4721,11 +4724,11 @@ importers:
         specifier: 9.0.4
         version: 9.0.4
       react:
-        specifier: 16.14.0
-        version: 16.14.0
+        specifier: 18.3.1
+        version: 18.3.1
       react-dom:
-        specifier: 16.14.0
-        version: 16.14.0(react@16.14.0)
+        specifier: 18.3.1
+        version: 18.3.1(react@18.3.1)
       require-from-string:
         specifier: 2.0.2
         version: 2.0.2
@@ -4737,7 +4740,7 @@ importers:
         version: 16.0.7(sass-embedded@1.97.3)(sass@1.102.0)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.32)(uglify-js@3.19.3))
       storybook:
         specifier: 10.5.1
-        version: 10.5.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.11.3)(@types/react@16.14.69)(prettier@3.9.10)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
+        version: 10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.3)(@types/react@18.3.23)(prettier@3.9.10)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       storybook-addon-turbo-build:
         specifier: 2.0.1
         version: 2.0.1(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.32)(uglify-js@3.19.3))
@@ -4755,7 +4758,7 @@ importers:
         version: link:../ui-components
       react-markdown:
         specifier: 5.0.3
-        version: 5.0.3(@types/react@16.14.69)(react@16.14.0)(supports-color@8.1.1)
+        version: 5.0.3(@types/react@18.3.23)(react@18.3.1)(supports-color@8.1.1)
     devDependencies:
       '@babel/core':
         specifier: 7.29.7
@@ -4783,25 +4786,25 @@ importers:
         version: link:../inquirer-common
       '@storybook/react':
         specifier: 10.5.1
-        version: 10.5.1(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.11.3)(@types/react@16.14.69)(prettier@3.9.10)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(supports-color@8.1.1)(typescript@6.0.3)
+        version: 10.5.1(@types/react-dom@18.3.7(@types/react@18.3.23))(@types/react@18.3.23)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.3)(@types/react@18.3.23)(prettier@3.9.10)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(supports-color@8.1.1)(typescript@6.0.3)
       '@storybook/react-webpack5':
         specifier: 10.5.1
-        version: 10.5.1(@swc/core@1.15.46(@swc/helpers@0.5.19))(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.32)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.11.3)(@types/react@16.14.69)(prettier@3.9.10)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(supports-color@8.1.1)(typescript@6.0.3)(uglify-js@3.19.3)
+        version: 10.5.1(@swc/core@1.15.46(@swc/helpers@0.5.19))(@types/react-dom@18.3.7(@types/react@18.3.23))(@types/react@18.3.23)(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.32)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.3)(@types/react@18.3.23)(prettier@3.9.10)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(supports-color@8.1.1)(typescript@6.0.3)(uglify-js@3.19.3)
       '@testing-library/jest-dom':
         specifier: 6.9.1
         version: 6.9.1
       '@testing-library/react':
         specifier: 12.1.5
-        version: 12.1.5(@types/react@16.14.69)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
+        version: 12.1.5(@types/react@18.3.23)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@types/inquirer':
         specifier: 8.2.6
         version: 8.2.6
       '@types/react':
-        specifier: 16.14.69
-        version: 16.14.69
+        specifier: 18.3.23
+        version: 18.3.23
       '@types/react-dom':
-        specifier: 16.9.25
-        version: 16.9.25(@types/react@16.14.69)
+        specifier: 18.3.7
+        version: 18.3.7(@types/react@18.3.23)
       babel-jest:
         specifier: 30.5.2
         version: 30.5.2(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1)
@@ -4833,11 +4836,11 @@ importers:
         specifier: 9.0.4
         version: 9.0.4
       react:
-        specifier: 16.14.0
-        version: 16.14.0
+        specifier: 18.3.1
+        version: 18.3.1
       react-dom:
-        specifier: 16.14.0
-        version: 16.14.0(react@16.14.0)
+        specifier: 18.3.1
+        version: 18.3.1(react@18.3.1)
       sass:
         specifier: 1.102.0
         version: 1.102.0
@@ -4846,7 +4849,7 @@ importers:
         version: 16.0.7(sass-embedded@1.97.3)(sass@1.102.0)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.32)(uglify-js@3.19.3))
       storybook:
         specifier: 10.5.1
-        version: 10.5.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.11.3)(@types/react@16.14.69)(prettier@3.9.10)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
+        version: 10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.3)(@types/react@18.3.23)(prettier@3.9.10)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       storybook-addon-turbo-build:
         specifier: 2.0.1
         version: 2.0.1(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.32)(uglify-js@3.19.3))
@@ -5662,8 +5665,8 @@ importers:
   tests/integration/adaptation-editor:
     dependencies:
       '@playwright/test':
-        specifier: 1.60.0
-        version: 1.60.0
+        specifier: 1.65.1
+        version: 1.65.1
       '@sap-ux-private/playwright':
         specifier: workspace:*
         version: link:../../../packages/playwright
@@ -5845,12 +5848,12 @@ packages:
     resolution: {integrity: sha512-fCqPIfOcLE+CGqGPd66c8bZpwAji98tZ4JI9i/mlTNTlsIWslCfpg48s/ypyLxZTump5sypjrKn2/kY7q8oAbA==}
     engines: {node: '>=20.0.0'}
 
-  '@azure/monitor-opentelemetry-exporter@1.0.0-beta.47':
-    resolution: {integrity: sha512-GglsCyWZaU1RGfTJBGWEzv8ETtAGOMPOd+4xivvetjFpY3fJtd6GDGKW9W8LFQNTo8nGs2AtbEwjk9W6Ywk4+g==}
+  '@azure/monitor-opentelemetry-exporter@1.0.0-beta.46':
+    resolution: {integrity: sha512-DXrkmKi2+zZCZEWPZN2cwEv3++NSeoo93F6FlHivoT+t7Q/7IRxLrCVttn22jGvFs8636cRKcWA8tqS8jPFOsQ==}
     engines: {node: '>=22.0.0'}
 
-  '@azure/monitor-opentelemetry@1.21.0':
-    resolution: {integrity: sha512-hoHOlKLN+R5GAq+e1QPXD/3jjQ9AvaJrHOEX4gPMBjFpguDfcL/uM7Bz/RPe4SosR/K00chXqO60JfTHmwIapw==}
+  '@azure/monitor-opentelemetry@1.20.1':
+    resolution: {integrity: sha512-KisIq7afY46aF1jrEfp2VlfotZZ7bIP5aguZCL6dm8mYCICpPR0P6AV53PIKQR/NQ8Z7m3MKbe8TPaZxePZ1Aw==}
     engines: {node: '>=22.0.0'}
 
   '@azure/msal-browser@5.17.1':
@@ -6007,8 +6010,8 @@ packages:
     resolution: {integrity: sha512-6mJgmFFFIIO82vvoLt9XtRC7/TkzXfts1t/SpRX4IHSzMgqoPYCWesVu1udUPUWioAE/2fcG6WuI8zrkE1gwrg==}
     engines: {node: ^22.18.0 || >=24.11.0}
 
-  '@babel/helper-string-parser@8.0.8':
-    resolution: {integrity: sha512-fVM+gSuKbdv9cpmyRNh5EvsDHUZCdxQH3FdnFKSkNYHpbsn95bbrxm+ES3MVeQjcqwi2O5ur/DjLfmTQaO60ng==}
+  '@babel/helper-string-parser@8.1.2':
+    resolution: {integrity: sha512-TRz5Z0MgfIfWqwEIq/pCpUpEXQxUt2Ig2ZbxG3SdmhSbHMAFFYGOix0kI4JLV371/TA+qWnQ4xWHPWjojkyRFA==}
     engines: {node: ^22.18.0 || >=24.11.0}
 
   '@babel/helper-validator-identifier@7.29.7':
@@ -6611,8 +6614,8 @@ packages:
     resolution: {integrity: sha512-eY+Yn3dCqTGmyiq2QRU66lA5FL8lqqqvecHt0fF3uHONIa7ToYsaCiWV8lOKqAs0Rb2SjixiKFROngnulPtt2g==}
     engines: {node: ^22.18.0 || >=24.11.0}
 
-  '@babel/types@8.1.0':
-    resolution: {integrity: sha512-8V8aSTDx012YPmDQF30vrokyxVFdRAU2YBS2VzrnfLAGkP8floVnjckwgFcD0Jrvf6GWMSRdCrYVsk3tyMwZRg==}
+  '@babel/types@8.1.2':
+    resolution: {integrity: sha512-uXt6qt2f5G61jZwNIzK1RKu7l5Xjt1VXtPPOGuVveha9fxbx0QM94U1kM4pFZKTRLjWK+X8vmwjwbIemJjiQTA==}
     engines: {node: ^22.18.0 || >=24.11.0}
 
   '@bcoe/v8-coverage@0.2.3':
@@ -6733,17 +6736,11 @@ packages:
   '@dual-bundle/import-meta-resolve@4.2.1':
     resolution: {integrity: sha512-id+7YRUgoUX6CgV0DtuhirQWodeeA7Lf4i2x71JS/vtA5pRb/hIGWlw+G6MeXvsM+MXrz0VAydTGElX1rAfgPg==}
 
-  '@emnapi/core@1.10.0':
-    resolution: {integrity: sha512-yq6OkJ4p82CAfPl0u9mQebQHKPJkY7WrIuk205cTYnYe+k2Z8YBh11FrbRG/H6ihirqcacOgl2BIO8oyMQLeXw==}
-
   '@emnapi/core@1.4.5':
     resolution: {integrity: sha512-XsLw1dEOpkSX/WucdqUhPWP7hDxSvZiY+fsUC14h+FtQ2Ifni4znbBt8punRX+Uj2JG/uDb8nEHVKvrVlvdZ5Q==}
 
   '@emnapi/core@1.9.2':
     resolution: {integrity: sha512-UC+ZhH3XtczQYfOlu3lNEkdW/p4dsJ1r/bP7H8+rhao3TTTMO1ATq/4DdIi23XuGoFY+Cz0JmCbdVl0hz9jZcA==}
-
-  '@emnapi/runtime@1.10.0':
-    resolution: {integrity: sha512-ewvYlk86xUoGI0zQRNq/mC+16R1QeDlKQy21Ki3oSYXNgLb45GV1P6A0M+/s6nyCuNDqe5VpaY84BzXGwVbwFA==}
 
   '@emnapi/runtime@1.11.3':
     resolution: {integrity: sha512-Xz4Tpyki7XyrpbUK1jR1AhdAdaXyhhY4lZ3neLodmhpuWfy2PAQN5B46sAiU4liOXGLkHypn/qU+jvfWSCYYLA==}
@@ -7163,49 +7160,58 @@ packages:
     resolution: {integrity: sha512-ABvcmAiKl6r8OVeHDNPFgVjhdWYliVuySlTjauNxbhhfKbrGAiEdb2wZyIqdenxPQrUXjK5iUq39oNohpfUDHQ==}
     cpu: [arm64]
     os: [darwin]
+    deprecated: 'Legacy platform dependency. Migrate the parent SDK to @microsoft/copilot-sdk. Migration docs: https://github.com/microsoft/copilot-sdk/blob/main/docs/v2-breaking-changes.md'
 
   '@github/copilot-sdk-darwin-x64@1.0.14':
     resolution: {integrity: sha512-p7rL65ORq0bsq7geje3NL/HpPWXMYiII6AiS3wNWR947wdap6YEjVKI3MKmbx8JD+EfTqLW7uTQhlKMReZwlEA==}
     cpu: [x64]
     os: [darwin]
+    deprecated: 'Legacy platform dependency. Migrate the parent SDK to @microsoft/copilot-sdk. Migration docs: https://github.com/microsoft/copilot-sdk/blob/main/docs/v2-breaking-changes.md'
 
   '@github/copilot-sdk-linux-arm64@1.0.14':
     resolution: {integrity: sha512-08ocvNmme++Tf/kAbppleJqE/GWUmLn4LUSf+6ZkmWspOXkoF3YRWBlVKNlZZXRBZ8MexJJ8Naci+ky5m55UmQ==}
     cpu: [arm64]
     os: [linux]
     libc: [glibc]
+    deprecated: 'Legacy platform dependency. Migrate the parent SDK to @microsoft/copilot-sdk. Migration docs: https://github.com/microsoft/copilot-sdk/blob/main/docs/v2-breaking-changes.md'
 
   '@github/copilot-sdk-linux-x64@1.0.14':
     resolution: {integrity: sha512-1wlAVTK1z7ovAez0tixr+f77TnjB3fqKobamu1pG7FYyCTwQuyU4p1aWNXF9j/u1d7rxSY1n9cAxrtEAUkizbg==}
     cpu: [x64]
     os: [linux]
     libc: [glibc]
+    deprecated: 'Legacy platform dependency. Migrate the parent SDK to @microsoft/copilot-sdk. Migration docs: https://github.com/microsoft/copilot-sdk/blob/main/docs/v2-breaking-changes.md'
 
   '@github/copilot-sdk-linuxmusl-arm64@1.0.14':
     resolution: {integrity: sha512-KNQPD698QRxswtFWYq46hzk8/vWhSEAZAtvBwkD5VHxooClZLESC00D55dTA5dC4mZv9SRHUhbpbQhUHfKYMuA==}
     cpu: [arm64]
     os: [linux]
     libc: [musl]
+    deprecated: 'Legacy platform dependency. Migrate the parent SDK to @microsoft/copilot-sdk. Migration docs: https://github.com/microsoft/copilot-sdk/blob/main/docs/v2-breaking-changes.md'
 
   '@github/copilot-sdk-linuxmusl-x64@1.0.14':
     resolution: {integrity: sha512-tNNeJl53hXEkqeGudNAsHQk9OrSUbt2EdPhtugcQxscabaEFutd7KwQH6jmvvYW7Sifgl59ySWTd4ok/9I94kg==}
     cpu: [x64]
     os: [linux]
     libc: [musl]
+    deprecated: 'Legacy platform dependency. Migrate the parent SDK to @microsoft/copilot-sdk. Migration docs: https://github.com/microsoft/copilot-sdk/blob/main/docs/v2-breaking-changes.md'
 
   '@github/copilot-sdk-win32-arm64@1.0.14':
     resolution: {integrity: sha512-GZiw+r+6yNhPlsT1y1sDzUR8HRnduJZFdZzhjNQi+VC0GkdZiYz12yiABwLhN9FxSD079Y4FsNUHiCLUdskNcA==}
     cpu: [arm64]
     os: [win32]
+    deprecated: 'Legacy platform dependency. Migrate the parent SDK to @microsoft/copilot-sdk. Migration docs: https://github.com/microsoft/copilot-sdk/blob/main/docs/v2-breaking-changes.md'
 
   '@github/copilot-sdk-win32-x64@1.0.14':
     resolution: {integrity: sha512-+HCmPN4GKbLBdRcutdmxh9bKrRWEEA6g6jwG3lCbtExa5OKfi5QAtubsDjdBlq3HzPDU/csIlaRTJ/q3vik2oQ==}
     cpu: [x64]
     os: [win32]
+    deprecated: 'Legacy platform dependency. Migrate the parent SDK to @microsoft/copilot-sdk. Migration docs: https://github.com/microsoft/copilot-sdk/blob/main/docs/v2-breaking-changes.md'
 
   '@github/copilot-sdk@1.0.14':
     resolution: {integrity: sha512-knNiXKO7jpp8OrLc8ePGuPssf7CsktJwhv4ukfFXfB2RNgO/59hloSILaEL+mDjwt+QjawrLqgO3HN7Pyud2hA==}
     engines: {node: ^20.19.0 || >=22.12.0}
+    deprecated: 'Deprecated: migrate to @microsoft/copilot-sdk. Migration docs: https://github.com/microsoft/copilot-sdk/blob/main/docs/v2-breaking-changes.md'
 
   '@grpc/grpc-js@1.14.6':
     resolution: {integrity: sha512-SgC/B3/VZ8lTyOZ4Cwk6f1skWhmkNAaVfiX90qd5u1rRXGKk1//8FTUEN9GvOUq7rfWIqAYkA3CoyumYVpOS6g==}
@@ -7242,8 +7248,8 @@ packages:
     peerDependencies:
       hono: '>=4.13.8'
 
-  '@huggingface/jinja@0.5.12':
-    resolution: {integrity: sha512-o0aIdtHrSBmNgUC3zVHSRBReUZO87679tK9sQztp683pu6cbidcWnHivJYChYf/aDpGdlwxbTfs4pRQ1MhBGkQ==}
+  '@huggingface/jinja@0.5.11':
+    resolution: {integrity: sha512-YzEzwM5oQf4r0vs7ifWQ+yuVR1YkAHrjERQ+a8WRsStHHp4NRBg+NesjiFc+X2AFUpRvvrIeHDS1xFy9jY/IjQ==}
     engines: {node: '>=18'}
 
   '@huggingface/tokenizers@0.2.0':
@@ -7883,16 +7889,16 @@ packages:
     resolution: {integrity: sha512-jt0miXWxNi+rbZLeSeZkc7BBYKnWopksoJSpB+P3zaYgzMMNwkAPWqnd1zSClfYGwLZPXQbbTtaqv8ZFXmE3FA==}
     engines: {node: '>=20'}
 
-  '@langchain/langgraph-checkpoint@1.2.2':
-    resolution: {integrity: sha512-KL3nzi7I61ll5nANCQe5RoJ5SqTFrE+si9IK6k7IIj9OrPkIKT/Dz0w8CyJF+K7OEuJfA33HvPrZqfzzW1DXDA==}
+  '@langchain/langgraph-checkpoint@1.2.1':
+    resolution: {integrity: sha512-RD01mi9fYfpIq5fWrW/j2iY7MRUoqKvh1Nj6TMRDBoTGE18E2du75zKDugNxb57N8FWCojaiWGB9Enssnx9Hyg==}
     engines: {node: '>=18'}
     peerDependencies:
       '@langchain/core': ^1.1.48
 
-  '@langchain/langgraph-sdk@1.15.0':
-    resolution: {integrity: sha512-5s57608G4bjQCxyCXuHXU18K/8Vyl6JHBxa3MPpSD6z/LHvWazyShXKoYiNTSXhg8OrMBobPqxBJm14CWK9APw==}
+  '@langchain/langgraph-sdk@1.12.8':
+    resolution: {integrity: sha512-MYbACC5+l6XlcqCRZD5mz2KD01bdXxzJVEHs259g2R1pLbVEB2V+n2rk5kxGx4l2chAPjdNuNXihtwFBsFCT+Q==}
     peerDependencies:
-      '@langchain/core': ^1.3.2
+      '@langchain/core': ^1.1.48
       react: ^18 || ^19
       react-dom: ^18 || ^19
     peerDependenciesMeta:
@@ -7901,11 +7907,11 @@ packages:
       react-dom:
         optional: true
 
-  '@langchain/langgraph@1.7.3':
-    resolution: {integrity: sha512-QKZs9OEy6T2BWQAZUd0EsSLV6/ENOUehsr13b52qdWGaYhutWt4QEyuSrlu3QDPg3uSQQ6JyKKZG0ZT3KOwpIw==}
+  '@langchain/langgraph@1.5.3':
+    resolution: {integrity: sha512-cuqswNgfoF/J3/r9K5Qm7EnQc2f0mz7uWlAAs751KWhoK8sKfmuLABghF4b1LYq1NpK72XG1x8lWPyg45M8BOA==}
     engines: {node: '>=18'}
     peerDependencies:
-      '@langchain/core': ^1.3.4
+      '@langchain/core': ^1.1.48
       zod: ^3.25.32 || ^4.2.0
 
   '@langchain/mcp-adapters@2.0.1':
@@ -7915,8 +7921,8 @@ packages:
       '@langchain/core': ^1.2.6
       '@langchain/langgraph': ^1.4.18
 
-  '@langchain/protocol@0.0.21':
-    resolution: {integrity: sha512-HJS8Cd5GJ437MIrCnbrPHx0FJcluyOk5HdZzD081ap4SBzfWpAj/6AtI7fqpNSMo6VZEoEdaN9fIts8R0XR1AQ==}
+  '@langchain/protocol@0.0.20':
+    resolution: {integrity: sha512-sxlkDG2/HGyjDFLTJ8B/o3oglRjOv8iLCFgrV0550/Vym3V6RZ0SUjAQFe8jrLQw8ZXjERy3swJp5OODBSrUYA==}
 
   '@manypkg/find-root@1.1.0':
     resolution: {integrity: sha512-mki5uBvhHzO8kYYix/WRy2WX8S3B5wdVSc9D6KcU5lQNglP2yt58/VfLuAK49glRXChosY8ap2oJ1qgma3GUVA==}
@@ -8269,8 +8275,8 @@ packages:
     peerDependencies:
       '@opentelemetry/api': '>=1.0.0 <1.10.0'
 
-  '@opentelemetry/core@2.12.1':
-    resolution: {integrity: sha512-3hr6Pj0/G0oVgIGb97IVcw9BjZ6eudonKjrmQxw7JquyU/XmVbJelkmyoU0sT/OvHGkv+r1tcrwv8MbSX7aKHw==}
+  '@opentelemetry/core@2.12.0':
+    resolution: {integrity: sha512-1HsSAuvT4/my0QrXWsyXFdWjKaPeCHsismKZgEEIb8NK13LP6DrMRlsUbvD/0F9mDWK3xDom9AMv3IscxgOnOQ==}
     engines: {node: ^18.19.0 || >=20.6.0}
     peerDependencies:
       '@opentelemetry/api': '>=1.0.0 <1.10.0'
@@ -8454,8 +8460,8 @@ packages:
     peerDependencies:
       '@opentelemetry/api': '>=1.3.0 <1.10.0'
 
-  '@opentelemetry/resources@2.12.1':
-    resolution: {integrity: sha512-IwrNcuLCvnJAnNLkXxx0Uw+rjBkVW6VGQrhd7PanNf0LavOzkTk9sDAjdqegM7p/VdxefNRrii6d+wBRJfz35g==}
+  '@opentelemetry/resources@2.12.0':
+    resolution: {integrity: sha512-+rSRoOdln6NhXTVcBdHSlZxJDNzwxadeweK2ltZO3tVtfp6aklABc06xclDk6ovRR+EiGgIcSbh/6NgjFhnb3A==}
     engines: {node: ^18.19.0 || >=20.6.0}
     peerDependencies:
       '@opentelemetry/api': '>=1.3.0 <1.10.0'
@@ -8478,8 +8484,8 @@ packages:
     peerDependencies:
       '@opentelemetry/api': '>=1.9.0 <1.10.0'
 
-  '@opentelemetry/sdk-metrics@2.12.1':
-    resolution: {integrity: sha512-HeSblYhpds4QWliBE7ANCfoa2p3QH83uUxX4vO2qtk6BhIcqP7qDYYT36z3LOXftEBpdfbDStZxv+Cw5mqKX5g==}
+  '@opentelemetry/sdk-metrics@2.12.0':
+    resolution: {integrity: sha512-mVMaEHwCUJuY3S4Esn+nT0yQA3qCEGh+SOPJsXygU0Gl453WcsDNjtEa8EfdewMwoLyr1tlofB4fXytVpiXuow==}
     engines: {node: ^18.19.0 || >=20.6.0}
     peerDependencies:
       '@opentelemetry/api': '>=1.9.0 <1.10.0'
@@ -8961,9 +8967,9 @@ packages:
     resolution: {integrity: sha512-SEeaJLb3qBNF/OaXnaR1NmmBbFYk1zC0ZH/52fATcRPLFg/p791YrcyFFy44Bo9sLaGuSuLp5Q6axbb/O+v/RA==}
     engines: {node: ^14.18.0 || >=16.0.0}
 
-  '@playwright/test@1.60.0':
-    resolution: {integrity: sha512-O71yZIbAh/PxDMNGns37GHBIfrVkEVyn+AXyIa5dOTfb4/xNvRWV+Vv/NMbNCtODB/pO7vLlF2OTmMVLhmr7Ag==}
-    engines: {node: '>=18'}
+  '@playwright/test@1.65.1':
+    resolution: {integrity: sha512-y+NCIRm2LvY4slUVWvGh1nujJ8RF/hEisIsq2mtUPgdQC4L701bq5hZGMhrpeXjACvwvO9tj5dJqhvM6TP9lbw==}
+    engines: {node: '>=20'}
     hasBin: true
 
   '@pnpm/config.env-replace@1.1.0':
@@ -9235,11 +9241,11 @@ packages:
   '@rtsao/scc@1.1.0':
     resolution: {integrity: sha512-zt6OdqaDoOnJ1ZYsCYGt9YmWzDXl4vQdKTyJev62gFhRGKdx7mcT54V9KIjg+d2wi9EXsPvAPKe7i7WjfVWB8g==}
 
-  '@sap-ai-sdk/ai-api@2.18.0':
-    resolution: {integrity: sha512-P9Z4Y/AwvcovnghCFMA+vf9zzQg5lHskuVM1eg+bgJ2WBsE+p/jfHEJFo8XY4qps4SX1Wc9HVztg6NOufrtWKg==}
+  '@sap-ai-sdk/ai-api@2.17.0':
+    resolution: {integrity: sha512-gX9uEf5KU2QysVNCX+nllVt/fM/aF1uUjiNmT3K+X7LUVV5rPVkDvUScSr+ZNvNRs4BgFkl2t8UoithE6zFfBg==}
 
-  '@sap-ai-sdk/core@2.18.0':
-    resolution: {integrity: sha512-d9ped9bFVTsISV11TSSa545KPgCFcv6b05tshZdcSjG5BMoaNvGtzlu2L5LZw52Z5wN0HH4AhCG/IrUmUMTZmQ==}
+  '@sap-ai-sdk/core@2.17.0':
+    resolution: {integrity: sha512-0eS12ogU5j2jqt+imISqFLntvyjQgkxqkX4vzHVEa1MGibpBJfAOgT+zpwC/F2ZZ5KMEm1r+5q4a+ziemqANUA==}
 
   '@sap-ai-sdk/foundation-models@2.17.0':
     resolution: {integrity: sha512-2n7F/5Ke09yUwlFuYL+GLMT+XqfypArDp9PSvekuK3Fm4jwVXyoudHimAPRnozYFJEs/6HCLjXWDIR/co8w+hQ==}
@@ -9253,26 +9259,26 @@ packages:
       langchain:
         optional: true
 
-  '@sap-ai-sdk/orchestration@2.18.0':
-    resolution: {integrity: sha512-mpq4mx5kSRmW48x2Fz1jNvfIT+nxkblutnjZl1HWm0mL/r4J8BOwZRWc1rX1gic/NFu0GViO5XzCSlLyaI7rrA==}
+  '@sap-ai-sdk/orchestration@2.17.0':
+    resolution: {integrity: sha512-wN+5ZIQTB1MLEiNLUXBHm2KqkkiPn2Ji6q3hRw1KstUmUWi637+8/x/hPYgEo38VgSKOarwLN9SDkJ09mRckng==}
 
-  '@sap-ai-sdk/prompt-registry@2.18.0':
-    resolution: {integrity: sha512-+gceKx5683ZYEPqb0GyLqEukxDX9NHZVH4vpay4W1UooZtXIjrG+tZ3Y6sGOwVu6sA3HNnufGk5ILuSiApd8AA==}
+  '@sap-ai-sdk/prompt-registry@2.17.0':
+    resolution: {integrity: sha512-2sjT94d1M/Lim0ar/f0kfY41oBcv9utMl829qYjagU4HZt/a4XPn5jVXTjx1cimAcG7qT536C41ABg9yKVFYmQ==}
 
-  '@sap-cloud-sdk/connectivity@4.10.0':
-    resolution: {integrity: sha512-VRVHVVlOtd8Br4D+eVjIat+z4V4FRN3m3AGSvoIObcKGViknlyGHRCxqHrfg/Gl6uT+2WDifrVTf9/rZgvbtBA==}
+  '@sap-cloud-sdk/connectivity@4.9.1':
+    resolution: {integrity: sha512-0deJBmdUd1LD1O3CX/wqYjTEKmnrnLsxnrSE8CyGtzbyomjjL1ePEXB3g6QUpQKmClVyOgJG/IbpyJFGGXXL5A==}
 
-  '@sap-cloud-sdk/http-client@4.10.0':
-    resolution: {integrity: sha512-R1sTve+WbgS74/SNfhAJh/WBewjrfW9PNyyICcJogvHLJBnAD4xpyJEWff1mmn56kHUYq0XEKGj5OWweHHJ49Q==}
+  '@sap-cloud-sdk/http-client@4.9.1':
+    resolution: {integrity: sha512-bsF8T/syitm+GI8eInOB1AfvHsTYJ8Qvg5dfGt5SGXEQjqV2amFEulPp7edNTzCLo0+BBbBa/jhvqLCvXSoV6A==}
 
-  '@sap-cloud-sdk/openapi@4.10.0':
-    resolution: {integrity: sha512-qn4jFNZARo8Q422bFKISFfsEVebWgFiyypiISv1QzrheHEleMFYrbHzgn95eCnWzDxxE4HZNYGR3CHQQtPN3eg==}
+  '@sap-cloud-sdk/openapi@4.9.1':
+    resolution: {integrity: sha512-o46XbWWjo4piTPsLWPE9yuGCNS8jIj1GfZSJpaHdWDO6ZF+CqaUwF21UtGTg0SJggoe6AsJlhVObL7QA6urcJg==}
 
-  '@sap-cloud-sdk/resilience@4.10.0':
-    resolution: {integrity: sha512-D4Fr3MDERjqLb8zEK5W42DaTggJO0dThaHjBUsYHClWJ9Wi92AgYVLUYqKBwVHuUTDELj9w+wECdHSYDzE+YZA==}
+  '@sap-cloud-sdk/resilience@4.9.1':
+    resolution: {integrity: sha512-14Hdd2VqEd3BarikR/ChZjquQuelC+CP69HKdMycADmmsuQEwaJkSXURW8cDl19bfx8Re1ldM/4Ig0gbCY4x/A==}
 
-  '@sap-cloud-sdk/util@4.10.0':
-    resolution: {integrity: sha512-NvJYACfi2XepodQWMXqKTWM+CsxezE8eVQoVO48Fe1FgGHUBVjkuKeadi9JBPPOWn3Tvkgj0zu8nH88SBHPM/Q==}
+  '@sap-cloud-sdk/util@4.9.1':
+    resolution: {integrity: sha512-1tuv+c6o2Y8/1F3UEdqiv3TPWzZDpCjxuDpAFtFBM8C+weum8ixgwc2YXEWvBzWvtSEl7C5L/o8jBqiuhcXF4w==}
 
   '@sap-devx/feature-toggle-node@2.1.1':
     resolution: {integrity: sha512-sXsJQdvATE++JlEdp+q0OmOMjfLmmzKly6I/1SZLaE1xkcVfbrVM1HXd1dX0+C4O2M6SarpL63YdcM2ggq86fw==}
@@ -10058,6 +10064,11 @@ packages:
     peerDependencies:
       '@types/react': ^16.0.0
 
+  '@types/react-dom@18.3.7':
+    resolution: {integrity: sha512-MEe3UeoENYVFXzoXEWsvcpg6ZvlrFNlOQ7EOsvhI3CfAXwzPfO8Qwuxd40nepsYKqyyVQnTdEfv68q91yLcKrQ==}
+    peerDependencies:
+      '@types/react': ^18.0.0
+
   '@types/react-redux@7.1.34':
     resolution: {integrity: sha512-GdFaVjEbYv4Fthm2ZLvj1VSCedV7TqE5y1kNwnjSdBOTXuRSgowux6J8TAct15T3CKBr63UMk+2CO7ilRhyrAQ==}
 
@@ -10069,8 +10080,8 @@ packages:
   '@types/react-virtualized@9.22.4':
     resolution: {integrity: sha512-7xBz1a/zXt4Qpogi9khBeaZhphcHPnEF3uchRXsqsKhpHwgxgrpo6OgghLqgc5NWQ6aj5/ws7HaNzIShKNCnXg==}
 
-  '@types/react@16.14.69':
-    resolution: {integrity: sha512-NdnAamzkxLX9LBssSdt9Q0tQ3LR94hYxotI4/sRUs1vHKFXaDx9xDbK8S4wuw5bwrxiiXbTYyhKeITtFnwDvEA==}
+  '@types/react@18.3.23':
+    resolution: {integrity: sha512-/LDXMQh55EzZQ0uVAZmKKhfENivEvWz6E+EYzh+/MCjMhNsotd+ZHhBGIjFDTi6+fz0OhQQQLbTgdQIxxCsC0w==}
 
   '@types/readdir-glob@1.1.5':
     resolution: {integrity: sha512-raiuEPUYqXu+nvtY2Pe8s8FEmZ3x5yAH4VkLdihcPdalvsHltomrRC9BzuStrJ9yk06470hS0Crw0f1pXqD+Hg==}
@@ -10089,9 +10100,6 @@ packages:
 
   '@types/sarif@2.1.7':
     resolution: {integrity: sha512-kRz0VEkJqWLf1LLVN4pT1cg1Z9wAuvI6L97V3m2f5B76Tg8d413ddvLBPTEHAZJlnn4XSvu0FkZtViCQGVyrXQ==}
-
-  '@types/scheduler@0.16.8':
-    resolution: {integrity: sha512-WZLiwShhwLRmeV6zH+GkbOFT6Z6VklCItrDioxUnv+u4Ll+8vKeFySoFyK/0ctcRpOmwAicELfmys1sDc/Rw+A==}
 
   '@types/semver@7.8.0':
     resolution: {integrity: sha512-1mAINjtQCXXeLkJ9ehXkwOcBpqtLxiVtKhpUf83DdRNdQKV0iXZpaHYqRr7nj+wvxuJzoAmAwXI+sCNMv1CzLQ==}
@@ -10283,6 +10291,10 @@ packages:
     resolution: {integrity: sha512-G+CRlPqLv7Bz1IZVs03x5K59F1veqL0EJUROAdGhKsEq8qOiRiZbI+HUojPq5l0fEGOKModD9br6lObhB8zkoA==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
+  '@typescript-eslint/types@8.67.0':
+    resolution: {integrity: sha512-sBtgslww8nsMYUjhdPBiSyUqSzT8uR6g93A2QXnQC8+cGdjz0CyaOdqHDRJb1AtORbZCNUJBBeFA/tNR2uQmww==}
+    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+
   '@typescript-eslint/types@8.71.2':
     resolution: {integrity: sha512-y5Ukl3oVp7e/VGxqIoEXoeb/Roj71PAJ4WG/N/RGj+eeDvKRLM15kGr9MijLbN0i03S52zxu31Z98E5gWChJKw==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
@@ -10441,8 +10453,8 @@ packages:
     cpu: [arm]
     os: [android]
 
-  '@unrs/resolver-binding-android-arm-eabi@1.12.2':
-    resolution: {integrity: sha512-g5T90pqg1bo/7mytQx6F4iBNC0Wsh9cu+z9veDbFjc7HjpesJFWD7QMS0NGStXM075+7dJPPVvBbpZlnrdpi/w==}
+  '@unrs/resolver-binding-android-arm-eabi@1.13.0':
+    resolution: {integrity: sha512-60E5mvmIiW+i1E/HYeSX4iE4A8s9NJSGYPu7UM0DJght1c2tTkWwuyDyAwzsEXhKM/XbbndfnTiXdfrf27d2hw==}
     cpu: [arm]
     os: [android]
 
@@ -10451,8 +10463,8 @@ packages:
     cpu: [arm64]
     os: [android]
 
-  '@unrs/resolver-binding-android-arm64@1.12.2':
-    resolution: {integrity: sha512-YGCRZv/9GLhwmz6mYDeTsm/92BAyR28l6c2ReweVW5pWgfsitWLY8upvfRlGdoyD8HjeTHSYJWyZGD4KJA/nFQ==}
+  '@unrs/resolver-binding-android-arm64@1.13.0':
+    resolution: {integrity: sha512-qlh/JR3Tuy1cJ7xtf5pR4ykvLiK6os7X7EL2+zXZbrVc/s+yB8DoFdQrCAW9/a2TOxPVbR7QVNpkPWh7UWIsEQ==}
     cpu: [arm64]
     os: [android]
 
@@ -10461,8 +10473,8 @@ packages:
     cpu: [arm64]
     os: [darwin]
 
-  '@unrs/resolver-binding-darwin-arm64@1.12.2':
-    resolution: {integrity: sha512-u9DiNT1auQMO20A9SyTuG3wUgQWB9Z7KjAg0uFuCDR1FsAY8A0CG2S6JpHS1xwm/w1G08bjXZDcyOCjv1WAm2w==}
+  '@unrs/resolver-binding-darwin-arm64@1.13.0':
+    resolution: {integrity: sha512-yynnnnJXUC99WeD1GfvuXPKsKNfvgzGYC2eRayFnUfsHVROjqrbFOkFQLZiSx1H8+PLy5BzU8vqyPyLqbRfeBQ==}
     cpu: [arm64]
     os: [darwin]
 
@@ -10471,8 +10483,8 @@ packages:
     cpu: [x64]
     os: [darwin]
 
-  '@unrs/resolver-binding-darwin-x64@1.12.2':
-    resolution: {integrity: sha512-f7rPLi/T1HVKZu/u6t87lroib16n8vrSzcyxI7lg4BGO9UF26KhQL44sd9eOUgrTYhvRXtWOIZT5PejdPyJfUA==}
+  '@unrs/resolver-binding-darwin-x64@1.13.0':
+    resolution: {integrity: sha512-t8PXE0Ip9tmGyhRlfVsnEbzGM5iSvJIeNIXciUACjzpg0mmPs13fGv2x7W8sBa0S8zbIiohxKXS9fL/LXW/ERQ==}
     cpu: [x64]
     os: [darwin]
 
@@ -10481,8 +10493,8 @@ packages:
     cpu: [x64]
     os: [freebsd]
 
-  '@unrs/resolver-binding-freebsd-x64@1.12.2':
-    resolution: {integrity: sha512-BpcOjWCJub6nRZUS2zA20pmLvjtqAtGejETaIyRLiZiQf++cbrjltLA5NN/xaXfqeOBOSlMFbemIl5/S5tljmg==}
+  '@unrs/resolver-binding-freebsd-x64@1.13.0':
+    resolution: {integrity: sha512-qdtl9GDWDoDx6rhzF4RU5SJutV3lcLOiTiyqD6nBxYfEO6lAgLNukfrA+HJ2u2OiyWvV8JW5iEWD3LoONw7lYA==}
     cpu: [x64]
     os: [freebsd]
 
@@ -10491,8 +10503,8 @@ packages:
     cpu: [arm]
     os: [linux]
 
-  '@unrs/resolver-binding-linux-arm-gnueabihf@1.12.2':
-    resolution: {integrity: sha512-vZTDvdSISZjJx66OzJqtsOhzifbqRjbmI1Mnu49fQDwog5GtDI4QidRiEAYbZCRj9C8YZEW+3ZjqsyS9GR4k2A==}
+  '@unrs/resolver-binding-linux-arm-gnueabihf@1.13.0':
+    resolution: {integrity: sha512-VrMUVwdrScTarsh4B6aUhTtziUavSlglo4Hi8XZ6CpAe4+j3nquY+XoP+tYkiSBDsXZ8386ne4pv4YYYBNi02w==}
     cpu: [arm]
     os: [linux]
 
@@ -10501,8 +10513,8 @@ packages:
     cpu: [arm]
     os: [linux]
 
-  '@unrs/resolver-binding-linux-arm-musleabihf@1.12.2':
-    resolution: {integrity: sha512-BiPI+IrIlwcW4nLLMM21+B1dFPzd55yAVgVGrdgDjNef+ch03GdxrcyaIz8X9SsQirh/kCQ7mviyWlMxdh2D7g==}
+  '@unrs/resolver-binding-linux-arm-musleabihf@1.13.0':
+    resolution: {integrity: sha512-zSbTVwaxiTC+zYJ9xVNTC6c+BYO/kOV/odcTI3bHuFFXa+XmjLoUkb/8UxsZeU5YF4K000m17wrXoTblNWuzOg==}
     cpu: [arm]
     os: [linux]
 
@@ -10512,8 +10524,8 @@ packages:
     os: [linux]
     libc: [glibc]
 
-  '@unrs/resolver-binding-linux-arm64-gnu@1.12.2':
-    resolution: {integrity: sha512-zJc0H99FEPoFfSrNpa91HYfxzfAJCr502oxNK1cfdC9hlaFI43RT+JFCann9JUgZmLzzntChHyn13Sgn9ljHNg==}
+  '@unrs/resolver-binding-linux-arm64-gnu@1.13.0':
+    resolution: {integrity: sha512-Z/Rax87moZHsuvJ8awdfP+zrMlsCt3d7mggUPIiPe32KpeagimyzJWnZSMQoV67an9uVQghyh92Pc0VprITnYA==}
     cpu: [arm64]
     os: [linux]
     libc: [glibc]
@@ -10524,20 +10536,20 @@ packages:
     os: [linux]
     libc: [musl]
 
-  '@unrs/resolver-binding-linux-arm64-musl@1.12.2':
-    resolution: {integrity: sha512-KQ3Lki6l+Pz1k/eBipN41ES+YUK30beLGb9YqcB1O542cyLCNE6GaxrfcY3T6EezmGGk84wb5XyO9loTM9tkcA==}
+  '@unrs/resolver-binding-linux-arm64-musl@1.13.0':
+    resolution: {integrity: sha512-oUzXz8hNvFLNEAag8lBKJe1euiV2dmGHAR+eQ5fNpsZO0F1K7IMRb4J6pqYsd7uLMRQNPiu5A1WKUJHbFLWbbw==}
     cpu: [arm64]
     os: [linux]
     libc: [musl]
 
-  '@unrs/resolver-binding-linux-loong64-gnu@1.12.2':
-    resolution: {integrity: sha512-3SJGEh1DborhG6pyxvhPzCT4bbSIVihsvgJc13P1bHG7KLdNDaF9T3gsTwFc7Jw/5Y5/iWOjkEx7Zy0NvCGX3Q==}
+  '@unrs/resolver-binding-linux-loong64-gnu@1.13.0':
+    resolution: {integrity: sha512-BxhGYvZBg0YrvNOeSEGR3eNklwXYy0mUJk7oeGJvZoQMKM68zYvbbf52+fQI3Le4X0fW276FTKIoTwjpMob80A==}
     cpu: [loong64]
     os: [linux]
     libc: [glibc]
 
-  '@unrs/resolver-binding-linux-loong64-musl@1.12.2':
-    resolution: {integrity: sha512-jiuG/Obbel7uw1PwHNFfrkiKhLAF6mnyZ6aWlOAVN9WqKm8v0OFGnciJIHu8+CMvXLQ8AD51LPzAoUfT21D5Ew==}
+  '@unrs/resolver-binding-linux-loong64-musl@1.13.0':
+    resolution: {integrity: sha512-nZcIuup9Ar3gAlqoZfX/KW6x83TMI11tLpCjldZG5M1KeY8qNUPNJJ71+sPvG8HMBpoh+ix1pAm5gkMFvcSAcQ==}
     cpu: [loong64]
     os: [linux]
     libc: [musl]
@@ -10548,8 +10560,8 @@ packages:
     os: [linux]
     libc: [glibc]
 
-  '@unrs/resolver-binding-linux-ppc64-gnu@1.12.2':
-    resolution: {integrity: sha512-q7xRvVpmcfeL+LlZg8Pbbo6QaTZwDU5BaGZbwfhkEsXJn3Was8xYfE0RBH266xZt0rM6B7i8xAYIvjthuUIWHg==}
+  '@unrs/resolver-binding-linux-ppc64-gnu@1.13.0':
+    resolution: {integrity: sha512-AG6AgdDrkRNjAPwD/cftFJGgZUWCiJX+E8vpYCDEnwFHLTHZ7ppBiU6/vyPPwrfjcPUPQCDbbxE/eZUXsx49jQ==}
     cpu: [ppc64]
     os: [linux]
     libc: [glibc]
@@ -10560,8 +10572,8 @@ packages:
     os: [linux]
     libc: [glibc]
 
-  '@unrs/resolver-binding-linux-riscv64-gnu@1.12.2':
-    resolution: {integrity: sha512-0CVdx6lcnT3Q9inOH8tsMIOJ6ImndllMjqJHg8RLVdB7Vq4SfkEXl9mCSsVNuNA4MCYycRicCUxPCabVHJRr6A==}
+  '@unrs/resolver-binding-linux-riscv64-gnu@1.13.0':
+    resolution: {integrity: sha512-6vOqYGcAmzpRWpUURWutzvpf1qJ6eOu5cfYObdtPJnzZ0+Kw4cw+ZkZJqIYEh8fPuTBwSYDL/FwlUhma1G/JVQ==}
     cpu: [riscv64]
     os: [linux]
     libc: [glibc]
@@ -10572,8 +10584,8 @@ packages:
     os: [linux]
     libc: [musl]
 
-  '@unrs/resolver-binding-linux-riscv64-musl@1.12.2':
-    resolution: {integrity: sha512-iOwlRo9vnp6R6ohHQS11n0NnfdXx/omhkocmIfaPRpQhKZ+3BDMkkdRVh53qjkFkpPddf+FETA28NwGN7l5l+w==}
+  '@unrs/resolver-binding-linux-riscv64-musl@1.13.0':
+    resolution: {integrity: sha512-4HeIn0S2KVUowK0A+EweXrDvZ8CKHEfTtif0kx9vt3ORNsqcXNFFIFnHE0tizma3/Gt5OGrU2ovYNuj+D/bN4g==}
     cpu: [riscv64]
     os: [linux]
     libc: [musl]
@@ -10584,8 +10596,8 @@ packages:
     os: [linux]
     libc: [glibc]
 
-  '@unrs/resolver-binding-linux-s390x-gnu@1.12.2':
-    resolution: {integrity: sha512-HYJtLfXq94q8iZNFT1lknx258wlkkWhZeUXJRqzKBBUJ00CvZ+N33zgbCqimLjsyw5Va6uUxhVa12mI+kaveEw==}
+  '@unrs/resolver-binding-linux-s390x-gnu@1.13.0':
+    resolution: {integrity: sha512-JfkvqY7NZbxyhexLE+g6Z8Hsx4utHOGaVazAVghPiBn8Upw2iERZPpKYnW1FBVU4WStv/BiIsoK/Muke0E7asA==}
     cpu: [s390x]
     os: [linux]
     libc: [glibc]
@@ -10596,8 +10608,8 @@ packages:
     os: [linux]
     libc: [glibc]
 
-  '@unrs/resolver-binding-linux-x64-gnu@1.12.2':
-    resolution: {integrity: sha512-mPsUhunKKDih5O96Y6enDQyHc1SqBPlY1E/SfMWDM3EdJ95Z9CArPeCVwCCqbP45ljvivdEk8Fxn+SIb1rDAJQ==}
+  '@unrs/resolver-binding-linux-x64-gnu@1.13.0':
+    resolution: {integrity: sha512-iwjLeVdZo/8v5OKAeRIC+4VQV045t1EPZr5B/AVLgUQ04IdtNthWzg6not2cNjZgH2gHpSf4fOXMmN83aLO1FA==}
     cpu: [x64]
     os: [linux]
     libc: [glibc]
@@ -10608,14 +10620,14 @@ packages:
     os: [linux]
     libc: [musl]
 
-  '@unrs/resolver-binding-linux-x64-musl@1.12.2':
-    resolution: {integrity: sha512-azrt6+5ydLd8Vt210AAFis/lZevSfPw93EJRIJG+xPu4WCJ8K0kppCTpMyLPcKT7H15M4Jnt2tMp5bOvCkRC6A==}
+  '@unrs/resolver-binding-linux-x64-musl@1.13.0':
+    resolution: {integrity: sha512-TOh1fqOjyq1OPoht3BDLd7Y+HeMJRwd5g2VNmCQclknEbjp4py5GFRmT4L/rOybF5Af8q0LT9zHs2WGkwlqtrw==}
     cpu: [x64]
     os: [linux]
     libc: [musl]
 
-  '@unrs/resolver-binding-openharmony-arm64@1.12.2':
-    resolution: {integrity: sha512-YZ9hP4O0X9PQb8eO980qmLNGH4zT3I9+SZTdt0Pr0YyuGQhYKoOZkV02VzrzyOZJ5xIJ3UFIenKkUkGg8GjgWQ==}
+  '@unrs/resolver-binding-openharmony-arm64@1.13.0':
+    resolution: {integrity: sha512-3T2MNtF2dd1yjaXCVqrsi+/3VZeksEzU1hygPzqqkBLVVjn+2iJzXEkxxCKIVFrWnpmEbazeHJp/ruYD0RUVWA==}
     cpu: [arm64]
     os: [openharmony]
 
@@ -10624,18 +10636,13 @@ packages:
     engines: {node: '>=14.0.0'}
     cpu: [wasm32]
 
-  '@unrs/resolver-binding-wasm32-wasi@1.12.2':
-    resolution: {integrity: sha512-tYFDIkMxSflfEc/h92ZWNsZlHSwgimbNHSO3PL2JWQHfCuC2q316jMyYU9TIWZsFK2bQwyK5VAdYgn8ygPj69A==}
-    engines: {node: '>=14.0.0'}
-    cpu: [wasm32]
-
   '@unrs/resolver-binding-win32-arm64-msvc@1.11.1':
     resolution: {integrity: sha512-nRcz5Il4ln0kMhfL8S3hLkxI85BXs3o8EYoattsJNdsX4YUU89iOkVn7g0VHSRxFuVMdM4Q1jEpIId1Ihim/Uw==}
     cpu: [arm64]
     os: [win32]
 
-  '@unrs/resolver-binding-win32-arm64-msvc@1.12.2':
-    resolution: {integrity: sha512-qzNyg3xL0VPQmCaUh+N5jSitce6k+uCBfMDesWRnlULOZaqUkaJ0ybdT+UqlAWJoQjuqfIU/0Ptx9bteN4D82g==}
+  '@unrs/resolver-binding-win32-arm64-msvc@1.13.0':
+    resolution: {integrity: sha512-hKWfSLiN3L4cIxg0jrpyP/66AXLTcyD37jmSn//rGdOUYGlizYxTEFdJ+GZbp2NnaML3YS/A73nCysze8FaJdg==}
     cpu: [arm64]
     os: [win32]
 
@@ -10644,8 +10651,8 @@ packages:
     cpu: [ia32]
     os: [win32]
 
-  '@unrs/resolver-binding-win32-ia32-msvc@1.12.2':
-    resolution: {integrity: sha512-WD9sY00OfpHVGfsnHZoA8jVT+esS/Bg8z8jzxp5BnDCjjwsuKsPQrzswwpFy4J1AUJbXPRfkpcX0mXrzeXW79g==}
+  '@unrs/resolver-binding-win32-ia32-msvc@1.13.0':
+    resolution: {integrity: sha512-N4gDKkDoiyIQEcn3vTqe2ksRxUAtBvQ8c5TiT+WonSa6FHgCAY5+RggnZ134hXJoRj57JEjv4/m+i/pAKHWrTQ==}
     cpu: [ia32]
     os: [win32]
 
@@ -10654,8 +10661,8 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@unrs/resolver-binding-win32-x64-msvc@1.12.2':
-    resolution: {integrity: sha512-nAB74NfSNKknqQ1RrYj6uz8FcXEomu/MATJZxh/x+BArzN2U3JbOYC0APYzUIGhVY3m5hRxA8VPNdPBoG8txlA==}
+  '@unrs/resolver-binding-win32-x64-msvc@1.13.0':
+    resolution: {integrity: sha512-DpLMlAqlrk4zBVK3DiDjwKD0oq7pZNy+8BiIBRuByqb6dm5jsdoLMhIiyh/xR7+WejaW/1Ui+XgbgMNa4+zWJg==}
     cpu: [x64]
     os: [win32]
 
@@ -13137,11 +13144,6 @@ packages:
   fs.realpath@1.0.0:
     resolution: {integrity: sha512-OO0pH2lK6a0hZnAdau5ItzHPI6pUlvI7jMVnxUQRtw4owF2wk8lOSabtGDCTP4Ggrg2MbGnWO9X8K1t4+fGMDw==}
 
-  fsevents@2.3.2:
-    resolution: {integrity: sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA==}
-    engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
-    os: [darwin]
-
   fsevents@2.3.3:
     resolution: {integrity: sha512-5xoDfX+fL7faATnagmWPpbFtwh/R77WmMMqqHGS65C3vvB0YHrgF+B1YmZ3441tMj5n63k0212XNoJwzlhffQw==}
     engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
@@ -13274,8 +13276,8 @@ packages:
     engines: {node: '>=12'}
     deprecated: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
 
-  global-agent@4.1.7:
-    resolution: {integrity: sha512-pxaZqdsMwPA4i7TuRKpDUONm2xGRjvYdRoidCQz7VleUKVuUfh/4p5Q3QDTGrpAE5Kz5TxxcZ+uqEgTkoKRNtg==}
+  global-agent@4.1.6:
+    resolution: {integrity: sha512-V9u791atI/bS7RryfRTK2oixDWo6/RCrIikjwuQ4kADPRZZml1C6LUJXc7y6qRhaAF8geo3bIvE/siAGJCw38A==}
     engines: {node: '>=10.0'}
 
   global-directory@4.0.1:
@@ -15103,6 +15105,11 @@ packages:
     engines: {node: ^12.20.0 || ^14.18.0 || >=16.0.0}
     hasBin: true
 
+  napi-postinstall@0.3.7:
+    resolution: {integrity: sha512-jyU4cU4kVAmy/3qjP+DcoQTNXfINHc+dFw54gGqWC8nu0mpV0kOnk7kff+J+Q18SbX0k3Np8Rm7yFjd3phatNQ==}
+    engines: {node: ^12.20.0 || ^14.18.0 || >=16.0.0}
+    hasBin: true
+
   natural-compare@1.4.0:
     resolution: {integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==}
 
@@ -15774,19 +15781,19 @@ packages:
   platform@1.3.6:
     resolution: {integrity: sha512-fnWVljUchTro6RiCFvCXBbNhJc2NijN7oIQxbwsyL0buWJPG85v81ehlHI9fXrJsMNgTofEoWIQeClKpgxFLrg==}
 
-  playwright-core@1.60.0:
-    resolution: {integrity: sha512-9bW6zvX/m0lEbgTKJ6YppOKx8H3VOPBMOCFh2irXFOT4BbHgrx5hPjwJYLT40Lu+4qtD36qKc/Hn56StUW57IA==}
-    engines: {node: '>=18'}
-    hasBin: true
-
   playwright-core@1.63.0:
     resolution: {integrity: sha512-rYCsBF/M5HjUch52bbtVONEFjv6Xu8sm8h72dNlR5bzIE1fvC/bxgspzkjSfU+MweEMmPM8KJebG6nnyxo5mCg==}
     engines: {node: '>=20'}
     hasBin: true
 
-  playwright@1.60.0:
-    resolution: {integrity: sha512-hheHdokM8cdqCb0lcE3s+zT4t4W+vvjpGxsZlDnikarzx8tSzMebh3UiFtgqwFwnTnjYQcsyMF8ei2mCO/tpeA==}
-    engines: {node: '>=18'}
+  playwright-core@1.65.1:
+    resolution: {integrity: sha512-hqPpz7blSMPxWVdoeE1yiBSzXsKiVOd2k+kjCvmUywD2GPO2Dd9HfcWnq9NN0GHbNZDFgZ9JfBFr+X5/BLo0qw==}
+    engines: {node: '>=20'}
+    hasBin: true
+
+  playwright@1.65.1:
+    resolution: {integrity: sha512-vJ1FuoOrNwOKHUIVEvSt3jT1L+wjjDpwhwIstKtfvTh8XIG4FG4bIFuvNdMxi81LGfAhUgUZleVFaOLY4RIUUw==}
+    engines: {node: '>=20'}
     hasBin: true
 
   pluralize@2.0.0:
@@ -16120,10 +16127,10 @@ packages:
     resolution: {integrity: sha512-aEZ9qP+/M+58x2qgfSFEWH1BxLyHe5+qkLNJOZQb5iGS017jpbRnoKhNRrXPeA6RfBrZO5wZrT9DMC1UqE1f1w==}
     engines: {node: ^20.9.0 || >=22}
 
-  react-dom@16.14.0:
-    resolution: {integrity: sha512-1gCeQXDLoIqMgqD3IO2Ah9bnf0w9kzhwN5q4FGnHZ67hBm9yePzB5JJAIQCc8x3pFnNlwFq4RidZggNAAkzWWw==}
+  react-dom@18.3.1:
+    resolution: {integrity: sha512-5m4nQKp+rZRb09LNH59GM4BxTh9251/ylbKIbpe7TpGxfJ+9kv6BLkLBXIjjspbgbnIBNqlI23tRnTWT0snUIw==}
     peerDependencies:
-      react: ^16.14.0
+      react: ^18.3.1
 
   react-i18next@15.7.4:
     resolution: {integrity: sha512-nyU8iKNrI5uDJch0z9+Y5XEr34b0wkyYj3Rp+tfbahxtlswxSCjcUL9H0nqXo9IR3/t5Y5PKIA3fx3MfUyR9Xw==}
@@ -16198,8 +16205,8 @@ packages:
       react: ^16.3.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
       react-dom: ^16.3.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
-  react@16.14.0:
-    resolution: {integrity: sha512-0X2CImDkJGApiAlcf0ODKIneSwBPhqJawOa5wCtKbu7ZECrmS26NvtSILynQ66cgkT/RJ4LidJOc3bUESwmU8g==}
+  react@18.3.1:
+    resolution: {integrity: sha512-wS+hAgJShR0KhEvPJArfuPVN1+Hz1t0Y6n5jLrGQbkb4urgPE/0Rve+1kMB1v/oWgHgm4WIcV+i7F2pTVj+2iQ==}
     engines: {node: '>=0.10.0'}
 
   react@19.2.4:
@@ -16749,8 +16756,8 @@ packages:
     resolution: {integrity: sha512-xAg7SOnEhrm5zI3puOOKyy1OMcMlIJZYNJY7xLBwSze0UjhPLnWfj2GF2EpT0jmzaJKIWKHLsaSSajf35bcYnA==}
     engines: {node: '>=v12.22.7'}
 
-  scheduler@0.19.1:
-    resolution: {integrity: sha512-n/zwRWRYSUj0/3g/otKDRPMh6qv2SYMWNq85IEa8iZyAv8od9zDYpGSnpBEjNgcMNq6Scbu5KfIPxNF72R/2EA==}
+  scheduler@0.23.2:
+    resolution: {integrity: sha512-UOShsPwz7NrMUqhR6t0hWjFduvOzbtv7toDH1/hIrfRNIDBnnBWd0CwJTGvTpngVlmwGCdP9/Zl/tVrDqcuYzQ==}
 
   schema-utils@3.3.0:
     resolution: {integrity: sha512-pN/yOAvcC+5rQ5nERGuwrjLlYvLTbCibnZ1I7B1LaiAz9BRBlE9GMgE/eqV30P7aJQUf7Ddimy/RsbYO/GrVGg==}
@@ -17855,8 +17862,8 @@ packages:
   unrs-resolver@1.11.1:
     resolution: {integrity: sha512-bSjt9pjaEBnNiGgc9rUiHGKv5l4/TGzDmYw3RhnkJGtLhbnnA/5qJj7x3dNDCRx/PJxu774LlH8lCOlB4hEfKg==}
 
-  unrs-resolver@1.12.2:
-    resolution: {integrity: sha512-dmlRxBJJayXjqTwC+JtF1HhJmgf3ftQ3YejFcZrf4+KKtJv0qDsK1pjqaaVjG7wJ5NJ6UVP1OqRMQ71Z4C3rxQ==}
+  unrs-resolver@1.13.0:
+    resolution: {integrity: sha512-mcPQo9Vm6kXd84d/WqMiYBi2CcA57QHBX/ev5PoUEb8b2oQzUvJ6xYsfseQblnCncgnVmCZGWiFwK7KkS5JZJA==}
 
   untildify@4.0.0:
     resolution: {integrity: sha512-KK8xQ1mkzZeg9inewmFVDNkg3l5LUhoq9kN6iWYB/CC9YMG8HA+c1Q8HwDe6dEX7kErrEVNVBO3fWsVq5iDgtw==}
@@ -18711,7 +18718,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@azure/monitor-opentelemetry-exporter@1.0.0-beta.47(supports-color@8.1.1)':
+  '@azure/monitor-opentelemetry-exporter@1.0.0-beta.46(supports-color@8.1.1)':
     dependencies:
       '@azure-rest/core-client': 2.7.0(supports-color@8.1.1)
       '@azure/core-auth': 1.10.1(supports-color@8.1.1)
@@ -18724,14 +18731,14 @@ snapshots:
       '@opentelemetry/core': 2.11.0(@opentelemetry/api@1.9.1)
       '@opentelemetry/resources': 2.10.0(@opentelemetry/api@1.9.1)
       '@opentelemetry/sdk-logs': 0.221.0(@opentelemetry/api@1.9.1)
-      '@opentelemetry/sdk-metrics': 2.12.1(@opentelemetry/api@1.9.1)
+      '@opentelemetry/sdk-metrics': 2.12.0(@opentelemetry/api@1.9.1)
       '@opentelemetry/sdk-trace-base': 2.10.0(@opentelemetry/api@1.9.1)
       '@opentelemetry/semantic-conventions': 1.43.0
       tslib: 2.8.1
     transitivePeerDependencies:
       - supports-color
 
-  '@azure/monitor-opentelemetry@1.21.0(supports-color@8.1.1)':
+  '@azure/monitor-opentelemetry@1.20.1(supports-color@8.1.1)':
     dependencies:
       '@azure-rest/core-client': 2.7.0(supports-color@8.1.1)
       '@azure/core-auth': 1.10.1(supports-color@8.1.1)
@@ -18739,7 +18746,7 @@ snapshots:
       '@azure/core-tracing': 1.3.1
       '@azure/identity': 4.13.1(supports-color@8.1.1)
       '@azure/logger': 1.3.0(supports-color@8.1.1)
-      '@azure/monitor-opentelemetry-exporter': 1.0.0-beta.47(supports-color@8.1.1)
+      '@azure/monitor-opentelemetry-exporter': 1.0.0-beta.46(supports-color@8.1.1)
       '@azure/opentelemetry-instrumentation-azure-sdk': 1.1.0-beta.1(supports-color@8.1.1)
       '@microsoft/applicationinsights-web-snippet': 1.2.3
       '@opentelemetry/api': 1.9.1
@@ -18757,7 +18764,7 @@ snapshots:
       '@opentelemetry/resource-detector-azure': 0.29.0(@opentelemetry/api@1.9.1)
       '@opentelemetry/resources': 2.10.0(@opentelemetry/api@1.9.1)
       '@opentelemetry/sdk-logs': 0.221.0(@opentelemetry/api@1.9.1)
-      '@opentelemetry/sdk-metrics': 2.12.1(@opentelemetry/api@1.9.1)
+      '@opentelemetry/sdk-metrics': 2.12.0(@opentelemetry/api@1.9.1)
       '@opentelemetry/sdk-node': 0.221.0(@opentelemetry/api@1.9.1)(supports-color@8.1.1)
       '@opentelemetry/sdk-trace-base': 2.10.0(@opentelemetry/api@1.9.1)
       '@opentelemetry/sdk-trace-node': 2.10.0(@opentelemetry/api@1.9.1)
@@ -18942,7 +18949,7 @@ snapshots:
   '@babel/helper-function-name@7.24.7':
     dependencies:
       '@babel/template': 7.29.7
-      '@babel/types': 7.29.8
+      '@babel/types': 7.29.7
 
   '@babel/helper-globals@7.29.7': {}
 
@@ -19006,7 +19013,7 @@ snapshots:
 
   '@babel/helper-string-parser@8.0.0': {}
 
-  '@babel/helper-string-parser@8.0.8': {}
+  '@babel/helper-string-parser@8.1.2': {}
 
   '@babel/helper-validator-identifier@7.29.7': {}
 
@@ -19042,7 +19049,7 @@ snapshots:
 
   '@babel/parser@8.0.10':
     dependencies:
-      '@babel/types': 8.1.0
+      '@babel/types': 8.1.2
 
   '@babel/plugin-bugfix-firefox-class-in-computed-class-key@7.29.7(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1)':
     dependencies:
@@ -19727,7 +19734,7 @@ snapshots:
     dependencies:
       '@babel/core': 7.29.7(supports-color@8.1.1)
       '@babel/helper-plugin-utils': 7.29.7
-      '@babel/types': 7.29.8
+      '@babel/types': 7.29.7
       esutils: 2.0.3
 
   '@babel/preset-react@7.28.5(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1)':
@@ -19827,9 +19834,9 @@ snapshots:
       '@babel/helper-string-parser': 8.0.0
       '@babel/helper-validator-identifier': 8.0.4
 
-  '@babel/types@8.1.0':
+  '@babel/types@8.1.2':
     dependencies:
-      '@babel/helper-string-parser': 8.0.8
+      '@babel/helper-string-parser': 8.1.2
       '@babel/helper-validator-identifier': 8.0.6
 
   '@bcoe/v8-coverage@0.2.3': {}
@@ -20031,12 +20038,6 @@ snapshots:
 
   '@dual-bundle/import-meta-resolve@4.2.1': {}
 
-  '@emnapi/core@1.10.0':
-    dependencies:
-      '@emnapi/wasi-threads': 1.2.1
-      tslib: 2.8.1
-    optional: true
-
   '@emnapi/core@1.4.5':
     dependencies:
       '@emnapi/wasi-threads': 1.0.4
@@ -20046,11 +20047,6 @@ snapshots:
     dependencies:
       '@emnapi/wasi-threads': 1.2.1
       tslib: 2.8.1
-
-  '@emnapi/runtime@1.10.0':
-    dependencies:
-      tslib: 2.8.1
-    optional: true
 
   '@emnapi/runtime@1.11.3':
     dependencies:
@@ -20101,23 +20097,23 @@ snapshots:
 
   '@emotion/memoize@0.9.0': {}
 
-  '@emotion/react@11.14.0(@types/react@16.14.69)(react@16.14.0)(supports-color@8.1.1)':
+  '@emotion/react@11.14.0(@types/react@18.3.23)(react@18.3.1)(supports-color@8.1.1)':
     dependencies:
       '@babel/runtime': 7.29.2
       '@emotion/babel-plugin': 11.13.5(supports-color@8.1.1)
       '@emotion/cache': 11.14.0
       '@emotion/serialize': 1.3.3
-      '@emotion/use-insertion-effect-with-fallbacks': 1.2.0(react@16.14.0)
+      '@emotion/use-insertion-effect-with-fallbacks': 1.2.0(react@18.3.1)
       '@emotion/utils': 1.4.2
       '@emotion/weak-memoize': 0.4.0
       hoist-non-react-statics: 3.3.2
-      react: 16.14.0
+      react: 18.3.1
     optionalDependencies:
-      '@types/react': 16.14.69
+      '@types/react': 18.3.23
     transitivePeerDependencies:
       - supports-color
 
-  '@emotion/react@11.14.0(@types/react@16.14.69)(react@19.2.4)(supports-color@8.1.1)':
+  '@emotion/react@11.14.0(@types/react@18.3.23)(react@19.2.4)(supports-color@8.1.1)':
     dependencies:
       '@babel/runtime': 7.29.2
       '@emotion/babel-plugin': 11.13.5(supports-color@8.1.1)
@@ -20129,7 +20125,7 @@ snapshots:
       hoist-non-react-statics: 3.3.2
       react: 19.2.4
     optionalDependencies:
-      '@types/react': 16.14.69
+      '@types/react': 18.3.23
     transitivePeerDependencies:
       - supports-color
 
@@ -20145,9 +20141,9 @@ snapshots:
 
   '@emotion/unitless@0.10.0': {}
 
-  '@emotion/use-insertion-effect-with-fallbacks@1.2.0(react@16.14.0)':
+  '@emotion/use-insertion-effect-with-fallbacks@1.2.0(react@18.3.1)':
     dependencies:
-      react: 16.14.0
+      react: 18.3.1
 
   '@emotion/use-insertion-effect-with-fallbacks@1.2.0(react@19.2.4)':
     dependencies:
@@ -20174,7 +20170,7 @@ snapshots:
   '@es-joy/jsdoccomment@0.62.0':
     dependencies:
       '@types/estree': 1.0.9
-      '@typescript-eslint/types': 8.72.1
+      '@typescript-eslint/types': 8.71.2
       comment-parser: 1.4.1
       esquery: 1.7.0
       jsdoc-type-pratt-parser: 5.9.2
@@ -20297,7 +20293,7 @@ snapshots:
     dependencies:
       '@eslint/object-schema': 3.0.5
       debug: 4.4.3(supports-color@8.1.1)
-      minimatch: 10.2.6
+      minimatch: 10.2.5
     transitivePeerDependencies:
       - supports-color
 
@@ -20307,7 +20303,7 @@ snapshots:
 
   '@eslint/config-helpers@0.5.3':
     dependencies:
-      '@eslint/core': 1.2.1
+      '@eslint/core': 1.1.1
 
   '@eslint/config-helpers@0.7.0':
     dependencies:
@@ -20367,7 +20363,7 @@ snapshots:
 
   '@eslint/plugin-kit@0.6.1':
     dependencies:
-      '@eslint/core': 1.2.1
+      '@eslint/core': 1.1.1
       levn: 0.4.1
 
   '@eslint/plugin-kit@0.7.3':
@@ -20396,24 +20392,24 @@ snapshots:
       '@fluentui/set-version': 8.2.24
       tslib: 2.8.1
 
-  '@fluentui/font-icons-mdl2@8.5.76(@types/react@16.14.69)(react@16.14.0)':
+  '@fluentui/font-icons-mdl2@8.5.76(@types/react@18.3.23)(react@18.3.1)':
     dependencies:
       '@fluentui/set-version': 8.2.24
-      '@fluentui/style-utilities': 8.15.4(@types/react@16.14.69)(react@16.14.0)
-      '@fluentui/utilities': 8.17.4(@types/react@16.14.69)(react@16.14.0)
+      '@fluentui/style-utilities': 8.15.4(@types/react@18.3.23)(react@18.3.1)
+      '@fluentui/utilities': 8.17.4(@types/react@18.3.23)(react@18.3.1)
       tslib: 2.8.1
     transitivePeerDependencies:
       - '@types/react'
       - react
 
-  '@fluentui/foundation-legacy@8.6.9(@types/react@16.14.69)(react@16.14.0)':
+  '@fluentui/foundation-legacy@8.6.9(@types/react@18.3.23)(react@18.3.1)':
     dependencies:
       '@fluentui/merge-styles': 8.6.16
       '@fluentui/set-version': 8.2.24
-      '@fluentui/style-utilities': 8.15.4(@types/react@16.14.69)(react@16.14.0)
-      '@fluentui/utilities': 8.17.4(@types/react@16.14.69)(react@16.14.0)
-      '@types/react': 16.14.69
-      react: 16.14.0
+      '@fluentui/style-utilities': 8.15.4(@types/react@18.3.23)(react@18.3.1)
+      '@fluentui/utilities': 8.17.4(@types/react@18.3.23)(react@18.3.1)
+      '@types/react': 18.3.23
+      react: 18.3.1
       tslib: 2.8.1
 
   '@fluentui/keyboard-key@0.4.23':
@@ -20425,94 +20421,94 @@ snapshots:
       '@fluentui/set-version': 8.2.24
       tslib: 2.8.1
 
-  '@fluentui/react-focus@8.10.9(@types/react@16.14.69)(react@16.14.0)':
+  '@fluentui/react-focus@8.10.9(@types/react@18.3.23)(react@18.3.1)':
     dependencies:
       '@fluentui/keyboard-key': 0.4.23
       '@fluentui/merge-styles': 8.6.16
       '@fluentui/set-version': 8.2.24
-      '@fluentui/style-utilities': 8.15.4(@types/react@16.14.69)(react@16.14.0)
-      '@fluentui/utilities': 8.17.4(@types/react@16.14.69)(react@16.14.0)
-      '@types/react': 16.14.69
-      react: 16.14.0
+      '@fluentui/style-utilities': 8.15.4(@types/react@18.3.23)(react@18.3.1)
+      '@fluentui/utilities': 8.17.4(@types/react@18.3.23)(react@18.3.1)
+      '@types/react': 18.3.23
+      react: 18.3.1
       tslib: 2.8.1
 
-  '@fluentui/react-hooks@8.10.3(@types/react@16.14.69)(react@16.14.0)':
+  '@fluentui/react-hooks@8.10.3(@types/react@18.3.23)(react@18.3.1)':
     dependencies:
-      '@fluentui/react-window-provider': 2.3.2(@types/react@16.14.69)(react@16.14.0)
+      '@fluentui/react-window-provider': 2.3.2(@types/react@18.3.23)(react@18.3.1)
       '@fluentui/set-version': 8.2.24
-      '@fluentui/utilities': 8.17.4(@types/react@16.14.69)(react@16.14.0)
-      '@types/react': 16.14.69
-      react: 16.14.0
+      '@fluentui/utilities': 8.17.4(@types/react@18.3.23)(react@18.3.1)
+      '@types/react': 18.3.23
+      react: 18.3.1
       tslib: 2.8.1
 
-  '@fluentui/react-portal-compat-context@9.0.17(@types/react@16.14.69)(react@16.14.0)':
+  '@fluentui/react-portal-compat-context@9.0.17(@types/react@18.3.23)(react@18.3.1)':
     dependencies:
       '@swc/helpers': 0.5.19
-      react: 16.14.0
+      react: 18.3.1
     optionalDependencies:
-      '@types/react': 16.14.69
+      '@types/react': 18.3.23
 
-  '@fluentui/react-window-provider@2.3.2(@types/react@16.14.69)(react@16.14.0)':
+  '@fluentui/react-window-provider@2.3.2(@types/react@18.3.23)(react@18.3.1)':
     dependencies:
       '@fluentui/set-version': 8.2.24
-      '@types/react': 16.14.69
-      react: 16.14.0
+      '@types/react': 18.3.23
+      react: 18.3.1
       tslib: 2.8.1
 
-  '@fluentui/react@8.125.8(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)':
+  '@fluentui/react@8.125.8(@types/react-dom@18.3.7(@types/react@18.3.23))(@types/react@18.3.23)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@fluentui/date-time-utilities': 8.6.11
-      '@fluentui/font-icons-mdl2': 8.5.76(@types/react@16.14.69)(react@16.14.0)
-      '@fluentui/foundation-legacy': 8.6.9(@types/react@16.14.69)(react@16.14.0)
+      '@fluentui/font-icons-mdl2': 8.5.76(@types/react@18.3.23)(react@18.3.1)
+      '@fluentui/foundation-legacy': 8.6.9(@types/react@18.3.23)(react@18.3.1)
       '@fluentui/merge-styles': 8.6.16
-      '@fluentui/react-focus': 8.10.9(@types/react@16.14.69)(react@16.14.0)
-      '@fluentui/react-hooks': 8.10.3(@types/react@16.14.69)(react@16.14.0)
-      '@fluentui/react-portal-compat-context': 9.0.17(@types/react@16.14.69)(react@16.14.0)
-      '@fluentui/react-window-provider': 2.3.2(@types/react@16.14.69)(react@16.14.0)
+      '@fluentui/react-focus': 8.10.9(@types/react@18.3.23)(react@18.3.1)
+      '@fluentui/react-hooks': 8.10.3(@types/react@18.3.23)(react@18.3.1)
+      '@fluentui/react-portal-compat-context': 9.0.17(@types/react@18.3.23)(react@18.3.1)
+      '@fluentui/react-window-provider': 2.3.2(@types/react@18.3.23)(react@18.3.1)
       '@fluentui/set-version': 8.2.24
-      '@fluentui/style-utilities': 8.15.4(@types/react@16.14.69)(react@16.14.0)
-      '@fluentui/theme': 2.7.4(@types/react@16.14.69)(react@16.14.0)
-      '@fluentui/utilities': 8.17.4(@types/react@16.14.69)(react@16.14.0)
+      '@fluentui/style-utilities': 8.15.4(@types/react@18.3.23)(react@18.3.1)
+      '@fluentui/theme': 2.7.4(@types/react@18.3.23)(react@18.3.1)
+      '@fluentui/utilities': 8.17.4(@types/react@18.3.23)(react@18.3.1)
       '@microsoft/load-themed-styles': 1.10.295
-      '@types/react': 16.14.69
-      '@types/react-dom': 16.9.25(@types/react@16.14.69)
-      react: 16.14.0
-      react-dom: 16.14.0(react@16.14.0)
+      '@types/react': 18.3.23
+      '@types/react-dom': 18.3.7(@types/react@18.3.23)
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
       tslib: 2.8.1
 
   '@fluentui/set-version@8.2.24':
     dependencies:
       tslib: 2.8.1
 
-  '@fluentui/style-utilities@8.15.4(@types/react@16.14.69)(react@16.14.0)':
+  '@fluentui/style-utilities@8.15.4(@types/react@18.3.23)(react@18.3.1)':
     dependencies:
       '@fluentui/merge-styles': 8.6.16
       '@fluentui/set-version': 8.2.24
-      '@fluentui/theme': 2.7.4(@types/react@16.14.69)(react@16.14.0)
-      '@fluentui/utilities': 8.17.4(@types/react@16.14.69)(react@16.14.0)
+      '@fluentui/theme': 2.7.4(@types/react@18.3.23)(react@18.3.1)
+      '@fluentui/utilities': 8.17.4(@types/react@18.3.23)(react@18.3.1)
       '@microsoft/load-themed-styles': 1.10.295
       tslib: 2.8.1
     transitivePeerDependencies:
       - '@types/react'
       - react
 
-  '@fluentui/theme@2.7.4(@types/react@16.14.69)(react@16.14.0)':
+  '@fluentui/theme@2.7.4(@types/react@18.3.23)(react@18.3.1)':
     dependencies:
       '@fluentui/merge-styles': 8.6.16
       '@fluentui/set-version': 8.2.24
-      '@fluentui/utilities': 8.17.4(@types/react@16.14.69)(react@16.14.0)
-      '@types/react': 16.14.69
-      react: 16.14.0
+      '@fluentui/utilities': 8.17.4(@types/react@18.3.23)(react@18.3.1)
+      '@types/react': 18.3.23
+      react: 18.3.1
       tslib: 2.8.1
 
-  '@fluentui/utilities@8.17.4(@types/react@16.14.69)(react@16.14.0)':
+  '@fluentui/utilities@8.17.4(@types/react@18.3.23)(react@18.3.1)':
     dependencies:
       '@fluentui/dom-utilities': 2.3.10
       '@fluentui/merge-styles': 8.6.16
-      '@fluentui/react-window-provider': 2.3.2(@types/react@16.14.69)(react@16.14.0)
+      '@fluentui/react-window-provider': 2.3.2(@types/react@18.3.23)(react@18.3.1)
       '@fluentui/set-version': 8.2.24
-      '@types/react': 16.14.69
-      react: 16.14.0
+      '@types/react': 18.3.23
+      react: 18.3.1
       tslib: 2.8.1
 
   '@gar/promise-retry@1.0.3': {}
@@ -20590,13 +20586,13 @@ snapshots:
     dependencies:
       hono: 4.13.13
 
-  '@huggingface/jinja@0.5.12': {}
+  '@huggingface/jinja@0.5.11': {}
 
   '@huggingface/tokenizers@0.2.0': {}
 
   '@huggingface/transformers@4.3.2(@types/node@22.20.1)':
     dependencies:
-      '@huggingface/jinja': 0.5.12
+      '@huggingface/jinja': 0.5.11
       '@huggingface/tokenizers': 0.2.0
       onnxruntime-node: 1.30.0
       onnxruntime-web: 1.31.0-dev.20260914-8d85527a0
@@ -21279,7 +21275,7 @@ snapshots:
       langsmith: 0.6.0(@opentelemetry/api@1.9.1)(@opentelemetry/exporter-trace-otlp-proto@0.221.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.10.0(@opentelemetry/api@1.9.1))(openai@7.32.0(@aws-sdk/credential-provider-node@3.972.86)(@smithy/signature-v4@5.7.4)(undici@8.11.2)(ws@8.21.0)(zod@4.6.7))(ws@8.21.0)
       mustache: 4.2.0
       p-queue: 6.6.2
-      zod: 4.6.5
+      zod: 4.6.7
     transitivePeerDependencies:
       - '@opentelemetry/api'
       - '@opentelemetry/exporter-trace-otlp-proto'
@@ -21287,42 +21283,42 @@ snapshots:
       - openai
       - ws
 
-  '@langchain/langgraph-checkpoint@1.2.2(@langchain/core@1.3.1(@opentelemetry/api@1.9.1)(@opentelemetry/exporter-trace-otlp-proto@0.221.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.10.0(@opentelemetry/api@1.9.1))(openai@7.32.0(@aws-sdk/credential-provider-node@3.972.86)(@smithy/signature-v4@5.7.4)(undici@8.11.2)(ws@8.21.0)(zod@4.6.7))(ws@8.21.0))':
+  '@langchain/langgraph-checkpoint@1.2.1(@langchain/core@1.3.1(@opentelemetry/api@1.9.1)(@opentelemetry/exporter-trace-otlp-proto@0.221.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.10.0(@opentelemetry/api@1.9.1))(openai@7.32.0(@aws-sdk/credential-provider-node@3.972.86)(@smithy/signature-v4@5.7.4)(undici@8.11.2)(ws@8.21.0)(zod@4.6.7))(ws@8.21.0))':
     dependencies:
       '@langchain/core': 1.3.1(@opentelemetry/api@1.9.1)(@opentelemetry/exporter-trace-otlp-proto@0.221.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.10.0(@opentelemetry/api@1.9.1))(openai@7.32.0(@aws-sdk/credential-provider-node@3.972.86)(@smithy/signature-v4@5.7.4)(undici@8.11.2)(ws@8.21.0)(zod@4.6.7))(ws@8.21.0)
 
-  '@langchain/langgraph-sdk@1.15.0(@langchain/core@1.3.1(@opentelemetry/api@1.9.1)(@opentelemetry/exporter-trace-otlp-proto@0.221.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.10.0(@opentelemetry/api@1.9.1))(openai@7.32.0(@aws-sdk/credential-provider-node@3.972.86)(@smithy/signature-v4@5.7.4)(undici@8.11.2)(ws@8.21.0)(zod@4.6.7))(ws@8.21.0))(react-dom@16.14.0(react@19.2.4))(react@19.2.4)':
+  '@langchain/langgraph-sdk@1.12.8(@langchain/core@1.3.1(@opentelemetry/api@1.9.1)(@opentelemetry/exporter-trace-otlp-proto@0.221.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.10.0(@opentelemetry/api@1.9.1))(openai@7.32.0(@aws-sdk/credential-provider-node@3.972.86)(@smithy/signature-v4@5.7.4)(undici@8.11.2)(ws@8.21.0)(zod@4.6.7))(ws@8.21.0))(react-dom@18.3.1(react@19.2.4))(react@19.2.4)':
     dependencies:
       '@langchain/core': 1.3.1(@opentelemetry/api@1.9.1)(@opentelemetry/exporter-trace-otlp-proto@0.221.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.10.0(@opentelemetry/api@1.9.1))(openai@7.32.0(@aws-sdk/credential-provider-node@3.972.86)(@smithy/signature-v4@5.7.4)(undici@8.11.2)(ws@8.21.0)(zod@4.6.7))(ws@8.21.0)
-      '@langchain/protocol': 0.0.21
+      '@langchain/protocol': 0.0.20
       '@types/json-schema': 7.0.15
       p-queue: 9.1.0
       p-retry: 7.1.1
     optionalDependencies:
       react: 19.2.4
-      react-dom: 16.14.0(react@19.2.4)
+      react-dom: 18.3.1(react@19.2.4)
 
-  '@langchain/langgraph@1.7.3(@langchain/core@1.3.1(@opentelemetry/api@1.9.1)(@opentelemetry/exporter-trace-otlp-proto@0.221.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.10.0(@opentelemetry/api@1.9.1))(openai@7.32.0(@aws-sdk/credential-provider-node@3.972.86)(@smithy/signature-v4@5.7.4)(undici@8.11.2)(ws@8.21.0)(zod@4.6.7))(ws@8.21.0))(react-dom@16.14.0(react@19.2.4))(react@19.2.4)(zod@4.6.7)':
+  '@langchain/langgraph@1.5.3(@langchain/core@1.3.1(@opentelemetry/api@1.9.1)(@opentelemetry/exporter-trace-otlp-proto@0.221.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.10.0(@opentelemetry/api@1.9.1))(openai@7.32.0(@aws-sdk/credential-provider-node@3.972.86)(@smithy/signature-v4@5.7.4)(undici@8.11.2)(ws@8.21.0)(zod@4.6.7))(ws@8.21.0))(react-dom@18.3.1(react@19.2.4))(react@19.2.4)(zod@4.6.7)':
     dependencies:
       '@langchain/core': 1.3.1(@opentelemetry/api@1.9.1)(@opentelemetry/exporter-trace-otlp-proto@0.221.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.10.0(@opentelemetry/api@1.9.1))(openai@7.32.0(@aws-sdk/credential-provider-node@3.972.86)(@smithy/signature-v4@5.7.4)(undici@8.11.2)(ws@8.21.0)(zod@4.6.7))(ws@8.21.0)
-      '@langchain/langgraph-checkpoint': 1.2.2(@langchain/core@1.3.1(@opentelemetry/api@1.9.1)(@opentelemetry/exporter-trace-otlp-proto@0.221.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.10.0(@opentelemetry/api@1.9.1))(openai@7.32.0(@aws-sdk/credential-provider-node@3.972.86)(@smithy/signature-v4@5.7.4)(undici@8.11.2)(ws@8.21.0)(zod@4.6.7))(ws@8.21.0))
-      '@langchain/langgraph-sdk': 1.15.0(@langchain/core@1.3.1(@opentelemetry/api@1.9.1)(@opentelemetry/exporter-trace-otlp-proto@0.221.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.10.0(@opentelemetry/api@1.9.1))(openai@7.32.0(@aws-sdk/credential-provider-node@3.972.86)(@smithy/signature-v4@5.7.4)(undici@8.11.2)(ws@8.21.0)(zod@4.6.7))(ws@8.21.0))(react-dom@16.14.0(react@19.2.4))(react@19.2.4)
-      '@langchain/protocol': 0.0.21
+      '@langchain/langgraph-checkpoint': 1.2.1(@langchain/core@1.3.1(@opentelemetry/api@1.9.1)(@opentelemetry/exporter-trace-otlp-proto@0.221.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.10.0(@opentelemetry/api@1.9.1))(openai@7.32.0(@aws-sdk/credential-provider-node@3.972.86)(@smithy/signature-v4@5.7.4)(undici@8.11.2)(ws@8.21.0)(zod@4.6.7))(ws@8.21.0))
+      '@langchain/langgraph-sdk': 1.12.8(@langchain/core@1.3.1(@opentelemetry/api@1.9.1)(@opentelemetry/exporter-trace-otlp-proto@0.221.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.10.0(@opentelemetry/api@1.9.1))(openai@7.32.0(@aws-sdk/credential-provider-node@3.972.86)(@smithy/signature-v4@5.7.4)(undici@8.11.2)(ws@8.21.0)(zod@4.6.7))(ws@8.21.0))(react-dom@18.3.1(react@19.2.4))(react@19.2.4)
+      '@langchain/protocol': 0.0.20
       '@standard-schema/spec': 1.1.0
       zod: 4.6.7
     transitivePeerDependencies:
       - react
       - react-dom
 
-  '@langchain/mcp-adapters@2.0.1(@langchain/core@1.3.1(@opentelemetry/api@1.9.1)(@opentelemetry/exporter-trace-otlp-proto@0.221.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.10.0(@opentelemetry/api@1.9.1))(openai@7.32.0(@aws-sdk/credential-provider-node@3.972.86)(@smithy/signature-v4@5.7.4)(undici@8.11.2)(ws@8.21.0)(zod@4.6.7))(ws@8.21.0))(@langchain/langgraph@1.7.3(@langchain/core@1.3.1(@opentelemetry/api@1.9.1)(@opentelemetry/exporter-trace-otlp-proto@0.221.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.10.0(@opentelemetry/api@1.9.1))(openai@7.32.0(@aws-sdk/credential-provider-node@3.972.86)(@smithy/signature-v4@5.7.4)(undici@8.11.2)(ws@8.21.0)(zod@4.6.7))(ws@8.21.0))(react-dom@16.14.0(react@19.2.4))(react@19.2.4)(zod@4.6.7))':
+  '@langchain/mcp-adapters@2.0.1(@langchain/core@1.3.1(@opentelemetry/api@1.9.1)(@opentelemetry/exporter-trace-otlp-proto@0.221.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.10.0(@opentelemetry/api@1.9.1))(openai@7.32.0(@aws-sdk/credential-provider-node@3.972.86)(@smithy/signature-v4@5.7.4)(undici@8.11.2)(ws@8.21.0)(zod@4.6.7))(ws@8.21.0))(@langchain/langgraph@1.5.3(@langchain/core@1.3.1(@opentelemetry/api@1.9.1)(@opentelemetry/exporter-trace-otlp-proto@0.221.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.10.0(@opentelemetry/api@1.9.1))(openai@7.32.0(@aws-sdk/credential-provider-node@3.972.86)(@smithy/signature-v4@5.7.4)(undici@8.11.2)(ws@8.21.0)(zod@4.6.7))(ws@8.21.0))(react-dom@18.3.1(react@19.2.4))(react@19.2.4)(zod@4.6.7))':
     dependencies:
       '@langchain/core': 1.3.1(@opentelemetry/api@1.9.1)(@opentelemetry/exporter-trace-otlp-proto@0.221.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.10.0(@opentelemetry/api@1.9.1))(openai@7.32.0(@aws-sdk/credential-provider-node@3.972.86)(@smithy/signature-v4@5.7.4)(undici@8.11.2)(ws@8.21.0)(zod@4.6.7))(ws@8.21.0)
-      '@langchain/langgraph': 1.7.3(@langchain/core@1.3.1(@opentelemetry/api@1.9.1)(@opentelemetry/exporter-trace-otlp-proto@0.221.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.10.0(@opentelemetry/api@1.9.1))(openai@7.32.0(@aws-sdk/credential-provider-node@3.972.86)(@smithy/signature-v4@5.7.4)(undici@8.11.2)(ws@8.21.0)(zod@4.6.7))(ws@8.21.0))(react-dom@16.14.0(react@19.2.4))(react@19.2.4)(zod@4.6.7)
+      '@langchain/langgraph': 1.5.3(@langchain/core@1.3.1(@opentelemetry/api@1.9.1)(@opentelemetry/exporter-trace-otlp-proto@0.221.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.10.0(@opentelemetry/api@1.9.1))(openai@7.32.0(@aws-sdk/credential-provider-node@3.972.86)(@smithy/signature-v4@5.7.4)(undici@8.11.2)(ws@8.21.0)(zod@4.6.7))(ws@8.21.0))(react-dom@18.3.1(react@19.2.4))(react@19.2.4)(zod@4.6.7)
       '@modelcontextprotocol/client': 2.4.0
       '@modelcontextprotocol/core': 2.4.0
       zod: 4.6.5
 
-  '@langchain/protocol@0.0.21': {}
+  '@langchain/protocol@0.0.20': {}
 
   '@manypkg/find-root@1.1.0':
     dependencies:
@@ -21368,11 +21364,11 @@ snapshots:
       eventsource-parser: 3.0.8
       jose: 6.1.3
       pkce-challenge: 5.0.1
-      zod: 4.6.5
+      zod: 4.6.7
 
   '@modelcontextprotocol/core@2.4.0':
     dependencies:
-      zod: 4.6.5
+      zod: 4.6.7
 
   '@modelcontextprotocol/sdk@1.32.1(@cfworker/json-schema@4.1.1)(supports-color@8.1.1)(zod@4.6.7)':
     dependencies:
@@ -21421,20 +21417,6 @@ snapshots:
       '@emnapi/core': 1.9.2
       '@emnapi/runtime': 1.11.3
       '@tybys/wasm-util': 0.9.0
-
-  '@napi-rs/wasm-runtime@1.1.4(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)':
-    dependencies:
-      '@emnapi/core': 1.10.0
-      '@emnapi/runtime': 1.10.0
-      '@tybys/wasm-util': 0.10.1
-    optional: true
-
-  '@napi-rs/wasm-runtime@1.1.4(@emnapi/core@1.10.0)(@emnapi/runtime@1.11.3)':
-    dependencies:
-      '@emnapi/core': 1.10.0
-      '@emnapi/runtime': 1.11.3
-      '@tybys/wasm-util': 0.10.1
-    optional: true
 
   '@napi-rs/wasm-runtime@1.1.4(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.3)':
     dependencies:
@@ -21839,7 +21821,7 @@ snapshots:
       '@opentelemetry/api': 1.9.1
       '@opentelemetry/semantic-conventions': 1.43.0
 
-  '@opentelemetry/core@2.12.1(@opentelemetry/api@1.9.1)':
+  '@opentelemetry/core@2.12.0(@opentelemetry/api@1.9.1)':
     dependencies:
       '@opentelemetry/api': 1.9.1
       '@opentelemetry/semantic-conventions': 1.43.0
@@ -22076,10 +22058,10 @@ snapshots:
       '@opentelemetry/core': 2.10.0(@opentelemetry/api@1.9.1)
       '@opentelemetry/semantic-conventions': 1.43.0
 
-  '@opentelemetry/resources@2.12.1(@opentelemetry/api@1.9.1)':
+  '@opentelemetry/resources@2.12.0(@opentelemetry/api@1.9.1)':
     dependencies:
       '@opentelemetry/api': 1.9.1
-      '@opentelemetry/core': 2.12.1(@opentelemetry/api@1.9.1)
+      '@opentelemetry/core': 2.12.0(@opentelemetry/api@1.9.1)
       '@opentelemetry/semantic-conventions': 1.43.0
 
   '@opentelemetry/resources@2.5.0(@opentelemetry/api@1.9.1)':
@@ -22102,11 +22084,11 @@ snapshots:
       '@opentelemetry/core': 2.10.0(@opentelemetry/api@1.9.1)
       '@opentelemetry/resources': 2.10.0(@opentelemetry/api@1.9.1)
 
-  '@opentelemetry/sdk-metrics@2.12.1(@opentelemetry/api@1.9.1)':
+  '@opentelemetry/sdk-metrics@2.12.0(@opentelemetry/api@1.9.1)':
     dependencies:
       '@opentelemetry/api': 1.9.1
-      '@opentelemetry/core': 2.12.1(@opentelemetry/api@1.9.1)
-      '@opentelemetry/resources': 2.12.1(@opentelemetry/api@1.9.1)
+      '@opentelemetry/core': 2.12.0(@opentelemetry/api@1.9.1)
+      '@opentelemetry/resources': 2.12.0(@opentelemetry/api@1.9.1)
 
   '@opentelemetry/sdk-node@0.221.0(@opentelemetry/api@1.9.1)(supports-color@8.1.1)':
     dependencies:
@@ -22303,14 +22285,6 @@ snapshots:
   '@oxc-resolver/binding-openharmony-arm64@11.19.1':
     optional: true
 
-  '@oxc-resolver/binding-wasm32-wasi@11.19.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.11.3)':
-    dependencies:
-      '@napi-rs/wasm-runtime': 1.1.4(@emnapi/core@1.10.0)(@emnapi/runtime@1.11.3)
-    transitivePeerDependencies:
-      - '@emnapi/core'
-      - '@emnapi/runtime'
-    optional: true
-
   '@oxc-resolver/binding-wasm32-wasi@11.19.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.3)':
     dependencies:
       '@napi-rs/wasm-runtime': 1.1.4(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.3)
@@ -22456,9 +22430,9 @@ snapshots:
 
   '@pkgr/core@0.3.6': {}
 
-  '@playwright/test@1.60.0':
+  '@playwright/test@1.65.1':
     dependencies:
-      playwright: 1.60.0
+      playwright: 1.65.1
 
   '@pnpm/config.env-replace@1.1.0': {}
 
@@ -22505,15 +22479,15 @@ snapshots:
       proxy-agent: 8.0.1(supports-color@8.1.1)
       yauzl: 3.4.0
 
-  '@reduxjs/toolkit@1.6.1(react-redux@7.2.9(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(react@16.14.0)':
+  '@reduxjs/toolkit@1.6.1(react-redux@7.2.9(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)':
     dependencies:
       immer: 9.0.21
       redux: 4.2.1
       redux-thunk: 2.4.2(redux@4.2.1)
       reselect: 4.1.8
     optionalDependencies:
-      react: 16.14.0
-      react-redux: 7.2.9(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
+      react: 18.3.1
+      react-redux: 7.2.9(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
 
   '@rollup/plugin-commonjs@29.0.2(rollup@4.59.0)':
     dependencies:
@@ -22644,32 +22618,32 @@ snapshots:
 
   '@rtsao/scc@1.1.0': {}
 
-  '@sap-ai-sdk/ai-api@2.18.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)':
+  '@sap-ai-sdk/ai-api@2.17.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)':
     dependencies:
-      '@sap-ai-sdk/core': 2.18.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
-      '@sap-cloud-sdk/connectivity': 4.10.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
-      '@sap-cloud-sdk/util': 4.10.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+      '@sap-ai-sdk/core': 2.17.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+      '@sap-cloud-sdk/connectivity': 4.9.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+      '@sap-cloud-sdk/util': 4.9.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
     transitivePeerDependencies:
       - debug
       - supports-color
 
-  '@sap-ai-sdk/core@2.18.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)':
+  '@sap-ai-sdk/core@2.17.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)':
     dependencies:
-      '@sap-cloud-sdk/connectivity': 4.10.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
-      '@sap-cloud-sdk/http-client': 4.10.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
-      '@sap-cloud-sdk/openapi': 4.10.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
-      '@sap-cloud-sdk/util': 4.10.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+      '@sap-cloud-sdk/connectivity': 4.9.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+      '@sap-cloud-sdk/http-client': 4.9.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+      '@sap-cloud-sdk/openapi': 4.9.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+      '@sap-cloud-sdk/util': 4.9.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
     transitivePeerDependencies:
       - debug
       - supports-color
 
   '@sap-ai-sdk/foundation-models@2.17.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)':
     dependencies:
-      '@sap-ai-sdk/ai-api': 2.18.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
-      '@sap-ai-sdk/core': 2.18.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
-      '@sap-cloud-sdk/connectivity': 4.10.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
-      '@sap-cloud-sdk/http-client': 4.10.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
-      '@sap-cloud-sdk/util': 4.10.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+      '@sap-ai-sdk/ai-api': 2.17.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+      '@sap-ai-sdk/core': 2.17.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+      '@sap-cloud-sdk/connectivity': 4.9.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+      '@sap-cloud-sdk/http-client': 4.9.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+      '@sap-cloud-sdk/util': 4.9.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
     transitivePeerDependencies:
       - debug
       - supports-color
@@ -22677,39 +22651,39 @@ snapshots:
   '@sap-ai-sdk/langchain@2.17.0(@langchain/core@1.3.1(@opentelemetry/api@1.9.1)(@opentelemetry/exporter-trace-otlp-proto@0.221.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.10.0(@opentelemetry/api@1.9.1))(openai@7.32.0(@aws-sdk/credential-provider-node@3.972.86)(@smithy/signature-v4@5.7.4)(undici@8.11.2)(ws@8.21.0)(zod@4.6.7))(ws@8.21.0))(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)':
     dependencies:
       '@langchain/core': 1.3.1(@opentelemetry/api@1.9.1)(@opentelemetry/exporter-trace-otlp-proto@0.221.0(@opentelemetry/api@1.9.1))(@opentelemetry/sdk-trace-base@2.10.0(@opentelemetry/api@1.9.1))(openai@7.32.0(@aws-sdk/credential-provider-node@3.972.86)(@smithy/signature-v4@5.7.4)(undici@8.11.2)(ws@8.21.0)(zod@4.6.7))(ws@8.21.0)
-      '@sap-ai-sdk/ai-api': 2.18.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
-      '@sap-ai-sdk/core': 2.18.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+      '@sap-ai-sdk/ai-api': 2.17.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+      '@sap-ai-sdk/core': 2.17.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       '@sap-ai-sdk/foundation-models': 2.17.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
-      '@sap-ai-sdk/orchestration': 2.18.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
-      '@sap-cloud-sdk/connectivity': 4.10.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
-      '@sap-cloud-sdk/util': 4.10.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+      '@sap-ai-sdk/orchestration': 2.17.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+      '@sap-cloud-sdk/connectivity': 4.9.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+      '@sap-cloud-sdk/util': 4.9.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
     transitivePeerDependencies:
       - debug
       - supports-color
 
-  '@sap-ai-sdk/orchestration@2.18.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)':
+  '@sap-ai-sdk/orchestration@2.17.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)':
     dependencies:
-      '@sap-ai-sdk/ai-api': 2.18.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
-      '@sap-ai-sdk/core': 2.18.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
-      '@sap-ai-sdk/prompt-registry': 2.18.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
-      '@sap-cloud-sdk/util': 4.10.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+      '@sap-ai-sdk/ai-api': 2.17.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+      '@sap-ai-sdk/core': 2.17.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+      '@sap-ai-sdk/prompt-registry': 2.17.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+      '@sap-cloud-sdk/util': 4.9.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       yaml: 2.9.1
     transitivePeerDependencies:
       - debug
       - supports-color
 
-  '@sap-ai-sdk/prompt-registry@2.18.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)':
+  '@sap-ai-sdk/prompt-registry@2.17.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)':
     dependencies:
-      '@sap-ai-sdk/core': 2.18.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+      '@sap-ai-sdk/core': 2.17.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       zod: 4.6.7
     transitivePeerDependencies:
       - debug
       - supports-color
 
-  '@sap-cloud-sdk/connectivity@4.10.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)':
+  '@sap-cloud-sdk/connectivity@4.9.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)':
     dependencies:
-      '@sap-cloud-sdk/resilience': 4.10.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
-      '@sap-cloud-sdk/util': 4.10.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+      '@sap-cloud-sdk/resilience': 4.9.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+      '@sap-cloud-sdk/util': 4.9.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       '@sap/xsenv': 6.2.2(supports-color@8.1.1)
       '@sap/xssec': 4.15.0(supports-color@8.1.1)
       async-retry: 1.3.3
@@ -22721,30 +22695,30 @@ snapshots:
       - debug
       - supports-color
 
-  '@sap-cloud-sdk/http-client@4.10.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)':
+  '@sap-cloud-sdk/http-client@4.9.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)':
     dependencies:
-      '@sap-cloud-sdk/connectivity': 4.10.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
-      '@sap-cloud-sdk/resilience': 4.10.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
-      '@sap-cloud-sdk/util': 4.10.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+      '@sap-cloud-sdk/connectivity': 4.9.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+      '@sap-cloud-sdk/resilience': 4.9.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+      '@sap-cloud-sdk/util': 4.9.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       axios: 1.20.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
     transitivePeerDependencies:
       - debug
       - supports-color
 
-  '@sap-cloud-sdk/openapi@4.10.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)':
+  '@sap-cloud-sdk/openapi@4.9.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)':
     dependencies:
-      '@sap-cloud-sdk/connectivity': 4.10.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
-      '@sap-cloud-sdk/http-client': 4.10.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
-      '@sap-cloud-sdk/resilience': 4.10.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
-      '@sap-cloud-sdk/util': 4.10.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+      '@sap-cloud-sdk/connectivity': 4.9.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+      '@sap-cloud-sdk/http-client': 4.9.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+      '@sap-cloud-sdk/resilience': 4.9.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+      '@sap-cloud-sdk/util': 4.9.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       axios: 1.20.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
     transitivePeerDependencies:
       - debug
       - supports-color
 
-  '@sap-cloud-sdk/resilience@4.10.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)':
+  '@sap-cloud-sdk/resilience@4.9.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)':
     dependencies:
-      '@sap-cloud-sdk/util': 4.10.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+      '@sap-cloud-sdk/util': 4.9.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       async-retry: 1.3.3
       axios: 1.20.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       opossum: 10.0.0
@@ -22752,7 +22726,7 @@ snapshots:
       - debug
       - supports-color
 
-  '@sap-cloud-sdk/util@4.10.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)':
+  '@sap-cloud-sdk/util@4.9.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)':
     dependencies:
       axios: 1.20.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       logform: 2.7.0
@@ -23271,9 +23245,9 @@ snapshots:
 
   '@standard-schema/spec@1.1.0': {}
 
-  '@storybook/builder-webpack5@10.5.1(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.32)(storybook@10.5.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.11.3)(@types/react@16.14.69)(prettier@3.9.10)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(typescript@6.0.3)(uglify-js@3.19.3)':
+  '@storybook/builder-webpack5@10.5.1(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.32)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.3)(@types/react@18.3.23)(prettier@3.9.10)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(typescript@6.0.3)(uglify-js@3.19.3)':
     dependencies:
-      '@storybook/core-webpack': 10.5.1(storybook@10.5.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.11.3)(@types/react@16.14.69)(prettier@3.9.10)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))
+      '@storybook/core-webpack': 10.5.1(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.3)(@types/react@18.3.23)(prettier@3.9.10)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
       case-sensitive-paths-webpack-plugin: 2.4.0
       cjs-module-lexer: 1.4.3
       css-loader: 7.1.5(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.32)(uglify-js@3.19.3))
@@ -23282,7 +23256,7 @@ snapshots:
       html-webpack-plugin: 5.6.6(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.32)(uglify-js@3.19.3))
       magic-string: 0.30.21
       semver: 7.8.5
-      storybook: 10.5.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.11.3)(@types/react@16.14.69)(prettier@3.9.10)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
+      storybook: 10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.3)(@types/react@18.3.23)(prettier@3.9.10)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       style-loader: 4.0.0(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.32)(uglify-js@3.19.3))
       terser-webpack-plugin: 5.6.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.32)(uglify-js@3.19.3)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.32)(uglify-js@3.19.3))
       ts-dedent: 2.2.0
@@ -23308,51 +23282,9 @@ snapshots:
       - uglify-js
       - webpack-cli
 
-  '@storybook/builder-webpack5@10.5.1(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.32)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.3)(@types/react@16.14.69)(prettier@3.9.10)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(typescript@6.0.3)(uglify-js@3.19.3)':
+  '@storybook/core-webpack@10.5.1(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.3)(@types/react@18.3.23)(prettier@3.9.10)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))':
     dependencies:
-      '@storybook/core-webpack': 10.5.1(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.3)(@types/react@16.14.69)(prettier@3.9.10)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))
-      case-sensitive-paths-webpack-plugin: 2.4.0
-      cjs-module-lexer: 1.4.3
-      css-loader: 7.1.5(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.32)(uglify-js@3.19.3))
-      es-module-lexer: 1.7.0
-      fork-ts-checker-webpack-plugin: 9.1.0(typescript@6.0.3)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.32)(uglify-js@3.19.3))
-      html-webpack-plugin: 5.6.6(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.32)(uglify-js@3.19.3))
-      magic-string: 0.30.21
-      semver: 7.8.5
-      storybook: 10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.3)(@types/react@16.14.69)(prettier@3.9.10)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
-      style-loader: 4.0.0(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.32)(uglify-js@3.19.3))
-      terser-webpack-plugin: 5.6.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.32)(uglify-js@3.19.3)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.32)(uglify-js@3.19.3))
-      ts-dedent: 2.2.0
-      webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.32)(uglify-js@3.19.3)
-      webpack-dev-middleware: 8.3.0(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.32)(uglify-js@3.19.3))
-      webpack-hot-middleware: 2.26.1
-      webpack-virtual-modules: 0.6.2
-    optionalDependencies:
-      typescript: 6.0.3
-    transitivePeerDependencies:
-      - '@minify-html/node'
-      - '@rspack/core'
-      - '@swc/core'
-      - '@swc/css'
-      - '@swc/html'
-      - clean-css
-      - cssnano
-      - csso
-      - esbuild
-      - html-minifier-terser
-      - lightningcss
-      - postcss
-      - uglify-js
-      - webpack-cli
-
-  '@storybook/core-webpack@10.5.1(storybook@10.5.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.11.3)(@types/react@16.14.69)(prettier@3.9.10)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))':
-    dependencies:
-      storybook: 10.5.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.11.3)(@types/react@16.14.69)(prettier@3.9.10)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
-      ts-dedent: 2.2.0
-
-  '@storybook/core-webpack@10.5.1(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.3)(@types/react@16.14.69)(prettier@3.9.10)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))':
-    dependencies:
-      storybook: 10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.3)(@types/react@16.14.69)(prettier@3.9.10)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
+      storybook: 10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.3)(@types/react@18.3.23)(prettier@3.9.10)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       ts-dedent: 2.2.0
 
   '@storybook/csf@0.0.1':
@@ -23361,55 +23293,23 @@ snapshots:
 
   '@storybook/global@5.0.0': {}
 
-  '@storybook/icons@2.0.2(react-dom@16.14.0(react@16.14.0))(react@16.14.0)':
+  '@storybook/icons@2.0.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
-      react: 16.14.0
-      react-dom: 16.14.0(react@16.14.0)
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
 
-  '@storybook/preset-react-webpack@10.5.1(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.32)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.11.3)(@types/react@16.14.69)(prettier@3.9.10)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(supports-color@8.1.1)(typescript@6.0.3)(uglify-js@3.19.3)':
+  '@storybook/preset-react-webpack@10.5.1(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.32)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.3)(@types/react@18.3.23)(prettier@3.9.10)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(supports-color@8.1.1)(typescript@6.0.3)(uglify-js@3.19.3)':
     dependencies:
-      '@storybook/core-webpack': 10.5.1(storybook@10.5.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.11.3)(@types/react@16.14.69)(prettier@3.9.10)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))
+      '@storybook/core-webpack': 10.5.1(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.3)(@types/react@18.3.23)(prettier@3.9.10)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
       '@storybook/react-docgen-typescript-plugin': 1.0.6--canary.9.0c3f3b7.0(supports-color@8.1.1)(typescript@6.0.3)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.32)(uglify-js@3.19.3))
       '@types/semver': 7.8.0
       magic-string: 0.30.21
-      react: 16.14.0
+      react: 18.3.1
       react-docgen: 8.0.3(supports-color@8.1.1)
-      react-dom: 16.14.0(react@16.14.0)
+      react-dom: 18.3.1(react@18.3.1)
       resolve: 1.22.11
       semver: 7.8.5
-      storybook: 10.5.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.11.3)(@types/react@16.14.69)(prettier@3.9.10)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
-      tsconfig-paths: 4.2.0
-      webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.32)(uglify-js@3.19.3)
-    optionalDependencies:
-      typescript: 6.0.3
-    transitivePeerDependencies:
-      - '@minify-html/node'
-      - '@swc/core'
-      - '@swc/css'
-      - '@swc/html'
-      - clean-css
-      - cssnano
-      - csso
-      - esbuild
-      - html-minifier-terser
-      - lightningcss
-      - postcss
-      - supports-color
-      - uglify-js
-      - webpack-cli
-
-  '@storybook/preset-react-webpack@10.5.1(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.32)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.3)(@types/react@16.14.69)(prettier@3.9.10)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(supports-color@8.1.1)(typescript@6.0.3)(uglify-js@3.19.3)':
-    dependencies:
-      '@storybook/core-webpack': 10.5.1(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.3)(@types/react@16.14.69)(prettier@3.9.10)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))
-      '@storybook/react-docgen-typescript-plugin': 1.0.6--canary.9.0c3f3b7.0(supports-color@8.1.1)(typescript@6.0.3)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.32)(uglify-js@3.19.3))
-      '@types/semver': 7.8.0
-      magic-string: 0.30.21
-      react: 16.14.0
-      react-docgen: 8.0.3(supports-color@8.1.1)
-      react-dom: 16.14.0(react@16.14.0)
-      resolve: 1.22.11
-      semver: 7.8.5
-      storybook: 10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.3)(@types/react@16.14.69)(prettier@3.9.10)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
+      storybook: 10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.3)(@types/react@18.3.23)(prettier@3.9.10)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       tsconfig-paths: 4.2.0
       webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.32)(uglify-js@3.19.3)
     optionalDependencies:
@@ -23444,32 +23344,23 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@storybook/react-dom-shim@10.5.1(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.11.3)(@types/react@16.14.69)(prettier@3.9.10)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))':
+  '@storybook/react-dom-shim@10.5.1(@types/react-dom@18.3.7(@types/react@18.3.23))(@types/react@18.3.23)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.3)(@types/react@18.3.23)(prettier@3.9.10)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))':
     dependencies:
-      react: 16.14.0
-      react-dom: 16.14.0(react@16.14.0)
-      storybook: 10.5.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.11.3)(@types/react@16.14.69)(prettier@3.9.10)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
+      storybook: 10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.3)(@types/react@18.3.23)(prettier@3.9.10)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
     optionalDependencies:
-      '@types/react': 16.14.69
-      '@types/react-dom': 16.9.25(@types/react@16.14.69)
+      '@types/react': 18.3.23
+      '@types/react-dom': 18.3.7(@types/react@18.3.23)
 
-  '@storybook/react-dom-shim@10.5.1(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.3)(@types/react@16.14.69)(prettier@3.9.10)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))':
+  '@storybook/react-webpack5@10.5.1(@swc/core@1.15.46(@swc/helpers@0.5.19))(@types/react-dom@18.3.7(@types/react@18.3.23))(@types/react@18.3.23)(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.32)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.3)(@types/react@18.3.23)(prettier@3.9.10)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(supports-color@8.1.1)(typescript@6.0.3)(uglify-js@3.19.3)':
     dependencies:
-      react: 16.14.0
-      react-dom: 16.14.0(react@16.14.0)
-      storybook: 10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.3)(@types/react@16.14.69)(prettier@3.9.10)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
-    optionalDependencies:
-      '@types/react': 16.14.69
-      '@types/react-dom': 16.9.25(@types/react@16.14.69)
-
-  '@storybook/react-webpack5@10.5.1(@swc/core@1.15.46(@swc/helpers@0.5.19))(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.32)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.11.3)(@types/react@16.14.69)(prettier@3.9.10)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(supports-color@8.1.1)(typescript@6.0.3)(uglify-js@3.19.3)':
-    dependencies:
-      '@storybook/builder-webpack5': 10.5.1(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.32)(storybook@10.5.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.11.3)(@types/react@16.14.69)(prettier@3.9.10)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(typescript@6.0.3)(uglify-js@3.19.3)
-      '@storybook/preset-react-webpack': 10.5.1(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.32)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.11.3)(@types/react@16.14.69)(prettier@3.9.10)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(supports-color@8.1.1)(typescript@6.0.3)(uglify-js@3.19.3)
-      '@storybook/react': 10.5.1(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.11.3)(@types/react@16.14.69)(prettier@3.9.10)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(supports-color@8.1.1)(typescript@6.0.3)
-      react: 16.14.0
-      react-dom: 16.14.0(react@16.14.0)
-      storybook: 10.5.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.11.3)(@types/react@16.14.69)(prettier@3.9.10)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
+      '@storybook/builder-webpack5': 10.5.1(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.32)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.3)(@types/react@18.3.23)(prettier@3.9.10)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(typescript@6.0.3)(uglify-js@3.19.3)
+      '@storybook/preset-react-webpack': 10.5.1(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.32)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.3)(@types/react@18.3.23)(prettier@3.9.10)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(supports-color@8.1.1)(typescript@6.0.3)(uglify-js@3.19.3)
+      '@storybook/react': 10.5.1(@types/react-dom@18.3.7(@types/react@18.3.23))(@types/react@18.3.23)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.3)(@types/react@18.3.23)(prettier@3.9.10)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(supports-color@8.1.1)(typescript@6.0.3)
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
+      storybook: 10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.3)(@types/react@18.3.23)(prettier@3.9.10)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
     optionalDependencies:
       typescript: 6.0.3
     transitivePeerDependencies:
@@ -23491,63 +23382,18 @@ snapshots:
       - uglify-js
       - webpack-cli
 
-  '@storybook/react-webpack5@10.5.1(@swc/core@1.15.46(@swc/helpers@0.5.19))(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.32)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.3)(@types/react@16.14.69)(prettier@3.9.10)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(supports-color@8.1.1)(typescript@6.0.3)(uglify-js@3.19.3)':
-    dependencies:
-      '@storybook/builder-webpack5': 10.5.1(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.32)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.3)(@types/react@16.14.69)(prettier@3.9.10)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(typescript@6.0.3)(uglify-js@3.19.3)
-      '@storybook/preset-react-webpack': 10.5.1(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.32)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.3)(@types/react@16.14.69)(prettier@3.9.10)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(supports-color@8.1.1)(typescript@6.0.3)(uglify-js@3.19.3)
-      '@storybook/react': 10.5.1(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.3)(@types/react@16.14.69)(prettier@3.9.10)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(supports-color@8.1.1)(typescript@6.0.3)
-      react: 16.14.0
-      react-dom: 16.14.0(react@16.14.0)
-      storybook: 10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.3)(@types/react@16.14.69)(prettier@3.9.10)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
-    optionalDependencies:
-      typescript: 6.0.3
-    transitivePeerDependencies:
-      - '@minify-html/node'
-      - '@rspack/core'
-      - '@swc/core'
-      - '@swc/css'
-      - '@swc/html'
-      - '@types/react'
-      - '@types/react-dom'
-      - clean-css
-      - cssnano
-      - csso
-      - esbuild
-      - html-minifier-terser
-      - lightningcss
-      - postcss
-      - supports-color
-      - uglify-js
-      - webpack-cli
-
-  '@storybook/react@10.5.1(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.11.3)(@types/react@16.14.69)(prettier@3.9.10)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(supports-color@8.1.1)(typescript@6.0.3)':
+  '@storybook/react@10.5.1(@types/react-dom@18.3.7(@types/react@18.3.23))(@types/react@18.3.23)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.3)(@types/react@18.3.23)(prettier@3.9.10)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(supports-color@8.1.1)(typescript@6.0.3)':
     dependencies:
       '@storybook/global': 5.0.0
-      '@storybook/react-dom-shim': 10.5.1(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.11.3)(@types/react@16.14.69)(prettier@3.9.10)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))
-      react: 16.14.0
+      '@storybook/react-dom-shim': 10.5.1(@types/react-dom@18.3.7(@types/react@18.3.23))(@types/react@18.3.23)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.3)(@types/react@18.3.23)(prettier@3.9.10)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))
+      react: 18.3.1
       react-docgen: 8.0.3(supports-color@8.1.1)
       react-docgen-typescript: 2.4.0(typescript@6.0.3)
-      react-dom: 16.14.0(react@16.14.0)
-      storybook: 10.5.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.11.3)(@types/react@16.14.69)(prettier@3.9.10)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
+      react-dom: 18.3.1(react@18.3.1)
+      storybook: 10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.3)(@types/react@18.3.23)(prettier@3.9.10)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
     optionalDependencies:
-      '@types/react': 16.14.69
-      '@types/react-dom': 16.9.25(@types/react@16.14.69)
-      typescript: 6.0.3
-    transitivePeerDependencies:
-      - supports-color
-
-  '@storybook/react@10.5.1(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.3)(@types/react@16.14.69)(prettier@3.9.10)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))(supports-color@8.1.1)(typescript@6.0.3)':
-    dependencies:
-      '@storybook/global': 5.0.0
-      '@storybook/react-dom-shim': 10.5.1(@types/react-dom@16.9.25(@types/react@16.14.69))(@types/react@16.14.69)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.3)(@types/react@16.14.69)(prettier@3.9.10)(react-dom@16.14.0(react@16.14.0))(react@16.14.0))
-      react: 16.14.0
-      react-docgen: 8.0.3(supports-color@8.1.1)
-      react-docgen-typescript: 2.4.0(typescript@6.0.3)
-      react-dom: 16.14.0(react@16.14.0)
-      storybook: 10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.3)(@types/react@16.14.69)(prettier@3.9.10)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
-    optionalDependencies:
-      '@types/react': 16.14.69
-      '@types/react-dom': 16.9.25(@types/react@16.14.69)
+      '@types/react': 18.3.23
+      '@types/react-dom': 18.3.7(@types/react@18.3.23)
       typescript: 6.0.3
     transitivePeerDependencies:
       - supports-color
@@ -23662,13 +23508,13 @@ snapshots:
       picocolors: 1.1.1
       redent: 3.0.0
 
-  '@testing-library/react@12.1.5(@types/react@16.14.69)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)':
+  '@testing-library/react@12.1.5(@types/react@18.3.23)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@babel/runtime': 7.29.2
       '@testing-library/dom': 8.20.1
-      '@types/react-dom': 16.9.25(@types/react@16.14.69)
-      react: 16.14.0
-      react-dom: 16.14.0(react@16.14.0)
+      '@types/react-dom': 16.9.25(@types/react@18.3.23)
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
     transitivePeerDependencies:
       - '@types/react'
 
@@ -23855,9 +23701,9 @@ snapshots:
     dependencies:
       '@types/node': 22.20.1
 
-  '@types/hoist-non-react-statics@3.3.7(@types/react@16.14.69)':
+  '@types/hoist-non-react-statics@3.3.7(@types/react@18.3.23)':
     dependencies:
-      '@types/react': 16.14.69
+      '@types/react': 18.3.23
       hoist-non-react-statics: 3.3.2
 
   '@types/html-minifier-terser@6.1.0': {}
@@ -24012,30 +23858,33 @@ snapshots:
 
   '@types/range-parser@1.2.7': {}
 
-  '@types/react-dom@16.9.25(@types/react@16.14.69)':
+  '@types/react-dom@16.9.25(@types/react@18.3.23)':
     dependencies:
-      '@types/react': 16.14.69
+      '@types/react': 18.3.23
+
+  '@types/react-dom@18.3.7(@types/react@18.3.23)':
+    dependencies:
+      '@types/react': 18.3.23
 
   '@types/react-redux@7.1.34':
     dependencies:
-      '@types/hoist-non-react-statics': 3.3.7(@types/react@16.14.69)
-      '@types/react': 16.14.69
+      '@types/hoist-non-react-statics': 3.3.7(@types/react@18.3.23)
+      '@types/react': 18.3.23
       hoist-non-react-statics: 3.3.2
       redux: 4.0.4
 
-  '@types/react-transition-group@4.4.12(@types/react@16.14.69)':
+  '@types/react-transition-group@4.4.12(@types/react@18.3.23)':
     dependencies:
-      '@types/react': 16.14.69
+      '@types/react': 18.3.23
 
   '@types/react-virtualized@9.22.4':
     dependencies:
       '@types/prop-types': 15.7.15
-      '@types/react': 16.14.69
+      '@types/react': 18.3.23
 
-  '@types/react@16.14.69':
+  '@types/react@18.3.23':
     dependencies:
       '@types/prop-types': 15.7.15
-      '@types/scheduler': 0.16.8
       csstype: 3.2.3
 
   '@types/readdir-glob@1.1.5':
@@ -24057,8 +23906,6 @@ snapshots:
       htmlparser2: 12.0.0
 
   '@types/sarif@2.1.7': {}
-
-  '@types/scheduler@0.16.8': {}
 
   '@types/semver@7.8.0': {}
 
@@ -24249,8 +24096,8 @@ snapshots:
 
   '@typescript-eslint/project-service@8.61.1(supports-color@8.1.1)(typescript@6.0.3)':
     dependencies:
-      '@typescript-eslint/tsconfig-utils': 8.72.1(typescript@6.0.3)
-      '@typescript-eslint/types': 8.72.1
+      '@typescript-eslint/tsconfig-utils': 8.61.1(typescript@6.0.3)
+      '@typescript-eslint/types': 8.67.0
       debug: 4.4.3(supports-color@8.1.1)
       typescript: 6.0.3
     transitivePeerDependencies:
@@ -24360,6 +24207,8 @@ snapshots:
 
   '@typescript-eslint/types@8.61.1': {}
 
+  '@typescript-eslint/types@8.67.0': {}
+
   '@typescript-eslint/types@8.71.2': {}
 
   '@typescript-eslint/types@8.72.1': {}
@@ -24385,7 +24234,7 @@ snapshots:
       '@typescript-eslint/types': 8.61.1
       '@typescript-eslint/visitor-keys': 8.61.1
       debug: 4.4.3(supports-color@8.1.1)
-      minimatch: 10.2.6
+      minimatch: 10.2.5
       semver: 7.8.5
       tinyglobby: 0.2.15
       ts-api-utils: 2.5.0(typescript@6.0.3)
@@ -24415,7 +24264,7 @@ snapshots:
       '@typescript-eslint/types': 8.72.1
       '@typescript-eslint/visitor-keys': 8.72.1
       debug: 4.4.3(supports-color@8.1.1)
-      minimatch: 10.2.6
+      minimatch: 10.2.5
       semver: 7.8.5
       tinyglobby: 0.2.15
       ts-api-utils: 2.5.0(typescript@6.0.3)
@@ -24591,7 +24440,7 @@ snapshots:
       globby: 16.2.0
       graceful-fs: 4.2.11
       micromatch: 4.0.8
-      minimatch: 10.2.6
+      minimatch: 10.2.5
       pretty-hrtime: 1.0.3
       random-int: 3.1.0
 
@@ -24768,100 +24617,100 @@ snapshots:
   '@unrs/resolver-binding-android-arm-eabi@1.11.1':
     optional: true
 
-  '@unrs/resolver-binding-android-arm-eabi@1.12.2':
+  '@unrs/resolver-binding-android-arm-eabi@1.13.0':
     optional: true
 
   '@unrs/resolver-binding-android-arm64@1.11.1':
     optional: true
 
-  '@unrs/resolver-binding-android-arm64@1.12.2':
+  '@unrs/resolver-binding-android-arm64@1.13.0':
     optional: true
 
   '@unrs/resolver-binding-darwin-arm64@1.11.1':
     optional: true
 
-  '@unrs/resolver-binding-darwin-arm64@1.12.2':
+  '@unrs/resolver-binding-darwin-arm64@1.13.0':
     optional: true
 
   '@unrs/resolver-binding-darwin-x64@1.11.1':
     optional: true
 
-  '@unrs/resolver-binding-darwin-x64@1.12.2':
+  '@unrs/resolver-binding-darwin-x64@1.13.0':
     optional: true
 
   '@unrs/resolver-binding-freebsd-x64@1.11.1':
     optional: true
 
-  '@unrs/resolver-binding-freebsd-x64@1.12.2':
+  '@unrs/resolver-binding-freebsd-x64@1.13.0':
     optional: true
 
   '@unrs/resolver-binding-linux-arm-gnueabihf@1.11.1':
     optional: true
 
-  '@unrs/resolver-binding-linux-arm-gnueabihf@1.12.2':
+  '@unrs/resolver-binding-linux-arm-gnueabihf@1.13.0':
     optional: true
 
   '@unrs/resolver-binding-linux-arm-musleabihf@1.11.1':
     optional: true
 
-  '@unrs/resolver-binding-linux-arm-musleabihf@1.12.2':
+  '@unrs/resolver-binding-linux-arm-musleabihf@1.13.0':
     optional: true
 
   '@unrs/resolver-binding-linux-arm64-gnu@1.11.1':
     optional: true
 
-  '@unrs/resolver-binding-linux-arm64-gnu@1.12.2':
+  '@unrs/resolver-binding-linux-arm64-gnu@1.13.0':
     optional: true
 
   '@unrs/resolver-binding-linux-arm64-musl@1.11.1':
     optional: true
 
-  '@unrs/resolver-binding-linux-arm64-musl@1.12.2':
+  '@unrs/resolver-binding-linux-arm64-musl@1.13.0':
     optional: true
 
-  '@unrs/resolver-binding-linux-loong64-gnu@1.12.2':
+  '@unrs/resolver-binding-linux-loong64-gnu@1.13.0':
     optional: true
 
-  '@unrs/resolver-binding-linux-loong64-musl@1.12.2':
+  '@unrs/resolver-binding-linux-loong64-musl@1.13.0':
     optional: true
 
   '@unrs/resolver-binding-linux-ppc64-gnu@1.11.1':
     optional: true
 
-  '@unrs/resolver-binding-linux-ppc64-gnu@1.12.2':
+  '@unrs/resolver-binding-linux-ppc64-gnu@1.13.0':
     optional: true
 
   '@unrs/resolver-binding-linux-riscv64-gnu@1.11.1':
     optional: true
 
-  '@unrs/resolver-binding-linux-riscv64-gnu@1.12.2':
+  '@unrs/resolver-binding-linux-riscv64-gnu@1.13.0':
     optional: true
 
   '@unrs/resolver-binding-linux-riscv64-musl@1.11.1':
     optional: true
 
-  '@unrs/resolver-binding-linux-riscv64-musl@1.12.2':
+  '@unrs/resolver-binding-linux-riscv64-musl@1.13.0':
     optional: true
 
   '@unrs/resolver-binding-linux-s390x-gnu@1.11.1':
     optional: true
 
-  '@unrs/resolver-binding-linux-s390x-gnu@1.12.2':
+  '@unrs/resolver-binding-linux-s390x-gnu@1.13.0':
     optional: true
 
   '@unrs/resolver-binding-linux-x64-gnu@1.11.1':
     optional: true
 
-  '@unrs/resolver-binding-linux-x64-gnu@1.12.2':
+  '@unrs/resolver-binding-linux-x64-gnu@1.13.0':
     optional: true
 
   '@unrs/resolver-binding-linux-x64-musl@1.11.1':
     optional: true
 
-  '@unrs/resolver-binding-linux-x64-musl@1.12.2':
+  '@unrs/resolver-binding-linux-x64-musl@1.13.0':
     optional: true
 
-  '@unrs/resolver-binding-openharmony-arm64@1.12.2':
+  '@unrs/resolver-binding-openharmony-arm64@1.13.0':
     optional: true
 
   '@unrs/resolver-binding-wasm32-wasi@1.11.1':
@@ -24869,29 +24718,22 @@ snapshots:
       '@napi-rs/wasm-runtime': 0.2.12
     optional: true
 
-  '@unrs/resolver-binding-wasm32-wasi@1.12.2':
-    dependencies:
-      '@emnapi/core': 1.10.0
-      '@emnapi/runtime': 1.10.0
-      '@napi-rs/wasm-runtime': 1.1.4(@emnapi/core@1.10.0)(@emnapi/runtime@1.10.0)
-    optional: true
-
   '@unrs/resolver-binding-win32-arm64-msvc@1.11.1':
     optional: true
 
-  '@unrs/resolver-binding-win32-arm64-msvc@1.12.2':
+  '@unrs/resolver-binding-win32-arm64-msvc@1.13.0':
     optional: true
 
   '@unrs/resolver-binding-win32-ia32-msvc@1.11.1':
     optional: true
 
-  '@unrs/resolver-binding-win32-ia32-msvc@1.12.2':
+  '@unrs/resolver-binding-win32-ia32-msvc@1.13.0':
     optional: true
 
   '@unrs/resolver-binding-win32-x64-msvc@1.11.1':
     optional: true
 
-  '@unrs/resolver-binding-win32-x64-msvc@1.12.2':
+  '@unrs/resolver-binding-win32-x64-msvc@1.13.0':
     optional: true
 
   '@vitest/expect@3.2.4':
@@ -25267,8 +25109,8 @@ snapshots:
       '@azure/core-auth': 1.10.1(supports-color@8.1.1)
       '@azure/functions': 4.16.1
       '@azure/identity': 4.13.1(supports-color@8.1.1)
-      '@azure/monitor-opentelemetry': 1.21.0(supports-color@8.1.1)
-      '@azure/monitor-opentelemetry-exporter': 1.0.0-beta.47(supports-color@8.1.1)
+      '@azure/monitor-opentelemetry': 1.20.1(supports-color@8.1.1)
+      '@azure/monitor-opentelemetry-exporter': 1.0.0-beta.46(supports-color@8.1.1)
       '@azure/opentelemetry-instrumentation-azure-sdk': 1.0.0(supports-color@8.1.1)
       '@opentelemetry/api': 1.9.1
       '@opentelemetry/api-logs': 0.221.0
@@ -25280,7 +25122,7 @@ snapshots:
       '@opentelemetry/otlp-exporter-base': 0.221.0(@opentelemetry/api@1.9.1)
       '@opentelemetry/resources': 2.10.0(@opentelemetry/api@1.9.1)
       '@opentelemetry/sdk-logs': 0.221.0(@opentelemetry/api@1.9.1)
-      '@opentelemetry/sdk-metrics': 2.12.1(@opentelemetry/api@1.9.1)
+      '@opentelemetry/sdk-metrics': 2.12.0(@opentelemetry/api@1.9.1)
       '@opentelemetry/sdk-trace-base': 2.10.0(@opentelemetry/api@1.9.1)
       '@opentelemetry/sdk-trace-node': 2.10.0(@opentelemetry/api@1.9.1)
       '@opentelemetry/semantic-conventions': 1.43.0
@@ -27865,9 +27707,6 @@ snapshots:
 
   fs.realpath@1.0.0: {}
 
-  fsevents@2.3.2:
-    optional: true
-
   fsevents@2.3.3:
     optional: true
 
@@ -28009,7 +27848,7 @@ snapshots:
 
   glob@13.0.6:
     dependencies:
-      minimatch: 10.2.6
+      minimatch: 10.2.5
       minipass: 7.1.3
       path-scurry: 2.0.2
 
@@ -28030,7 +27869,7 @@ snapshots:
       minimatch: 5.1.9
       once: 1.4.0
 
-  global-agent@4.1.7:
+  global-agent@4.1.6:
     dependencies:
       globalthis: 1.0.4
       matcher: 4.0.0
@@ -28218,12 +28057,12 @@ snapshots:
     dependencies:
       void-elements: 3.1.0
 
-  html-to-react@1.7.0(react@16.14.0):
+  html-to-react@1.7.0(react@18.3.1):
     dependencies:
       domhandler: 5.0.3
       htmlparser2: 9.1.0
       lodash.camelcase: 4.3.0
-      react: 16.14.0
+      react: 18.3.1
 
   html-webpack-plugin@5.6.6(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.32)(uglify-js@3.19.3)):
     dependencies:
@@ -28401,7 +28240,7 @@ snapshots:
 
   ignore-walk@8.0.0:
     dependencies:
-      minimatch: 10.2.6
+      minimatch: 10.2.5
 
   ignore-walk@9.0.0:
     dependencies:
@@ -29121,7 +28960,7 @@ snapshots:
       jest-util: 30.5.1
       jest-validate: 30.5.1
       slash: 3.0.0
-      unrs-resolver: 1.12.2
+      unrs-resolver: 1.13.0
 
   jest-runner@30.5.2(supports-color@8.1.1):
     dependencies:
@@ -30302,6 +30141,8 @@ snapshots:
 
   napi-postinstall@0.3.4: {}
 
+  napi-postinstall@0.3.7: {}
+
   natural-compare@1.4.0: {}
 
   negotiator@0.6.3: {}
@@ -30791,7 +30632,7 @@ snapshots:
   onnxruntime-node@1.30.0:
     dependencies:
       adm-zip: 0.6.1
-      global-agent: 4.1.7
+      global-agent: 4.1.6
       onnxruntime-common: 1.30.0
 
   onnxruntime-web@1.31.0-dev.20260914-8d85527a0:
@@ -30929,32 +30770,6 @@ snapshots:
       '@oxc-parser/binding-win32-arm64-msvc': 0.127.0
       '@oxc-parser/binding-win32-ia32-msvc': 0.127.0
       '@oxc-parser/binding-win32-x64-msvc': 0.127.0
-
-  oxc-resolver@11.19.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.11.3):
-    optionalDependencies:
-      '@oxc-resolver/binding-android-arm-eabi': 11.19.1
-      '@oxc-resolver/binding-android-arm64': 11.19.1
-      '@oxc-resolver/binding-darwin-arm64': 11.19.1
-      '@oxc-resolver/binding-darwin-x64': 11.19.1
-      '@oxc-resolver/binding-freebsd-x64': 11.19.1
-      '@oxc-resolver/binding-linux-arm-gnueabihf': 11.19.1
-      '@oxc-resolver/binding-linux-arm-musleabihf': 11.19.1
-      '@oxc-resolver/binding-linux-arm64-gnu': 11.19.1
-      '@oxc-resolver/binding-linux-arm64-musl': 11.19.1
-      '@oxc-resolver/binding-linux-ppc64-gnu': 11.19.1
-      '@oxc-resolver/binding-linux-riscv64-gnu': 11.19.1
-      '@oxc-resolver/binding-linux-riscv64-musl': 11.19.1
-      '@oxc-resolver/binding-linux-s390x-gnu': 11.19.1
-      '@oxc-resolver/binding-linux-x64-gnu': 11.19.1
-      '@oxc-resolver/binding-linux-x64-musl': 11.19.1
-      '@oxc-resolver/binding-openharmony-arm64': 11.19.1
-      '@oxc-resolver/binding-wasm32-wasi': 11.19.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.11.3)
-      '@oxc-resolver/binding-win32-arm64-msvc': 11.19.1
-      '@oxc-resolver/binding-win32-ia32-msvc': 11.19.1
-      '@oxc-resolver/binding-win32-x64-msvc': 11.19.1
-    transitivePeerDependencies:
-      - '@emnapi/core'
-      - '@emnapi/runtime'
 
   oxc-resolver@11.19.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.3):
     optionalDependencies:
@@ -31250,15 +31065,13 @@ snapshots:
 
   platform@1.3.6: {}
 
-  playwright-core@1.60.0: {}
-
   playwright-core@1.63.0: {}
 
-  playwright@1.60.0:
+  playwright-core@1.65.1: {}
+
+  playwright@1.65.1:
     dependencies:
-      playwright-core: 1.60.0
-    optionalDependencies:
-      fsevents: 2.3.2
+      playwright-core: 1.65.1
 
   pluralize@2.0.0: {}
 
@@ -31627,30 +31440,26 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  react-dom@16.14.0(react@16.14.0):
+  react-dom@18.3.1(react@18.3.1):
     dependencies:
       loose-envify: 1.4.0
-      object-assign: 4.1.1
-      prop-types: 15.8.1
-      react: 16.14.0
-      scheduler: 0.19.1
+      react: 18.3.1
+      scheduler: 0.23.2
 
-  react-dom@16.14.0(react@19.2.4):
+  react-dom@18.3.1(react@19.2.4):
     dependencies:
       loose-envify: 1.4.0
-      object-assign: 4.1.1
-      prop-types: 15.8.1
       react: 19.2.4
-      scheduler: 0.19.1
+      scheduler: 0.23.2
 
-  react-i18next@15.7.4(i18next@26.5.11(typescript@6.0.3))(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(typescript@6.0.3):
+  react-i18next@15.7.4(i18next@26.5.11(typescript@6.0.3))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@6.0.3):
     dependencies:
       '@babel/runtime': 7.29.2
       html-parse-stringify: 3.0.1
       i18next: 26.5.11(typescript@6.0.3)
-      react: 16.14.0
+      react: 18.3.1
     optionalDependencies:
-      react-dom: 16.14.0(react@16.14.0)
+      react-dom: 18.3.1(react@18.3.1)
       typescript: 6.0.3
 
   react-is@16.13.1: {}
@@ -31663,15 +31472,15 @@ snapshots:
 
   react-lifecycles-compat@3.0.4: {}
 
-  react-markdown@5.0.3(@types/react@16.14.69)(react@16.14.0)(supports-color@8.1.1):
+  react-markdown@5.0.3(@types/react@18.3.23)(react@18.3.1)(supports-color@8.1.1):
     dependencies:
       '@types/mdast': 3.0.15
-      '@types/react': 16.14.69
+      '@types/react': 18.3.23
       '@types/unist': 2.0.11
-      html-to-react: 1.7.0(react@16.14.0)
+      html-to-react: 1.7.0(react@18.3.1)
       mdast-add-list-metadata: 1.0.1
       prop-types: 15.8.1
-      react: 16.14.0
+      react: 18.3.1
       react-is: 16.13.1
       remark-parse: 9.0.0(supports-color@8.1.1)
       unified: 9.2.2
@@ -31680,87 +31489,87 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  react-movable@3.4.1(react-dom@16.14.0(react@16.14.0))(react@16.14.0):
+  react-movable@3.4.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
-      react: 16.14.0
-      react-dom: 16.14.0(react@16.14.0)
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
 
-  react-redux@7.2.9(react-dom@16.14.0(react@16.14.0))(react@16.14.0):
+  react-redux@7.2.9(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
       '@babel/runtime': 7.29.2
       '@types/react-redux': 7.1.34
       hoist-non-react-statics: 3.3.2
       loose-envify: 1.4.0
       prop-types: 15.8.1
-      react: 16.14.0
+      react: 18.3.1
       react-is: 17.0.2
     optionalDependencies:
-      react-dom: 16.14.0(react@16.14.0)
+      react-dom: 18.3.1(react@18.3.1)
 
-  react-select@5.10.2(@types/react@16.14.69)(react-dom@16.14.0(react@16.14.0))(react@16.14.0)(supports-color@8.1.1):
+  react-select@5.10.2(@types/react@18.3.23)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(supports-color@8.1.1):
     dependencies:
       '@babel/runtime': 7.29.2
       '@emotion/cache': 11.14.0
-      '@emotion/react': 11.14.0(@types/react@16.14.69)(react@16.14.0)(supports-color@8.1.1)
+      '@emotion/react': 11.14.0(@types/react@18.3.23)(react@18.3.1)(supports-color@8.1.1)
       '@floating-ui/dom': 1.7.5
-      '@types/react-transition-group': 4.4.12(@types/react@16.14.69)
+      '@types/react-transition-group': 4.4.12(@types/react@18.3.23)
       memoize-one: 6.0.0
       prop-types: 15.8.1
-      react: 16.14.0
-      react-dom: 16.14.0(react@16.14.0)
-      react-transition-group: 4.4.5(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
-      use-isomorphic-layout-effect: 1.2.1(@types/react@16.14.69)(react@16.14.0)
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
+      react-transition-group: 4.4.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      use-isomorphic-layout-effect: 1.2.1(@types/react@18.3.23)(react@18.3.1)
     transitivePeerDependencies:
       - '@types/react'
       - supports-color
 
-  react-select@5.10.2(@types/react@16.14.69)(react-dom@16.14.0(react@19.2.4))(react@19.2.4)(supports-color@8.1.1):
+  react-select@5.10.2(@types/react@18.3.23)(react-dom@18.3.1(react@19.2.4))(react@19.2.4)(supports-color@8.1.1):
     dependencies:
       '@babel/runtime': 7.29.2
       '@emotion/cache': 11.14.0
-      '@emotion/react': 11.14.0(@types/react@16.14.69)(react@19.2.4)(supports-color@8.1.1)
+      '@emotion/react': 11.14.0(@types/react@18.3.23)(react@19.2.4)(supports-color@8.1.1)
       '@floating-ui/dom': 1.7.5
-      '@types/react-transition-group': 4.4.12(@types/react@16.14.69)
+      '@types/react-transition-group': 4.4.12(@types/react@18.3.23)
       memoize-one: 6.0.0
       prop-types: 15.8.1
       react: 19.2.4
-      react-dom: 16.14.0(react@19.2.4)
-      react-transition-group: 4.4.5(react-dom@16.14.0(react@19.2.4))(react@19.2.4)
-      use-isomorphic-layout-effect: 1.2.1(@types/react@16.14.69)(react@19.2.4)
+      react-dom: 18.3.1(react@19.2.4)
+      react-transition-group: 4.4.5(react-dom@18.3.1(react@19.2.4))(react@19.2.4)
+      use-isomorphic-layout-effect: 1.2.1(@types/react@18.3.23)(react@19.2.4)
     transitivePeerDependencies:
       - '@types/react'
       - supports-color
 
-  react-transition-group@4.4.5(react-dom@16.14.0(react@16.14.0))(react@16.14.0):
+  react-transition-group@4.4.5(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
       '@babel/runtime': 7.29.2
       dom-helpers: 5.2.1
       loose-envify: 1.4.0
       prop-types: 15.8.1
-      react: 16.14.0
-      react-dom: 16.14.0(react@16.14.0)
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
 
-  react-transition-group@4.4.5(react-dom@16.14.0(react@19.2.4))(react@19.2.4):
+  react-transition-group@4.4.5(react-dom@18.3.1(react@19.2.4))(react@19.2.4):
     dependencies:
       '@babel/runtime': 7.29.2
       dom-helpers: 5.2.1
       loose-envify: 1.4.0
       prop-types: 15.8.1
       react: 19.2.4
-      react-dom: 16.14.0(react@19.2.4)
+      react-dom: 18.3.1(react@19.2.4)
 
-  react-virtualized@9.22.6(react-dom@16.14.0(react@16.14.0))(react@16.14.0):
+  react-virtualized@9.22.6(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
       '@babel/runtime': 7.29.2
       clsx: 1.2.1
       dom-helpers: 5.2.1
       loose-envify: 1.4.0
       prop-types: 15.8.1
-      react: 16.14.0
-      react-dom: 16.14.0(react@16.14.0)
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
       react-lifecycles-compat: 3.0.4
 
-  react-virtualized@9.22.6(react-dom@16.14.0(react@19.2.4))(react@19.2.4):
+  react-virtualized@9.22.6(react-dom@18.3.1(react@19.2.4))(react@19.2.4):
     dependencies:
       '@babel/runtime': 7.29.2
       clsx: 1.2.1
@@ -31768,14 +31577,12 @@ snapshots:
       loose-envify: 1.4.0
       prop-types: 15.8.1
       react: 19.2.4
-      react-dom: 16.14.0(react@19.2.4)
+      react-dom: 18.3.1(react@19.2.4)
       react-lifecycles-compat: 3.0.4
 
-  react@16.14.0:
+  react@18.3.1:
     dependencies:
       loose-envify: 1.4.0
-      object-assign: 4.1.1
-      prop-types: 15.8.1
 
   react@19.2.4: {}
 
@@ -32380,10 +32187,9 @@ snapshots:
     dependencies:
       xmlchars: 2.2.0
 
-  scheduler@0.19.1:
+  scheduler@0.23.2:
     dependencies:
       loose-envify: 1.4.0
-      object-assign: 4.1.1
 
   schema-utils@3.3.0:
     dependencies:
@@ -32846,40 +32652,10 @@ snapshots:
     transitivePeerDependencies:
       - webpack
 
-  storybook@10.5.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.11.3)(@types/react@16.14.69)(prettier@3.9.10)(react-dom@16.14.0(react@16.14.0))(react@16.14.0):
+  storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.3)(@types/react@18.3.23)(prettier@3.9.10)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
       '@storybook/global': 5.0.0
-      '@storybook/icons': 2.0.2(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
-      '@testing-library/dom': 10.4.1
-      '@testing-library/jest-dom': 6.9.1
-      '@testing-library/user-event': 14.6.8(@testing-library/dom@10.4.1)
-      '@vitest/expect': 3.2.4
-      '@vitest/spy': 3.2.4
-      '@webcontainer/env': 1.1.1
-      esbuild: 0.28.2
-      jsonc-parser: 3.3.1
-      open: 10.2.0
-      oxc-parser: 0.127.0
-      oxc-resolver: 11.19.1(@emnapi/core@1.10.0)(@emnapi/runtime@1.11.3)
-      recast: 0.23.11
-      semver: 7.8.4
-      use-sync-external-store: 1.6.0(react@16.14.0)
-      ws: 8.21.0
-    optionalDependencies:
-      '@types/react': 16.14.69
-      prettier: 3.9.10
-    transitivePeerDependencies:
-      - '@emnapi/core'
-      - '@emnapi/runtime'
-      - bufferutil
-      - react
-      - react-dom
-      - utf-8-validate
-
-  storybook@10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.3)(@types/react@16.14.69)(prettier@3.9.10)(react-dom@16.14.0(react@16.14.0))(react@16.14.0):
-    dependencies:
-      '@storybook/global': 5.0.0
-      '@storybook/icons': 2.0.2(react-dom@16.14.0(react@16.14.0))(react@16.14.0)
+      '@storybook/icons': 2.0.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@testing-library/dom': 10.4.1
       '@testing-library/jest-dom': 6.9.1
       '@testing-library/user-event': 14.6.8(@testing-library/dom@10.4.1)
@@ -32893,10 +32669,10 @@ snapshots:
       oxc-resolver: 11.19.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.3)
       recast: 0.23.11
       semver: 7.8.4
-      use-sync-external-store: 1.6.0(react@16.14.0)
+      use-sync-external-store: 1.6.0(react@18.3.1)
       ws: 8.21.0
     optionalDependencies:
-      '@types/react': 16.14.69
+      '@types/react': 18.3.23
       prettier: 3.9.10
     transitivePeerDependencies:
       - '@emnapi/core'
@@ -33729,32 +33505,31 @@ snapshots:
       '@unrs/resolver-binding-win32-ia32-msvc': 1.11.1
       '@unrs/resolver-binding-win32-x64-msvc': 1.11.1
 
-  unrs-resolver@1.12.2:
+  unrs-resolver@1.13.0:
     dependencies:
-      napi-postinstall: 0.3.4
+      napi-postinstall: 0.3.7
     optionalDependencies:
-      '@unrs/resolver-binding-android-arm-eabi': 1.12.2
-      '@unrs/resolver-binding-android-arm64': 1.12.2
-      '@unrs/resolver-binding-darwin-arm64': 1.12.2
-      '@unrs/resolver-binding-darwin-x64': 1.12.2
-      '@unrs/resolver-binding-freebsd-x64': 1.12.2
-      '@unrs/resolver-binding-linux-arm-gnueabihf': 1.12.2
-      '@unrs/resolver-binding-linux-arm-musleabihf': 1.12.2
-      '@unrs/resolver-binding-linux-arm64-gnu': 1.12.2
-      '@unrs/resolver-binding-linux-arm64-musl': 1.12.2
-      '@unrs/resolver-binding-linux-loong64-gnu': 1.12.2
-      '@unrs/resolver-binding-linux-loong64-musl': 1.12.2
-      '@unrs/resolver-binding-linux-ppc64-gnu': 1.12.2
-      '@unrs/resolver-binding-linux-riscv64-gnu': 1.12.2
-      '@unrs/resolver-binding-linux-riscv64-musl': 1.12.2
-      '@unrs/resolver-binding-linux-s390x-gnu': 1.12.2
-      '@unrs/resolver-binding-linux-x64-gnu': 1.12.2
-      '@unrs/resolver-binding-linux-x64-musl': 1.12.2
-      '@unrs/resolver-binding-openharmony-arm64': 1.12.2
-      '@unrs/resolver-binding-wasm32-wasi': 1.12.2
-      '@unrs/resolver-binding-win32-arm64-msvc': 1.12.2
-      '@unrs/resolver-binding-win32-ia32-msvc': 1.12.2
-      '@unrs/resolver-binding-win32-x64-msvc': 1.12.2
+      '@unrs/resolver-binding-android-arm-eabi': 1.13.0
+      '@unrs/resolver-binding-android-arm64': 1.13.0
+      '@unrs/resolver-binding-darwin-arm64': 1.13.0
+      '@unrs/resolver-binding-darwin-x64': 1.13.0
+      '@unrs/resolver-binding-freebsd-x64': 1.13.0
+      '@unrs/resolver-binding-linux-arm-gnueabihf': 1.13.0
+      '@unrs/resolver-binding-linux-arm-musleabihf': 1.13.0
+      '@unrs/resolver-binding-linux-arm64-gnu': 1.13.0
+      '@unrs/resolver-binding-linux-arm64-musl': 1.13.0
+      '@unrs/resolver-binding-linux-loong64-gnu': 1.13.0
+      '@unrs/resolver-binding-linux-loong64-musl': 1.13.0
+      '@unrs/resolver-binding-linux-ppc64-gnu': 1.13.0
+      '@unrs/resolver-binding-linux-riscv64-gnu': 1.13.0
+      '@unrs/resolver-binding-linux-riscv64-musl': 1.13.0
+      '@unrs/resolver-binding-linux-s390x-gnu': 1.13.0
+      '@unrs/resolver-binding-linux-x64-gnu': 1.13.0
+      '@unrs/resolver-binding-linux-x64-musl': 1.13.0
+      '@unrs/resolver-binding-openharmony-arm64': 1.13.0
+      '@unrs/resolver-binding-win32-arm64-msvc': 1.13.0
+      '@unrs/resolver-binding-win32-ia32-msvc': 1.13.0
+      '@unrs/resolver-binding-win32-x64-msvc': 1.13.0
 
   untildify@4.0.0: {}
 
@@ -33808,21 +33583,21 @@ snapshots:
       punycode: 1.4.1
       qs: 6.16.0
 
-  use-isomorphic-layout-effect@1.2.1(@types/react@16.14.69)(react@16.14.0):
+  use-isomorphic-layout-effect@1.2.1(@types/react@18.3.23)(react@18.3.1):
     dependencies:
-      react: 16.14.0
+      react: 18.3.1
     optionalDependencies:
-      '@types/react': 16.14.69
+      '@types/react': 18.3.23
 
-  use-isomorphic-layout-effect@1.2.1(@types/react@16.14.69)(react@19.2.4):
+  use-isomorphic-layout-effect@1.2.1(@types/react@18.3.23)(react@19.2.4):
     dependencies:
       react: 19.2.4
     optionalDependencies:
-      '@types/react': 16.14.69
+      '@types/react': 18.3.23
 
-  use-sync-external-store@1.6.0(react@16.14.0):
+  use-sync-external-store@1.6.0(react@18.3.1):
     dependencies:
-      react: 16.14.0
+      react: 18.3.1
 
   utf8-byte-length@1.0.5: {}
 

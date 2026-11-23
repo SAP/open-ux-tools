@@ -1,5 +1,17 @@
 # @sap-ux/launch-config
 
+## 1.0.29
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-18
+
+#### Bug Fixes
+
+- adding a launch configuration no longer fails with `Cannot read properties of undefined (reading 'configurations')` when the existing `.vscode/launch.json` is empty, only contains comments or has no `configurations` array. The missing parts are added and existing content and comments are kept. A `configurations` property that is not an array is reported with a clear error [[3014138](https://github.com/SAP/open-ux-tools/commit/30141386670d274ae0d61ea510e8d3587dabdfed)]
+
 ## 1.0.28
 
 ### Patch Changes

@@ -1,5 +1,17 @@
 # @sap-ux-private/playwright
 
+## 1.0.9
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-18
+
+#### Dependency Updates
+
+- Upgrade @playwright/test 1.60.0 → 1.65.1 to support Ubuntu 26.04 runners [[9dd7c8d](https://github.com/SAP/open-ux-tools/commit/9dd7c8da9094c7906c57198b58a394c366e758c5)]
+
 ## 1.0.8
 
 ### Patch Changes

@@ -1,5 +1,17 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 1.1.16
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-16
+
+#### Bug Fixes
+
+- Do not add a second standalone approuter when an `approuter.nodejs` module already exists in mta.yaml (e.g. the `.deploy/app-router` module scaffolded by newer `@sap/cds-dk`) [[23236e2](https://github.com/SAP/open-ux-tools/commit/23236e27c29786061694fcc868c9fddf61d4edaf)]
+
 ## 1.1.15
 
 ### Patch Changes
