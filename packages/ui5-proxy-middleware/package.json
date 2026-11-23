@@ -34,7 +34,7 @@
         "!dist/**/*.map"
     ],
     "peerDependencies": {
-        "express": "4"
+        "express": "^4 || ^5"
     },
     "dependencies": {
         "@sap-ux/logger": "workspace:*",
