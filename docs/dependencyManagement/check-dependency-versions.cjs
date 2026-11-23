@@ -31,8 +31,10 @@ function getVersionInfo(packageName, currentVersion) {
       timeout: 10000,
       stdio: ['pipe', 'pipe', 'ignore']
     });
-    const timeData = JSON.parse(output);
-    const publishDate = timeData[currentVersion];
+    const parsed = JSON.parse(output);
+    // npm 11 wraps `npm view <pkg>@<ver> time --json` output in an array; older npm returns a plain object.
+    const timeData = Array.isArray(parsed) ? parsed[0] : parsed;
+    const publishDate = timeData?.[currentVersion];
     return { publishDate };
   } catch {
     return { publishDate: null };
