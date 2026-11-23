@@ -1,6 +1,6 @@
 import type { Prompts as YeomanUiSteps } from '@sap-devx/yeoman-ui-types';
 
-import type { ConfirmQuestion, InputQuestion, WhenQuestion } from '@sap-ux/inquirer-common';
+import type { ConfirmQuestion, InputQuestion, YUIQuestionBase } from '@sap-ux/inquirer-common';
 import {
     type AttributesAnswers,
     FlexLayer,
@@ -238,9 +238,9 @@ function getUi5VersionPrompt(
 /**
  * Only used in the CLI context when prompt is of type `list` because the validation does not run on CLI for the UI5 Version list prompt.
  *
- * @returns {WhenQuestion<AttributesAnswers>} Dummy prompt that runs in the CLI only.
+ * @returns {YUIQuestionBase<AttributesAnswers>} Dummy prompt that runs in the CLI only.
  */
-function getUi5VersionValidationPromptForCli(): WhenQuestion<AttributesAnswers> {
+function getUi5VersionValidationPromptForCli(): YUIQuestionBase<AttributesAnswers> {
     return {
         name: attributePromptNames.ui5ValidationCli,
         when: async (answers: AttributesAnswers): Promise<boolean> => {

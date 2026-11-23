@@ -28,7 +28,7 @@ import type {
     InputQuestion,
     ListQuestion,
     PasswordQuestion,
-    WhenQuestion,
+    YUIQuestionBase,
     Answers
 } from '@sap-ux/inquirer-common';
 import type { ToolsLogger } from '@sap-ux/logger';
@@ -476,9 +476,9 @@ export class ConfigPrompter {
      * This overcomes yeoman limitation for prompts of type `list` for which the validation hook is not
      * triggered by design in a CLI context.
      *
-     * @returns {WhenQuestion} The project type for cli prompt configuration.
+     * @returns {YUIQuestionBase} The project type for cli prompt configuration.
      */
-    private getProjectTypeListPromptForCli(): WhenQuestion<ConfigAnswers> {
+    private getProjectTypeListPromptForCli(): YUIQuestionBase<ConfigAnswers> {
         return {
             name: configPromptNames.projectTypeCli,
             when: async ({ application, projectType }: ConfigAnswers): Promise<boolean> => {

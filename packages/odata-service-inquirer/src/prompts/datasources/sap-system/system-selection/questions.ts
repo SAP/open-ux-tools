@@ -8,7 +8,7 @@ import {
     type SearchQuestion,
     searchChoices,
     type Validator,
-    type WhenQuestion,
+    type YUIQuestionBase,
     withCondition,
     type YUIQuestion
 } from '@sap-ux/inquirer-common';
@@ -123,7 +123,7 @@ export async function getSystemSelectionQuestions(
     PromptState.reset();
     const connectValidator = new ConnectionValidator();
 
-    // `getSystemConnectionQuestions` includes CLI-only `WhenQuestion` gates; bridge to the page's
+    // `getSystemConnectionQuestions` includes CLI-only hooks; bridge to the page's
     // combined answer-typed array at the common base.
     const questions = (await getSystemConnectionQuestions(
         connectValidator,
@@ -183,7 +183,7 @@ export async function getSystemConnectionQuestions(
     connectionValidator: ConnectionValidator,
     promptOptions?: OdataServicePromptOptions,
     cachedConnectedSystem?: ConnectedSystem
-): Promise<(YUIQuestion<SystemSelectionAnswers> | WhenQuestion<SystemSelectionAnswers>)[]> {
+): Promise<(YUIQuestion<SystemSelectionAnswers> | YUIQuestionBase<SystemSelectionAnswers>)[]> {
     const requiredOdataVersion = promptOptions?.serviceSelection?.requiredOdataVersion;
     const destinationFilters = promptOptions?.systemSelection?.destinationFilters;
     const systemChoices = await createSystemChoices(
@@ -281,7 +281,7 @@ export async function getSystemConnectionQuestions(
               choices: effectiveSystemChoices
           } as ListQuestion<SystemSelectionAnswers>);
 
-    const questions: (YUIQuestion<SystemSelectionAnswers> | WhenQuestion<SystemSelectionAnswers>)[] = [
+    const questions: (YUIQuestion<SystemSelectionAnswers> | YUIQuestionBase<SystemSelectionAnswers>)[] = [
         systemSelectionQuestion
     ];
 

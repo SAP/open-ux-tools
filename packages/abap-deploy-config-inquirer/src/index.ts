@@ -64,7 +64,7 @@ async function prompt(
     isYUI = false
 ): Promise<AbapDeployConfigAnswers> {
     const abapDeployConfigPrompts = (await getPrompts(promptOptions, logger, isYUI)).prompts;
-    // `AbapDeployConfigQuestion[]` includes CLI-only `WhenQuestion` gates; the adapter accepts them at
+    // `AbapDeployConfigQuestion[]` includes CLI-only hooks (objects with `name` and `when` only); the adapter accepts them at
     // runtime (valid inquirer `when` questions), so bridge to the adapter's `YUIQuestion` array type.
     const answers = await adapter.prompt<AbapDeployConfigAnswersInternal>(
         abapDeployConfigPrompts as YUIQuestion<AbapDeployConfigAnswersInternal>[]

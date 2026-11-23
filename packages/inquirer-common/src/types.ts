@@ -178,23 +178,19 @@ interface StoreOption {
 type DistributiveOmit<T, K extends PropertyKey> = T extends unknown ? Omit<T, K> : never;
 
 /**
- * A CLI-only gate/setter prompt. Unlike the renderable inquirer arms it carries no `type` or
- * `message`: YeomanUI and the App Wizard never render it. It exists so its `when` callback runs
- * for a CLI side effect (re-validation, throwing to abort generation, seeding an answer). Its
- * `name` is a synthetic CLI prompt id, so — unlike the renderable arms whose `name` is
- * `Extract<keyof A, string>` — it is a bare `string` and need not be a key of the answers type.
+ * Minimal base interface for all question-like objects in this library. It carries only the
+ * fields that helper functions in `prompts/helpers.ts` actually read or write: `name`, `validate`,
+ * `when`, `additionalMessages`, `guiOptions`, `showOutputTabLink`, and `default`.
  *
- * inquirer 13's `DistinctQuestion` union has no arm for a typeless `when`-only object, so without
- * this type every such gate would need an `as unknown as` cast to satisfy
- * `yeoman-generator`'s `this.prompt(...)`. It is intentionally NOT a member of the base
- * {@link YUIQuestion} union: adding it there would strip `type`/`message`/`default`/`choices` from
- * the union's common surface and break consumers that read those fields. Instead, packages that
- * actually push such gates widen their own local question type with it (e.g.
- * `YUIQuestion<A> | WhenQuestion<A>`), keeping the gates cast-free without affecting other consumers.
+ * Using this as the constraint for helper function generics (`T extends YUIQuestionBase<A>`)
+ * avoids `any`. CLI-only non-rendering hooks (objects with `name` and `when` but no `type` or
+ * `message`) satisfy this interface directly; packages push them alongside {@link YUIQuestion}
+ * by widening their question arrays to `YUIQuestionBase<A>[]`.
  */
-export interface WhenQuestion<A extends Answers = Answers> extends YUIQuestionExtensions, YUIValidate<A> {
+export interface YUIQuestionBase<A extends Answers = Answers>
+    extends YUIQuestionExtensions, YUIValidate<A>, YUIWhen<A> {
     name: string;
-    when?: boolean | ((answers: A) => boolean | Promise<boolean>);
+    default?: unknown;
 }
 
 /**
@@ -219,9 +215,8 @@ export interface WhenQuestion<A extends Answers = Answers> extends YUIQuestionEx
  * spelling the YUI renderer expects) rather than inquirer 13's `select` discriminant, so they are
  * not assignable to the `DistinctQuestion`-derived member above.
  *
- * CLI-only typeless gates are not part of this union (they would strip `type`/`message`/`default`
- * from its common surface and break consumers that read those). Packages that push such gates opt in
- * locally by widening their own question type with {@link WhenQuestion}.
+ * CLI-only typeless hooks are not part of this union. They satisfy {@link YUIQuestionBase} directly;
+ * packages that push them widen their question arrays to `YUIQuestionBase<A>[]`.
  */
 export type YUIQuestion<A extends Answers = Answers> =
     | (DistributiveOmit<DistinctQuestion<A>, 'validate' | 'when' | 'name'> &
@@ -237,7 +232,15 @@ export type YUIQuestion<A extends Answers = Answers> =
  */
 type QuestionArm<T extends string, A extends Answers> = Extract<DistinctQuestion<A>, { type?: T }>;
 
-export type PasswordQuestion<A extends Answers = Answers> = Omit<QuestionArm<'password', A>, 'validate' | 'when'> &
+/**
+ * Safe version of {@link Omit} that falls back to `Record<string, unknown>` when `T` resolves to
+ * `never`. `Omit<never, K>` produces `{ [key: string]: never }` in TypeScript 5+, which makes all
+ * intersected properties resolve to `never`. The fallback carries an open index signature so
+ * consuming types retain their explicit properties without being poisoned.
+ */
+type SafeOmit<T, K extends PropertyKey> = [T] extends [never] ? Record<string, unknown> : Omit<T, K>;
+
+export type PasswordQuestion<A extends Answers = Answers> = SafeOmit<QuestionArm<'password', A>, 'validate' | 'when'> &
     YUIQuestionExtensions &
     YUIValidate<A> &
     YUIWhen<A> &
@@ -248,19 +251,20 @@ export type PasswordQuestion<A extends Answers = Answers> = Omit<QuestionArm<'pa
         guiType?: 'login';
     };
 
-export interface FileBrowserQuestion<A extends Answers = Answers>
-    extends
-        Omit<QuestionArm<'input', A>, 'type' | 'validate' | 'when'>,
-        YUIQuestionExtensions,
-        YUIValidate<A>,
-        YUIWhen<A> {
-    type: 'input';
-    guiType: 'file-browser' | 'folder-browser';
-}
+export type FileBrowserQuestion<A extends Answers = Answers> = SafeOmit<
+    QuestionArm<'input', A>,
+    'type' | 'validate' | 'when'
+> &
+    YUIQuestionExtensions &
+    YUIValidate<A> &
+    YUIWhen<A> & {
+        type: 'input';
+        guiType: 'file-browser' | 'folder-browser';
+    };
 // inquirer 13 renamed the `list` prompt to `select`; `ListQuestion` reuses that arm's config but
 // emits `type: 'list'`. YUI/App Wizard renders `list`, and @yeoman/adapter aliases `list`→`select`
 // at runtime, so the object keeps the inquirer 8 spelling while being typed against inquirer 13.
-export type ListQuestion<A extends Answers = Answers> = Omit<
+export type ListQuestion<A extends Answers = Answers> = SafeOmit<
     QuestionArm<'select', A>,
     'validate' | 'when' | 'type' | 'name'
 > & {
@@ -273,35 +277,35 @@ export type ListQuestion<A extends Answers = Answers> = Omit<
 
 // inquirer 13's `search` arm replaces the former `inquirer-autocomplete-prompt` plugin. It carries a
 // `source` callback instead of static `choices`; the two cannot coexist on one object.
-export type SearchQuestion<A extends Answers = Answers> = Omit<QuestionArm<'search', A>, 'validate' | 'when'> &
+export type SearchQuestion<A extends Answers = Answers> = SafeOmit<QuestionArm<'search', A>, 'validate' | 'when'> &
     YUIQuestionExtensions &
     YUIValidate<A> &
     YUIWhen<A> &
     StoreOption;
 
-export type ConfirmQuestion<A extends Answers = Answers> = Omit<QuestionArm<'confirm', A>, 'validate' | 'when'> &
+export type ConfirmQuestion<A extends Answers = Answers> = SafeOmit<QuestionArm<'confirm', A>, 'validate' | 'when'> &
     YUIQuestionExtensions &
     YUIValidate<A> &
     YUIWhen<A>;
 
-export type EditorQuestion<A extends Answers = Answers> = Omit<QuestionArm<'editor', A>, 'validate' | 'when'> &
+export type EditorQuestion<A extends Answers = Answers> = SafeOmit<QuestionArm<'editor', A>, 'validate' | 'when'> &
     YUIQuestionExtensions &
     YUIValidate<A> &
     YUIWhen<A> &
     StoreOption;
 
-export type InputQuestion<A extends Answers = Answers> = Omit<QuestionArm<'input', A>, 'validate' | 'when'> &
+export type InputQuestion<A extends Answers = Answers> = SafeOmit<QuestionArm<'input', A>, 'validate' | 'when'> &
     YUIQuestionExtensions &
     YUIValidate<A> &
     YUIWhen<A> &
     StoreOption;
 
-export type CheckBoxQuestion<A extends Answers = Answers> = Omit<QuestionArm<'checkbox', A>, 'validate' | 'when'> &
+export type CheckBoxQuestion<A extends Answers = Answers> = SafeOmit<QuestionArm<'checkbox', A>, 'validate' | 'when'> &
     YUIQuestionExtensions &
     YUIValidate<A> &
     YUIWhen<A>;
 
-export type NumberQuestion<A extends Answers = Answers> = Omit<QuestionArm<'number', A>, 'validate' | 'when'> &
+export type NumberQuestion<A extends Answers = Answers> = SafeOmit<QuestionArm<'number', A>, 'validate' | 'when'> &
     YUIQuestionExtensions &
     YUIValidate<A> &
     YUIWhen<A>;

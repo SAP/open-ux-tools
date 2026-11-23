@@ -1,4 +1,4 @@
-import type { ConfirmQuestion, WhenQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
+import type { ConfirmQuestion, YUIQuestionBase, YUIQuestion } from '@sap-ux/inquirer-common';
 import { sendTelemetryEvent, getTelemetryClient } from '@sap-ux/inquirer-common';
 import { promptNames } from '../../../../types.js';
 import type { ConnectionValidator } from '../../../connectionValidator.js';
@@ -129,7 +129,7 @@ export function getValueHelpDownloadPrompt(
     convertedMetadataRef?: {
         convertedMetadata: ConvertedMetadata | undefined;
     }
-): (YUIQuestion | WhenQuestion)[] {
+): (YUIQuestion | YUIQuestionBase)[] {
     const promptNamespacePart = `${promptNamespace ? promptNamespace + ':' : ''}`;
     const promptName = `${promptNamespacePart}${promptNames.valueHelpDownload}`;
     const servicePromptName = `${promptNamespacePart}${promptNames.serviceSelection}`;
@@ -162,14 +162,14 @@ export function getValueHelpDownloadPrompt(
         }
     };
 
-    const questions: (YUIQuestion | WhenQuestion)[] = [valueHelpPrompt];
+    const questions: (YUIQuestion | YUIQuestionBase)[] = [valueHelpPrompt];
 
     // Add CLI-specific hidden prompt to handle the download
     // This is necessary because validate functions don't execute for confirm prompts in CLI mode
     if (getPromptHostEnvironment() === hostEnvironment.cli) {
-        // Hidden CLI gate: `when` always returns false so it never renders; the vestigial `type: 'input'`
-        // (retained from the pre-inquirer-13 object) makes it match neither an input arm (no `message`)
-        // nor `WhenQuestion`, so a narrow cast bridges the retained shape.
+        // Hidden CLI hook: `when` always returns false so it never renders; the vestigial `type: 'input'`
+        // (retained from the pre-inquirer-13 object) is an excess property on `YUIQuestionBase`,
+        // so a narrow cast bridges the retained shape.
         questions.push({
             when: async (answers: Record<string, any>) => {
                 const downloadMetadata = answers?.[promptName] as boolean | undefined;
@@ -180,7 +180,7 @@ export function getValueHelpDownloadPrompt(
             },
             name: cliDownloadPromptName,
             type: 'input'
-        } as WhenQuestion);
+        } as YUIQuestionBase);
     }
 
     return questions;

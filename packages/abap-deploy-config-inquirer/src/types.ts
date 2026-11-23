@@ -5,7 +5,7 @@ import type {
     ChoiceOptions,
     CommonPromptOptions,
     GuiOptions,
-    WhenQuestion,
+    YUIQuestionBase,
     YUIQuestion
 } from '@sap-ux/inquirer-common';
 import type { IMessageSeverity } from '@sap-devx/yeoman-ui-types';
@@ -354,5 +354,5 @@ export type AutoCompleteQuestion<A extends Answers = Answers> = {
 
 export type AbapDeployConfigQuestion =
     | YUIQuestion<AbapDeployConfigAnswersInternal>
-    | WhenQuestion<AbapDeployConfigAnswersInternal>
+    | YUIQuestionBase<AbapDeployConfigAnswersInternal>
     | AutoCompleteQuestion<AbapDeployConfigAnswersInternal>;

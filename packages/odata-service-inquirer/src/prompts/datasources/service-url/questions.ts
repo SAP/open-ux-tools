@@ -7,7 +7,7 @@ import {
     type ConfirmQuestion,
     type InputQuestion,
     type PasswordQuestion,
-    type WhenQuestion,
+    type YUIQuestionBase,
     type YUIQuestion
 } from '@sap-ux/inquirer-common';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
@@ -219,7 +219,7 @@ function getIgnoreCertErrorsPrompt(
 function getCliIgnoreCertValidatePrompt(
     connectValidator: ConnectionValidator,
     requiredVersion?: OdataVersion
-): WhenQuestion<ServiceUrlAnswers> {
+): YUIQuestionBase<ServiceUrlAnswers> {
     return {
         // Add dummy prompt for CLI to revalidate since "confirm" prompt validators don't run on CLI
         // The `when` condition should never return true (so it does not get rendered in GUI prompts) but will throw an error to exit generation
@@ -352,7 +352,7 @@ export function getServiceUrlQuestions(
     const requiredVersion = serviceUrlPromptOptions?.requiredOdataVersion;
     PromptState.reset();
 
-    let questions: (YUIQuestion<ServiceUrlAnswers> | WhenQuestion<ServiceUrlAnswers>)[] = [
+    let questions: (YUIQuestion<ServiceUrlAnswers> | YUIQuestionBase<ServiceUrlAnswers>)[] = [
         getServiceUrlPrompt(connectValidator, requiredVersion, serviceUrlPromptOptions?.showCollaborativeDraftWarning),
         getIgnoreCertErrorsPrompt(
             connectValidator,

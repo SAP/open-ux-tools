@@ -1,4 +1,4 @@
-import type { FileBrowserQuestion, ListQuestion, WhenQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
+import type { FileBrowserQuestion, ListQuestion, YUIQuestionBase, YUIQuestion } from '@sap-ux/inquirer-common';
 import { searchableListPrompt } from '@sap-ux/inquirer-common';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import { getCapCustomPaths } from '@sap-ux/project-access';
@@ -57,7 +57,7 @@ function getDefaultCapChoice(
  */
 export function getLocalCapProjectPrompts(
     promptOptions?: OdataServicePromptOptions
-): (YUIQuestion<CapServiceAnswers> | WhenQuestion<CapServiceAnswers>)[] {
+): (YUIQuestion<CapServiceAnswers> | YUIQuestionBase<CapServiceAnswers>)[] {
     let capChoices: Awaited<CapProjectChoice[]> = [];
     const defaultCapPath = promptOptions?.[promptNames.capProject]?.defaultChoice;
     const defaultCapService = promptOptions?.[promptNames.capService]?.defaultChoice;
@@ -68,7 +68,7 @@ export function getLocalCapProjectPrompts(
     PromptState.reset();
 
     const prompts: (
-        YUIQuestion<CapServiceAnswers> | FileBrowserQuestion<CapServiceAnswers> | WhenQuestion<CapServiceAnswers>
+        YUIQuestion<CapServiceAnswers> | FileBrowserQuestion<CapServiceAnswers> | YUIQuestionBase<CapServiceAnswers>
     )[] = [
         searchableListPrompt<CapServiceAnswers>(
             {

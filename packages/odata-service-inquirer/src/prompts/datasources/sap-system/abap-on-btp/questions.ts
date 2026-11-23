@@ -9,7 +9,7 @@ import { hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import {
     type ChoiceOptions,
     type ListQuestion,
-    type WhenQuestion,
+    type YUIQuestionBase,
     type YUIQuestion,
     ERROR_TYPE,
     getCFAbapInstanceChoices,
@@ -102,7 +102,7 @@ export function getAbapOnBTPSystemQuestions(
                 return false;
             }
         )[0],
-        // `getCFDiscoverPrompts` includes a CLI-only `WhenQuestion` gate; bridge to the page's answer-typed array
+        // `getCFDiscoverPrompts` includes a CLI-only hook; bridge to the page's answer-typed array
         ...(withCondition(
             [...getCFDiscoverPrompts(connectValidator, undefined, undefined, cachedConnectedSystem)],
             (answers: AbapOnBtpAnswers) => answers?.abapOnBtpAuthType === 'cloudFoundry'
@@ -233,11 +233,11 @@ export function getCFDiscoverPrompts(
     promptNamespace?: string,
     requiredOdataVersion?: OdataVersion,
     cachedConnectedSystem?: ConnectedSystem
-): (YUIQuestion | WhenQuestion)[] {
+): (YUIQuestion | YUIQuestionBase)[] {
     let choices: ChoiceOptions<ServiceInstanceInfo>[] = [];
     const promptName = `${promptNamespace ? promptNamespace + ':' : ''}${abapOnBtpPromptNames.cloudFoundryAbapSystem}`;
 
-    const questions: (YUIQuestion | WhenQuestion)[] = [
+    const questions: (YUIQuestion | YUIQuestionBase)[] = [
         {
             type: 'list',
             name: promptName,
