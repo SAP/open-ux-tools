@@ -1,5 +1,17 @@
 # @sap-ux/preview-middleware
 
+## 1.2.44
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-20
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/control-property-editor (React 19 fix) [[7952e31](https://github.com/SAP/open-ux-tools/commit/7952e3192861a3eb96f2f37e5cb09ed8a0701fd9)]
+
 ## 1.2.43
 
 ### Patch Changes
