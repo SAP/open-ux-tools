@@ -46,7 +46,7 @@
     },
     "devDependencies": {
         "@jest/globals": "30.5.2",
-        "axios": "1.20.0",
+        "axios": "1.21.1",
         "@types/inquirer": "8.2.6",
         "@types/inquirer-autocomplete-prompt": "2.0.2"
     }

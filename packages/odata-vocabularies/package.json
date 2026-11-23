@@ -34,7 +34,7 @@
     },
     "devDependencies": {
         "@jest/globals": "30.5.2",
-        "axios": "1.20.0",
+        "axios": "1.21.1",
         "npm-run-all2": "9.0.4",
         "prettier": "3.9.10",
         "tsx": "4.23.15"
