@@ -1,5 +1,6 @@
 import type { JSONSchema7 } from 'json-schema';
-import { DirName, SchemaType, PageTypeV4, FileName } from '@sap/ux-specification';
+import uxSpec from '@sap/ux-specification';
+const { DirName, SchemaType, PageTypeV4, FileName } = uxSpec;
 import type {
     v4,
     ExportParametersV4Type,
@@ -247,11 +248,8 @@ export class SapuxFtfsFileIO {
      * @returns A promise that resolves to an array of strings
      */
     public async writeFPM(params: GenerateCustomExtensionParams): Promise<string[]> {
-        // FPMFragment is the only union member without minUI5Version; it is identified
-        // by having a 'content' property and no 'entity' property. Skip it.
-        const isFPMFragment = params.data && 'content' in params.data && !('entity' in params.data);
-        if (params.data && !isFPMFragment) {
-            (params.data as { minUI5Version?: string }).minUI5Version = await getUI5Version(this.appAccess);
+        if (params.data) {
+            params.data.minUI5Version = await getUI5Version(this.appAccess);
         }
         const specification = await this.getSpecification();
         const fsEditor = await specification.generateCustomExtension(params);

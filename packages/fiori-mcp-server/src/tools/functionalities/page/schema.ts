@@ -1,5 +1,6 @@
 import * as zod from 'zod';
-import { PageTypeV4, FioriElementsVersion } from '@sap/ux-specification';
+import uxSpec from '@sap/ux-specification';
+const { PageTypeV4, FioriElementsVersion } = uxSpec;
 import type { FioriElementsVersion as FioriElementsVersionType } from '@sap/ux-specification';
 import type { AllowedNavigationOptions, PageDef } from './types.js';
 import { EXTENSION_FILE_NAME_PATTERN } from '../../../constant.js';

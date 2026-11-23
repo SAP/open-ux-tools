@@ -1,6 +1,7 @@
 import { FileName, getCapServiceName, getMinimumUI5Version, getWebappPath } from '@sap-ux/project-access';
 import type { ApplicationAccess, Manifest, Package } from '@sap-ux/project-access';
-import { FlexChangeLayer } from '@sap/ux-specification';
+import uxSpec from '@sap/ux-specification';
+const { FlexChangeLayer } = uxSpec;
 import type { FlexChangeLayer as FlexChangeLayerType } from '@sap/ux-specification';
 import { existsSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';

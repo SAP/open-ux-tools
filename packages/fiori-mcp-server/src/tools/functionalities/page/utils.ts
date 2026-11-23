@@ -1,5 +1,6 @@
 import type { PageDef } from './types.js';
-import { FioriElementsVersion, PageTypeV4 } from '@sap/ux-specification';
+import uxSpec from '@sap/ux-specification';
+const { FioriElementsVersion, PageTypeV4 } = uxSpec;
 import type {
     Application,
     PageTypeV4 as PageTypeV4Type,

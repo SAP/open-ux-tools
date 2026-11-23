@@ -1,4 +1,5 @@
-import { CustomExtensionType, PageTypeV4, FioriElementsVersion } from '@sap/ux-specification';
+import uxSpec from '@sap/ux-specification';
+const { CustomExtensionType, PageTypeV4, FioriElementsVersion } = uxSpec;
 import type { ApplicationAccess } from '@sap-ux/project-access';
 import { SapuxFtfsFileIO, type AppData } from '../../../page-editor-api/index.js';
 import type { ExecuteFunctionalityOutput, GetFunctionalityDetailsInput } from '../../../types/index.js';

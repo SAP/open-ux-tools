@@ -1,4 +1,5 @@
-import { PageTypeV4 } from '@sap/ux-specification';
+import uxSpec from '@sap/ux-specification';
+const { PageTypeV4 } = uxSpec;
 import type { ArtifactType, Parser } from '@sap/ux-specification';
 import { isArrayEqual } from './utils.js';
 import type { JSONSchema4, JSONSchema4Type } from 'json-schema';
