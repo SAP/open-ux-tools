@@ -6,6 +6,7 @@ const mockRegisterAppIcons = jest.fn() as jest.Mock;
 const mockInitIcons = jest.fn<typeof actualUiComponents.initIcons>();
 const mockInitTheme = jest.fn<typeof actualUiComponents.initTheme>();
 const mockReactDOMRender = jest.fn() as jest.Mock;
+const mockCreateRoot = jest.fn(() => ({ render: mockReactDOMRender })) as jest.Mock;
 
 jest.unstable_mockModule('../../src/i18n', () => ({
     initI18n: mockInitI18n
@@ -22,9 +23,8 @@ jest.unstable_mockModule('@sap-ux/ui-components', () => ({
     initTheme: mockInitTheme
 }));
 
-jest.unstable_mockModule('react-dom', () => ({
-    default: { render: mockReactDOMRender },
-    render: mockReactDOMRender
+jest.unstable_mockModule('react-dom/client', () => ({
+    createRoot: mockCreateRoot
 }));
 
 const { start } = await import('../../src/index');
@@ -43,11 +43,16 @@ describe('index', () => {
                 isEnabled: true
             }
         ];
+        const container = document.createElement('div');
+        container.id = rootElementId;
+        document.body.appendChild(container);
+
         start({ previewUrl, rootElementId, livereloadPort: 8080, scenario: 'APP_VARIANT', features });
         expect(mockInitI18n).toHaveBeenCalledTimes(1);
         expect(mockRegisterAppIcons).toHaveBeenCalledTimes(1);
         expect(mockInitIcons).toHaveBeenCalledTimes(1);
         expect(mockInitTheme).toHaveBeenCalledTimes(1);
+        expect(mockCreateRoot).toHaveBeenCalledTimes(1);
         expect(mockReactDOMRender).toHaveBeenCalledTimes(1);
         expect(dispatchSpy).toHaveBeenCalledTimes(3);
         expect(dispatchSpy).toHaveBeenNthCalledWith(1, setFeatureToggles(features));
