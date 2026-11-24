@@ -137,7 +137,7 @@ function matchKnownPatterns(lowerMessage: string): MigrationErrorCode | null {
         return MigrationErrorCode.COMMIT_FAILED;
     }
 
-    if (lowerMessage.includes('typescript')) {
+    if (lowerMessage.includes('typescript') && (lowerMessage.includes('setup') || lowerMessage.includes('enabl'))) {
         return MigrationErrorCode.TYPESCRIPT_SETUP_FAILED;
     }
 
@@ -232,8 +232,6 @@ export function extractErrorCode(error: unknown, depth = 0): MigrationErrorCode 
                 return MigrationErrorCode.NOT_SUITABLE_FOR_MIGRATION;
             case 'MigrationError':
                 return extractFromMigrationError(error, depth);
-            case 'SyntaxError':
-                return classifySyntaxError(error.message);
             default:
                 // Fall through to check error.code and message patterns
                 break;
@@ -245,6 +243,12 @@ export function extractErrorCode(error: unknown, depth = 0): MigrationErrorCode 
             if (Object.hasOwn(MigrationErrorCode, nodeCode)) {
                 return nodeCode as MigrationErrorCode;
             }
+        }
+
+        // Priority 3: Check SyntaxError name AFTER error.code check
+        // (a SyntaxError with a code property should use that code instead)
+        if (error.name === 'SyntaxError') {
+            return classifySyntaxError(error.message);
         }
     }
 

@@ -3,6 +3,7 @@ import { fileURLToPath } from 'node:url';
 import type { Data } from 'ejs';
 import type { Editor } from 'mem-fs-editor';
 import type { Manifest, SapAppSourceTemplate } from '../project-spec-types.js';
+import { extractErrorCode } from './error-codes.js';
 import { readPackageUpAsync } from './read-package-up-compat.js';
 import { v4 as uuidV4 } from 'uuid';
 import type { UI5FlexLayer } from '@sap-ux/project-access';
@@ -35,15 +36,20 @@ export function generateSapLibsStr(manifestLibs: any, libsStrInput: string): str
 }
 
 /**
- * Custom error class for migration errors
+ * Custom error class for migration errors with error codes attached at source.
  */
 export class MigrationError extends Error {
+    public readonly code: string;
     private readonly useMessage: boolean;
+
     constructor(error: unknown, filename?: string, useMessage?: boolean) {
         const msg = error instanceof Error ? error.message : String(error);
         super(msg);
         this.useMessage = useMessage ?? false;
         this.name = 'MigrationError';
+
+        // Extract and attach error code at source
+        this.code = extractErrorCode(error);
 
         const errorObj = error instanceof Error ? error : new Error(msg);
         this.setMessage(errorObj, filename);

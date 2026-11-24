@@ -12,6 +12,7 @@ import type { Manifest, SapUi5RoutingTarget } from '../../project-spec-types.js'
 import { FioriElementsVersion } from '../../project-spec-types.js';
 import { FLOOR_PLAN } from '../../types.js';
 import { i18nText } from '../../i18n.js';
+import { MigrationErrorCode } from '../error-codes.js';
 
 /**
  * Get Fiori Elements version from manifest
@@ -156,9 +157,12 @@ export function getFlpIntentFromHtml(fs: Editor, htmlFilePath: string): string |
 }
 
 /**
- * Error thrown when project type is not supported for migration
+ * Error thrown when project type is not supported for migration.
+ * Has error code attached at source for telemetry.
  */
 export class UnsupportedProjectError extends Error {
+    public readonly code: string = MigrationErrorCode.NOT_SUITABLE_FOR_MIGRATION;
+
     constructor(message: string) {
         super(message);
         this.name = 'UnsupportedProjectError';
