@@ -111,7 +111,7 @@ overrides:
   socks>ip-address: '>=10.5.1'
   express-rate-limit>ip-address: '>=10.5.1'
   ip-address: '>=10.5.1'
-  uuid: 11.1.1
+  uuid: 14.0.3
   ws: 8.21.0
   tmp: '>=0.2.7'
   form-data: '>=4.0.6'
@@ -432,9 +432,6 @@ importers:
       '@types/sanitize-html':
         specifier: 2.16.2
         version: 2.16.2
-      '@types/uuid':
-        specifier: 11.0.0
-        version: 11.0.0
       '@types/ws':
         specifier: 8.18.2
         version: 8.18.2
@@ -851,8 +848,8 @@ importers:
         specifier: 1.6.4
         version: 1.6.4
       uuid:
-        specifier: 11.1.1
-        version: 11.1.1
+        specifier: 14.0.3
+        version: 14.0.3
     devDependencies:
       '@jest/globals':
         specifier: 30.5.2
@@ -1650,8 +1647,8 @@ importers:
         specifier: 29.4.15
         version: 29.4.15(@babel/core@7.29.7(supports-color@8.1.1))(@jest/transform@30.5.2(supports-color@8.1.1))(@jest/types@30.5.1)(babel-jest@30.5.2(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(esbuild@0.28.2)(jest-util@30.4.1)(jest@30.5.2(@types/node@22.20.1)(babel-plugin-macros@3.1.0)(supports-color@8.1.1)(ts-node@10.9.2(@swc/core@1.15.46(@swc/helpers@0.5.19))(@types/node@22.20.1)(typescript@6.0.3)))(typescript@6.0.3)
       uuid:
-        specifier: 11.1.1
-        version: 11.1.1
+        specifier: 14.0.3
+        version: 14.0.3
 
   packages/control-property-editor-common:
     devDependencies:
@@ -2402,8 +2399,8 @@ importers:
         specifier: 9.4.0
         version: 9.4.0(mem-fs@2.1.0)
       uuid:
-        specifier: 11.1.1
-        version: 11.1.1
+        specifier: 14.0.3
+        version: 14.0.3
       yeoman-generator:
         specifier: 5.10.0
         version: 5.10.0(mem-fs@2.1.0)(supports-color@8.1.1)(yeoman-environment@3.19.3(@types/node@22.20.1)(bluebird@3.7.2)(supports-color@8.1.1))
@@ -2949,8 +2946,8 @@ importers:
         specifier: 2.2.1
         version: 2.2.1
       uuid:
-        specifier: 11.1.1
-        version: 11.1.1
+        specifier: 14.0.3
+        version: 14.0.3
       vscode-uri:
         specifier: 3.2.0
         version: 3.2.0
@@ -3193,8 +3190,8 @@ importers:
         specifier: 26.5.11
         version: 26.5.11(typescript@6.0.3)
       uuid:
-        specifier: 11.1.1
-        version: 11.1.1
+        specifier: 14.0.3
+        version: 14.0.3
       yeoman-generator:
         specifier: 5.10.0
         version: 5.10.0(mem-fs@2.1.0)(supports-color@8.1.1)(yeoman-environment@3.19.3(@types/node@22.20.1)(bluebird@3.7.2)(supports-color@8.1.1))
@@ -4648,8 +4645,8 @@ importers:
         specifier: '>=2.17.7'
         version: 2.18.0
       uuid:
-        specifier: 11.1.1
-        version: 11.1.1
+        specifier: 14.0.3
+        version: 14.0.3
     devDependencies:
       '@babel/core':
         specifier: 7.29.7
@@ -10212,10 +10209,6 @@ packages:
 
   '@types/unist@3.0.3':
     resolution: {integrity: sha512-ko/gIFJRv177XgZsZcBwnqJN5x/Gien8qNOn0D5bQU/zAzVf9Zt3BlcUiLqhV9y4ARk0GbT3tnUiPNgnTXzc/Q==}
-
-  '@types/uuid@11.0.0':
-    resolution: {integrity: sha512-HVyk8nj2m+jcFRNazzqyVKiZezyhDKrGUA3jlEcg/nZ6Ms+qHwocba1Y/AaVaznJTAM9xpdFSh+ptbNrhOGvZA==}
-    deprecated: This is a stub types definition. uuid provides its own type definitions, so you do not need this installed.
 
   '@types/validate-npm-package-name@4.0.2':
     resolution: {integrity: sha512-lrpDziQipxCEeK5kWxvljWYhUvOiB2A9izZd9B2AFarYAkqZshb4lPbRs7zKEic6eGtH8V/2qJW+dPp9OtF6bw==}
@@ -18010,8 +18003,8 @@ packages:
     resolution: {integrity: sha512-pMZTvIkT1d+TFGvDOqodOclx0QWkkgi6Tdoa8gC8ffGAAqz9pzPTZWAybbsHHoED/ztMtkv/VoYTYyShUn81hA==}
     engines: {node: '>= 0.4.0'}
 
-  uuid@11.1.1:
-    resolution: {integrity: sha512-vIYxrBCC/N/K+Js3qSN88go7kIfNPssr/hHCesKCQNAjmgvYS2oqr69kIufEG+O4+PfezOH4EbIeHCfFov8ZgQ==}
+  uuid@14.0.3:
+    resolution: {integrity: sha512-Sc5u1VVln93y1Xnz4R+CunOZc7R9LUcTmhj7Rc7Eg3HVcf7rVn2FOoa812fe0W8p3jD7xeoGSYbfqCGGH2B6xw==}
     hasBin: true
 
   v8-compile-cache-lib@3.0.1:
@@ -24176,10 +24169,6 @@ snapshots:
   '@types/unist@2.0.11': {}
 
   '@types/unist@3.0.3': {}
-
-  '@types/uuid@11.0.0':
-    dependencies:
-      uuid: 11.1.1
 
   '@types/validate-npm-package-name@4.0.2': {}
 
@@ -33852,7 +33841,7 @@ snapshots:
 
   utils-merge@1.0.1: {}
 
-  uuid@11.1.1: {}
+  uuid@14.0.3: {}
 
   v8-compile-cache-lib@3.0.1: {}
 
