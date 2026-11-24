@@ -1,12 +1,8 @@
 import { Command } from 'commander';
 import { resolve, basename } from 'node:path';
 import { existsSync, readFileSync } from 'node:fs';
-import {
-    ProjectAccess,
-    ProjectMigrator,
-    initI18n as initMigrationI18n,
-    type ImportProjectInfo
-} from '@sap-ux/fiori-migration-writer';
+import prompts from 'prompts';
+import { ProjectAccess, ProjectMigrator, initI18n as initMigrationI18n } from '@sap-ux/fiori-migration-writer';
 import { DestinationProxyType, isAppStudio, listDestinations, type Destination } from '@sap-ux/btp-utils';
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import { getService, type BackendSystem, type BackendSystemKey } from '@sap-ux/store';
@@ -18,16 +14,7 @@ import {
 import { getLogger } from '../../tracing/index.js';
 import { findSystemByUrl } from '../utils/system-lookup.js';
 import { t } from '../../i18n.js';
-import { ask, NoInputError } from './ask.js';
 import { writeMigrationLog, getMigrationLogsDirectory, type MigrationLogEntry } from './traceability.js';
-import {
-    MigrationEventName,
-    trackMigrateEvent,
-    getProjectTelemetryProperties,
-    getErrorCategoriesForTelemetry,
-    isMigrationSuccessful,
-    type SystemResolvedVia
-} from './telemetry.js';
 
 interface MigrateCommandOptions {
     destination?: string;
@@ -165,7 +152,7 @@ function createRequiredValidator(fieldName: string): (value: string) => boolean 
  * @returns user input
  */
 async function promptRequiredText(name: string, message: string, fieldName: string): Promise<string> {
-    const response = await ask({
+    const response = await prompts({
         type: 'text',
         name,
         message,
@@ -186,7 +173,7 @@ async function promptRequiredText(name: string, message: string, fieldName: stri
  * @returns confirmation response
  */
 async function promptConfirm(name: string, message: string, initial: boolean): Promise<boolean> {
-    const response = await ask({ type: 'confirm', name, message, initial });
+    const response = await prompts({ type: 'confirm', name, message, initial });
     if (response[name] === undefined) {
         throw new Error(t('migrate.validation.operationCancelled'));
     }
@@ -255,12 +242,9 @@ async function getProjectPath(projectPath: string | undefined): Promise<string> 
  *
  * @param resolvedPath - project path
  * @param force - force flag from options
- * @returns whether migration should proceed and whether an already migrated project is being forced
+ * @returns true if migration should proceed, false otherwise
  */
-async function checkForceRequired(
-    resolvedPath: string,
-    force: boolean
-): Promise<{ proceed: boolean; forced: boolean }> {
+async function checkForceRequired(resolvedPath: string, force: boolean): Promise<boolean> {
     const logger = getLogger();
 
     // Check for Fiori tools indicators in package.json
@@ -284,11 +268,11 @@ async function checkForceRequired(
 
         if (!confirmForce) {
             logger.info(t('migrate.prompts.cancelled'));
-            return { proceed: false, forced: false };
+            return false;
         }
     }
 
-    return { proceed: true, forced: isToolsProject };
+    return true;
 }
 
 /**
@@ -370,7 +354,7 @@ async function getClient(optionClient?: string): Promise<string | undefined> {
         );
     }
 
-    const response = await ask({
+    const response = await prompts({
         type: 'text',
         name: 'clientValue',
         message: t('migrate.prompts.enterClientOptional'),
@@ -397,7 +381,7 @@ async function getUI5Version(optionVersion?: string): Promise<string | undefined
         return undefined;
     }
 
-    const response = await ask({
+    const response = await prompts({
         type: 'text',
         name: 'version',
         message: t('migrate.prompts.enterUI5Version'),
@@ -409,36 +393,29 @@ async function getUI5Version(optionVersion?: string): Promise<string | undefined
 }
 
 /**
- * Load the legacy project information and resolve its backend to a saved system or BAS destination.
+ * Resolve a legacy project's backend to a saved system or BAS destination.
  *
  * @param projectPath - legacy project root
- * @returns the project information and the matched system, if available
+ * @returns matched system, if available
  */
-async function findMigrationSystem(
-    projectPath: string
-): Promise<{ system?: MigrationSystem; projectInfo?: ImportProjectInfo }> {
+async function findMigrationSystem(projectPath: string): Promise<MigrationSystem | undefined> {
     const logger = getLogger();
-    let projectInfo: ImportProjectInfo | undefined;
     try {
-        ({ projectInfo } = await ProjectAccess.getProjectInfo(projectPath));
+        const { projectInfo } = await ProjectAccess.getProjectInfo(projectPath);
         if (isAppStudio()) {
-            return { projectInfo, system: await findBASDestination(projectInfo.destination, projectInfo.hostname) };
+            return await findBASDestination(projectInfo.destination, projectInfo.hostname);
         }
 
         if (!projectInfo.hostname) {
-            return { projectInfo };
+            return undefined;
         }
 
         const service = await getService<BackendSystem, BackendSystemKey>({ entityName: 'system', logger });
         const savedSystem = await findSystemByUrl(projectInfo.hostname, projectInfo.sapClient || undefined, service);
-        return { projectInfo, system: savedSystem ? { ...savedSystem, scp: false } : undefined };
+        return savedSystem ? { ...savedSystem, scp: false } : undefined;
     } catch (error) {
-        // Later prompts could not be answered either
-        if (error instanceof NoInputError) {
-            throw error;
-        }
         logger.debug(`Unable to resolve a migration system: ${(error as Error).message}`);
-        return { projectInfo };
+        return undefined;
     }
 }
 
@@ -472,7 +449,7 @@ async function findBASDestination(
             return matches[0];
         }
         if (matches.length > 1) {
-            const answer = await ask({
+            const answer = await prompts({
                 type: 'select',
                 name: 'system',
                 message: t('migrate.prompts.selectBASDestination'),
@@ -491,7 +468,7 @@ async function findBASDestination(
         }
     } catch (error) {
         // Re-throw cancellation errors so the user can abort
-        if (error instanceof NoInputError || (error as Error).message === t('migrate.validation.operationCancelled')) {
+        if ((error as Error).message === t('migrate.validation.operationCancelled')) {
             throw error;
         }
         // Invalid source or destination URLs cannot be matched safely.
@@ -703,201 +680,67 @@ function handleMigrationFailure(
 }
 
 /**
- * Counters and flags collected during a run, reported with the MIGRATION_COMPLETED event.
- */
-interface MigrationRunSummary {
-    successfulMigrations: number;
-    failedMigrations: number;
-    cancelled: boolean;
-    forceOverride: boolean;
-    systemResolvedVia: SystemResolvedVia;
-    npmInstallSuccess: 'true' | 'false' | 'skipped';
-}
-
-/**
- * Determine how the backend system for the migration was resolved.
- *
- * @param options - command options
- * @param matchedSystem - system matched from the legacy project
- * @returns the resolution source
- */
-function getSystemResolvedVia(
-    options: MigrateCommandOptions,
-    matchedSystem: MigrationSystem | undefined
-): SystemResolvedVia {
-    if (options.destination ?? options.sapSystemName ?? options.hostname) {
-        return 'cliOption';
-    }
-    if (matchedSystem) {
-        return isAppStudio() ? 'basDestination' : 'savedSystem';
-    }
-    return 'prompt';
-}
-
-/**
- * Report the MIGRATION_SUCCESS or MIGRATION_FAILED event for the migrated project.
- *
- * @param success - whether the migration was successful
- * @param messages - categories of the error messages
- * @param ms - duration of the migration in milliseconds
- * @param project - project data used for the event properties
- * @param project.projectInfo - information read from the legacy project
- * @param project.ui5Version - UI5 version requested for the migration
- * @param project.resolvedPath - project path
- */
-async function trackProjectResult(
-    success: boolean,
-    messages: string,
-    ms: number,
-    project: { projectInfo?: ImportProjectInfo; ui5Version?: string; resolvedPath: string }
-): Promise<void> {
-    await trackMigrateEvent(
-        success ? MigrationEventName.MIGRATION_SUCCESS : MigrationEventName.MIGRATION_FAILED,
-        {
-            success: String(success),
-            ...getProjectTelemetryProperties(project.projectInfo, project.ui5Version),
-            messages
-        },
-        ms,
-        project.resolvedPath
-    );
-}
-
-/**
- * Execute the migration command and report the MIGRATION_COMPLETED telemetry event for the whole run.
+ * Execute the migration command.
  *
  * @param projectPath - path to the project to migrate
  * @param options - command options
  */
 async function migrate(projectPath: string | undefined, options: MigrateCommandOptions): Promise<void> {
-    const startTime = Date.now();
-    const summary: MigrationRunSummary = {
-        successfulMigrations: 0,
-        failedMigrations: 0,
-        cancelled: false,
-        forceOverride: false,
-        systemResolvedVia: 'prompt',
-        npmInstallSuccess: 'skipped'
-    };
-    try {
-        await runMigration(projectPath, options, summary);
-    } catch (error) {
-        // The run ended before migrating, because the user cancelled or there was no input to answer a prompt
-        summary.cancelled =
-            error instanceof NoInputError || (error as Error).message === t('migrate.validation.operationCancelled');
-        throw error;
-    } finally {
-        await trackMigrateEvent(
-            MigrationEventName.MIGRATION_COMPLETED,
-            {
-                successfulMigrations: String(summary.successfulMigrations),
-                failedMigrations: String(summary.failedMigrations),
-                cancelled: String(summary.cancelled),
-                skipInstall: String(!!options.skipInstall),
-                systemResolvedVia: summary.systemResolvedVia,
-                forceOverride: String(summary.forceOverride),
-                npmInstallSuccess: summary.npmInstallSuccess
-            },
-            Date.now() - startTime
-        );
-    }
-}
-
-/**
- * Get the SAP client to migrate with: the entered client or the one that is part of the destination name.
- *
- * @param client - client entered or resolved earlier
- * @param destination - destination name
- * @returns the SAP client, if any
- */
-function resolveSapClient(client: string | undefined, destination: string | undefined): string | undefined {
-    if (client) {
-        return client;
-    }
-    return destination ? ProjectAccess.getClientFromDestinationName(destination) || undefined : undefined;
-}
-
-/**
- * Get the project information that overrides what is read from the legacy project.
- *
- * @param options - command options
- * @param matchedSystem - system matched from the legacy project
- * @param target - system values to migrate with
- * @param target.sapClient - SAP client
- * @param target.destination - destination name
- * @param target.hostname - backend hostname
- * @returns the overrides, or undefined if there is nothing to override
- */
-function getImportProjectInfo(
-    options: MigrateCommandOptions,
-    matchedSystem: MigrationSystem | undefined,
-    { sapClient, destination, hostname }: { sapClient?: string; destination?: string; hostname?: string }
-): Partial<ImportProjectInfo> | undefined {
-    if (!sapClient && !destination && !hostname) {
-        return undefined;
-    }
-    const migrationHostname = hostname ?? (matchedSystem?.url ? getHostnameFromUrl(matchedSystem.url) : undefined);
-    return {
-        ...(sapClient && { sapClient }),
-        ...(destination && { destination }),
-        ...(migrationHostname && { hostname: migrationHostname }),
-        ...(!options.destination && !options.sapSystemName && matchedSystem && { scp: matchedSystem.scp })
-    };
-}
-
-/**
- * Migration input that is resolved before the project is migrated.
- */
-interface MigrationInput {
-    resolvedPath: string;
-    baseUri: string;
-    ui5SnapshotUrl: string;
-    importProjectInfo?: Partial<ImportProjectInfo>;
-    projectInfo?: ImportProjectInfo;
-    ui5Version?: string;
-}
-
-/**
- * Migrate the project, report the result with telemetry and handle the outcome (log, npm install, error).
- *
- * @param input - resolved migration input
- * @param options - command options
- * @param summary - run summary that is updated while migrating
- */
-async function migrateProject(
-    input: MigrationInput,
-    options: MigrateCommandOptions,
-    summary: MigrationRunSummary
-): Promise<void> {
-    const { resolvedPath, projectInfo, ui5Version } = input;
     const logger = getLogger();
-    const projectEvent = { projectInfo, ui5Version, resolvedPath };
-    const migrationStart = Date.now();
-    let result: Awaited<ReturnType<typeof ProjectMigrator.migrate>>;
-    try {
-        result = await ProjectMigrator.migrate({
-            projectRoot: resolvedPath,
-            baseUri: input.baseUri,
-            ui5SnapshotUrl: input.ui5SnapshotUrl,
-            importProjectInfo: input.importProjectInfo,
-            internalToggle: isInternalFeaturesSettingEnabled() || undefined
-        });
-    } catch (error) {
-        summary.failedMigrations = 1;
-        const messages = getErrorCategoriesForTelemetry([{ type: 'ERROR', description: (error as Error).message }]);
-        await trackProjectResult(false, messages, Date.now() - migrationStart, projectEvent);
-        throw error;
+
+    // 1. Get or prompt for project path
+    const resolvedPath = await getProjectPath(projectPath);
+    logger.info(t('migrate.status.migratingAt', { path: resolvedPath }));
+
+    // 2. Check if force flag is required
+    const shouldProceed = await checkForceRequired(resolvedPath, options.force ?? false);
+    if (!shouldProceed) {
+        return;
     }
 
-    const success = isMigrationSuccessful(result.result, result.messages);
-    summary.successfulMigrations = success ? 1 : 0;
-    summary.failedMigrations = success ? 0 : 1;
-    await trackProjectResult(
-        success,
-        getErrorCategoriesForTelemetry(result.messages),
-        Date.now() - migrationStart,
-        projectEvent
-    );
+    const matchedSystem = await findMigrationSystem(resolvedPath);
+
+    // 3. Resolve options with fallbacks
+    const resolvedOptions = resolveMigrationOptions(options, matchedSystem);
+    const { destination, hostname } = await getDestinationOrHostname(resolvedOptions);
+
+    // 4. Get optional client
+    const client = await getClient(resolvedOptions.client);
+
+    // 5. Get UI5 version
+    const ui5Version = await getUI5Version(options.ui5Version);
+    const sapClient =
+        client ?? (destination ? ProjectAccess.getClientFromDestinationName(destination) || undefined : undefined);
+
+    // 6. Execute migration
+    logger.info(t('migrate.status.starting'));
+
+    const baseUri = calculateBaseUri(destination, hostname, matchedSystem, !!options.hostname);
+    const ui5SnapshotUrl = ui5Version ? `https://ui5.sap.com/${ui5Version}` : '';
+    const migrationHostname = hostname ?? (matchedSystem?.url ? getHostnameFromUrl(matchedSystem.url) : undefined);
+
+    // Initialize i18n for proper error messages
+    await initMigrationI18n();
+    const internalToggle = isInternalFeaturesSettingEnabled();
+
+    // Load project info first, then merge CLI overrides
+    const migrationProjectInfo =
+        sapClient || destination || hostname
+            ? {
+                  ...(sapClient && { sapClient }),
+                  ...(destination && { destination }),
+                  ...(migrationHostname && { hostname: migrationHostname }),
+                  ...(!options.destination && !options.sapSystemName && matchedSystem && { scp: matchedSystem.scp })
+              }
+            : undefined;
+
+    const result = await ProjectMigrator.migrate({
+        projectRoot: resolvedPath,
+        baseUri,
+        ui5SnapshotUrl,
+        importProjectInfo: migrationProjectInfo,
+        internalToggle: internalToggle || undefined
+    });
 
     // Prepare migration log entry
     const migrationLogEntry: MigrationLogEntry = {
@@ -910,72 +753,7 @@ async function migrateProject(
 
     if (result.result) {
         await handleMigrationSuccess(result, options, resolvedPath, migrationLogEntry, logger);
-        if (!options.skipInstall) {
-            summary.npmInstallSuccess = migrationLogEntry.npmInstall?.success ? 'true' : 'false';
-        }
     } else {
         handleMigrationFailure(result, migrationLogEntry, logger);
     }
-}
-
-/**
- * Run the migration steps.
- *
- * @param projectPath - path to the project to migrate
- * @param options - command options
- * @param summary - run summary that is updated while migrating
- */
-async function runMigration(
-    projectPath: string | undefined,
-    options: MigrateCommandOptions,
-    summary: MigrationRunSummary
-): Promise<void> {
-    const logger = getLogger();
-
-    // 1. Get or prompt for project path
-    const resolvedPath = await getProjectPath(projectPath);
-    logger.info(t('migrate.status.migratingAt', { path: resolvedPath }));
-
-    // 2. Check if force flag is required
-    const { proceed, forced } = await checkForceRequired(resolvedPath, options.force ?? false);
-    if (!proceed) {
-        summary.cancelled = true;
-        return;
-    }
-    summary.forceOverride = forced;
-
-    const backendLoadStart = Date.now();
-    const { system: matchedSystem, projectInfo } = await findMigrationSystem(resolvedPath);
-    await trackMigrateEvent(MigrationEventName.MIGRATION_BACKEND_LOAD, {}, Date.now() - backendLoadStart);
-    summary.systemResolvedVia = getSystemResolvedVia(options, matchedSystem);
-
-    // 3. Resolve options with fallbacks
-    const resolvedOptions = resolveMigrationOptions(options, matchedSystem);
-    const { destination, hostname } = await getDestinationOrHostname(resolvedOptions);
-
-    // 4. Get optional client
-    const client = await getClient(resolvedOptions.client);
-
-    // 5. Get UI5 version
-    const ui5Version = await getUI5Version(options.ui5Version);
-    const sapClient = resolveSapClient(client, destination);
-
-    // 6. Execute migration
-    logger.info(t('migrate.status.starting'));
-
-    // Initialize i18n for proper error messages
-    await initMigrationI18n();
-
-    await migrateProject(
-        {
-            resolvedPath,
-            baseUri: calculateBaseUri(destination, hostname, matchedSystem, !!options.hostname),
-            ui5SnapshotUrl: ui5Version ? `https://ui5.sap.com/${ui5Version}` : '',
-            importProjectInfo: getImportProjectInfo(options, matchedSystem, { sapClient, destination, hostname }),
-            projectInfo,
-            ui5Version
-        },
-        options,
-        summary
-    );
 }
