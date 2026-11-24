@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/i18n",
-    "version": "1.0.7",
+    "version": "1.0.8",
     "description": "Library for i18n",
     "type": "module",
     "repository": {

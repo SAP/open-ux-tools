@@ -1,5 +1,13 @@
 # @sap-ux/ui-components
 
+## 4.0.1
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade uuid 11.1.1 → 14.0.3 [[0ade21d](https://github.com/SAP/open-ux-tools/commit/0ade21d80bbbe39fecb4681e4bd18cd3471a5264)]
+
 ## 4.0.0
 
 ### Major Changes
