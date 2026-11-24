@@ -11,6 +11,7 @@ import { SampleRate } from '../types/sample-rate.js';
 import { configAzureTelemetryClient } from '../utils/azure-client-config.js';
 import { TelemetrySettings } from '../config-state.js';
 import type { TelemetryMeasurements, TelemetryProperties } from '../types/index.js';
+import { getDefaultLogger } from '../utils/logger.js';
 
 /**
  *
@@ -137,8 +138,12 @@ class ApplicationInsightClient extends Client {
         event: appInsights.Contracts.EventTelemetry
     ): Promise<void> {
         if (process.env.SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY !== 'true') {
-            client.trackEvent(event);
-            await client.flush();
+            try {
+                client.trackEvent(event);
+                await client.flush();
+            } catch (error) {
+                this.warnTrackingFailed(error);
+            }
         }
     }
 
@@ -151,10 +156,27 @@ class ApplicationInsightClient extends Client {
      */
     private trackEvent(client: appInsights.TelemetryClient, event: appInsights.Contracts.EventTelemetry): boolean {
         if (process.env.SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY !== 'true') {
-            client.trackEvent(event);
-            return true;
+            try {
+                client.trackEvent(event);
+                return true;
+            } catch (error) {
+                this.warnTrackingFailed(error);
+            }
         }
         return false;
+    }
+
+    /**
+     * Log a warning instead of throwing when sending telemetry fails, e.g. because no
+     * instrumentation key has been configured.
+     *
+     * @param error Error thrown by the Azure Application Insights client
+     */
+    private warnTrackingFailed(error: unknown): void {
+        const reason = this.applicationKey
+            ? (error as Error)?.message
+            : 'no telemetry instrumentation key has been set (see initTelemetrySettings)';
+        getDefaultLogger().warn(`Telemetry event was not sent: ${reason}`);
     }
 
     /**
