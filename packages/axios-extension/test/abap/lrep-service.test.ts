@@ -1,7 +1,8 @@
 import { jest } from '@jest/globals';
 import nock from 'nock';
 import type { Message } from '../../src/abap/lrep-service.js';
-import type { AdaptationConfig, AxiosError } from '../../src/index.js';
+import type { AdaptationConfig } from '../../src/index.js';
+import { AxiosError } from 'axios';
 import type { ToolsLogger } from '@sap-ux/logger';
 
 const loggerMock: ToolsLogger = {
@@ -266,6 +267,16 @@ describe('LayeredRepositoryService', () => {
             } catch (error) {
                 expect(error).toBeDefined();
             }
+        });
+
+        test('error without response is logged with its cause', async () => {
+            const error = new AxiosError('unable to get local issuer certificate', 'UNABLE_TO_GET_ISSUER_CERT_LOCALLY');
+            const getSpy = jest.spyOn(service, 'get').mockRejectedValueOnce(error);
+            await expect(service.getCsrfToken()).rejects.toBe(error);
+            expect(loggerMock.error).toHaveBeenCalledWith(
+                'UNABLE_TO_GET_ISSUER_CERT_LOCALLY: unable to get local issuer certificate'
+            );
+            getSpy.mockRestore();
         });
     });
 
