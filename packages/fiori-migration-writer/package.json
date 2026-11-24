@@ -57,7 +57,7 @@
         "read-package-up": "12.0.0",
         "semver": "7.8.5",
         "true-case-path": "2.2.1",
-        "uuid": "11.1.1",
+        "uuid": "14.0.3",
         "vscode-uri": "3.2.0",
         "yaml": "2.9.1"
     },
