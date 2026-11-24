@@ -1,5 +1,25 @@
 # @sap-ux/ui-components
 
+## 4.0.1
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade uuid 11.1.1 → 14.0.3 [[0ade21d](https://github.com/SAP/open-ux-tools/commit/0ade21d80bbbe39fecb4681e4bd18cd3471a5264)]
+
+## 4.0.0
+
+### Major Changes
+
+#### Release Date
+
+2026-11-20
+
+#### Bug Fixes
+
+- Replace ReactDOM.render with createRoot in UIToggle; narrow peerDependencies react/react-dom to >=18 [[7952e31](https://github.com/SAP/open-ux-tools/commit/7952e3192861a3eb96f2f37e5cb09ed8a0701fd9)]
+
 ## 3.2.1
 
 ### Patch Changes
