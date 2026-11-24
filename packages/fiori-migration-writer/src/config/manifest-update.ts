@@ -8,12 +8,12 @@ import { readJSON, updateJSON, fileExists } from '../utils/index.js';
 import type { Manifest, SapAppSourceTemplate } from '../project-spec-types.js';
 import { TemplateFileName } from '../index.js';
 import { getSourceTemplate, MigrationError } from '../utils/common.js';
+import { MigrationErrorCode } from '../utils/error-codes.js';
 import { adaptMinUI5Version } from './manifest.js';
 import type { TemplateData, Message } from '../types.js';
 import { i18nText } from '../i18n.js';
 import { processDataSource } from './manifest-update-helpers.js';
 import { getMessageType } from '../utils/validation-severity.js';
-import { MigrationErrorCode } from '../utils/error-codes.js';
 
 /**
  * Update manifest.json file with migration-specific changes
@@ -57,7 +57,7 @@ export async function updateManifestForMigration(options: UpdateManifestForMigra
     try {
         manifestJson = await readJSON<Manifest>(fs, join(rootPath, manifestPath));
     } catch (e) {
-        throw new MigrationError(e, TemplateFileName.ManifestJson);
+        throw new MigrationError(e, TemplateFileName.ManifestJson, false, MigrationErrorCode.MANIFEST_PARSE_ERROR);
     }
 
     let saveFile = false;
