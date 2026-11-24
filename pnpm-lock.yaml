@@ -101,7 +101,7 @@ overrides:
   onnx-proto>protobufjs: '>=8.2.0'
   '@opentelemetry/otlp-transformer>protobufjs': '>=8.0.2'
   '@opentelemetry/otlp-exporter-base>protobufjs': '>=8.0.2'
-  follow-redirects: '>=1.16.0'
+  follow-redirects: '>=1.16.2'
   jsdom>http-proxy-agent: '>=7.0.2'
   css-loader>postcss: '>=8.5.23'
   sanitize-html>postcss: '>=8.5.23'
@@ -121,9 +121,9 @@ overrides:
   '@tootallnate/once': '>=3.0.1'
   esbuild-loader: '>=4.0.0'
   qs: 6.16.0
-  axios: '>=1.20.0'
-  '@sap-ux/ui5-config>axios': '>=1.20.0'
-  '@sap-ux/project-access>axios': '>=1.20.0'
+  axios: '>=1.21.1'
+  '@sap-ux/ui5-config>axios': '>=1.21.1'
+  '@sap-ux/project-access>axios': '>=1.21.1'
   '@sap/bas-sdk>axios': '>=1.20.0'
   '@sap/bas-sdk@3.13.3>axios': '>=1.20.0'
   '@sap/service-provider-apis>axios': '>=1.20.0'
@@ -366,8 +366,8 @@ importers:
         specifier: 5.2.14
         version: 5.2.14
       axios:
-        specifier: '>=1.20.0'
-        version: 1.20.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+        specifier: '>=1.21.1'
+        version: 1.21.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
 
   examples/ui-prompting-examples:
     dependencies:
@@ -554,8 +554,8 @@ importers:
         specifier: 2.0.2
         version: 2.0.2
       axios:
-        specifier: '>=1.20.0'
-        version: 1.20.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+        specifier: '>=1.21.1'
+        version: 1.21.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
 
   packages/abap-deploy-config-sub-generator:
     dependencies:
@@ -824,8 +824,8 @@ importers:
         specifier: 0.6.1
         version: 0.6.1
       axios:
-        specifier: '>=1.20.0'
-        version: 1.20.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+        specifier: '>=1.21.1'
+        version: 1.21.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       ejs:
         specifier: 3.1.10
         version: 3.1.10
@@ -1010,8 +1010,8 @@ importers:
         specifier: 7.8.0
         version: 7.8.0
       axios:
-        specifier: '>=1.20.0'
-        version: 1.20.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+        specifier: '>=1.21.1'
+        version: 1.21.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       nock:
         specifier: 15.0.5
         version: 15.0.5(supports-color@8.1.1)
@@ -1034,8 +1034,8 @@ importers:
         specifier: 0.6.1
         version: 0.6.1
       axios:
-        specifier: '>=1.20.0'
-        version: 1.20.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+        specifier: '>=1.21.1'
+        version: 1.21.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       detect-content-type:
         specifier: 1.2.0
         version: 1.2.0
@@ -1214,8 +1214,8 @@ importers:
         specifier: 3.3.1
         version: 3.3.1
       axios:
-        specifier: '>=1.20.0'
-        version: 1.20.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+        specifier: '>=1.21.1'
+        version: 1.21.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
     devDependencies:
       '@jest/globals':
         specifier: 30.5.2
@@ -1962,8 +1962,8 @@ importers:
         specifier: 0.6.1
         version: 0.6.1
       axios:
-        specifier: '>=1.20.0'
-        version: 1.20.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+        specifier: '>=1.21.1'
+        version: 1.21.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       chalk:
         specifier: 5.6.2
         version: 5.6.2
@@ -2014,8 +2014,8 @@ importers:
         specifier: 7.0.1
         version: 7.0.1
       axios:
-        specifier: '>=1.20.0'
-        version: 1.20.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+        specifier: '>=1.21.1'
+        version: 1.21.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       glob-gitignore:
         specifier: 1.0.15
         version: 1.0.15
@@ -3405,8 +3405,8 @@ importers:
         specifier: 3.3.1
         version: 3.3.1
       axios:
-        specifier: '>=1.20.0'
-        version: 1.20.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+        specifier: '>=1.21.1'
+        version: 1.21.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       chalk:
         specifier: 5.6.2
         version: 5.6.2
@@ -3729,8 +3729,8 @@ importers:
         specifier: 3.3.1
         version: 3.3.1
       axios:
-        specifier: '>=1.20.0'
-        version: 1.20.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+        specifier: '>=1.21.1'
+        version: 1.21.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       axios-logger:
         specifier: 2.8.1
         version: 2.8.1
@@ -3864,8 +3864,8 @@ importers:
         specifier: 30.5.2
         version: 30.5.2(supports-color@8.1.1)
       axios:
-        specifier: '>=1.20.0'
-        version: 1.20.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+        specifier: '>=1.21.1'
+        version: 1.21.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       npm-run-all2:
         specifier: 9.0.3
         version: 9.0.3
@@ -4177,8 +4177,8 @@ importers:
         specifier: 7.2.1
         version: 7.2.1
       axios:
-        specifier: '>=1.20.0'
-        version: 1.20.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+        specifier: '>=1.21.1'
+        version: 1.21.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       express:
         specifier: 4.22.1
         version: 4.22.1(supports-color@8.1.1)
@@ -4599,8 +4599,8 @@ importers:
         specifier: 3.17.0
         version: 3.17.0(supports-color@8.1.1)
       axios:
-        specifier: '>=1.20.0'
-        version: 1.20.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+        specifier: '>=1.21.1'
+        version: 1.21.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       performance-now:
         specifier: 2.1.0
         version: 2.1.0
@@ -5149,8 +5149,8 @@ importers:
         specifier: 8.20.0
         version: 8.20.0
       axios:
-        specifier: '>=1.20.0'
-        version: 1.20.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+        specifier: '>=1.21.1'
+        version: 1.21.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       js-yaml:
         specifier: 4.3.2
         version: 4.3.2
@@ -5180,8 +5180,8 @@ importers:
         specifier: workspace:*
         version: link:../logger
       axios:
-        specifier: '>=1.20.0'
-        version: 1.20.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+        specifier: '>=1.21.1'
+        version: 1.21.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       semver:
         specifier: 7.8.5
         version: 7.8.5
@@ -11230,7 +11230,7 @@ packages:
     resolution: {integrity: sha512-jJG+p7JnOYxkVrYkCDKBrLqUmcpwHZTNQrEcIEKr5qe7YVTyPAD9nCsi1cO5LDmQpQApfS430czO+oceI3g/3g==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
-      axios: '>=1.20.0'
+      axios: '>=1.21.1'
       tough-cookie: '>=4.0.0'
 
   axios-logger@2.8.1:
@@ -11240,10 +11240,13 @@ packages:
     resolution: {integrity: sha512-aR99oXhpEDGo0UuAlYcn2iGRds30k366Zfa05XWScR9QaQD4JYiP3/1Qt1u7YlefUOK+cn0CcwoL1oefavQUlQ==}
     deprecated: axios-retry is no longer maintained. See https://github.com/softonic/axios-retry for alternatives.
     peerDependencies:
-      axios: '>=1.20.0'
+      axios: '>=1.21.1'
 
   axios@1.20.0:
     resolution: {integrity: sha512-r8aOh8j9cGKpgQAqpzrUHnSIc6a59Y3Xf/cv8sy1DrHCkZHzQGEuoq1tARk6qSyDdtQGSDgpb9kFlruzPvrgwg==}
+
+  axios@1.21.1:
+    resolution: {integrity: sha512-6eI5Q/Y4u/Um9dDlsRoq5pY2rxnUTv+L4PpLitnbk/i4jb3MxLZ5CsN5Ih3IysbeRYK4pR+P7qfMsOQl9fwwFQ==}
 
   azure-devops-node-api@12.5.0:
     resolution: {integrity: sha512-R5eFskGvOm3U/GzeAuxRkUsAl0hrAwGgWn6zAd2KrZmrEhWZVqLew4OOupbQlXUuojUzpGtq62SmdhJ06N88og==}
@@ -13125,8 +13128,8 @@ packages:
     engines: {node: '>=10.10.0'}
     hasBin: true
 
-  follow-redirects@1.16.0:
-    resolution: {integrity: sha512-y5rN/uOsadFT/JfYwhxRS5R7Qce+g3zG97+JrtFZlC9klX/W5hD7iiLzScI4nZqUS7DNUdhPgw4xI8W2LuXlUw==}
+  follow-redirects@1.16.3:
+    resolution: {integrity: sha512-toOSoqN6d51Wjf1aOFJYcoVv1aND9rj/CwjLU0Vz40oDuSpWDayCeKe4JpL5NL0WdFvoOOCI3BRo69HahjbR1A==}
     engines: {node: '>=4.0'}
     peerDependencies:
       debug: '*'
@@ -22769,7 +22772,7 @@ snapshots:
       '@sap/xsenv': 6.2.2(supports-color@8.1.1)
       '@sap/xssec': 4.15.0(supports-color@8.1.1)
       async-retry: 1.3.3
-      axios: 1.20.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+      axios: 1.21.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       jks-js: 1.1.7
       jsonwebtoken: 9.0.3
       safe-stable-stringify: 2.5.0
@@ -22782,7 +22785,7 @@ snapshots:
       '@sap-cloud-sdk/connectivity': 4.9.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       '@sap-cloud-sdk/resilience': 4.9.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       '@sap-cloud-sdk/util': 4.9.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
-      axios: 1.20.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+      axios: 1.21.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
     transitivePeerDependencies:
       - debug
       - supports-color
@@ -22793,7 +22796,7 @@ snapshots:
       '@sap-cloud-sdk/http-client': 4.9.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       '@sap-cloud-sdk/resilience': 4.9.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       '@sap-cloud-sdk/util': 4.9.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
-      axios: 1.20.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+      axios: 1.21.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
     transitivePeerDependencies:
       - debug
       - supports-color
@@ -22802,7 +22805,7 @@ snapshots:
     dependencies:
       '@sap-cloud-sdk/util': 4.9.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       async-retry: 1.3.3
-      axios: 1.20.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+      axios: 1.21.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       opossum: 10.0.0
     transitivePeerDependencies:
       - debug
@@ -22810,7 +22813,7 @@ snapshots:
 
   '@sap-cloud-sdk/util@4.9.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)':
     dependencies:
-      axios: 1.20.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+      axios: 1.21.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       logform: 2.7.0
       voca: 1.4.1
       winston: 3.19.0
@@ -22839,7 +22842,7 @@ snapshots:
       '@sap-ux/feature-toggle': 1.0.5
       '@sap-ux/logger': 1.0.3
       '@xmldom/xmldom': 0.9.12
-      axios: 1.20.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+      axios: 1.21.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       detect-content-type: 1.2.0
       fast-xml-parser: 5.11.2
       http-proxy-agent: 7.0.2(supports-color@8.1.1)
@@ -22859,7 +22862,7 @@ snapshots:
     dependencies:
       '@sap/bas-sdk': 3.13.16(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       '@sap/cf-tools': 3.3.1
-      axios: 1.20.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+      axios: 1.21.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
     transitivePeerDependencies:
       - bufferutil
       - debug
@@ -23053,7 +23056,7 @@ snapshots:
     dependencies:
       '@sap-ux/yaml': 0.17.7
       ajv: 8.18.0
-      axios: 1.20.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+      axios: 1.21.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       js-yaml: 4.3.2
       lodash: 4.18.1
       semver: 7.7.4
@@ -23142,7 +23145,7 @@ snapshots:
 
   '@sap/bas-sdk@3.13.16(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)':
     dependencies:
-      axios: 1.20.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+      axios: 1.21.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       cross-spawn: 7.0.6
       fs-extra: 11.3.2
       jwt-decode: 4.0.0
@@ -24815,7 +24818,7 @@ snapshots:
       '@ui5/fs': 4.0.6
       '@ui5/logger': 4.0.2
       adm-zip: 0.6.1
-      axios: 1.20.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+      axios: 1.21.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       crc: 4.3.2(buffer@6.0.3)
       dotenv: 16.6.1
       filenamify: 6.0.0
@@ -25577,7 +25580,17 @@ snapshots:
 
   axios@1.20.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1):
     dependencies:
-      follow-redirects: 1.16.0(debug@4.4.3(supports-color@8.1.1))
+      follow-redirects: 1.16.3(debug@4.4.3(supports-color@8.1.1))
+      form-data: 4.0.6
+      https-proxy-agent: 5.0.1(supports-color@8.1.1)
+      proxy-from-env: 2.1.0
+    transitivePeerDependencies:
+      - debug
+      - supports-color
+
+  axios@1.21.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1):
+    dependencies:
+      follow-redirects: 1.16.3(debug@4.4.3(supports-color@8.1.1))
       form-data: 4.0.6
       https-proxy-agent: 5.0.1(supports-color@8.1.1)
       proxy-from-env: 2.1.0
@@ -27838,7 +27851,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  follow-redirects@1.16.0(debug@4.4.3(supports-color@8.1.1)):
+  follow-redirects@1.16.3(debug@4.4.3(supports-color@8.1.1)):
     optionalDependencies:
       debug: 4.4.3(supports-color@8.1.1)
 
@@ -28405,7 +28418,7 @@ snapshots:
   http-proxy@1.18.1(debug@4.4.3(supports-color@8.1.1)):
     dependencies:
       eventemitter3: 4.0.7
-      follow-redirects: 1.16.0(debug@4.4.3(supports-color@8.1.1))
+      follow-redirects: 1.16.3(debug@4.4.3(supports-color@8.1.1))
       requires-port: 1.0.0
     transitivePeerDependencies:
       - debug
@@ -30342,7 +30355,7 @@ snapshots:
 
   mta-local@1.0.8(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1):
     dependencies:
-      axios: 1.20.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+      axios: 1.21.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       tar: 7.5.22
       unzip-stream: 0.3.4
     transitivePeerDependencies:
@@ -30351,7 +30364,7 @@ snapshots:
 
   mta@1.0.8(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1):
     dependencies:
-      axios: 1.20.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+      axios: 1.21.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       tar: 7.5.22
       unzip-stream: 0.3.4
     transitivePeerDependencies:
@@ -30664,7 +30677,7 @@ snapshots:
       ansi-styles: 4.3.0
       argparse: 2.0.1
       asynckit: 0.4.0
-      axios: 1.20.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+      axios: 1.21.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       balanced-match: 4.0.3
       base64-js: 1.5.1
       bl: 4.1.0
@@ -30698,7 +30711,7 @@ snapshots:
       escape-string-regexp: 1.0.5
       figures: 3.2.0
       flat: 5.0.2
-      follow-redirects: 1.16.0(debug@4.4.3(supports-color@8.1.1))
+      follow-redirects: 1.16.3(debug@4.4.3(supports-color@8.1.1))
       form-data: 4.0.6
       fs-constants: 1.0.0
       function-bind: 1.1.2
@@ -33944,7 +33957,7 @@ snapshots:
 
   wait-on@8.0.5(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1):
     dependencies:
-      axios: 1.20.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
+      axios: 1.21.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       joi: 18.2.9
       lodash: 4.18.1
       minimist: 1.2.8
