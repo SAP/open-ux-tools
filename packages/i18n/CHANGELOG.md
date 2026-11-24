@@ -1,5 +1,17 @@
 # @sap-ux/i18n
 
+## 1.0.8
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-24
+
+#### Dependency Updates
+
+- Upgrade vscode-languageserver-textdocument 1.0.15 → 1.0.16 [[07a23e3](https://github.com/SAP/open-ux-tools/commit/07a23e3a07e4116e54ad78c5ee4eb8543595ac5a)]
+
 ## 1.0.7
 
 ### Patch Changes

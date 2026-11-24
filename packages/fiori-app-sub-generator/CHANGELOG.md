@@ -1,5 +1,32 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 1.5.7
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade uuid 11.1.1 → 14.0.3 [[0ade21d](https://github.com/SAP/open-ux-tools/commit/0ade21d80bbbe39fecb4681e4bd18cd3471a5264)]
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.1.6 → 2.1.7
+- @sap-ux/fe-fpm-writer 1.5.0 → 1.5.1
+- @sap-ux/btp-utils 2.0.8 → 2.0.9
+- @sap-ux/odata-service-inquirer 3.2.33 → 3.2.34
+- @sap-ux/telemetry 2.0.15 → 2.0.16
+- @sap-ux/ui5-info 1.0.7 → 1.0.8
+- @sap-ux/fiori-generator-shared 1.4.0 → 1.4.1
+- @sap-ux/odata-service-writer 1.0.29 → 1.0.30
+- @sap-ux/fiori-elements-writer 3.1.104 → 3.1.105
+- @sap-ux/fiori-freestyle-writer 3.0.145 → 3.0.146
+- @sap-ux/annotation-generator 1.0.36 → 1.0.37
+- @sap-ux/project-access 2.3.4 → 2.3.5
+- @sap-ux/ui5-application-inquirer 1.0.56 → 1.0.57
+- @sap-ux/launch-config 1.0.29 → 1.0.30
+- @sap-ux/cap-config-writer 1.0.51 → 1.0.52
+- @sap-ux/project-input-validator 1.0.27 → 1.0.28
+
 ## 1.5.6
 
 ### Patch Changes

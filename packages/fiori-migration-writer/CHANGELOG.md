@@ -1,5 +1,26 @@
 # @sap-ux/fiori-migration-writer
 
+## 1.2.3
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade uuid 11.1.1 → 14.0.3 [[0ade21d](https://github.com/SAP/open-ux-tools/commit/0ade21d80bbbe39fecb4681e4bd18cd3471a5264)]
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.1.6 → 2.1.7
+- @sap-ux/i18n 1.0.7 → 1.0.8
+- @sap-ux/ui5-application-writer 2.1.7 → 2.1.8
+- @sap-ux/adp-tooling 1.2.2 → 1.2.3
+- @sap-ux/btp-utils 2.0.8 → 2.0.9
+- @sap-ux/ui5-config 1.0.11 → 1.0.12
+- @sap-ux/ui5-info 1.0.7 → 1.0.8
+- @sap-ux/project-access 2.3.4 → 2.3.5
+- @sap-ux/nodejs-utils 1.0.14 → 1.0.15
+- @sap-ux/launch-config 1.0.29 → 1.0.30
+
 ## 1.2.2
 
 ### Patch Changes
