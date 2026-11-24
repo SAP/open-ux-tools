@@ -1,5 +1,25 @@
 # @sap-ux/eslint-plugin-fiori-tools
 
+## 10.18.4
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-24
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/i18n, @sap-ux/fiori-annotation-api [[07a23e3](https://github.com/SAP/open-ux-tools/commit/07a23e3a07e4116e54ad78c5ee4eb8543595ac5a)]
+
+#### Release Date
+
+2026-11-24
+
+#### Dependency Updates
+
+- Rebuild bundle with updated dependencies (axios 1.21.1) [[95b4f5a](https://github.com/SAP/open-ux-tools/commit/95b4f5aa4feea8210150d1144693ee36d2f289e3)]
+
 ## 10.18.3
 
 ### Patch Changes
