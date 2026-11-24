@@ -1,5 +1,13 @@
 # @sap-ux/control-property-editor
 
+## 1.0.21
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade uuid 11.1.1 → 14.0.3 [[0ade21d](https://github.com/SAP/open-ux-tools/commit/0ade21d80bbbe39fecb4681e4bd18cd3471a5264)]
+
 ## 1.0.20
 
 ### Patch Changes

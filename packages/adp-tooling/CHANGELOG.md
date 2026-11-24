@@ -1,5 +1,35 @@
 # @sap-ux/adp-tooling
 
+## 1.2.3
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade axios 1.20.0 → 1.21.1 [[95b4f5a](https://github.com/SAP/open-ux-tools/commit/95b4f5aa4feea8210150d1144693ee36d2f289e3)]
+
+#### Release Date
+
+2026-11-24
+
+#### Dependency Updates
+
+- Upgrade uuid 11.1.1 → 14.0.3 [[0ade21d](https://github.com/SAP/open-ux-tools/commit/0ade21d80bbbe39fecb4681e4bd18cd3471a5264)]
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.1.6 → 2.1.7
+- @sap-ux/i18n 1.0.7 → 1.0.8
+- @sap-ux/btp-utils 2.0.8 → 2.0.9
+- @sap-ux/inquirer-common 1.0.55 → 1.0.56
+- @sap-ux/ui5-config 1.0.11 → 1.0.12
+- @sap-ux/ui5-info 1.0.7 → 1.0.8
+- @sap-ux/odata-service-writer 1.0.29 → 1.0.30
+- @sap-ux/system-access 1.0.20 → 1.0.21
+- @sap-ux/project-access 2.3.4 → 2.3.5
+- @sap-ux/nodejs-utils 1.0.14 → 1.0.15
+- @sap-ux/project-input-validator 1.0.27 → 1.0.28
+
 ## 1.2.2
 
 ### Patch Changes
