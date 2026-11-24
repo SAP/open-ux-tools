@@ -4535,8 +4535,8 @@ importers:
         version: 4.6.0
     optionalDependencies:
       '@zowe/secrets-for-zowe-sdk':
-        specifier: 8.35.3
-        version: 8.35.3
+        specifier: 8.39.1
+        version: 8.39.1
 
   packages/system-access:
     dependencies:
@@ -25335,6 +25335,9 @@ snapshots:
     optional: true
 
   '@zowe/secrets-for-zowe-sdk@8.39.1': {}
+
+  '@zowe/secrets-for-zowe-sdk@8.39.1':
+    optional: true
 
   abbrev@1.1.1: {}
 
