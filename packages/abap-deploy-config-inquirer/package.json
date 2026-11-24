@@ -45,7 +45,7 @@
     },
     "devDependencies": {
         "@jest/globals": "30.5.2",
-        "axios": "1.20.0",
+        "axios": "1.21.1",
         "inquirer": "13.4.3"
     }
 }
