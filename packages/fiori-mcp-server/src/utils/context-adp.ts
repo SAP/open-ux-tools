@@ -50,10 +50,10 @@ function safeName(uri: string): string {
 }
 
 /**
- * Decides whether formatted metadata fits inline or must be spilled to disk.
- * Metadata under {@link INLINE_METADATA_MAX_CHARS} is returned inline; larger
- * metadata is written to `<appPath>/.context/` and returned as a
+ * Persists OData metadata to disk for later retrieval by agents.
+ * Metadata is written to `<appPath>/.context/` and returned as a
  * `{ metadataFile, sizeBytes }` reference keyed by its (unique) OData URI.
+ * Agents can parse the metadata from disk when needed with tools like grep, to reduce context window
  *
  * @param appPath Adaptation project root directory.
  * @param uri OData data-source URI (the stable, unique key for the metadata).
@@ -61,9 +61,6 @@ function safeName(uri: string): string {
  * @returns Inline `metadata`, or a `metadataFile` reference when spilled.
  */
 export function persistMetadata(appPath: string, uri: string, formatted: string): PersistedMetadata {
-    if (formatted.length < INLINE_METADATA_MAX_CHARS) {
-        return { metadata: formatted };
-    }
     const metadataFile = writeContextMetadata(appPath, safeName(uri), formatted);
     return { metadataFile, sizeBytes: Buffer.byteLength(formatted) };
 }
