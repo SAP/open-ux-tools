@@ -34,7 +34,7 @@
         "test-u": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --colors  --silent -u"
     },
     "dependencies": {
-        "@fluentui/react": "8.125.8",
+        "@fluentui/react": "8.125.10",
         "react-movable": "3.4.1",
         "react-select": "5.10.2",
         "react-virtualized": "9.22.6",
