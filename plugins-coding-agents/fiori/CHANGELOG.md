@@ -1,5 +1,97 @@
 # @sap-ux/fiori-tools-plugin
 
+## 1.17.2
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-20
+
+#### Bug Fixes
+
+- Streamline sap-fiori-text-and-id skill guidance [[29f121a](https://github.com/SAP/open-ux-tools/commit/29f121acf3b71313c767e4a342dcda2916bd246f)]
+
+## 1.17.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-17
+
+#### Dependency Updates
+
+- Sync version with @sap-ux/fiori-mcp-server [[6ecb16c](https://github.com/SAP/open-ux-tools/commit/6ecb16c7f4a2b26742b36f80adc6a8d0e03cb0b4)]
+
+## 1.17.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-11-16
+
+#### Features
+
+- add new skill to configure text and ID [[c1e6928](https://github.com/SAP/open-ux-tools/commit/c1e692854b953226eb33cfa7e05f017810b37d78)]
+
+## 1.16.16
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-13
+
+#### Dependency Updates
+
+- Sync version with @sap-ux/fiori-mcp-server [[73fdfbf](https://github.com/SAP/open-ux-tools/commit/73fdfbfe2a371d5b9666d2a69b55d1ed977bb69e)]
+
+## 1.16.15
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-11
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/eslint-plugin-fiori-tools [[6852d73](https://github.com/SAP/open-ux-tools/commit/6852d7345205fcfc1fa99976a21fed9bf89faedb)]
+
+## 1.16.14
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-10
+
+#### Dependency Updates
+
+- Sync version with @sap-ux/fiori-mcp-server [[c0973dc](https://github.com/SAP/open-ux-tools/commit/c0973dc03a4f7bcd6376cbd50d04bfb45661bf1a)]
+
+## 1.16.13
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-09
+
+#### Dependency Updates
+
+- Sync version with @sap-ux/fiori-mcp-server [[72ce32f](https://github.com/SAP/open-ux-tools/commit/72ce32fdd5cc4dc6731389940ed87c43015a6f2d)]
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/fiori-generator-shared [[5e9c948](https://github.com/SAP/open-ux-tools/commit/5e9c94868b38d60d0643ea14e60f44f481138a80)]
+
+#### Dependency Updates
+
+- Sync version with @sap-ux/fiori-mcp-server [[93a01bf](https://github.com/SAP/open-ux-tools/commit/93a01bf69097d71f49ac69bbd55abb1fbda47836)]
+
 ## 1.16.12
 
 ### Patch Changes

@@ -1,5 +1,39 @@
 # @sap-ux/ui-prompting
 
+## 2.0.0
+
+### Major Changes
+
+#### Release Date
+
+2026-11-20
+
+#### Bug Fixes
+
+- Narrow peerDependencies react/react-dom to >=18 to match @sap-ux/ui-components requirement [[7952e31](https://github.com/SAP/open-ux-tools/commit/7952e3192861a3eb96f2f37e5cb09ed8a0701fd9)]
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui-components 3.2.1 → 4.0.0
+
+## 1.0.26
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui-components 3.2.0 → 3.2.1
+
+## 1.0.25
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui-components 3.1.0 → 3.2.0
+
 ## 1.0.24
 
 ### Patch Changes

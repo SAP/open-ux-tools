@@ -609,4 +609,111 @@ describe('OutlinePanel', () => {
         // the menu must not surface actions fetched for a different target
         expect(screen.queryByText(/^Stale Action$/i)).toBeNull();
     });
+
+    describe('outline tree node tooltips', () => {
+        test('regular leaf node has tooltip equal to its name', () => {
+            const { container } = render(<OutlinePanel />, {
+                initialState: {
+                    outline: getOutlineNodes(true, true),
+                    filterQuery: filterInitOptions
+                }
+            });
+            // 'second child of one' is a leaf node (children: [])
+            expect(container.querySelector('[title="second child of one"]')).toBeInTheDocument();
+        });
+
+        test('regular group node has tooltip equal to its name', () => {
+            const { container } = render(<OutlinePanel />, {
+                initialState: {
+                    outline: getOutlineNodes(true, true),
+                    filterQuery: filterInitOptions
+                }
+            });
+            // 'one' is a group/header node (has children)
+            expect(container.querySelector('[title="one"]')).toBeInTheDocument();
+        });
+
+        test('extension point leaf without default content has tooltip equal to its name', () => {
+            const { container } = render(<OutlinePanel />, {
+                initialState: {
+                    outline: [
+                        {
+                            name: 'PlainExtPoint',
+                            controlId: '04',
+                            children: [],
+                            controlType: 'sap.ui.extensionpoint',
+                            hasDefaultContent: false,
+                            editable: true,
+                            visible: true
+                        }
+                    ],
+                    filterQuery: filterInitOptions,
+                    scenario: SCENARIO.AdaptationProject
+                }
+            });
+            expect(container.querySelector('[title="PlainExtPoint"]')).toBeInTheDocument();
+        });
+
+        test('extension point leaf with default content has tooltip showing full label including suffix', () => {
+            // The extension point must be a CHILD of a parent so it renders via onRenderCell
+            // (title={cellName}). A top-level childless node renders via onRenderHeader instead.
+            const { container } = render(<OutlinePanel />, {
+                initialState: {
+                    outline: [
+                        {
+                            name: 'Parent',
+                            controlId: 'parent-01',
+                            children: [
+                                {
+                                    name: 'MyExtPoint',
+                                    controlId: '04',
+                                    children: [],
+                                    controlType: 'sap.ui.extensionpoint',
+                                    hasDefaultContent: true,
+                                    editable: true,
+                                    visible: true
+                                }
+                            ],
+                            controlType: 'name.space.parent',
+                            editable: true,
+                            visible: true
+                        }
+                    ],
+                    filterQuery: filterInitOptions,
+                    scenario: SCENARIO.AdaptationProject
+                }
+            });
+            expect(container.querySelector('[title="MyExtPoint (has default content)"]')).toBeInTheDocument();
+        });
+
+        test('extension point group with default content has tooltip showing full label including suffix', () => {
+            const { container } = render(<OutlinePanel />, {
+                initialState: {
+                    outline: [
+                        {
+                            name: 'MyExtGroup',
+                            controlId: '05',
+                            children: [
+                                {
+                                    name: 'child',
+                                    controlId: '05-01',
+                                    children: [],
+                                    controlType: 'name.space.child',
+                                    editable: true,
+                                    visible: true
+                                }
+                            ],
+                            controlType: 'sap.ui.extensionpoint',
+                            hasDefaultContent: true,
+                            editable: true,
+                            visible: true
+                        }
+                    ],
+                    filterQuery: filterInitOptions,
+                    scenario: SCENARIO.AdaptationProject
+                }
+            });
+            expect(container.querySelector('[title="MyExtGroup (has default content)"]')).toBeInTheDocument();
+        });
+    });
 });

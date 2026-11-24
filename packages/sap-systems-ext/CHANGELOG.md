@@ -1,5 +1,53 @@
 # sap-ux-sap-systems-ext
 
+## 1.0.54
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-20
+
+#### Bug Fixes
+
+- Replace ReactDOM.render with createRoot for React 19 compatibility [[7952e31](https://github.com/SAP/open-ux-tools/commit/7952e3192861a3eb96f2f37e5cb09ed8a0701fd9)]
+
+## 1.0.53
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-12
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/ui-components and @sap-ux/fe-fpm-writer [[d1377b8](https://github.com/SAP/open-ux-tools/commit/d1377b8d249e4fec9c3a4d48020376adb46383df)]
+
+## 1.0.52
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-09
+
+#### Features
+
+- Add `connectionType` and `authenticationType` to system create, update, delete and test connection telemetry events [[db16983](https://github.com/SAP/open-ux-tools/commit/db1698385a513d7f24ea992bfbb8aba1b6377708)]
+
+## 1.0.51
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-09
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/ui-components [[3cd86b7](https://github.com/SAP/open-ux-tools/commit/3cd86b7096d7b9fa54b57fc98d487e58925509f4)]
+
 ## 1.0.50
 
 ### Patch Changes

@@ -9,10 +9,11 @@ import {
     getManifestJsonExtensionHelper,
     PATTERN_SUFFIX,
     validatePageConfig,
-    initializeTargetSettings
+    initializeTargetSettings,
+    deleteOutboundNavigationDetail
 } from '../../../src/page/common.js';
 import type { ManifestNamespace } from '@sap-ux/project-access';
-import type { CustomPage, FpmPage } from '../../../src/page/types.js';
+import type { CustomPage, FpmPage, ObjectPage } from '../../../src/page/types.js';
 
 describe('common page functionality', () => {
     const mainEntity = 'Main';
@@ -295,6 +296,112 @@ describe('common page functionality', () => {
         test.each(testCases)('', (testData) => {
             const settings = initializeTargetSettings(testData.data, testData.addSettings);
             expect(settings).toEqual(testData.expected);
+        });
+    });
+
+    describe('deleteOutboundNavigationDetail', () => {
+        let fs: Editor;
+        const testDir = `del-detail-${Date.now()}`;
+        const manifestPath = join(testDir, 'webapp/manifest.json');
+
+        const makeManifest = (navEntry?: Record<string, unknown>): Manifest =>
+            ({
+                'sap.app': { id: 'test' },
+                'sap.ui5': {
+                    routing: {
+                        targets: {
+                            ListReport: navEntry
+                                ? { options: { settings: { navigation: { Products: navEntry } } } }
+                                : {}
+                        }
+                    }
+                }
+            }) as unknown as Manifest;
+
+        const baseData: ObjectPage = {
+            entity: 'Products',
+            navigation: { sourcePage: 'ListReport', navEntity: 'Products' }
+        };
+
+        beforeEach(() => {
+            fs = create(createStorage());
+        });
+
+        test('deletes detail.outbound and writes manifest when outbound exists', () => {
+            const manifest = makeManifest({ detail: { outbound: 'MyOutbound', route: 'ProductsObjectPage' } });
+            fs.writeJSON(manifestPath, manifest);
+
+            deleteOutboundNavigationDetail(manifestPath, manifest, baseData, fs);
+
+            const written = fs.readJSON(manifestPath) as any;
+            const detail = written['sap.ui5'].routing.targets.ListReport.options.settings.navigation.Products.detail;
+            expect(detail.outbound).toBeUndefined();
+            expect(detail.route).toBe('ProductsObjectPage');
+        });
+
+        test('does not write manifest when detail.outbound is absent', () => {
+            const manifest = makeManifest({ detail: { route: 'ProductsObjectPage' } });
+            fs.writeJSON(manifestPath, manifest);
+            const writeJSONSpy = jest.spyOn(fs, 'writeJSON');
+
+            deleteOutboundNavigationDetail(manifestPath, manifest, baseData, fs);
+
+            expect(writeJSONSpy).not.toHaveBeenCalled();
+            writeJSONSpy.mockRestore();
+        });
+
+        test('does not write manifest when navigation detail object is missing entirely', () => {
+            const manifest = makeManifest({ someOtherProp: true });
+            fs.writeJSON(manifestPath, manifest);
+            const writeJSONSpy = jest.spyOn(fs, 'writeJSON');
+
+            deleteOutboundNavigationDetail(manifestPath, manifest, baseData, fs);
+
+            expect(writeJSONSpy).not.toHaveBeenCalled();
+            writeJSONSpy.mockRestore();
+        });
+
+        test('is a no-op when navigation.sourcePage is not set', () => {
+            const manifest = makeManifest({ detail: { outbound: 'MyOutbound' } });
+            fs.writeJSON(manifestPath, manifest);
+            const writeJSONSpy = jest.spyOn(fs, 'writeJSON');
+
+            deleteOutboundNavigationDetail(manifestPath, manifest, { entity: 'Products' } as ObjectPage, fs);
+
+            expect(writeJSONSpy).not.toHaveBeenCalled();
+            writeJSONSpy.mockRestore();
+        });
+
+        test('is a no-op when navigation.navEntity is not set', () => {
+            const manifest = makeManifest({ detail: { outbound: 'MyOutbound' } });
+            fs.writeJSON(manifestPath, manifest);
+            const writeJSONSpy = jest.spyOn(fs, 'writeJSON');
+
+            deleteOutboundNavigationDetail(
+                manifestPath,
+                manifest,
+                { entity: 'Products', navigation: { sourcePage: 'ListReport' } } as ObjectPage,
+                fs
+            );
+
+            expect(writeJSONSpy).not.toHaveBeenCalled();
+            writeJSONSpy.mockRestore();
+        });
+
+        test('is a no-op when sourcePage does not exist in manifest targets', () => {
+            const manifest = makeManifest({ detail: { outbound: 'MyOutbound' } });
+            fs.writeJSON(manifestPath, manifest);
+            const writeJSONSpy = jest.spyOn(fs, 'writeJSON');
+
+            deleteOutboundNavigationDetail(
+                manifestPath,
+                manifest,
+                { entity: 'Products', navigation: { sourcePage: 'NonExistent', navEntity: 'Products' } } as ObjectPage,
+                fs
+            );
+
+            expect(writeJSONSpy).not.toHaveBeenCalled();
+            writeJSONSpy.mockRestore();
         });
     });
 });

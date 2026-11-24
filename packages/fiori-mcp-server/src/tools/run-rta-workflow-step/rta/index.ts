@@ -1,5 +1,6 @@
 export {
     FrontendActionError,
+    cleanup,
     describeUi,
     executeAction,
     executeUfaAction,
@@ -8,7 +9,6 @@ export {
     getOverlays,
     saveChanges,
     startRta,
-    startVisualization,
     stopRta
 } from './commands.js';
 export type {

@@ -1,5 +1,37 @@
 # @sap-ux/generator-adp
 
+## 1.2.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-11-20
+
+#### Features
+
+- Support headless generation of a Cloud Foundry adaptation project via the `yo @sap-ux/adp <json>` CLI JSON path (select with `targetEnv: "CF"`) [[7846a42](https://github.com/SAP/open-ux-tools/commit/7846a42530462a6874048450133eed802a752a7d)]
+
+## 1.1.5
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.3.0 → 1.4.0
+- @sap-ux/inquirer-common 1.0.54 → 1.0.55
+- @sap-ux/adp-tooling 1.2.1 → 1.2.2
+
+## 1.1.4
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.2.27 → 1.3.0
+- @sap-ux/inquirer-common 1.0.53 → 1.0.54
+- @sap-ux/adp-tooling 1.2.0 → 1.2.1
+
 ## 1.1.3
 
 ### Patch Changes

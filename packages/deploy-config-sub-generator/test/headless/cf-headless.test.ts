@@ -38,7 +38,7 @@ jest.unstable_mockModule('@sap-ux/fiori-generator-shared', () => ({
 const actualChildProcess = await import('node:child_process');
 
 const spawnSyncMock = jest.fn().mockReturnValue({ status: 0 });
-const hasbinSyncMock = jest.fn().mockReturnValue(true);
+const whichSyncMock = jest.fn().mockReturnValue(true);
 
 jest.unstable_mockModule('@sap/mta-lib', async () => {
     const { MockMta } = await import('./mockMta.js');
@@ -54,9 +54,9 @@ jest.unstable_mockModule('node:child_process', () => ({
     spawnSync: spawnSyncMock
 }));
 
-jest.unstable_mockModule('hasbin', () => ({
-    default: { sync: hasbinSyncMock },
-    sync: hasbinSyncMock
+jest.unstable_mockModule('which', () => ({
+    default: { sync: whichSyncMock },
+    sync: whichSyncMock
 }));
 
 const { toMatchFolder } = await import('@sap-ux/jest-file-matchers');
