@@ -38,10 +38,10 @@
         "@sap-ux/i18n": "workspace:*",
         "@ui5/cli": "4.0.71",
         "eslint-plugin-jsdoc": "65.4.2",
-        "npm-run-all2": "9.0.3",
+        "npm-run-all2": "9.0.4",
         "@jest/globals": "30.5.2",
         "ui5-tooling-transpile": "3.11.3",
-        "vscode-languageserver-textdocument": "1.0.15",
+        "vscode-languageserver-textdocument": "1.0.16",
         "@ui5/manifest": "1.89.0"
     },
     "browserslist": "defaults"
