@@ -3,12 +3,10 @@ import { jest } from '@jest/globals';
 const mockLoggerWarn = jest.fn<any>();
 const mockLoggerInfo = jest.fn<any>();
 const mockFormatXml = jest.fn<any>((xml: string) => `<formatted>${xml}</formatted>`);
-// Mirrors the real persistMetadata: inline when small, spill to a file reference when large.
-const mockPersistMetadata = jest.fn<any>((appPath: string, uri: string, formatted: string) =>
-    formatted.length < 100_000
-        ? { metadata: formatted }
-        : { metadataFile: `${appPath}/.context/${uri}-metadata.xml`, sizeBytes: formatted.length }
-);
+const mockPersistMetadata = jest.fn((appPath: string, uri: string, formatted: string) => ({
+    metadataFile: `${appPath}/.context/${uri}-metadata.xml`,
+    sizeBytes: Buffer.byteLength(formatted)
+}));
 
 const mockGetMergedManifest = jest.fn<() => Promise<object>>();
 jest.unstable_mockModule('../../../src/utils', () => ({
@@ -86,7 +84,8 @@ describe('readODataMetadataAdp', () => {
         expect(result.entries).toHaveLength(1);
         expect(result.entries[0].id).toEqual('mainService');
         expect(result.entries[0].url).toEqual('/sap/opu/odata/main');
-        expect(result.entries[0].metadata).toEqual('<formatted><edmx/></formatted>');
+        expect(result.entries[0]).toHaveProperty('metadataFile');
+        expect(result.entries[0]).not.toHaveProperty('metadata');
         expect(mockGetMergedManifest).toHaveBeenCalledWith(APP_PATH);
     });
 
@@ -99,17 +98,25 @@ describe('readODataMetadataAdp', () => {
         expect(result.entries[0].model).toEqual(model);
     });
 
-    test('persists metadata keyed by the data-source URI and returns it inline when small', async () => {
+    test('persists small metadata keyed by the data-source URI and returns a file reference', async () => {
         setupProvider({ mainService: { type: 'OData', uri: '/sap/opu/odata/main' } });
 
         const result = await readODataMetadataAdp({ appPath: APP_PATH });
 
-        expect(mockPersistMetadata).toHaveBeenCalledWith(APP_PATH, '/sap/opu/odata/main', expect.any(String));
-        expect(result.entries[0]).toHaveProperty('metadata');
+        expect(mockPersistMetadata).toHaveBeenCalledWith(
+            APP_PATH,
+            '/sap/opu/odata/main',
+            '<formatted><edmx/></formatted>'
+        );
+        expect(result.entries[0]).toMatchObject({
+            metadataFile: expect.any(String),
+            sizeBytes: Buffer.byteLength('<formatted><edmx/></formatted>')
+        });
+        expect(result.entries[0]).not.toHaveProperty('metadata');
         expect(ReadODataMetadataOutputSchema.safeParse(result).success).toBe(true);
     });
 
-    test('spills large metadata to a file reference instead of returning it inline', async () => {
+    test('returns a file reference for large metadata', async () => {
         const provider = setupProvider({ mainService: { type: 'OData', uri: '/sap/opu/odata/main' } });
         provider.service.mockReturnValue({ metadata: jest.fn<any>().mockResolvedValue('x'.repeat(200_000)) });
 
@@ -213,7 +220,7 @@ describe('readODataMetadataAdp', () => {
         const result = await readODataMetadataAdp({ appPath: APP_PATH });
 
         expect(result.entries).toHaveLength(2);
-        expect(result.entries.find((e) => e.id === 'good')).toHaveProperty('metadata');
+        expect(result.entries.find((e) => e.id === 'good')).toHaveProperty('metadataFile');
         expect(result.entries.find((e) => e.id === 'bad')).toHaveProperty('error', 'boom');
         expect(ReadODataMetadataOutputSchema.safeParse(result).success).toBe(true);
     });
