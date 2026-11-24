@@ -1058,8 +1058,8 @@ importers:
         specifier: 6.16.0
         version: 6.16.0
       xpath:
-        specifier: 0.0.36
-        version: 0.0.36
+        specifier: 0.1.0
+        version: 0.1.0
     devDependencies:
       '@jest/globals':
         specifier: 30.5.2
@@ -2199,8 +2199,8 @@ importers:
         specifier: 3.7.1
         version: 3.7.1
       xpath:
-        specifier: 0.0.36
-        version: 0.0.36
+        specifier: 0.1.0
+        version: 0.1.0
     devDependencies:
       '@jest/globals':
         specifier: 30.5.2
@@ -18535,8 +18535,8 @@ packages:
     resolution: {integrity: sha512-FxF6+rkr1rNSQrhUNYrAFJpRXNzlDoMxeXN5qI84939ylEv3qqPFKa85Oxr6tDaJKqwW6KKyo2v26TSv3k6LeA==}
     engines: {node: '>=0.6.0'}
 
-  xpath@0.0.36:
-    resolution: {integrity: sha512-HuqAnJx5YJoDeLub7hhcNoiRvnqqrgoSsI4kLrOtv6XkaUI0zY9ylL4+ULozB35JT1SVMfdexsMqRbTp7bkFGQ==}
+  xpath@0.1.0:
+    resolution: {integrity: sha512-p2A4mxd3/chYyTKQGCVqnP3Vuud95BU/9iVgnWk30asx6PRoloCwIpdoh+jQpkkr//uQeDr2O9S2iK6/hNlzYA==}
     engines: {node: '>=0.6.0'}
 
   xtend@4.0.2:
@@ -34442,7 +34442,7 @@ snapshots:
 
   xpath@0.0.34: {}
 
-  xpath@0.0.36: {}
+  xpath@0.1.0: {}
 
   xtend@4.0.2: {}
 
