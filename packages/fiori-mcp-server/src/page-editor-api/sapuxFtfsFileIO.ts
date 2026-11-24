@@ -249,7 +249,7 @@ export class SapuxFtfsFileIO {
      */
     public async writeFPM(params: GenerateCustomExtensionParams): Promise<string[]> {
         if (params.data) {
-            params.data.minUI5Version = await getUI5Version(this.appAccess);
+            params.minUI5Version = await getUI5Version(this.appAccess);
         }
         const specification = await this.getSpecification();
         const fsEditor = await specification.generateCustomExtension(params);
