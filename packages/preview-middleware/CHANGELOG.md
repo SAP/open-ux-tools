@@ -1,5 +1,21 @@
 # @sap-ux/preview-middleware
 
+## 1.2.45
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Rebuild bundle with updated dependencies (uuid 14.0.3) [[0ade21d](https://github.com/SAP/open-ux-tools/commit/0ade21d80bbbe39fecb4681e4bd18cd3471a5264)]
+
+#### Workspace Updates
+
+- @sap-ux/i18n 1.0.7 → 1.0.8
+- @sap-ux/adp-tooling 1.2.2 → 1.2.3
+- @sap-ux/btp-utils 2.0.8 → 2.0.9
+- @sap-ux/system-access 1.0.20 → 1.0.21
+- @sap-ux/project-access 2.3.4 → 2.3.5
+
 ## 1.2.44
 
 ### Patch Changes

@@ -1,5 +1,15 @@
 # @sap-ux/abap-deploy-config-writer
 
+## 1.0.38
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-config 1.0.11 → 1.0.12
+- @sap-ux/system-access 1.0.20 → 1.0.21
+- @sap-ux/project-access 2.3.4 → 2.3.5
+
 ## 1.0.37
 
 ### Patch Changes

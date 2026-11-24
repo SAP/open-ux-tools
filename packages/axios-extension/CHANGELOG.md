@@ -1,5 +1,29 @@
 # @sap-ux/axios-extension
 
+## 2.1.7
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-24
+
+#### Dependency Updates
+
+- Upgrade xpath 0.0.35 → 0.0.36 [[07a23e3](https://github.com/SAP/open-ux-tools/commit/07a23e3a07e4116e54ad78c5ee4eb8543595ac5a)]
+
+#### Release Date
+
+2026-11-24
+
+#### Dependency Updates
+
+- Upgrade axios 1.20.0 → 1.21.1 [[95b4f5a](https://github.com/SAP/open-ux-tools/commit/95b4f5aa4feea8210150d1144693ee36d2f289e3)]
+
+#### Workspace Updates
+
+- @sap-ux/btp-utils 2.0.8 → 2.0.9
+
 ## 2.1.6
 
 ### Patch Changes
