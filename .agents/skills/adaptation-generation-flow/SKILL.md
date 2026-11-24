@@ -32,7 +32,9 @@ Create an adaptation project with `generate_adaptation_project`. Guide the user 
 
 ## Mandatory Inputs
 
-Obtain the intended ABAP/CF target, base application ID, and absolute generation folder from the user's request or workspace. Ask for the target if unspecified; system names and other parameters do not imply a target. Preserve choices already supplied by the user.
+For every new generation request, use ABAP or CF only if the user explicitly specifies the target in that request. Otherwise, always ask the user to choose ABAP or CF and wait for the answer, regardless of earlier session context. Do not reuse a target from an earlier request or infer it from the workspace, previous projects, current backend login, stored system, application ID, MTA, project type, or other parameters.
+
+The user's answer confirms the target for this generation request and its validation/recovery retries. Apply this selection rule again for each new generation request. Obtain the base application ID and absolute generation folder from the request or workspace, and preserve the other supplied configuration choices.
 
 Consult only the selected environment's guidance:
 
@@ -41,11 +43,25 @@ Consult only the selected environment's guidance:
 
 Exact supported values, defaults, and conditional requirements are defined by the tool input schema. Obtain missing conditional inputs before generation, including the MTA name when creating a new MTA.
 
+## User-facing wording
+
+Use the following text verbatim in the matching case. Do not paraphrase it or append descriptions in parentheses to the MTA choice labels. Present commands and project paths separately, on the next line.
+
+| Case | Exact text |
+| --- | --- |
+| ABAP environment choice, mapped to `targetEnvironment: "ABAP"` | Adapt an application deployed on an ABAP system (OnPremise or CloudReady). |
+| Existing MTA choice | Use existing MTA |
+| New MTA choice when recovering from a conflicting name | Create and use a new MTA project with a different name |
+| Cloud Foundry login is required | You need to log in to Cloud Foundry first. Please run the following command in a separate terminal |
+| Generation succeeded and the generated files were verified | The project was generated successfully: |
+
+For these cases, the fixed text controls presentation while tool values and diagnostics remain authoritative. Keep returned choice values unchanged. Use the returned labels for choices not covered by this table, such as service instances and ABAP project types. Show the actual login command from the tool diagnostic in a shell code block; resolve any placeholder endpoint before presenting it as runnable. After the success text, show the verified `projectPath`. Show a CF `mtaRoot` separately when useful.
+
 ## Workflow
 
 ### Step 1 — Select the environment
 
-Resolve ABAP or CF from explicit user intent. If absent, present those two choices and wait for the answer. Read the corresponding reference above. Confirm that the chosen target matches the backend hosting the base application.
+Check whether the current generation request explicitly specifies ABAP or CF. If it does not, always present those two choices using the user-facing wording above and wait for the answer, even if an earlier request in this session selected an environment. Complete this selection before environment-specific discovery, configuration, or generation tool calls. Then read the corresponding reference above and confirm that the selected target matches the backend hosting the base application.
 
 ### Step 2 — Resolve prerequisites and the base application
 
@@ -76,7 +92,7 @@ The input schema and shared code remain authoritative; do not copy their naming 
 
 | Status | Action |
 | --- | --- |
-| `InputRequired` | Read `missingFields` and `choices`. Present each relevant choice using its label, collect the answer, then retry with its value. No project files have been generated. |
+| `InputRequired` | Read `missingFields` and `choices`. Present each relevant choice using the fixed wording above when applicable, otherwise its returned label; collect the answer, then retry with its unchanged value. No project files have been generated. |
 | `Error` with `phase: "validation"` | Creation was not invoked. Use each `issues[].field`, `code`, and `message` to identify corrections or prerequisite recovery. If `choices` are supplied, present them. Correct all reported independent fields together and retry with the retained configuration. |
 | `Error` with `phase: "generation"` | Preflight passed, but creation failed. Inspect the diagnostic and destination for partial output before retrying. Do not relabel this as an input validation failure or repeatedly invoke creation with unchanged inputs. |
 | `Success` | Store `projectPath` as the adaptation application root and `mtaRoot` separately for CF. Verify the generated files before reporting completion. |
@@ -85,13 +101,14 @@ The tool remains usable without this skill. Do not implement a second set of val
 
 ### Step 5 — Verify and hand off
 
-Verify `webapp/manifest.appdescr_variant` and `package.json` inside the returned `projectPath`. For CF, also verify `mta.yaml` at `mtaRoot`. Report the application path and selected environment.
+Verify `webapp/manifest.appdescr_variant` and `package.json` inside the returned `projectPath`. For CF, also verify `mta.yaml` at `mtaRoot`. After verification, use the fixed success text above and show the application path on the next line. Include the selected environment separately when useful.
 
 If the user requested UI changes, continue with [adp-controller-extension](../adp-controller-extension/SKILL.md), passing `projectPath` as `appPath`. Generation alone does not require opening the editor.
 
 ## Verification Checklist
 
-- [ ] The target environment comes from explicit user intent.
+- [ ] The target environment was explicitly specified in the current generation request or confirmed by a fresh ABAP/CF question for that request; earlier session context was not used to supply it.
+- [ ] Applicable choices, login guidance, and success messages use the exact user-facing wording above; MTA labels have no parenthesized descriptions.
 - [ ] Backend prerequisites and the base application are resolved.
 - [ ] Required configuration is collected; schema defaults remain authoritative.
 - [ ] All supplied parameters pass tool preflight before the creation command is invoked.
@@ -113,12 +130,12 @@ Inspect the scripts in the generated application's `package.json` and run its bu
 | `unsupported_application` / `inconsistent_odata_endpoints` | Select an adaptable base application or correct its manifest/routes/endpoints according to the shared validator diagnostic. |
 | `unrecognized_keys` | Correct misspelled parameter names using the input schema. |
 | `generation_failed` | Inspect the creation diagnostic and any partial output, resolve the cause, then retry. |
-| `targetEnvironment is required before generation.` | Collect ABAP or CF and pass the selected value. |
+| `targetEnvironment is required before generation.` | Ask the user to choose ABAP or CF for this generation request, wait for the answer, and pass the selected value. Earlier session choices do not supply the target. |
 | `system is required for an ABAP project.` | Resolve the user's system using available system discovery and pass its stored name. |
 | `mtaId is required when mtaMode is new.` | Collect the new MTA name and retry; let the tool validate it. |
 | `Multiple Cloud Foundry service instances expose application ...` | Present `choices.serviceInstanceName` and retry with the selected value. |
 | `The Cloud Foundry CLI ("cf") is not installed.` | Install the CF CLI in the environment running the MCP server. |
-| `You are not logged in to a Cloud Foundry org and space.` | Have the user run the login command from the diagnostic and target the intended org/space. |
+| `cf_login_required` | Use the fixed login text above, then show the actual login command from the diagnostic in a separate shell code block. Have the user authenticate in a separate terminal and target the intended org/space. |
 | `No Cloud Foundry service instance ... exposes application ...` | Verify the target org/space, application ID, and service instance using the CF reference. |
 
 ## References

@@ -1,6 +1,8 @@
 # ABAP Generation
 
-Read this reference after the user selects ABAP. The common orchestration and result handling remain in [SKILL.md](../SKILL.md).
+Read this reference only after the user explicitly specifies or selects ABAP for the current generation request, following the target-selection rule in [SKILL.md](../SKILL.md#mandatory-inputs). The common orchestration and result handling remain in [SKILL.md](../SKILL.md).
+
+Use the exact ABAP environment label defined in [SKILL.md](../SKILL.md#user-facing-wording) when presenting the ABAP choice. Its tool value remains `ABAP`; project-type values are unchanged.
 
 ## Prerequisites and discovery
 
