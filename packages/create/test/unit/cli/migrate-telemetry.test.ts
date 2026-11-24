@@ -28,9 +28,6 @@ jest.unstable_mockModule('@sap-ux/telemetry', () => ({
     initTelemetrySettings: (...args: unknown[]) => mockInitTelemetrySettings(...args),
     getTelemetrySetting: () => mockGetTelemetrySetting(),
     isTelemetryDisabledByEnv: (): boolean => {
-        if (['1', 'true'].includes(process.env.DO_NOT_TRACK?.toLowerCase() ?? '')) {
-            return true;
-        }
         if (process.env.SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY === 'true') {
             return true;
         }
@@ -61,7 +58,6 @@ describe('migrate telemetry', () => {
     const originalEnv = { ...process.env };
 
     beforeEach(() => {
-        delete process.env.DO_NOT_TRACK;
         delete process.env.SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY;
         tempDirectory = mkdtempSync(join(tmpdir(), 'create-telemetry-'));
         toolsDirectory = tempDirectory;
@@ -80,10 +76,6 @@ describe('migrate telemetry', () => {
     describe('getTelemetryOptOutEnvVariable', () => {
         test.each([
             [{}, undefined],
-            [{ DO_NOT_TRACK: '1' }, 'DO_NOT_TRACK'],
-            [{ DO_NOT_TRACK: 'TRUE' }, 'DO_NOT_TRACK'],
-            [{ DO_NOT_TRACK: '0' }, undefined],
-            [{ DO_NOT_TRACK: '' }, undefined],
             [{ SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY: 'true' }, 'SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY'],
             [{ SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY: 'false' }, undefined]
         ])('%j -> %s', (env, expected) => {
@@ -93,11 +85,8 @@ describe('migrate telemetry', () => {
     });
 
     describe('opt-out by environment', () => {
-        test.each([
-            ['DO_NOT_TRACK', '1'],
-            ['SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY', 'true']
-        ])('%s disables events and the notice', async (variable, value) => {
-            process.env[variable] = value;
+        test('SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY disables events and the notice', async () => {
+            process.env.SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY = 'true';
             await initCliTelemetry('1.0.0');
 
             await trackMigrateEvent(MigrationEventName.MIGRATION_COMPLETED);

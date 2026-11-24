@@ -56,7 +56,7 @@ npx -y @sap-ux/create@latest telemetry enable    # opt in again
 npx -y @sap-ux/create@latest telemetry status    # show the current setting
 \`\`\`
 
-Alternatively, set the environment variable \`DO_NOT_TRACK=1\` or \`SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY=true\`. The setting is stored in \`~/.fioritools/telemetrysettings.json\`.
+Alternatively, set the environment variable \`SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY=true\`. The setting is stored in \`~/.fioritools/telemetrysettings.json\`.
 
 ---
 

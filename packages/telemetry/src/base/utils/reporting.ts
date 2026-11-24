@@ -59,7 +59,6 @@ const getReportingTelemetryClient = (): appInsights.TelemetryClient => {
 
 /**
  * Check if telemetry is disabled via environment variables.
- * Honors both DO_NOT_TRACK (cross-tool convention) and SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY.
  *
  * NOTE: This function intentionally checks ONLY environment variables, not the persisted
  * telemetry setting from TelemetrySettings.telemetryEnabled. This is by design:
@@ -72,10 +71,6 @@ const getReportingTelemetryClient = (): appInsights.TelemetryClient => {
  * @returns true if telemetry is disabled by environment
  */
 export const isTelemetryDisabledByEnv = (): boolean => {
-    // Check DO_NOT_TRACK (cross-tool convention)
-    if (['1', 'true'].includes(process.env.DO_NOT_TRACK?.toLowerCase() ?? '')) {
-        return true;
-    }
     // Check SAP-specific environment variable
     if (process.env.SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY === 'true') {
         return true;
@@ -86,8 +81,8 @@ export const isTelemetryDisabledByEnv = (): boolean => {
 /**
  * Report a runtime error during telemetry initialization.
  *
- * NOTE: This function is gated ONLY by environment variables (DO_NOT_TRACK,
- * SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY), not by the persisted enableTelemetry setting.
+ * NOTE: This function is gated ONLY by environment variables (SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY),
+ * not by the persisted enableTelemetry setting.
  * This is intentional: since this function is called when initTelemetrySettings fails,
  * the saved setting hasn't been loaded yet. Init-failure diagnostics are critical for
  * debugging library issues and intentionally bypass the saved opt-out. Users who want

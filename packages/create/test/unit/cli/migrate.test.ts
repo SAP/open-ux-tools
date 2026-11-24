@@ -112,9 +112,6 @@ jest.unstable_mockModule('@sap-ux/telemetry', () => ({
     initTelemetrySettings: jest.fn().mockResolvedValue(undefined),
     getTelemetrySetting: () => mockGetTelemetrySetting(),
     isTelemetryDisabledByEnv: (): boolean => {
-        if (['1', 'true'].includes(process.env.DO_NOT_TRACK?.toLowerCase() ?? '')) {
-            return true;
-        }
         if (process.env.SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY === 'true') {
             return true;
         }
@@ -1031,7 +1028,6 @@ describe('migrate command', () => {
         });
 
         beforeEach(async () => {
-            delete process.env.DO_NOT_TRACK;
             delete process.env.SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY;
             await initCliTelemetry('1.0.0');
             mockPrompt.mockResolvedValue({ version: '' });
@@ -1275,18 +1271,15 @@ describe('migrate command', () => {
             expect(mockReportEventBlocking).not.toHaveBeenCalled();
         });
 
-        test.each(['DO_NOT_TRACK', 'SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY'])(
-            'should not report events when %s is set',
-            async (variable) => {
-                process.env[variable] = variable === 'DO_NOT_TRACK' ? '1' : 'true';
-                await initCliTelemetry('1.0.0');
+        test('should not report events when SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY is set', async () => {
+            process.env.SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY = 'true';
+            await initCliTelemetry('1.0.0');
 
-                await migrateWithOptions(['--skip-install']);
+            await migrateWithOptions(['--skip-install']);
 
-                expect(mockMigrate).toHaveBeenCalled();
-                expect(mockReportEventBlocking).not.toHaveBeenCalled();
-            }
-        );
+            expect(mockMigrate).toHaveBeenCalled();
+            expect(mockReportEventBlocking).not.toHaveBeenCalled();
+        });
 
         test('should not fail the migration when sending an event fails', async () => {
             mockReportEventBlocking.mockRejectedValue(new Error('network down'));

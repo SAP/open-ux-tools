@@ -42,7 +42,6 @@ let telemetryEnabled = false;
 // Set when sending fails or times out, so an unreachable backend delays the CLI at most once per run
 let sendingFailed = false;
 // Random id correlating the events of one run; it is neither persisted nor linked to a user or machine
-// Initialized to empty string and set in initCliTelemetry
 let sessionId = '';
 
 /**
@@ -52,9 +51,6 @@ let sessionId = '';
  * @returns name of the environment variable, or undefined if telemetry is not disabled by the environment
  */
 export function getTelemetryOptOutEnvVariable(): string | undefined {
-    if (['1', 'true'].includes(process.env.DO_NOT_TRACK?.toLowerCase() ?? '')) {
-        return 'DO_NOT_TRACK';
-    }
     if (process.env.SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY === 'true') {
         return 'SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY';
     }
@@ -96,12 +92,13 @@ export function showTelemetryNoticeOnce(): void {
         return;
     }
     try {
-        const markerFile = join(getFioriToolsDirectory(), NOTICE_MARKER_FILE);
+        const fioriToolsDir = getFioriToolsDirectory();
+        const markerFile = join(fioriToolsDir, NOTICE_MARKER_FILE);
         if (existsSync(markerFile)) {
             return;
         }
         getLogger().info(t('telemetry.notice'));
-        mkdirSync(getFioriToolsDirectory(), { recursive: true });
+        mkdirSync(fioriToolsDir, { recursive: true });
         writeFileSync(markerFile, new Date().toISOString());
     } catch (error) {
         getLogger().debug(`Unable to remember the telemetry notice: ${(error as Error).message}`);

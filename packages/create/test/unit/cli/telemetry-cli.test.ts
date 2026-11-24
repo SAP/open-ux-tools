@@ -58,7 +58,6 @@ describe('telemetry command (CLI)', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
-        delete process.env.DO_NOT_TRACK;
         delete process.env.SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY;
     });
 
@@ -93,12 +92,14 @@ describe('telemetry command (CLI)', () => {
         expect(mockLogger.error).not.toHaveBeenCalled();
     });
 
-    test('status reports an opt-out by the DO_NOT_TRACK environment variable', async () => {
-        process.env.DO_NOT_TRACK = '1';
+    test('status reports an opt-out by the SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY environment variable', async () => {
+        process.env.SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY = 'true';
 
         await run('telemetry', 'status');
 
-        expect(getInfoMessages()).toEqual(['Telemetry is disabled by the environment variable DO_NOT_TRACK.']);
+        expect(getInfoMessages()).toEqual([
+            'Telemetry is disabled by the environment variable SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY.'
+        ]);
     });
 
     test('lists the telemetry command in the help', async () => {

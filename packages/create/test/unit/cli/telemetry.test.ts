@@ -19,9 +19,6 @@ jest.unstable_mockModule('@sap-ux/telemetry', () => ({
     setEnableTelemetry: (enable: boolean) => mockSetEnableTelemetry(enable),
     getTelemetrySetting: () => mockGetTelemetrySetting(),
     isTelemetryDisabledByEnv: (): boolean => {
-        if (['1', 'true'].includes(process.env.DO_NOT_TRACK?.toLowerCase() ?? '')) {
-            return true;
-        }
         if (process.env.SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY === 'true') {
             return true;
         }
@@ -43,7 +40,6 @@ describe('telemetry command', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
-        delete process.env.DO_NOT_TRACK;
         delete process.env.SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY;
         process.exitCode = undefined;
     });
@@ -82,7 +78,7 @@ describe('telemetry command', () => {
     });
 
     test('status reports an opt-out by environment variable', async () => {
-        process.env.DO_NOT_TRACK = '1';
+        process.env.SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY = 'true';
         try {
             mockGetTelemetrySetting.mockResolvedValue({ enableTelemetry: true });
 
@@ -90,7 +86,7 @@ describe('telemetry command', () => {
 
             expect(mockLogger.info).toHaveBeenCalledWith('telemetry.status.disabledByEnv');
         } finally {
-            delete process.env.DO_NOT_TRACK;
+            delete process.env.SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY;
         }
     });
 

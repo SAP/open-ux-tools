@@ -270,7 +270,6 @@ describe('Test handleCreateFioriCommand()', () => {
     test('Execute command create-fiori telemetry status, should initialize telemetry and print the setting', async () => {
         // Clear environment variables to test the setting-based status (not env-based)
         const originalEnv = { ...process.env };
-        delete process.env.DO_NOT_TRACK;
         delete process.env.SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY;
 
         try {
