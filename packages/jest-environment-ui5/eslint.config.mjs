@@ -1,6 +1,6 @@
-import baseConfig from '../../eslint.config.mjs';
+import { createConfig } from '../../eslint.config.mjs';
 
-const base = baseConfig.filter(
+const base = createConfig(import.meta.dirname).filter(
     (config) =>
         ![
             'typescript-eslint/base',
