@@ -11,6 +11,7 @@ import {
     startRta
 } from './rta/index.js';
 import { logger } from '../../utils/logger.js';
+import { validateAdpUi5Version } from '../../utils/utils.js';
 import { defaultTransport, isRegistryEmpty, registerSite } from './browser/index.js';
 import { STEPS, type RunRtaWorkflowStepInput, type RunRtaWorkflowStepResult } from './types.js';
 import {
@@ -42,6 +43,7 @@ export async function runRtaWorkflowStep(input: RunRtaWorkflowStepInput): Promis
                 // Validate all input BEFORE disconnecting: a bad value must not
                 // tear down an existing working page for a call that then throws.
                 const appPath = requireAppPath(input.appPath);
+                await validateAdpUi5Version(appPath);
                 const agentName = optionalString(input.payload, 'agentName');
                 // Always disconnect any existing page for this URL before starting fresh.
                 // This prevents a new project opened on the same port from reusing the previous project's stale Playwright page.
@@ -93,6 +95,7 @@ export async function runRtaWorkflowStep(input: RunRtaWorkflowStepInput): Promis
                 // Validate required input BEFORE disconnecting: a bad appPath must not
                 // tear down the running editor page for a call that then throws.
                 const appPath = requireAppPath(input.appPath);
+                await validateAdpUi5Version(appPath);
                 await defaultTransport.disconnectSite(site);
                 // disconnectSite forgot the site meta; re-register so the reloaded
                 // editor keeps its project identity / CF session keying.

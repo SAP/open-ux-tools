@@ -4,7 +4,7 @@ import { createAbapServiceProvider } from '@sap-ux/system-access';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
 
-import { formatXml, logger, persistMetadata } from '../utils/index.js';
+import { formatXml, logger, persistMetadata, validateAdpUi5Version } from '../utils/index.js';
 import type { PersistedMetadata } from '../utils/index.js';
 import type { ReadODataMetadataInput, ReadODataMetadataOutput } from '../types/index.js';
 
@@ -76,6 +76,7 @@ async function buildEntries(
  */
 export async function readODataMetadataAdp(params: ReadODataMetadataInput): Promise<ReadODataMetadataOutput> {
     const { appPath } = params;
+    await validateAdpUi5Version(appPath);
     const manifest = await getMergedManifest(appPath);
 
     if (await isCFEnvironment(appPath)) {

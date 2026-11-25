@@ -24,6 +24,13 @@ export { lookupUi5Documentation } from './lookup-ui5-documentation/index.js';
 
 const adpToolsEnabled = process.env.SAP_FIORI_MCP_ADP_TOOLS === 'true';
 
+const ui5VersionValidationGuidance =
+    'If SAPUI5 version validation fails, report the error to the user and stop the workflow. ' +
+    'Do not suggest version changes, recommend alternative versions, offer to update the version, ' +
+    'or ask the user to choose or approve a version change. ' +
+    'Do not change or remove the configured SAPUI5 version, switch to snapshot/latest, or modify ui5.yaml ' +
+    'to bypass validation. Only discuss or perform version changes if the user explicitly requests them.';
+
 const adpTools = [
     {
         name: 'lookup_ui5_documentation',
@@ -86,6 +93,8 @@ const adpTools = [
         name: 'open_adaptation_editor',
         description: `Starts the adaptation editor server by running 'npx fiori run /test/adaptation-editor.html' in the adaptation project directory.
 
+        ${ui5VersionValidationGuidance}
+
         This tool:
         - Spawns the editor server process in the background
         - Extracts the server URL and editor path from the command output
@@ -130,6 +139,8 @@ const adpTools = [
         name: 'run_rta_workflow_step',
         description: `Drives Runtime Authoring (RTA) in the SAP Fiori adaptation editor through a dispatched step protocol. Each call advances one step of the workflow; steps must be called in sequence. \`site\` is the editor URL from \`open_adaptation_editor\` — pass it on every step.
 
+        ${ui5VersionValidationGuidance}
+
         Steps:
         - **start** — \`site\` (required, top-level), \`frameId\` (required, top-level, always \`"preview"\`), \`appPath\` (required, top-level — absolute path to the adaptation project root, the same path used to open the editor; it identifies the project so an authenticated CF session is reused per project and ABAP projects skip session handling). Launches the editor URL, starts RTA, returns \`{ site, frameId?, rtaStarted: true }\`. Echo \`site\` and \`frameId\` back on every subsequent step. Optional payload: \`{ agentName?: string }\` — driver name adopted by the status reporter.
         - **get_overlays** — site + optional frameId. Returns \`{ overlays: Overlay[], actionsCatalog }\`. Each overlay carries the \`actionIds\` it supports; the rich per-action metadata (label, description, parameters) lives in \`actionsCatalog\` keyed by action id.
@@ -154,6 +165,8 @@ const adpTools = [
     {
         name: 'read_odata_metadata_adp',
         description: `Reads the OData metadata for the specified Adaptation Project.
+
+        ${ui5VersionValidationGuidance}
 
         This tool:
         - Reads the SAP system connection details from the provided appPath (using ui5.yaml configuration)
