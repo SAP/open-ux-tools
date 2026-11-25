@@ -36,7 +36,7 @@
         "@sap-ux/logger": "workspace:*",
         "@sap-ux/project-input-validator": "workspace:*",
         "@sap-ux/ui5-info": "workspace:*",
-        "i18next": "26.5.11",
+        "i18next": "27.2.9",
         "inquirer-autocomplete-prompt": "2.0.1"
     },
     "devDependencies": {

@@ -42,7 +42,7 @@
         "dotenv": "18.0.10",
         "http-proxy-middleware": "3.0.7",
         "https-proxy-agent": "7.0.6",
-        "i18next": "26.5.11",
+        "i18next": "27.2.9",
         "prompts": "2.4.2",
         "proxy-from-env": "2.1.0"
     },

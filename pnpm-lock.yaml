@@ -535,8 +535,8 @@ importers:
         specifier: workspace:*
         version: link:../ui5-config
       i18next:
-        specifier: 26.5.11
-        version: 26.5.11(typescript@6.0.3)
+        specifier: 27.2.9
+        version: 27.2.9(typescript@6.0.3)
       inquirer-autocomplete-prompt:
         specifier: 2.0.1
         version: 2.0.1(inquirer@8.2.7(@types/node@22.20.1))
@@ -593,8 +593,8 @@ importers:
         specifier: workspace:*
         version: link:../ui5-config
       i18next:
-        specifier: 26.5.11
-        version: 26.5.11(typescript@6.0.3)
+        specifier: 27.2.9
+        version: 27.2.9(typescript@6.0.3)
     devDependencies:
       '@jest/globals':
         specifier: 30.5.2
@@ -721,8 +721,8 @@ importers:
         specifier: workspace:*
         version: link:../system-access
       i18next:
-        specifier: 26.5.11
-        version: 26.5.11(typescript@6.0.3)
+        specifier: 27.2.9
+        version: 27.2.9(typescript@6.0.3)
       yeoman-generator:
         specifier: 5.10.0
         version: 5.10.0(mem-fs@2.1.0)(supports-color@8.1.1)(yeoman-environment@3.19.3(@types/node@22.20.1)(bluebird@3.7.2)(supports-color@8.1.1))
@@ -827,8 +827,8 @@ importers:
         specifier: 3.1.10
         version: 3.1.10
       i18next:
-        specifier: 26.5.11
-        version: 26.5.11(typescript@6.0.3)
+        specifier: 27.2.9
+        version: 27.2.9(typescript@6.0.3)
       inquirer:
         specifier: 8.2.7
         version: 8.2.7(@types/node@22.20.1)
@@ -967,8 +967,8 @@ importers:
         specifier: 3.1.10
         version: 3.1.10
       i18next:
-        specifier: 26.5.11
-        version: 26.5.11(typescript@6.0.3)
+        specifier: 27.2.9
+        version: 27.2.9(typescript@6.0.3)
       mem-fs:
         specifier: 2.1.0
         version: 2.1.0
@@ -1110,8 +1110,8 @@ importers:
         specifier: 7.0.6
         version: 7.0.6(supports-color@8.1.1)
       i18next:
-        specifier: 26.5.11
-        version: 26.5.11(typescript@6.0.3)
+        specifier: 27.2.9
+        version: 27.2.9(typescript@6.0.3)
       prompts:
         specifier: 2.4.2
         version: 2.4.2
@@ -1239,8 +1239,8 @@ importers:
         specifier: workspace:*
         version: link:../yaml
       i18next:
-        specifier: 26.5.11
-        version: 26.5.11(typescript@6.0.3)
+        specifier: 27.2.9
+        version: 27.2.9(typescript@6.0.3)
       mem-fs:
         specifier: 2.1.0
         version: 2.1.0
@@ -1307,8 +1307,8 @@ importers:
         specifier: 1.25.0
         version: 1.25.0(@sap-ux/odata-annotation-core-types@packages+odata-annotation-core-types)(@sap-ux/odata-annotation-core@packages+odata-annotation-core)(@sap-ux/project-access@packages+project-access)
       i18next:
-        specifier: 26.5.11
-        version: 26.5.11(typescript@6.0.3)
+        specifier: 27.2.9
+        version: 27.2.9(typescript@6.0.3)
     devDependencies:
       '@sap-ux/odata-annotation-core-types':
         specifier: workspace:*
@@ -1332,8 +1332,8 @@ importers:
         specifier: workspace:*
         version: link:../logger
       i18next:
-        specifier: 26.5.11
-        version: 26.5.11(typescript@6.0.3)
+        specifier: 27.2.9
+        version: 27.2.9(typescript@6.0.3)
       inquirer-autocomplete-prompt:
         specifier: 2.0.1
         version: 2.0.1(inquirer@8.2.7(@types/node@22.20.1))
@@ -1390,8 +1390,8 @@ importers:
         specifier: workspace:*
         version: link:../project-access
       i18next:
-        specifier: 26.5.11
-        version: 26.5.11(typescript@6.0.3)
+        specifier: 27.2.9
+        version: 27.2.9(typescript@6.0.3)
       which:
         specifier: 6.0.1
         version: 6.0.1
@@ -1472,8 +1472,8 @@ importers:
         specifier: 3.1.10
         version: 3.1.10
       i18next:
-        specifier: 26.5.11
-        version: 26.5.11(typescript@6.0.3)
+        specifier: 27.2.9
+        version: 27.2.9(typescript@6.0.3)
       mem-fs:
         specifier: 2.1.0
         version: 2.1.0
@@ -1599,8 +1599,8 @@ importers:
         specifier: 3.0.7
         version: 3.0.7(supports-color@8.1.1)
       i18next:
-        specifier: 26.5.11
-        version: 26.5.11(typescript@6.0.3)
+        specifier: 27.2.9
+        version: 27.2.9(typescript@6.0.3)
       jest-environment-jsdom:
         specifier: 30.5.2
         version: 30.5.2(supports-color@8.1.1)
@@ -1621,7 +1621,7 @@ importers:
         version: 18.3.1(react@18.3.1)
       react-i18next:
         specifier: 15.7.4
-        version: 15.7.4(i18next@26.5.11(typescript@6.0.3))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@6.0.3)
+        version: 15.7.4(i18next@27.2.9(typescript@6.0.3))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@6.0.3)
       react-redux:
         specifier: 7.2.9
         version: 7.2.9(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -1752,8 +1752,8 @@ importers:
         specifier: 1.4.4
         version: 1.4.4
       i18next:
-        specifier: 26.5.11
-        version: 26.5.11(typescript@6.0.3)
+        specifier: 27.2.9
+        version: 27.2.9(typescript@6.0.3)
       mem-fs:
         specifier: 2.1.0
         version: 2.1.0
@@ -1798,8 +1798,8 @@ importers:
         specifier: 2.0.10
         version: 2.0.10(supports-color@8.1.1)
       i18next:
-        specifier: 26.5.11
-        version: 26.5.11(typescript@6.0.3)
+        specifier: 27.2.9
+        version: 27.2.9(typescript@6.0.3)
       yeoman-generator:
         specifier: 5.10.0
         version: 5.10.0(mem-fs@2.1.0)(supports-color@8.1.1)(yeoman-environment@3.19.3(@types/node@22.20.1)(bluebird@3.7.2)(supports-color@8.1.1))
@@ -1862,8 +1862,8 @@ importers:
         specifier: 18.0.10
         version: 18.0.10
       i18next:
-        specifier: 26.5.11
-        version: 26.5.11(typescript@6.0.3)
+        specifier: 27.2.9
+        version: 27.2.9(typescript@6.0.3)
       which:
         specifier: 6.0.1
         version: 6.0.1
@@ -2017,8 +2017,8 @@ importers:
         specifier: 1.0.15
         version: 1.0.15
       i18next:
-        specifier: 26.5.11
-        version: 26.5.11(typescript@6.0.3)
+        specifier: 27.2.9
+        version: 27.2.9(typescript@6.0.3)
       minimist:
         specifier: 1.2.8
         version: 1.2.8
@@ -2184,8 +2184,8 @@ importers:
         specifier: 3.1.10
         version: 3.1.10
       i18next:
-        specifier: 26.5.11
-        version: 26.5.11(typescript@6.0.3)
+        specifier: 27.2.9
+        version: 27.2.9(typescript@6.0.3)
       mem-fs:
         specifier: 2.1.0
         version: 2.1.0
@@ -2384,8 +2384,8 @@ importers:
         specifier: '>=2.10.0'
         version: 2.10.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       i18next:
-        specifier: 26.5.11
-        version: 26.5.11(typescript@6.0.3)
+        specifier: 27.2.9
+        version: 27.2.9(typescript@6.0.3)
       inquirer:
         specifier: 8.2.7
         version: 8.2.7(@types/node@22.20.1)
@@ -2538,8 +2538,8 @@ importers:
         specifier: 3.1.10
         version: 3.1.10
       i18next:
-        specifier: 26.5.11
-        version: 26.5.11(typescript@6.0.3)
+        specifier: 27.2.9
+        version: 27.2.9(typescript@6.0.3)
       lodash:
         specifier: 4.18.1
         version: 4.18.1
@@ -2614,8 +2614,8 @@ importers:
         specifier: 3.1.10
         version: 3.1.10
       i18next:
-        specifier: 26.5.11
-        version: 26.5.11(typescript@6.0.3)
+        specifier: 27.2.9
+        version: 27.2.9(typescript@6.0.3)
       lodash:
         specifier: 4.18.1
         version: 4.18.1
@@ -2678,8 +2678,8 @@ importers:
         specifier: 2.0.10
         version: 2.0.10(supports-color@8.1.1)
       i18next:
-        specifier: 26.5.11
-        version: 26.5.11(typescript@6.0.3)
+        specifier: 27.2.9
+        version: 27.2.9(typescript@6.0.3)
       logform:
         specifier: 2.7.0
         version: 2.7.0
@@ -2841,8 +2841,8 @@ importers:
         specifier: '>=0.28.1'
         version: 0.28.2
       i18next:
-        specifier: 26.5.11
-        version: 26.5.11(typescript@6.0.3)
+        specifier: 27.2.9
+        version: 27.2.9(typescript@6.0.3)
       mem-fs:
         specifier: 2.1.0
         version: 2.1.0
@@ -2922,8 +2922,8 @@ importers:
         specifier: 11.4.1
         version: 11.4.1
       i18next:
-        specifier: 26.5.11
-        version: 26.5.11(typescript@6.0.3)
+        specifier: 27.2.9
+        version: 27.2.9(typescript@6.0.3)
       json-parse-even-better-errors:
         specifier: 5.0.0
         version: 5.0.0
@@ -3026,8 +3026,8 @@ importers:
         specifier: workspace:*
         version: link:../project-input-validator
       i18next:
-        specifier: 26.5.11
-        version: 26.5.11(typescript@6.0.3)
+        specifier: 27.2.9
+        version: 27.2.9(typescript@6.0.3)
       lodash:
         specifier: 4.18.1
         version: 4.18.1
@@ -3078,8 +3078,8 @@ importers:
         specifier: workspace:*
         version: link:../project-access
       i18next:
-        specifier: 26.5.11
-        version: 26.5.11(typescript@6.0.3)
+        specifier: 27.2.9
+        version: 27.2.9(typescript@6.0.3)
       inquirer:
         specifier: 8.2.7
         version: 8.2.7(@types/node@22.20.1)
@@ -3187,8 +3187,8 @@ importers:
         specifier: workspace:*
         version: link:../telemetry
       i18next:
-        specifier: 26.5.11
-        version: 26.5.11(typescript@6.0.3)
+        specifier: 27.2.9
+        version: 27.2.9(typescript@6.0.3)
       uuid:
         specifier: 14.0.3
         version: 14.0.3
@@ -3302,8 +3302,8 @@ importers:
         specifier: 4.3.1
         version: 4.3.1
       i18next:
-        specifier: 26.5.11
-        version: 26.5.11(typescript@6.0.3)
+        specifier: 27.2.9
+        version: 27.2.9(typescript@6.0.3)
       inquirer:
         specifier: 8.2.7
         version: 8.2.7(@types/node@22.20.1)
@@ -3414,8 +3414,8 @@ importers:
         specifier: 0.1.3
         version: 0.1.3
       i18next:
-        specifier: 26.5.11
-        version: 26.5.11(typescript@6.0.3)
+        specifier: 27.2.9
+        version: 27.2.9(typescript@6.0.3)
       lodash:
         specifier: 4.18.1
         version: 4.18.1
@@ -3516,8 +3516,8 @@ importers:
         specifier: workspace:*
         version: link:../ui5-info
       i18next:
-        specifier: 26.5.11
-        version: 26.5.11(typescript@6.0.3)
+        specifier: 27.2.9
+        version: 27.2.9(typescript@6.0.3)
       jsonc-parser:
         specifier: 3.3.1
         version: 3.3.1
@@ -3587,8 +3587,8 @@ importers:
         specifier: workspace:*
         version: link:../ui5-config
       i18next:
-        specifier: 26.5.11
-        version: 26.5.11(typescript@6.0.3)
+        specifier: 27.2.9
+        version: 27.2.9(typescript@6.0.3)
       mem-fs:
         specifier: 2.1.0
         version: 2.1.0
@@ -3618,8 +3618,8 @@ importers:
         specifier: 3.3.3
         version: 3.3.3
       i18next:
-        specifier: 26.5.11
-        version: 26.5.11(typescript@6.0.3)
+        specifier: 27.2.9
+        version: 27.2.9(typescript@6.0.3)
       read-package-up:
         specifier: 12.0.0
         version: 12.0.0
@@ -3738,8 +3738,8 @@ importers:
         specifier: 5.11.2
         version: 5.11.2
       i18next:
-        specifier: 26.5.11
-        version: 26.5.11(typescript@6.0.3)
+        specifier: 27.2.9
+        version: 27.2.9(typescript@6.0.3)
       inquirer-autocomplete-prompt:
         specifier: 2.0.1
         version: 2.0.1(inquirer@8.2.7(@types/node@22.20.1))
@@ -3805,8 +3805,8 @@ importers:
         specifier: 5.11.2
         version: 5.11.2
       i18next:
-        specifier: 26.5.11
-        version: 26.5.11(typescript@6.0.3)
+        specifier: 27.2.9
+        version: 27.2.9(typescript@6.0.3)
       mem-fs:
         specifier: 2.1.0
         version: 2.1.0
@@ -4111,8 +4111,8 @@ importers:
         specifier: workspace:*
         version: link:../project-access
       i18next:
-        specifier: 26.5.11
-        version: 26.5.11(typescript@6.0.3)
+        specifier: 27.2.9
+        version: 27.2.9(typescript@6.0.3)
       validate-npm-package-name:
         specifier: 7.0.2
         version: 7.0.2
@@ -4246,8 +4246,8 @@ importers:
         specifier: 0.6.1
         version: 0.6.1
       i18next:
-        specifier: 26.5.11
-        version: 26.5.11(typescript@6.0.3)
+        specifier: 27.2.9
+        version: 27.2.9(typescript@6.0.3)
       inquirer:
         specifier: 8.2.7
         version: 8.2.7(@types/node@22.20.1)
@@ -4373,8 +4373,8 @@ importers:
         specifier: 3.3.3
         version: 3.3.3
       i18next:
-        specifier: 26.5.11
-        version: 26.5.11(typescript@6.0.3)
+        specifier: 27.2.9
+        version: 27.2.9(typescript@6.0.3)
       jsonc-parser:
         specifier: 3.3.1
         version: 3.3.1
@@ -4445,8 +4445,8 @@ importers:
         specifier: 0.2.1
         version: 0.2.1
       i18next:
-        specifier: 26.5.11
-        version: 26.5.11(typescript@6.0.3)
+        specifier: 27.2.9
+        version: 27.2.9(typescript@6.0.3)
       jest-environment-jsdom:
         specifier: 30.5.2
         version: 30.5.2(supports-color@8.1.1)
@@ -4461,7 +4461,7 @@ importers:
         version: 18.3.1(react@18.3.1)
       react-i18next:
         specifier: 15.7.4
-        version: 15.7.4(i18next@26.5.11(typescript@6.0.3))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@6.0.3)
+        version: 15.7.4(i18next@27.2.9(typescript@6.0.3))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@6.0.3)
       react-redux:
         specifier: 7.2.9
         version: 7.2.9(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -4503,8 +4503,8 @@ importers:
         specifier: workspace:*
         version: link:../logger
       i18next:
-        specifier: 26.5.11
-        version: 26.5.11(typescript@6.0.3)
+        specifier: 27.2.9
+        version: 27.2.9(typescript@6.0.3)
       pluralize:
         specifier: 8.0.0
         version: 8.0.0
@@ -4890,8 +4890,8 @@ importers:
         specifier: workspace:*
         version: link:../telemetry
       i18next:
-        specifier: 26.5.11
-        version: 26.5.11(typescript@6.0.3)
+        specifier: 27.2.9
+        version: 27.2.9(typescript@6.0.3)
       yeoman-generator:
         specifier: 5.10.0
         version: 5.10.0(mem-fs@2.1.0)(supports-color@8.1.1)(yeoman-environment@3.19.3(@types/node@22.20.1)(bluebird@3.7.2)(supports-color@8.1.1))
@@ -4972,8 +4972,8 @@ importers:
         specifier: workspace:*
         version: link:../ui-service-inquirer
       i18next:
-        specifier: 26.5.11
-        version: 26.5.11(typescript@6.0.3)
+        specifier: 27.2.9
+        version: 27.2.9(typescript@6.0.3)
       yeoman-generator:
         specifier: 5.10.0
         version: 5.10.0(mem-fs@2.1.0)(supports-color@8.1.1)(yeoman-environment@3.19.3(@types/node@22.20.1)(bluebird@3.7.2)(supports-color@8.1.1))
@@ -5045,8 +5045,8 @@ importers:
         specifier: workspace:*
         version: link:../ui5-info
       i18next:
-        specifier: 26.5.11
-        version: 26.5.11(typescript@6.0.3)
+        specifier: 27.2.9
+        version: 27.2.9(typescript@6.0.3)
       inquirer-autocomplete-prompt:
         specifier: 2.0.1
         version: 2.0.1(inquirer@8.2.7(@types/node@22.20.1))
@@ -5094,8 +5094,8 @@ importers:
         specifier: 3.1.10
         version: 3.1.10
       i18next:
-        specifier: 26.5.11
-        version: 26.5.11(typescript@6.0.3)
+        specifier: 27.2.9
+        version: 27.2.9(typescript@6.0.3)
       lodash:
         specifier: 4.18.1
         version: 4.18.1
@@ -5211,8 +5211,8 @@ importers:
         specifier: workspace:*
         version: link:../ui5-info
       i18next:
-        specifier: 26.5.11
-        version: 26.5.11(typescript@6.0.3)
+        specifier: 27.2.9
+        version: 27.2.9(typescript@6.0.3)
       inquirer-autocomplete-prompt:
         specifier: 2.0.1
         version: 2.0.1(inquirer@8.2.7(@types/node@22.20.1))
@@ -5239,8 +5239,8 @@ importers:
         specifier: workspace:*
         version: link:../project-access
       i18next:
-        specifier: 26.5.11
-        version: 26.5.11(typescript@6.0.3)
+        specifier: 27.2.9
+        version: 27.2.9(typescript@6.0.3)
     devDependencies:
       '@jest/globals':
         specifier: 30.5.2
@@ -5279,8 +5279,8 @@ importers:
         specifier: workspace:*
         version: link:../ui5-library-reference-writer
       i18next:
-        specifier: 26.5.11
-        version: 26.5.11(typescript@6.0.3)
+        specifier: 27.2.9
+        version: 27.2.9(typescript@6.0.3)
       yeoman-generator:
         specifier: 5.10.0
         version: 5.10.0(mem-fs@2.1.0)(supports-color@8.1.1)(yeoman-environment@3.19.3(@types/node@22.20.1)(bluebird@3.7.2)(supports-color@8.1.1))
@@ -5374,8 +5374,8 @@ importers:
         specifier: workspace:*
         version: link:../ui5-library-writer
       i18next:
-        specifier: 26.5.11
-        version: 26.5.11(typescript@6.0.3)
+        specifier: 27.2.9
+        version: 27.2.9(typescript@6.0.3)
       yeoman-generator:
         specifier: 5.10.0
         version: 5.10.0(mem-fs@2.1.0)(supports-color@8.1.1)(yeoman-environment@3.19.3(@types/node@22.20.1)(bluebird@3.7.2)(supports-color@8.1.1))
@@ -5429,8 +5429,8 @@ importers:
         specifier: 3.1.10
         version: 3.1.10
       i18next:
-        specifier: 26.5.11
-        version: 26.5.11(typescript@6.0.3)
+        specifier: 27.2.9
+        version: 27.2.9(typescript@6.0.3)
       lodash:
         specifier: 4.18.1
         version: 4.18.1
@@ -5487,8 +5487,8 @@ importers:
         specifier: 7.0.6
         version: 7.0.6(supports-color@8.1.1)
       i18next:
-        specifier: 26.5.11
-        version: 26.5.11(typescript@6.0.3)
+        specifier: 27.2.9
+        version: 27.2.9(typescript@6.0.3)
       proxy-from-env:
         specifier: 2.1.0
         version: 2.1.0
@@ -5551,8 +5551,8 @@ importers:
         specifier: 3.1.10
         version: 3.1.10
       i18next:
-        specifier: 26.5.11
-        version: 26.5.11(typescript@6.0.3)
+        specifier: 27.2.9
+        version: 27.2.9(typescript@6.0.3)
       mem-fs:
         specifier: 2.1.0
         version: 2.1.0
@@ -13787,8 +13787,9 @@ packages:
       typescript:
         optional: true
 
-  i18next@26.5.11:
-    resolution: {integrity: sha512-Wc0klBPKxqZ2tL2qdAnF8xvvnWgr1IMGSY2ikTiAvaFVbz7xiFARtkoU4RidBDw1SyziGROp0qxu6qnJ7l2Wug==}
+  i18next@27.2.9:
+    resolution: {integrity: sha512-GOWWofCGYPSPEzUKJnRLJSoHrSUDa/NzYWqAOJJDZUaM7faLPd9VABlbHDZ+jv8uadu/fq1wsHFfZP6+0tFPkg==}
+    engines: {node: '>=22'}
     peerDependencies:
       typescript: ^5 || ^6 || ^7
     peerDependenciesMeta:
@@ -28558,7 +28559,7 @@ snapshots:
     optionalDependencies:
       typescript: 6.0.3
 
-  i18next@26.5.11(typescript@6.0.3):
+  i18next@27.2.9(typescript@6.0.3):
     optionalDependencies:
       typescript: 6.0.3
 
@@ -31822,11 +31823,11 @@ snapshots:
       react: 19.2.4
       scheduler: 0.23.2
 
-  react-i18next@15.7.4(i18next@26.5.11(typescript@6.0.3))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@6.0.3):
+  react-i18next@15.7.4(i18next@27.2.9(typescript@6.0.3))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@6.0.3):
     dependencies:
       '@babel/runtime': 7.29.2
       html-parse-stringify: 3.0.1
-      i18next: 26.5.11(typescript@6.0.3)
+      i18next: 27.2.9(typescript@6.0.3)
       react: 18.3.1
     optionalDependencies:
       react-dom: 18.3.1(react@18.3.1)
@@ -32735,7 +32736,7 @@ snapshots:
     dependencies:
       '@img/colour': 1.1.0
       detect-libc: 2.1.2
-      semver: 7.8.6
+      semver: 7.8.5
     optionalDependencies:
       '@img/sharp-darwin-arm64': 0.35.5
       '@img/sharp-darwin-x64': 0.35.5

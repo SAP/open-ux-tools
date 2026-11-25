@@ -33,6 +33,7 @@ minimumReleaseAgeExclude:
   - ts-jest@29.4.15
   - '@huggingface/transformers@4.3.2'
   - '@types/node@22.20.6'
+  - i18next@27.2.9
 
 overrides:
   '@sap-ux/vocabularies-types': '0.16.0'
