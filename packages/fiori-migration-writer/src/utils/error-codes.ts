@@ -262,6 +262,11 @@ export function extractErrorCode(error: unknown, depth = 0): MigrationErrorCode 
         return nodeCode;
     }
 
+    // Note: Order matters - parsing errors are checked before known patterns.
+    // A message like "manifest.json missing component definition" will match
+    // MANIFEST_PARSE_ERROR (from "parse" substring) before MISSING_COMPONENT.
+    // This is intentional - parsing errors take precedence over structural issues.
+
     // Try parsing errors
     const parseCode = matchParsingError(lowerMessage);
     if (parseCode) {

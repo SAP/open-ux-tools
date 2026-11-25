@@ -69,6 +69,9 @@ export function updateNeoYamlBackends(
 ): FioriToolsProxyConfigBackend[] {
     let backendRoutes: FioriToolsProxyConfigBackend[] = [];
     let noBackendURL = false;
+    // Note: MIGRATION_NO_BACKEND_URL semantically means "no backend URL configured",
+    // but we use MISSING_ODATA_SERVICE code as it's the closest match in the enum.
+    // This groups similar backend configuration issues together in telemetry.
     const noUrlMessage: Message = {
         type: getMessageType('WARNING', strict, true),
         description: i18nText('MIGRATION_NO_BACKEND_URL'),

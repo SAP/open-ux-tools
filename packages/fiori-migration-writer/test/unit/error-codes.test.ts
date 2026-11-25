@@ -1,4 +1,4 @@
-import { MigrationErrorCode, extractErrorCode } from '../../src/utils/error-codes';
+import { MigrationErrorCode, extractErrorCode } from '../../src/utils/error-codes.js';
 
 describe('error-codes', () => {
     describe('MigrationErrorCode', () => {
@@ -314,9 +314,10 @@ describe('error-codes', () => {
             });
 
             it('should not match partial words', () => {
-                // "floorplans" (plural) should not match the singular "floorplan" pattern
-                // Word boundary check prevents matching "unsupported floorplans" vs "unsupported floorplan"
-                const error = new Error('Multiple floorplans detected in project');
+                // Test that word boundary regex prevents matching "floorplans" (plural)
+                // This input contains "unsupported" and "floorplans" but the regex requires
+                // the singular "floorplan" with word boundaries (\bfloorplan\b)
+                const error = new Error('Unsupported floorplans detected in project');
                 expect(extractErrorCode(error)).toBe('UNKNOWN_ERROR');
             });
         });

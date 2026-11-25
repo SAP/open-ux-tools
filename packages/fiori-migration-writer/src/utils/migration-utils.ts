@@ -4,6 +4,7 @@ import type { Data } from 'ejs';
 import type { Editor } from 'mem-fs-editor';
 import type { Manifest, SapAppSourceTemplate } from '../project-spec-types.js';
 import { extractErrorCode } from './error-codes.js';
+import type { MigrationErrorCode } from './error-codes.js';
 import { readPackageUpAsync } from './read-package-up-compat.js';
 import { v4 as uuidV4 } from 'uuid';
 import type { UI5FlexLayer } from '@sap-ux/project-access';
@@ -40,7 +41,7 @@ export function generateSapLibsStr(manifestLibs: any, libsStrInput: string): str
  * Accepts optional explicit code to avoid regex fallback for known error types.
  */
 export class MigrationError extends Error {
-    public readonly code: string;
+    public readonly code: MigrationErrorCode;
     private readonly useMessage: boolean;
 
     /**
@@ -49,7 +50,7 @@ export class MigrationError extends Error {
      * @param useMessage - Whether to use the raw error message
      * @param explicitCode - Optional explicit error code (avoids regex extraction)
      */
-    constructor(error: unknown, filename?: string, useMessage?: boolean, explicitCode?: string) {
+    constructor(error: unknown, filename?: string, useMessage?: boolean, explicitCode?: MigrationErrorCode) {
         const msg = error instanceof Error ? error.message : String(error);
         super(msg);
         this.useMessage = useMessage ?? false;
