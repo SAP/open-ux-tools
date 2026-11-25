@@ -9,6 +9,7 @@ import {
     getAch,
     getApplicationType,
     getFioriId,
+    getFlpIntent,
     isSyncLoadedView,
     isV4Application
 } from '../../../src/index.js';
@@ -261,5 +262,81 @@ describe('getApplicationType', () => {
         } as unknown as Manifest;
 
         expect(getApplicationType(manifest)).toBe(ApplicationType.FREE_STYLE);
+    });
+});
+
+describe('getFlpIntent', () => {
+    it('returns SemanticObject-action for a valid inbound', () => {
+        const manifest = {
+            'sap.app': {
+                crossNavigation: {
+                    inbounds: {
+                        managePurchaseOrder: {
+                            semanticObject: 'PurchaseOrder',
+                            action: 'ppsmanage'
+                        }
+                    }
+                }
+            }
+        } as unknown as Manifest;
+
+        expect(getFlpIntent(manifest)).toBe('PurchaseOrder-ppsmanage');
+    });
+
+    it('uses the first inbound when multiple are defined', () => {
+        const manifest = {
+            'sap.app': {
+                crossNavigation: {
+                    inbounds: {
+                        first: { semanticObject: 'SalesOrder', action: 'display' },
+                        second: { semanticObject: 'PurchaseOrder', action: 'manage' }
+                    }
+                }
+            }
+        } as unknown as Manifest;
+
+        expect(getFlpIntent(manifest)).toBe('SalesOrder-display');
+    });
+
+    it('returns undefined when crossNavigation is absent', () => {
+        const manifest = { 'sap.app': {} } as unknown as Manifest;
+
+        expect(getFlpIntent(manifest)).toBeUndefined();
+    });
+
+    it('returns undefined when inbounds is empty', () => {
+        const manifest = {
+            'sap.app': { crossNavigation: { inbounds: {} } }
+        } as unknown as Manifest;
+
+        expect(getFlpIntent(manifest)).toBeUndefined();
+    });
+
+    it('returns undefined when semanticObject is missing', () => {
+        const manifest = {
+            'sap.app': {
+                crossNavigation: {
+                    inbounds: { myApp: { action: 'display' } }
+                }
+            }
+        } as unknown as Manifest;
+
+        expect(getFlpIntent(manifest)).toBeUndefined();
+    });
+
+    it('returns undefined when action is missing', () => {
+        const manifest = {
+            'sap.app': {
+                crossNavigation: {
+                    inbounds: { myApp: { semanticObject: 'SalesOrder' } }
+                }
+            }
+        } as unknown as Manifest;
+
+        expect(getFlpIntent(manifest)).toBeUndefined();
+    });
+
+    it('returns undefined when manifest is undefined', () => {
+        expect(getFlpIntent(undefined)).toBeUndefined();
     });
 });

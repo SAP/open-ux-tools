@@ -26,7 +26,7 @@ import {
 import { getProviderConfig } from '../abap/index.js';
 import { AppRouterType, FlexLayer } from '../types.js';
 import { t } from '../i18n.js';
-import { getSupportedProject } from '../source/index.js';
+import { getSupportedProject, getFlpIntent } from '../source/index.js';
 import { isFeatureEnabled } from '@sap-ux/feature-toggle';
 import { Feature } from '../feature.js';
 
@@ -177,7 +177,8 @@ export async function getConfig(options: ConfigOptions): Promise<AdpWriterConfig
             fioriTools: true,
             enableTypeScript,
             addOpaTests: isAdpOpaTestsFeatureEnabled && isVendorLayer,
-            addMockServer: isAdpOpaTestsFeatureEnabled && attributeAnswers.addMockServer
+            addMockServer: isAdpOpaTestsFeatureEnabled && attributeAnswers.addMockServer,
+            flpIntent: getFlpIntent(manifest)
         },
         keyUserChanges
     };

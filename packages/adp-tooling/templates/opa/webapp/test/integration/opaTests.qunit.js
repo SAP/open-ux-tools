@@ -23,8 +23,9 @@ sap.ui.require(sPrerequisiteModules, function (JourneyRunnerClass) {
         sap.ui.require(aJourneys, function () {
             var aJourneyModules = Array.prototype.slice.call(arguments);
             var testPath = adpNs + "/test"; 
+            var sFlpHash = <% if (options && options.flpIntent) { %>"#<%- options.flpIntent %>"<% } else { %>""<% } %>;
             var sLaunchUrl = oUriParameters.get("env") === "karma"
-                ? sap.ui.require.toUrl(testPath) + "/flpSandbox.html?sap-ui-xx-viewCache=false#<FLP_INTENT>"
+                ? sap.ui.require.toUrl(testPath) + "/flpSandbox.html?sap-ui-xx-viewCache=false" + sFlpHash
                 : sap.ui.require.toUrl(testPath) + "/flp.html?sap-ui-xx-viewCache=false#app-preview";
 
             var JourneyRunner = new JourneyRunnerClass({

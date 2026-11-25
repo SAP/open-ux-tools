@@ -316,6 +316,32 @@ describe('ADP writer', () => {
             expect(fs.dump(projectDir)).toMatchSnapshot();
         });
 
+        test('add OPA tests with flpIntent', async () => {
+            const projectDir = join(outputDir, 'opa-tests-flp');
+            await generate(
+                projectDir,
+                {
+                    ...config,
+                    app: {
+                        ...config.app,
+                        manifest: {
+                            'sap.app': {
+                                id: 'the.original.app',
+                                applicationVersion: { version: '1.0.0' }
+                            }
+                        } as any
+                    },
+                    options: {
+                        fioriTools: true,
+                        addOpaTests: true,
+                        flpIntent: 'PurchaseOrder-ppsmanage'
+                    }
+                },
+                fs
+            );
+            expect(fs.dump(projectDir)).toMatchSnapshot();
+        });
+
         test('add mock server', async () => {
             const projectDir = join(outputDir, 'mock-server');
             await generate(

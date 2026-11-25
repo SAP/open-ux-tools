@@ -170,6 +170,11 @@ export interface AdpWriterConfig {
          * enabling local development against mock data without a live backend.
          */
         addMockServer?: boolean;
+        /**
+         * Optional: FLP intent (SemanticObject-action) derived from the base app manifest inbounds.
+         * Used as the hash fragment in the OPA test launch URL.
+         */
+        flpIntent?: string;
     };
     /**
      * Optional: Key-user changes to be written to the project.

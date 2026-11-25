@@ -1,6 +1,6 @@
+import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
-import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 
 import { t } from '../i18n.js';
 import { ApplicationType } from '../types.js';
@@ -97,6 +97,30 @@ export function isSyncLoadedView(ui5Settings?: Manifest['sap.ui5']): boolean {
     }
 
     return false;
+}
+
+/**
+ * Derives the FLP intent (SemanticObject-action) from the first inbound navigation entry in the manifest.
+ *
+ * The intent is composed by concatenating the `semanticObject` and `action` fields of the first
+ * inbound found under `sap.app.crossNavigation.inbounds`. The inbound key itself (e.g. `managePurchaseOrder`)
+ * is an internal ID and is not used.
+ *
+ * @param {Manifest | undefined} manifest - The application manifest to read inbounds from.
+ * @returns {string | undefined} The FLP intent string (e.g. `"PurchaseOrder-ppsmanage"`), or `undefined`
+ *   if the manifest is absent, no inbounds are defined, or the first inbound lacks `semanticObject` or `action`.
+ */
+export function getFlpIntent(manifest?: Manifest): string | undefined {
+    const inbounds = manifest?.['sap.app']?.crossNavigation?.inbounds;
+    const firstInbound = Object.values(inbounds ?? {})[0];
+    if (!firstInbound) {
+        return undefined;
+    }
+    const { semanticObject, action } = firstInbound;
+    if (!semanticObject || !action) {
+        return undefined;
+    }
+    return `${semanticObject}-${action}`;
 }
 
 /**
