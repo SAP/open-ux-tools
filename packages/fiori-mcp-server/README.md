@@ -16,10 +16,6 @@ The server helps AI models create or modify SAP Fiori applications based on prom
 
 For the best experience we recommend using this server alongside [@cap-js/mcp-server](https://www.npmjs.com/package/@cap-js/mcp-server) and [@ui5/mcp-server](https://www.npmjs.com/package/@ui5/mcp-server).
 
-The adaptation tools `open_adaptation_editor` and `read_odata_metadata_adp` validate the proxy SAPUI5 version in `ui5.yaml` before execution. `run_rta_workflow_step` performs the same check on `start` and `restart`, using the supplied `appPath`. The minimum supported version is defined by `MIN_ADAPTATION_UI5_VERSION` in [utils.ts](src/utils/utils.ts). Version comparison, including internal snapshot versions, uses `isFeatureSupportedVersion` from `@sap-ux/adp-tooling`. Cloud Foundry projects may omit the version to use the latest UI5 version; explicitly configured versions must still meet the minimum.
-
-Set `SAP_FIORI_MCP_SKIP_UI5_VERSION_VALIDATION=true` in the MCP server's environment to skip these version checks. Validation is enabled by default; only the exact value `true` disables it. This does not change the project's configured SAPUI5 version.
-
 ## [Setup](#setup)
 
 The server uses `stdio` transport and is launched via `npx` — no global installation required. Pick the section for your MCP client below.

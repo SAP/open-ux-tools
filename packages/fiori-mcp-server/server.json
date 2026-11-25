@@ -32,14 +32,6 @@
                     "format": "boolean",
                     "isSecret": false,
                     "name": "SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY"
-                },
-                {
-                    "description": "Set to 'true' to skip SAPUI5 version validation for adaptation editor, RTA start/restart, and OData metadata tools.",
-                    "isRequired": false,
-                    "format": "boolean",
-                    "isSecret": false,
-                    "default": "false",
-                    "name": "SAP_FIORI_MCP_SKIP_UI5_VERSION_VALIDATION"
                 }
             ]
         }
