@@ -1,4 +1,3 @@
-// eslint-disable-next-line sonarjs/no-implicit-dependencies
 import type { ReaderCollection } from '@ui5/fs';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
@@ -16,7 +15,7 @@ import { createRequire } from 'node:module';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const require = createRequire(import.meta.url);
-// eslint-disable-next-line sonarjs/no-implicit-dependencies
+
 import type { MiddlewareUtils } from '@ui5/server';
 import {
     getWebappPath,
@@ -783,16 +782,16 @@ export class FlpSandbox {
      * @returns the template for the sandbox HTML file
      */
     private async getSandboxTemplate(ui5Version: Ui5Version): Promise<string> {
-        this.logger.info(
-            `Using sandbox template for UI5 version: ${ui5Version.major}.${ui5Version.minor}.${ui5Version.patch}${
-                ui5Version.label ? `-${ui5Version.label}` : ''
-            }.`
-        );
         const qualifies = qualifiesForNewSandbox(ui5Version);
         const legacyConfigPresent = qualifies
             ? await this.hasLegacySandboxConfig(ui5Version, this.templateConfig.baseUrl)
             : false;
         const useNewSandbox = qualifies && this.flpConfig.useNewSandbox === true && !legacyConfigPresent;
+        this.logger.info(
+            `Using ${useNewSandbox ? 'new' : 'legacy'} sandbox template for UI5 version: ${ui5Version.major}.${ui5Version.minor}.${ui5Version.patch}${
+                ui5Version.label ? `-${ui5Version.label}` : ''
+            }.`
+        );
         if (qualifies && !useNewSandbox && !this.flpConfig.enhancedHomePage) {
             this.logger.info('New FLP Sandbox disabled in configuration.');
         }

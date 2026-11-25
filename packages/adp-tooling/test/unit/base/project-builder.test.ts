@@ -1,6 +1,6 @@
 import { jest } from '@jest/globals';
 import { CommandRunner } from '@sap-ux/nodejs-utils';
-// eslint-disable-next-line sonarjs/no-implicit-dependencies
+
 import type { ReaderCollection } from '@ui5/fs';
 import type { UI5Config } from '@sap-ux/ui5-config';
 import type { UI5YamlCustomTaskConfiguration } from '../../../src/types.js';

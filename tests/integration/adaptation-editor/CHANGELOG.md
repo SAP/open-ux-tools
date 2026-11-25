@@ -1,5 +1,78 @@
 # @sap-ux-private/adaptation-editor-tests
 
+## 1.0.33
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-info 1.0.7 → 1.0.8
+- @sap-ux/project-access 2.3.4 → 2.3.5
+
+## 1.0.32
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade @playwright/test 1.60.0 → 1.65.1 to support Ubuntu 26.04 runners [[9dd7c8d](https://github.com/SAP/open-ux-tools/commit/9dd7c8da9094c7906c57198b58a394c366e758c5)]
+
+#### Workspace Updates
+
+- @sap-ux-private/playwright 1.0.8 → 1.0.9
+
+## 1.0.31
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.3.3 → 2.3.4
+
+## 1.0.30
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/yaml 1.0.2 → 1.0.3
+- @sap-ux-private/playwright 1.0.7 → 1.0.8
+- @sap-ux/project-access 2.3.2 → 2.3.3
+
+## 1.0.29
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.3.1 → 2.3.2
+
+## 1.0.28
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade dotenv 17.4.2 → 18.0.8 [[c12e096](https://github.com/SAP/open-ux-tools/commit/c12e096b48bd3ebc18afc8bcae5f9825974bb55c)]
+
+## 1.0.27
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-16
+
+#### Dependency Updates
+
+- Upgrade npm-run-all2 9.0.2 → 9.0.3 [[192bae1](https://github.com/SAP/open-ux-tools/commit/192bae152640fb51741f16d77402719d0dde0979)]
+
+#### Workspace Updates
+
+- @sap-ux/ui5-info 1.0.6 → 1.0.7
+- @sap-ux-private/playwright 1.0.6 → 1.0.7
+- @sap-ux/project-access 2.3.0 → 2.3.1
+
 ## 1.0.26
 
 ### Patch Changes

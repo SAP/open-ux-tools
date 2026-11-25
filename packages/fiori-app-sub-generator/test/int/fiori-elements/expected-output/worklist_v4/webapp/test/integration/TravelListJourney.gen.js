@@ -89,10 +89,6 @@ sap.ui.define([
             Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckAction("Set Cancel Date to Tomorrow", { enabled: false });
         });
 
-        opaTest("Check table columns", function (Given, When, Then) {
-            Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckColumns(undefined, {"TravelID":{"header":"Travel ID"},"AgencyID":{"header":"Agency ID"},"CustomerID":{"header":"Customer ID"},"BeginDate":{"header":"Starting Date"},"EndDate":{"header":"End Date"},"BookingFee":{"header":"Booking Fee"},"TotalPrice":{"header":"Total Price"},"LatestCancellationDate":{"header":"Latest Cancellation Date"},"Memo":{"header":"Description"},"Status":{"header":"Travel Status"}});
-        });
-
         opaTest("Navigate to ObjectPage", function (Given, When, Then) {
             // Note: this test will fail if the ListReport page doesn't show any data
             Then.onTheTravelListGenerated.onTable(defaultTableId).iCheckRows();

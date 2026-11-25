@@ -97,3 +97,24 @@ export function compareSystems(currentSystem: BackendSystem, newSystem: BackendS
 export function shouldStoreSystemInfo(system: BackendSystem): boolean {
     return system.systemType === 'OnPrem' && !!system.username && !!system.password;
 }
+
+/**
+ * System dimensions shared by system telemetry events.
+ */
+export type SystemTelemetryProps = { systemType: string; connectionType: string; authenticationType: string };
+
+/**
+ * Builds the system dimensions (type, connection type and authentication type) shared by system telemetry events.
+ *
+ * @param system - the backend system
+ * @returns - telemetry properties, defaulting to 'unknown' for missing values
+ */
+export function getSystemTelemetryProps(
+    system?: Pick<BackendSystem, 'systemType' | 'connectionType' | 'authenticationType'>
+): SystemTelemetryProps {
+    return {
+        systemType: system?.systemType || 'unknown',
+        connectionType: system?.connectionType || 'unknown',
+        authenticationType: system?.authenticationType || 'unknown'
+    };
+}

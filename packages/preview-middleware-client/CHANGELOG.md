@@ -1,5 +1,69 @@
 # @sap-ux-private/preview-middleware-client
 
+## 1.2.45
+
+## 1.2.44
+
+## 1.2.43
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-13
+
+#### Dependency Updates
+
+- Upgrade eslint-plugin-jsdoc 62.8.1 → 65.4.2 [[facd5f5](https://github.com/SAP/open-ux-tools/commit/facd5f58212dc23d6426179f9495217d35c6bc9d)]
+
+## 1.2.42
+
+## 1.2.41
+
+## 1.2.40
+
+## 1.2.39
+
+## 1.2.38
+
+## 1.2.37
+
+## 1.2.36
+
+## 1.2.35
+
+### Patch Changes
+
+#### Bug Fixes
+
+- Some Actions don't work in the Outline of the Adaptation Project [[8a15549](https://github.com/SAP/open-ux-tools/commit/8a15549a21b324a74b27e69ebb57da2f81ead0aa)]
+
+#### Workspace Updates
+
+- @sap-ux-private/control-property-editor-common 1.0.4 → 1.0.5
+
+## 1.2.34
+
+## 1.2.33
+
+## 1.2.32
+
+## 1.2.31
+
+## 1.2.30
+
+## 1.2.29
+
+### Patch Changes
+
+#### Features
+
+- Enable UShell Sandbox 2.0 for ADP preview on UI5 >= 1.151 [[1977942](https://github.com/SAP/open-ux-tools/commit/1977942e4732c9c90285eaee9f987fa96d545c9b)]
+
+## 1.2.28
+
+## 1.2.27
+
 ## 1.2.26
 
 ## 1.2.25

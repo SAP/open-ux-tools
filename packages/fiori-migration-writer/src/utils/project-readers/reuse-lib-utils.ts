@@ -3,7 +3,9 @@
  */
 
 import { basename, join, relative } from 'node:path';
+import type { Editor } from 'mem-fs-editor';
 import { getReuseLibs, ReuseLibType } from '../file-discovery.js';
+import { createMemFsEditor } from '../fs-adapter.js';
 import { readJSON } from '../../index.js';
 import type { Manifest } from '../../project-spec-types.js';
 import { FileName } from '../../project-spec-types.js';
@@ -37,13 +39,15 @@ export function isSamePath(pathA: string, pathB: string): boolean {
  * same way the workspace discovery path does and returns the library whose root
  * resolves back to projectRoot.
  *
+ * @param fs - mem-fs editor
  * @param projectRoot - Root path of the project
  * @returns The nested manifest and its path, or undefined if none is found
  */
 export async function findNestedReuseLibManifest(
+    fs: Editor,
     projectRoot: string
 ): Promise<{ manifest: Manifest; manifestPath: string } | undefined> {
-    const libs = await getReuseLibs([{ uri: URI.file(projectRoot), name: projectRoot, index: 0 }]);
+    const libs = await getReuseLibs(fs, [{ uri: URI.file(projectRoot), name: projectRoot, index: 0 }]);
     const matchedLib = libs.find(
         (lib) => lib.value.type === ReuseLibType.LIBRARY && isSamePath(lib.value.libRoot, projectRoot)
     );
@@ -51,7 +55,7 @@ export async function findNestedReuseLibManifest(
         return undefined;
     }
     try {
-        const manifest: Manifest = await readJSON(matchedLib.value.path);
+        const manifest: Manifest = await readJSON(fs, matchedLib.value.path);
         return { manifest, manifestPath: matchedLib.value.path };
     } catch {
         // Expected: manifest.json may become unreadable between discovery and read (race condition),
@@ -66,12 +70,14 @@ export async function findNestedReuseLibManifest(
  * @param projectRoot - Root path of the project
  * @param type - Optional migration type
  * @param manifest - Optional manifest object
+ * @param fsEditor - optional mem-fs editor; a fresh one is created when omitted
  * @returns True if project is a reuse library
  */
 export async function checkIfReuseLib(
     projectRoot: string,
     type?: MigrationTypes,
-    manifest?: Manifest
+    manifest?: Manifest,
+    fsEditor?: Editor
 ): Promise<boolean> {
     if (type) {
         return type === MigrationTypes.library;
@@ -81,8 +87,9 @@ export async function checkIfReuseLib(
         return manifest['sap.app']?.type === 'library';
     }
 
+    const fs = fsEditor ?? createMemFsEditor();
     try {
-        const reuseManifest: Manifest = await readJSON(join(projectRoot, FileName.Manifest));
+        const reuseManifest: Manifest = await readJSON(fs, join(projectRoot, FileName.Manifest));
         return reuseManifest['sap.app']?.type === 'library';
     } catch {
         // Expected: manifest.json may not exist or may be malformed in non-library projects.
@@ -97,13 +104,16 @@ export async function checkIfReuseLib(
  * @param projectRoot - Root path of the project
  * @param workspaceFolders - Optional workspace folders
  * @param manifest - Optional manifest object
+ * @param fsEditor - optional mem-fs editor; a fresh one is created when omitted
  * @returns Module name
  */
 export async function getReuseLibModuleName(
     projectRoot: string,
     workspaceFolders?: readonly ProjectFolder[],
-    manifest?: Manifest
+    manifest?: Manifest,
+    fsEditor?: Editor
 ): Promise<string> {
+    const fs = fsEditor ?? createMemFsEditor();
     let moduleName;
     if (manifest) {
         moduleName = manifest['sap.app']?.id;
@@ -114,7 +124,7 @@ export async function getReuseLibModuleName(
             name: folder.name,
             index: folder.index
         }));
-        const libs = await getReuseLibs(workspaceFoldersWithUri);
+        const libs = await getReuseLibs(fs, workspaceFoldersWithUri);
         const matchedLib = libs.find((lib) => {
             return isSamePath(lib.value.libRoot, projectRoot);
         });

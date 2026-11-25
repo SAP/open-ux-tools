@@ -13,6 +13,7 @@ import type {
     AdpControllerExtensionInputSchema,
     RunRtaWorkflowStepInputSchema,
     ReadODataMetadataInputSchema,
+    DownloadAppResourcesInputSchema,
     LookupUi5DocumentationInputSchema
 } from './input.js';
 import type {
@@ -27,7 +28,8 @@ import type {
     GenerateAdaptationProjectOutputSchema,
     AdpControllerExtensionOutputSchema,
     LookupUi5DocumentationOutputSchema,
-    ReadODataMetadataOutputSchema
+    ReadODataMetadataOutputSchema,
+    DownloadAppResourcesOutputSchema
 } from './output.js';
 
 export type FioriApp = zod.infer<typeof FioriAppSchema>;
@@ -49,6 +51,7 @@ export type ExecuteFunctionalityOutput = zod.infer<typeof ExecuteFunctionalityOu
 
 export type DocSearchInput = zod.infer<typeof DocSearchInputSchema>;
 export type DownloadODataServiceMetadataInput = zod.infer<typeof DownloadODataServiceMetadataInputSchema>;
+export type DownloadAppResourcesInput = zod.infer<typeof DownloadAppResourcesInputSchema>;
 export type GenerateAdaptationProjectInput = zod.infer<typeof GenerateAdaptationProjectInputSchema>;
 export type OpenAdaptationEditorInput = zod.infer<typeof OpenAdaptationEditorInputSchema>;
 export type AdpControllerExtensionInput = zod.infer<typeof AdpControllerExtensionInputSchema>;
@@ -63,6 +66,7 @@ export type GenerateAdaptationProjectOutput = zod.infer<typeof GenerateAdaptatio
 export type AdpControllerExtensionOutput = zod.infer<typeof AdpControllerExtensionOutputSchema>;
 export type LookupUi5DocumentationOutput = zod.infer<typeof LookupUi5DocumentationOutputSchema>;
 export type ReadODataMetadataOutput = zod.infer<typeof ReadODataMetadataOutputSchema>;
+export type DownloadAppResourcesOutput = zod.infer<typeof DownloadAppResourcesOutputSchema>;
 
 /**
  * Interface for functionality handlers

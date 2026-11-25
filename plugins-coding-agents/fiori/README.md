@@ -7,8 +7,8 @@ Plugin distribution assets for the SAP Fiori MCP server, enabling AI coding assi
 | Asset | Purpose |
 |---|---|
 | `.claude-plugin/plugin.json` | Claude Code plugin manifest |
-| `.github/plugin/plugin.json` | GitHub Awesome Copilot plugin manifest |
-| `.mcp.json` | MCP server launch config (pinned version) |
+| `plugin.json` | GitHub Awesome Copilot plugin manifest |
+| `.mcp.json` → `mcp.json` | MCP server launch config (pinned version) |
 | `skills/` | Seven skills loaded by Claude Code and Awesome Copilot |
 
 ## Skills
@@ -29,33 +29,29 @@ The MCP server binary is published as [@sap-ux/fiori-mcp-server](https://www.npm
 
 ## Installing in Claude Code
 
-Install via the Claude Code CLI:
+> Once listed in the [Claude Code public marketplace](https://github.com/anthropics/claude-plugins-official), this can be simplified to `claude plugin install sap-ux-fiori-tools`.
 
 ```bash
-claude plugin install https://github.com/SAP/open-ux-tools.git#plugins-coding-agents/fiori
+claude plugin marketplace add https://raw.githubusercontent.com/SAP/open-ux-tools/main/plugins-coding-agents/fiori/.claude-plugin/marketplace.json
+claude plugin install sap-ux-fiori-tools
 ```
 
-Or add via the Claude Code marketplace: search for `sap-ux-fiori-tools`.
+## Installing in GitHub Copilot
 
-## Migrating from the old plugin name
+**VS Code:** In the Copilot Chat panel, type `@agentPlugins` to browse and install, or open the Command Palette and run `Chat: Plugins`.
 
-The plugin was previously distributed as `sap-fiori-mcp-server` from `packages/fiori-mcp-server/`. It has been renamed to `sap-ux-fiori-tools` and relocated to this directory.
-
-If you installed via the Claude Code marketplace, the rename is handled automatically — Claude Code rewrites the old slug to the new one on next sync via the `renames` map in `claude-plugins-official`.
-
-If you installed via a direct git URL pointing at the old path, reinstall manually:
+**CLI** (requires GitHub Copilot CLI with `plugin` subcommand support):
 
 ```bash
-claude plugin uninstall sap-fiori-mcp-server
-claude plugin install https://github.com/SAP/open-ux-tools.git#plugins-coding-agents/fiori
+copilot plugin install sap-ux-fiori-tools@awesome-copilot
 ```
 
 ## Version Alignment
 
-Plugin versions in `.claude-plugin/plugin.json` and `.github/plugin/plugin.json` are independent of the MCP server version.
+Plugin versions in `.claude-plugin/plugin.json` and `plugin.json` are independent of the MCP server version.
 
 **Automated** — on each `@sap-ux/fiori-mcp-server` npm release, two scripts run in CI:
 - `packages/fiori-mcp-server/scripts/sync-mcp-manifests.cjs` — updates `server.json` and the pinned server version in `.mcp.json`
-- `plugins-coding-agents/fiori/scripts/sync-plugin-manifests.cjs` — patch-bumps the plugin `version` in both `.claude-plugin/plugin.json` and `.github/plugin/plugin.json`
+- `plugins-coding-agents/fiori/scripts/sync-plugin-manifests.cjs` — patch-bumps the plugin `version` in `.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json`, and `plugin.json`
 
-**Manual** — when skills change (editing a `SKILL.md`, adding or removing a skill), bump the `version` field in **both** `.claude-plugin/plugin.json` and `.github/plugin/plugin.json` by hand as part of the same commit.
+**Manual** — when skills change (editing a `SKILL.md`, adding or removing a skill), bump the `version` field in `.claude-plugin/plugin.json`, `.claude-plugin/marketplace.json`, and `plugin.json` by hand as part of the same commit.

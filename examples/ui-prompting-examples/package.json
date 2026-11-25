@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux-private/ui-prompting-examples",
-    "version": "1.1.13",
+    "version": "1.1.24",
     "description": "This project contains UI storybook stories with exampleS with prompt ui and FPM based building blocks.",
     "license": "Apache-2.0",
     "private": true,
@@ -24,11 +24,11 @@
         "@sap-ux/ui-components": "workspace:*",
         "@sap-ux/ui-prompting": "workspace:*",
         "react-markdown": "5.0.3",
-        "sanitize-html": "2.17.7"
+        "sanitize-html": "2.18.1"
     },
     "peerDependencies": {
-        "react": ">=16.14.0",
-        "react-dom": ">=16.14.0"
+        "react": ">=18",
+        "react-dom": ">=18"
     },
     "devDependencies": {
         "@babel/core": "7.29.0",
@@ -44,11 +44,10 @@
         "@types/inquirer": "8.2.6",
         "@types/mem-fs": "1.1.2",
         "@types/mem-fs-editor": "7.0.1",
-        "@types/react": "16.14.69",
-        "@types/react-dom": "16.9.25",
-        "@types/sanitize-html": "2.16.1",
-        "@types/uuid": "11.0.0",
-        "@types/ws": "8.18.1",
+        "@types/react": "18.3.23",
+        "@types/react-dom": "18.3.7",
+        "@types/sanitize-html": "2.16.2",
+        "@types/ws": "8.18.2",
         "babel-loader": "10.1.1",
         "copyfiles": "2.4.1",
         "css-loader": "7.1.5",
@@ -57,9 +56,9 @@
         "eslint-plugin-storybook": "0.6.15",
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.4.0",
-        "npm-run-all2": "9.0.3",
-        "react": "16.14.0",
-        "react-dom": "16.14.0",
+        "npm-run-all2": "9.0.4",
+        "react": "18.3.1",
+        "react-dom": "18.3.1",
         "sass": "1.102.0",
         "sass-loader": "16.0.7",
         "storybook": "10.5.1",
@@ -67,8 +66,8 @@
         "style-loader": "4.0.0",
         "ts-loader": "9.6.2",
         "ts-node": "10.9.2",
-        "typescript": "5.9.3",
-        "ws": "8.21.0",
-        "typescript-eslint": "8.64.0"
+        "typescript": "6.0.3",
+        "ws": "8.22.0",
+        "typescript-eslint": "8.71.2"
     }
 }

@@ -1,5 +1,128 @@
 # @sap-ux/fe-fpm-writer
 
+## 1.5.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-24
+
+#### Dependency Updates
+
+- Upgrade xpath 0.0.35 → 0.0.36 [[07a23e3](https://github.com/SAP/open-ux-tools/commit/07a23e3a07e4116e54ad78c5ee4eb8543595ac5a)]
+
+#### Release Date
+
+2026-11-24
+
+#### Workspace Updates
+
+- @sap-ux/fiori-annotation-api 1.1.7 → 1.1.8
+- @sap-ux/i18n 1.0.7 → 1.0.8
+- @sap-ux/project-access 2.3.4 → 2.3.5
+
+## 1.5.0
+
+### Minor Changes
+
+#### Features
+
+- add `add-building-block` functionality for Fiori Elements building blocks
+
+    Adds building-block support to `@sap-ux/fiori-mcp-server` as a first-class `add-building-block` functionality in the
+    existing `list_functionality` → `get_functionality_details` → `execute_functionality` registry — not a standalone
+    tool — so there is one consistent way to add functionality to the server. It delegates to `@sap-ux/fe-fpm-writer`'s
+    `generateBuildingBlock()` (the same generator as the SAP Page Editor) to add building blocks (table, chart,
+    filter-bar, field, form, page, rich-text-editor, rich-text-editor-button-groups, custom-column, custom-filter-field,
+    custom-form-field, action) to an FPM view or fragment with correct XML and manifest wiring.
+    Property semantics are sourced from the generated `bb_macro_api.md` via the existing `search_docs` tool rather than
+    duplicated as inline schemas, so the per-type Zod schema stays lean (`zod.looseObject`) and only enforces the fields
+    the LLM must always provide; the per-type map is exhaustiveness-guarded against `BuildingBlockType` so adding a new
+    type upstream without a schema breaks the build. The functionality description carries the real UI5 version
+    constraints (RichTextEditor and RichTextEditorButtonGroups require UI5 >= 1.117.0; Page requires >= 1.136.0 basic /
+
+    > = 1.145.0 full layout) and the universal OData V4 requirement. `get_functionality_details` enriches its response with
+    > the app's actual view/fragment files and their valid aggregation XPaths, so the client never has to read the XML. For
+    > Table, FilterBar and Form on an OData app it auto-writes the required UI annotation shell (`UI.LineItem` /
+    > `UI.SelectionFields` / `UI.FieldGroup`) when it is missing; failure to write the shell is non-fatal and surfaced as a
+    > warning. Client-supplied view/fragment paths are validated to stay inside the app root.
+    > `@sap-ux/fe-fpm-writer` now exports the `BuildingBlock` type, the `getFragmentAndViewFiles` /
+    > `getXPathStringsForXmlFile` discovery helpers, and `MIN_UI5_VERSION_RICH_TEXT_EDITOR`.
+    > `@sap-ux/fiori-docs-embeddings` adds `bb_macro_api.md` (generated from the `@public`-annotated `sap.fe` macro source
+    > by the new `build-bb-macro-docs` script and wired into the embeddings build) so `search_docs` can return building
+    > block property documentation. [[6ecb16c](https://github.com/SAP/open-ux-tools/commit/6ecb16c7f4a2b26742b36f80adc6a8d0e03cb0b4)]
+
+## 1.4.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-12
+
+#### Features
+
+- Enabled Replacing Standard Navigation in LR with navigation to an external app [[d1377b8](https://github.com/SAP/open-ux-tools/commit/d1377b8d249e4fec9c3a4d48020376adb46383df)]
+
+## 1.4.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-11-05
+
+#### Features
+
+- Add section for navigation to a newly created object page. [[b570d2f](https://github.com/SAP/open-ux-tools/commit/b570d2f32989dbc5ee92ed868c422fa33b8dfb45)]
+
+## 1.3.28
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-annotation-api 1.1.6 → 1.1.7
+- @sap-ux/i18n 1.0.6 → 1.0.7
+- @sap-ux/project-access 2.3.3 → 2.3.4
+
+## 1.3.27
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade i18next 26.3.6 → 26.5.11 [[d5e9708](https://github.com/SAP/open-ux-tools/commit/d5e9708d60338e575b72fa2dcd64af87120270ef)]
+
+#### Dependency Updates
+
+- Patch dependency updates (Oct 2026) — yaml 2.9.1, xpath 0.0.35, @xml-tools/ast 5.0.6, @xml-tools/parser 1.0.12, @sap-ux/annotation-converter 0.10.23, @sap-devx/feature-toggle-node 2.1.1, folder-hash 4.1.4, @fluentui/react 8.125.8 [[85d5e62](https://github.com/SAP/open-ux-tools/commit/85d5e62bcbc4f65601276277d028d340dc098eab)]
+
+#### Workspace Updates
+
+- @sap-ux/fiori-annotation-api 1.1.5 → 1.1.6
+- @sap-ux/project-access 2.3.2 → 2.3.3
+
+## 1.3.26
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.3.1 → 2.3.2
+- @sap-ux/fiori-annotation-api 1.1.4 → 1.1.5
+
+## 1.3.25
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-annotation-api 1.1.3 → 1.1.4
+- @sap-ux/i18n 1.0.5 → 1.0.6
+- @sap-ux/project-access 2.3.0 → 2.3.1
+
 ## 1.3.24
 
 ### Patch Changes

@@ -4,6 +4,7 @@
  */
 
 import { basename, join } from 'node:path';
+import type { Editor } from 'mem-fs-editor';
 import { fileExists, readJSON } from '../../index.js';
 import type { Manifest } from '../../project-spec-types.js';
 import { sapWattCommonSetting } from '../../types.js';
@@ -12,19 +13,20 @@ import { sapWattCommonSetting } from '../../types.js';
  * Read project extension settings from configuration files
  * Checks both .che/project.json (WebIDE) and .project.json (legacy) formats
  *
+ * @param fs - mem-fs editor
  * @param projectRoot - Root path of the project
  * @returns Extension settings or undefined
  */
-export async function readProjectExtensionSettings(projectRoot: string): Promise<unknown> {
+export async function readProjectExtensionSettings(fs: Editor, projectRoot: string): Promise<unknown> {
     try {
         // Try .che/project.json first
-        const cheSettings = await readCheProjectExtensionSettings(projectRoot);
+        const cheSettings = await readCheProjectExtensionSettings(fs, projectRoot);
         if (cheSettings) {
             return cheSettings;
         }
 
         // Fallback to .project.json
-        const legacySettings = await readLegacyProjectExtensionSettings(projectRoot);
+        const legacySettings = await readLegacyProjectExtensionSettings(fs, projectRoot);
         if (legacySettings) {
             return legacySettings;
         }
@@ -38,18 +40,19 @@ export async function readProjectExtensionSettings(projectRoot: string): Promise
 /**
  * Read extension settings from .che/project.json
  *
+ * @param fs - mem-fs editor
  * @param projectRoot - Root path of the project
  * @returns Extension settings or undefined
  */
-async function readCheProjectExtensionSettings(projectRoot: string): Promise<unknown> {
+async function readCheProjectExtensionSettings(fs: Editor, projectRoot: string): Promise<unknown> {
     const projectJsonPath = join(projectRoot, '.che', 'project.json');
-    const exists = await fileExists(projectJsonPath);
+    const exists = fileExists(fs, projectJsonPath);
     if (!exists) {
         return undefined;
     }
 
     try {
-        const projectJson: any = await readJSON(projectJsonPath);
+        const projectJson: any = await readJSON(fs, projectJsonPath);
         if (projectJson?.attributes?.[sapWattCommonSetting]?.[0]) {
             const settings = JSON.parse(projectJson.attributes[sapWattCommonSetting][0]);
             return settings?.extensibility;
@@ -64,17 +67,18 @@ async function readCheProjectExtensionSettings(projectRoot: string): Promise<unk
 /**
  * Read extension settings from .project.json (legacy format)
  *
+ * @param fs - mem-fs editor
  * @param projectRoot - Root path of the project
  * @returns Extension settings or undefined
  */
-async function readLegacyProjectExtensionSettings(projectRoot: string): Promise<unknown> {
+async function readLegacyProjectExtensionSettings(fs: Editor, projectRoot: string): Promise<unknown> {
     const projectJsonPath = join(projectRoot, '.project.json');
-    if (!(await fileExists(projectJsonPath))) {
+    if (!fileExists(fs, projectJsonPath)) {
         return undefined;
     }
 
     try {
-        const projectJson: any = await readJSON(projectJsonPath);
+        const projectJson: any = await readJSON(fs, projectJsonPath);
         return projectJson?.extensibility;
     } catch (error: unknown) {
         // Invalid JSON
@@ -86,11 +90,12 @@ async function readLegacyProjectExtensionSettings(projectRoot: string): Promise<
 /**
  * Check if project is an extension project
  *
+ * @param fs - mem-fs editor
  * @param projectRoot - Root path of the project
  * @returns True if extension settings found
  */
-export async function checkIfProjectExtension(projectRoot: string): Promise<boolean> {
-    const extensionProject = await readProjectExtensionSettings(projectRoot);
+export async function checkIfProjectExtension(fs: Editor, projectRoot: string): Promise<boolean> {
+    const extensionProject = await readProjectExtensionSettings(fs, projectRoot);
     return !!extensionProject;
 }
 

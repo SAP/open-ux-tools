@@ -22,7 +22,7 @@ exports[`Migration Integration Tests Legacy Folder Structure Migration should mi
 		\\"deploy\\": \\"fiori verify\\",
 		\\"deploy-config\\": \\"fiori add deploy-config\\",
 		\\"start-mock\\": \\"fiori run --open \\\\\\"test/flpSandboxMockServer.html?sap-ui-xx-viewCache=false#Customer-manageLineItems\\\\\\"\\",
-		\\"unit-tests\\": \\"fiori run --open \\\\\\"test/qunit/testsuite.unit.html\\\\\\"\\"
+		\\"suite-tests\\": \\"fiori run --open \\\\\\"test/qunit.runner.testsuite.html\\\\\\"\\"
 	},
 	\\"devDependencies\\": {
         \\"@ui5/cli\\": \\"^4.0.0\\",

@@ -3,7 +3,8 @@
     "include": ["src"],
     "compilerOptions": {
         "module": "CommonJS",
-        "moduleResolution": "Node",
+        "moduleResolution": "node10",
+        "ignoreDeprecations": "6.0",
         "rootDir": "src",
         "outDir": "dist-cjs"
     }

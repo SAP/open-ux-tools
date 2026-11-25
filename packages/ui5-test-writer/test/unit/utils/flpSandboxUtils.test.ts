@@ -1,4 +1,4 @@
-import { readHashFromFlpSandbox } from '../../../src/utils/flpSandboxUtils.js';
+import { readHashFromFlpSandbox, resolveFlpSandboxHtmlTarget } from '../../../src/utils/flpSandboxUtils.js';
 import { join } from 'node:path';
 import type { Editor } from 'mem-fs-editor';
 
@@ -57,5 +57,43 @@ describe('readHashFromFlpSandbox()', () => {
         } as unknown as Editor;
 
         expect(readHashFromFlpSandbox('test/flpSandbox.html', webappPath, fs)).toBeUndefined();
+    });
+});
+
+describe('resolveFlpSandboxHtmlTarget()', () => {
+    const basePath = join('/', 'project');
+    const webappPath = join(basePath, 'webapp');
+    const testOutDirPath = join(webappPath, 'test');
+    const flpContent = `applications: { "C_Arbankstatement-display": { title: "App" } }`;
+
+    test('returns flpSandbox target with the app intent when flpSandbox.html exists', () => {
+        const fs = {
+            exists: jest.fn().mockReturnValue(true),
+            read: jest.fn().mockReturnValue(flpContent)
+        } as unknown as Editor;
+
+        expect(resolveFlpSandboxHtmlTarget(testOutDirPath, webappPath, fs)).toBe(
+            'test/flpSandbox.html#C_Arbankstatement-display'
+        );
+        expect(fs.exists).toHaveBeenCalledWith(join(testOutDirPath, 'flpSandbox.html'));
+    });
+
+    test('returns undefined when flpSandbox.html is absent', () => {
+        const fs = {
+            exists: jest.fn().mockReturnValue(false),
+            read: jest.fn()
+        } as unknown as Editor;
+
+        expect(resolveFlpSandboxHtmlTarget(testOutDirPath, webappPath, fs)).toBeUndefined();
+        expect(fs.read).not.toHaveBeenCalled();
+    });
+
+    test('returns undefined when flpSandbox.html has no application key', () => {
+        const fs = {
+            exists: jest.fn().mockReturnValue(true),
+            read: jest.fn().mockReturnValue('<html>no config</html>')
+        } as unknown as Editor;
+
+        expect(resolveFlpSandboxHtmlTarget(testOutDirPath, webappPath, fs)).toBeUndefined();
     });
 });

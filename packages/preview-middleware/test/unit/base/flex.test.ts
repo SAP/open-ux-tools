@@ -1,4 +1,3 @@
-// eslint-disable-next-line sonarjs/no-implicit-dependencies
 import type { ReaderCollection } from '@ui5/fs';
 import { ToolsLogger } from '@sap-ux/logger';
 import { tmpdir } from 'node:os';

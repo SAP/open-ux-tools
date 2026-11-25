@@ -1,5 +1,117 @@
 # @sap-ux/ui-components
 
+## 4.0.1
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade uuid 11.1.1 → 14.0.3 [[0ade21d](https://github.com/SAP/open-ux-tools/commit/0ade21d80bbbe39fecb4681e4bd18cd3471a5264)]
+
+## 4.0.0
+
+### Major Changes
+
+#### Release Date
+
+2026-11-20
+
+#### Bug Fixes
+
+- Replace ReactDOM.render with createRoot in UIToggle; narrow peerDependencies react/react-dom to >=18 [[7952e31](https://github.com/SAP/open-ux-tools/commit/7952e3192861a3eb96f2f37e5cb09ed8a0701fd9)]
+
+## 3.2.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-12
+
+#### Features
+
+- new UiIcons.FioriApp icon has been added [[d1377b8](https://github.com/SAP/open-ux-tools/commit/d1377b8d249e4fec9c3a4d48020376adb46383df)]
+
+## 3.2.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-11-09
+
+#### Features
+
+- Add CheckboxGroup icon to UiIcons [[3cd86b7](https://github.com/SAP/open-ux-tools/commit/3cd86b7096d7b9fa54b57fc98d487e58925509f4)]
+
+## 3.1.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-11-05
+
+#### Features
+
+- Add a new LinkingTo icon to UiIcons [[28edb94](https://github.com/SAP/open-ux-tools/commit/28edb94c6324bc2526374f7dfc4ddeb6e194038a)]
+
+## 3.0.21
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-03
+
+#### Bug Fixes
+
+- Avoid double padding in UITooltip callout [[63814cf](https://github.com/SAP/open-ux-tools/commit/63814cfe24b07018f2d8515a3361084ecfadeca8)]
+
+## 3.0.20
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-02
+
+#### Dependency Updates
+
+- Upgrade sanitize-html 2.17.7 → 2.18.1 [[05b1a43](https://github.com/SAP/open-ux-tools/commit/05b1a4300f69662ae1806c79d98369d9b9324b02)]
+
+## 3.0.19
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Patch dependency updates (Oct 2026) — yaml 2.9.1, xpath 0.0.35, @xml-tools/ast 5.0.6, @xml-tools/parser 1.0.12, @sap-ux/annotation-converter 0.10.23, @sap-devx/feature-toggle-node 2.1.1, folder-hash 4.1.4, @fluentui/react 8.125.8 [[85d5e62](https://github.com/SAP/open-ux-tools/commit/85d5e62bcbc4f65601276277d028d340dc098eab)]
+
+## 3.0.18
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-23
+
+#### Bug Fixes
+
+- Prevent the translation input callout from restoring focus to its button when a new i18n entry is created. Restoring focus pulled focus back into the host (e.g. a VS Code webview) and dismissed any host dialog opened in response, such as a QuickPick for selecting the target i18n file. [[b97d413](https://github.com/SAP/open-ux-tools/commit/b97d41343f85755ae21b387f12109fa612192e08)]
+
+## 3.0.17
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-22
+
+#### Dependency Updates
+
+- Upgrade react-movable 2.5.4 → 3.4.1 [[5545002](https://github.com/SAP/open-ux-tools/commit/5545002e520272845923f57b7ae9a53f77acd9f3)]
+
 ## 3.0.16
 
 ### Patch Changes

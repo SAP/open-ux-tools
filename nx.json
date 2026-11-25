@@ -66,7 +66,7 @@
         },
         "lint": {
             "inputs": ["default", "^prod"],
-            "cache": false
+            "cache": true
         },
         "lint:fix": {
             "inputs": ["default", "^prod"]

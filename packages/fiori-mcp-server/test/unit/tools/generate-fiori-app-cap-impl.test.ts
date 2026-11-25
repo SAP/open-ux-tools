@@ -41,6 +41,11 @@ jest.unstable_mockModule('node:child_process', () => ({
     exec: (...args: any) => mockExec(...args)
 }));
 
+const mockGetLatestUI5Version = jest.fn<any>().mockResolvedValue('1.153.0');
+jest.unstable_mockModule('@sap-ux/ui5-info', () => ({
+    getLatestUI5Version: mockGetLatestUI5Version
+}));
+
 const { generateFioriAppCap } = await import('../../../src/tools/generate-fiori-app-cap.js');
 
 // Read package.json for version
@@ -161,6 +166,35 @@ describe('executeFunctionality', () => {
             },
             'version': '0.2'
         });
+    });
+
+    test('executeFunctionality - omitting ui5Version resolves latest from CDN', async () => {
+        let generatedConfigContent: string;
+        mockExec.mockImplementation((_cmd, _opts, callback) => {
+            callback(null, 'mock stdout', 'mock stderr');
+        });
+        mockFileWrite((content) => {
+            generatedConfigContent = content;
+        });
+        const { ui5Version: _, ...projectWithoutUi5Version } = paramTest.project;
+        await generateFioriAppCap({ ...paramTest, project: projectWithoutUi5Version });
+        const config = JSON.parse(generatedConfigContent!);
+        expect(config.project.ui5Version).toBe('1.153.0');
+    });
+
+    test('executeFunctionality - ui5Version absent from config when CDN returns undefined', async () => {
+        mockGetLatestUI5Version.mockResolvedValueOnce(undefined);
+        let generatedConfigContent: string;
+        mockExec.mockImplementation((_cmd, _opts, callback) => {
+            callback(null, 'mock stdout', 'mock stderr');
+        });
+        mockFileWrite((content) => {
+            generatedConfigContent = content;
+        });
+        const { ui5Version: _, ...projectWithoutUi5Version } = paramTest.project;
+        await generateFioriAppCap({ ...paramTest, project: projectWithoutUi5Version });
+        const config = JSON.parse(generatedConfigContent!);
+        expect(config.project).not.toHaveProperty('ui5Version');
     });
 
     test('executeFunctionality - success with floorplan="FF_SIMPLE"', async () => {

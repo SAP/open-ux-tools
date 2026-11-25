@@ -1,5 +1,17 @@
 # @sap-ux/jest-file-matchers
 
+## 1.0.4
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-01
+
+#### Dependency Updates
+
+- Upgrade jest-diff 30.4.1 → 30.5.2 [[5836af0](https://github.com/SAP/open-ux-tools/commit/5836af0c62f25ff55217c691c1d2e06aa12bf26c)]
+
 ## 1.0.3
 
 ### Patch Changes

@@ -345,7 +345,7 @@ annotate service.SalesOrder with @(
 
 ## Bug Report
 
-If you detect an issue with the check, open a [GitHub issue](https://github.com/SAP/open-ux-tools/issues).
+If you detect an issue with the check, please open a [GitHub issue](https://github.com/SAP/open-ux-tools/issues).
 
 ## Further Reading
 

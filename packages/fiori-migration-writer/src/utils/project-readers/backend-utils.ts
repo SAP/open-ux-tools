@@ -4,6 +4,7 @@
  */
 
 import { join } from 'node:path';
+import type { Editor } from 'mem-fs-editor';
 import { TemplateFileName, fileExists, readJSON } from '../../index.js';
 import type { NeoappDestination } from '../../types.js';
 import { neoAppJsonRouteTargetTypes } from '../../types.js';
@@ -87,18 +88,20 @@ export function getNeoAppData(
 /**
  * Read destination info from neo-app.json file
  *
+ * @param fs - mem-fs editor
  * @param projectRoot - Root path of the project
  * @param destinationIn - Initial destination (may be empty)
  * @returns Destination info or undefined if no neo-app.json found
  */
 export async function getDestinationFromNeoApp(
+    fs: Editor,
     projectRoot: string,
     destinationIn: string
 ): Promise<{ destination: string; neoAppUI5Version?: string; neoappDestinations?: NeoappDestination[] } | undefined> {
     try {
         const neoAppJsonPath = join(projectRoot, TemplateFileName.NeoApp);
-        if (await fileExists(neoAppJsonPath)) {
-            const neoAppJson: any = await readJSON(neoAppJsonPath);
+        if (fileExists(fs, neoAppJsonPath)) {
+            const neoAppJson: any = await readJSON(fs, neoAppJsonPath);
             if (neoAppJson?.routes) {
                 const { destination, neoAppUI5Version, neoappDestinations } = getNeoAppData(neoAppJson, destinationIn);
                 return { destination, neoAppUI5Version, neoappDestinations };

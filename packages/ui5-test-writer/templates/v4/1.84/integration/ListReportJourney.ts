@@ -103,9 +103,11 @@ function journey() {
 
 <%_ } -%>
 <%_ }); -%>
-<%_ if (tableColumns && Object.keys(tableColumns).length > 0) { -%>
-    opaTest("Check table columns", function (_Given: Given, _When: When, Then: Then) {
-        Then.onThe<%- startLR %>Generated.onTable(defaultTableId).iCheckColumns(undefined, <%- JSON.stringify(tableColumns) %>);
+<%_ if (startLR && defaultFilterValues && defaultFilterValues.length > 0) { -%>
+    opaTest("Check default filter values from SelectionVariant", function (_Given: Given, _When: When, Then: Then) {
+        <%_ defaultFilterValues.forEach(function(filter) { _%>
+        Then.onThe<%- startLR %>Generated.onFilterBar().iCheckFilterField({ property: <%- JSON.stringify(filter.property) %> }, <%- filter.value2 !== undefined ? JSON.stringify([filter.value, filter.value2]) : JSON.stringify(filter.value) %><%- filter.operator ? ', ' + JSON.stringify(filter.operator) : '' %>);
+        <%_ }); -%>
     });
 
 <%_ } -%>

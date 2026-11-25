@@ -6,15 +6,16 @@ import yeomanTest from 'yeoman-test';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
+import type { DescriptorVariant } from '@sap-ux/adp-tooling';
 import type { Manifest } from '@sap-ux/project-access';
 import type { AbapTarget } from '@sap-ux/system-access';
-import type { DescriptorVariant } from '@sap-ux/adp-tooling';
 
 const mockGenerateChange = jest.fn<typeof realAdpTooling.generateChange>();
 const mockGetVariant = jest.fn<typeof realAdpTooling.getVariant>();
 const mockGetAdpConfig = jest.fn<typeof realAdpTooling.getAdpConfig>();
 const mockIsCFEnvironment = jest.fn().mockResolvedValue(false);
 const mockManifestServiceCFInit = jest.fn<typeof realAdpTooling.init>();
+const mockIsAuthRequired = jest.fn<typeof realAdpTooling.isAuthRequired>().mockResolvedValue(true);
 const mockGetTemplatesOverwritePath = jest.fn() as jest.Mock;
 
 const realAdpTooling = await import('@sap-ux/adp-tooling');
@@ -25,6 +26,7 @@ jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
     getAdpConfig: mockGetAdpConfig,
     getAdpProjectData: jest.fn(),
     isCFEnvironment: mockIsCFEnvironment,
+    isAuthRequired: mockIsAuthRequired,
     ManifestServiceCF: { init: mockManifestServiceCFInit }
 }));
 
@@ -40,10 +42,8 @@ jest.unstable_mockModule('@sap-ux/system-access', () => ({
     createAbapServiceProvider: jest.fn().mockResolvedValue({})
 }));
 
-const { ManifestService, SystemLookup, ChangeType, AnnotationFileSelectType } = await import('@sap-ux/adp-tooling');
+const { ManifestService, ChangeType, AnnotationFileSelectType } = await import('@sap-ux/adp-tooling');
 const { default: annotationGen } = await import('../../../src/add-annotations-to-odata/index.js');
-
-// Set template path mock to return the real template path
 const templatePath = join(__dirname, 'src/add-annotations-to-odata/templates');
 mockGetTemplatesOverwritePath.mockReturnValue(templatePath);
 
@@ -76,8 +76,6 @@ const answers = {
     username: 'user',
     password: 'pass'
 };
-
-jest.spyOn(SystemLookup.prototype, 'getSystemRequiresAuth').mockResolvedValue(true);
 
 const generatorPath = join(__dirname, 'src/add-annotations-to-odata/index.ts');
 const tmpDir = resolve(__dirname, 'test-output-add-annotations');
@@ -160,13 +158,11 @@ describe('AddAnnotationsToDataGenerator', () => {
         handleCrashSpy.mockRestore();
     });
 
-    it('invokes handleRuntimeCrash when system lookup fails during onInit', async () => {
+    it('invokes handleRuntimeCrash when auth check fails during onInit', async () => {
         mockGetVariant.mockResolvedValue(variant);
         mockGetAdpConfig.mockResolvedValue({ target, ignoreCertErrors: false } as any);
-
-        jest.spyOn(SystemLookup.prototype, 'getSystemRequiresAuth').mockRejectedValueOnce(
-            new Error('system lookup fail')
-        );
+        const authCheckError = '403 Forbidden';
+        mockIsAuthRequired.mockRejectedValueOnce(new Error(authCheckError));
 
         const handleCrashSpy = jest
             .spyOn((annotationGen as any).prototype, 'handleRuntimeCrash')
@@ -183,7 +179,7 @@ describe('AddAnnotationsToDataGenerator', () => {
 
         await expect(runContext.run()).resolves.not.toThrow();
 
-        expect(handleCrashSpy).toHaveBeenCalledWith('system lookup fail');
+        expect(handleCrashSpy).toHaveBeenCalledWith(authCheckError);
 
         writingSpy.mockRestore();
         handleCrashSpy.mockRestore();

@@ -45,6 +45,7 @@ const mockOpenAdaptationEditor = jest.fn<any>();
 const mockAdpControllerExtension = jest.fn<any>();
 const mockRunRtaWorkflowStep = jest.fn<any>();
 const mockReadODataMetadataAdp = jest.fn<any>();
+const mockDownloadBaseApp = jest.fn<() => Promise<object>>();
 const mockLookupUi5Documentation = jest.fn<any>();
 const actualTools = await import('../../src/tools/index.js');
 jest.unstable_mockModule('../../src/tools', () => ({
@@ -63,6 +64,7 @@ jest.unstable_mockModule('../../src/tools', () => ({
     adpControllerExtension: mockAdpControllerExtension,
     runRtaWorkflowStep: mockRunRtaWorkflowStep,
     readODataMetadataAdp: mockReadODataMetadataAdp,
+    downloadBaseApp: mockDownloadBaseApp,
     lookupUi5Documentation: mockLookupUi5Documentation
 }));
 
@@ -90,6 +92,7 @@ describe('FioriFunctionalityServer', () => {
         mockAdpControllerExtension.mockReset();
         mockRunRtaWorkflowStep.mockReset();
         mockReadODataMetadataAdp.mockReset();
+        mockDownloadBaseApp.mockReset();
         mockLookupUi5Documentation.mockReset();
     });
 
@@ -628,6 +631,7 @@ describe('FioriFunctionalityServer', () => {
                 'adp_controller_extension',
                 'run_rta_workflow_step',
                 'read_odata_metadata_adp',
+                'download_base_app_adp',
                 'lookup_ui5_documentation'
             ])('%s throws when ADP tools are disabled', async (toolName) => {
                 new FioriFunctionalityServer();
@@ -729,6 +733,21 @@ describe('FioriFunctionalityServer', () => {
                     params: { name: 'read_odata_metadata_adp', arguments: { appPath: '/proj' } }
                 });
                 expect(mockReadODataMetadataAdp).toHaveBeenCalledTimes(1);
+                expect(result.structuredContent).toEqual(mockResult);
+            });
+
+            test('download_base_app_adp dispatches to downloadBaseApp', async () => {
+                const mockResult = { status: 'success', message: 'Downloaded', appPath: '/proj' };
+                mockDownloadBaseApp.mockResolvedValue(mockResult);
+                new FioriFunctionalityServer();
+                const onRequestCB = setRequestHandlerMock.mock.calls[2][1];
+
+                const result = await onRequestCB({
+                    params: { name: 'download_base_app_adp', arguments: { appPath: '/proj' } }
+                });
+
+                expect(mockDownloadBaseApp).toHaveBeenCalledTimes(1);
+                expect(mockDownloadBaseApp).toHaveBeenCalledWith({ appPath: '/proj' });
                 expect(result.structuredContent).toEqual(mockResult);
             });
 

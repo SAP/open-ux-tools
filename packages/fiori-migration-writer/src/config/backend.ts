@@ -1,5 +1,6 @@
 import { i18nText } from '../i18n.js';
-import type { BackendConfig, Message, NeoappDestination, TemplateData } from '../types.js';
+import type { FioriToolsProxyConfigBackend } from '@sap-ux/ui5-config';
+import type { Message, NeoappDestination, TemplateData } from '../types.js';
 import { getMessageType } from '../utils/validation-severity.js';
 
 /**
@@ -29,7 +30,7 @@ export function updateYamlBackends(proxyConfigInput: any, templateData: Template
     );
     // only add a backend for the service path if no matching backends exist
     if (matchingBackends?.length === 0) {
-        proxyConfig?.backend?.forEach((backendObj: BackendConfig) => {
+        proxyConfig?.backend?.forEach((backendObj: FioriToolsProxyConfigBackend) => {
             if (
                 backendObj?.path === '/sap' &&
                 templateData.service?.servicePath &&
@@ -58,14 +59,14 @@ export function updateYamlBackends(proxyConfigInput: any, templateData: Template
  */
 export function updateNeoYamlBackends(
     neoappDestinations: NeoappDestination[],
-    proxyBackend: BackendConfig[],
+    proxyBackend: FioriToolsProxyConfigBackend[],
     templateData: TemplateData,
     messages: Message[],
     destination: string | undefined,
     firstNeoAppDestination?: string,
     strict: boolean = false
-): BackendConfig[] {
-    let backendRoutes: BackendConfig[] = [];
+): FioriToolsProxyConfigBackend[] {
+    let backendRoutes: FioriToolsProxyConfigBackend[] = [];
     let noBackendURL = false;
     const noUrlMessage: Message = {
         type: getMessageType('WARNING', strict, true),
@@ -74,14 +75,14 @@ export function updateNeoYamlBackends(
             'https://help.sap.com/docs/SAP_FIORI_tools/17d50220bcd848aa854c9c182d65b699/70d41f3ee29d453a90efab3ce025d450.html'
     };
     neoappDestinations?.forEach((neoappDestination: NeoappDestination) => {
-        const backend: BackendConfig = {
+        const backend: FioriToolsProxyConfigBackend = {
             path: neoappDestination.path,
             destination: neoappDestination.name,
             url: ''
         };
         if (destination === backend.destination || firstNeoAppDestination === backend.destination) {
             //destination from the webview
-            backend.url = templateData.ui5Yaml?.proxyHost;
+            backend.url = templateData.ui5Yaml?.proxyHost ?? '';
             backend.destination = templateData.ui5Yaml?.destination;
             if (templateData.ui5Yaml?.client !== '') {
                 backend.client = templateData.ui5Yaml?.client;

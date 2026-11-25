@@ -1,5 +1,29 @@
 # @sap-ux/odata-vocabularies
 
+## 1.1.5
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade axios 1.20.0 → 1.21.1 [[95b4f5a](https://github.com/SAP/open-ux-tools/commit/95b4f5aa4feea8210150d1144693ee36d2f289e3)]
+
+## 1.1.4
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/odata-annotation-core-types 1.0.4 → 1.0.5
+
+## 1.1.3
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/odata-annotation-core-types 1.0.3 → 1.0.4
+
 ## 1.1.2
 
 ### Patch Changes

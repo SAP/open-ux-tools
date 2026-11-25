@@ -5,7 +5,9 @@
 
 import { join } from 'node:path';
 import { parse } from 'yaml';
-import { fileExists, readFile } from '../../index.js';
+import type { Editor } from 'mem-fs-editor';
+import { fileExists } from '../../index.js';
+import { readFile } from '../../utils/file-access.js';
 import type { Manifest, SapUi5RoutingTarget } from '../../project-spec-types.js';
 import { FioriElementsVersion } from '../../project-spec-types.js';
 import { FLOOR_PLAN } from '../../types.js';
@@ -134,16 +136,17 @@ function extractFlpIntentFromConfig(htmlContent: string): string | undefined {
 /**
  * Extract FLP intent from HTML file (flpSandbox.html or similar)
  *
+ * @param fs - mem-fs editor
  * @param htmlFilePath - Path to HTML file
  * @returns FLP intent string or undefined
  */
-export async function getFlpIntentFromHtml(htmlFilePath: string): Promise<string | undefined> {
+export function getFlpIntentFromHtml(fs: Editor, htmlFilePath: string): string | undefined {
     try {
-        if (!(await fileExists(htmlFilePath))) {
+        if (!fileExists(fs, htmlFilePath)) {
             return undefined;
         }
 
-        const htmlContent = readFile(htmlFilePath);
+        const htmlContent = readFile(fs, htmlFilePath);
         return extractFlpIntentFromConfig(htmlContent);
     } catch {
         // Expected: HTML file may be malformed, contain encoding issues, or have unexpected structure.
@@ -238,10 +241,14 @@ export function getMainEntity(manifest: Manifest): string {
 /**
  * Get first backend configuration from ui5.yaml
  *
+ * @param fs - mem-fs editor
  * @param projectRoot - Root path of the project
  * @returns Backend configuration object
  */
-export function getFirstBackend(projectRoot: string): {
+export function getFirstBackend(
+    fs: Editor,
+    projectRoot: string
+): {
     destination?: string;
     sapClient?: string;
     scp?: boolean;
@@ -250,7 +257,7 @@ export function getFirstBackend(projectRoot: string): {
     let result: { destination?: string; sapClient?: string; scp?: boolean; url?: string } = {};
 
     try {
-        const yamlJSON = parse(readFile(join(projectRoot, 'ui5.yaml')));
+        const yamlJSON = parse(readFile(fs, join(projectRoot, 'ui5.yaml')));
         const proxyMiddleware = yamlJSON?.server?.customMiddleware.filter((customMiddleware: any) => {
             return (
                 customMiddleware?.name === 'fiori-tools-proxy' ||

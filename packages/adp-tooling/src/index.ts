@@ -11,6 +11,7 @@ export * from './base/helper.js';
 export * from './base/credentials.js';
 export * from './base/constants/index.js';
 export * from './base/project-builder.js';
+export * from './base/manifest-builder.js';
 export * from './base/abap/manifest-service.js';
 export * from './base/abap/key-user-changes.js';
 export { writeKeyUserChanges, isViewRestrictionOnlyChange } from './base/change-utils.js';

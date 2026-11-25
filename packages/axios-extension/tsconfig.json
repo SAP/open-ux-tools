@@ -1,27 +1,24 @@
 {
-  "extends": "../../tsconfig.json",
-  "include": [
-    "src"
-  ],
-  "compilerOptions": {
-    "rootDir": "src",
-    "outDir": "dist",
-    "baseUrl": "./src",
-    "strict": false,
-    "strictNullChecks": false
-  },
-  "references": [
-    {
-      "path": "../btp-utils"
+    "extends": "../../tsconfig.json",
+    "include": ["src"],
+    "compilerOptions": {
+        "rootDir": "src",
+        "outDir": "dist",
+        "strict": false,
+        "strictNullChecks": false
     },
-    {
-      "path": "../feature-toggle"
-    },
-    {
-      "path": "../logger"
-    },
-    {
-      "path": "../project-access"
-    }
-  ]
+    "references": [
+        {
+            "path": "../btp-utils"
+        },
+        {
+            "path": "../feature-toggle"
+        },
+        {
+            "path": "../logger"
+        },
+        {
+            "path": "../project-access"
+        }
+    ]
 }

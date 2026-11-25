@@ -28,7 +28,7 @@ export const generatorTitleConfig: Record<AppDownloadType, { title: string; desc
         description: 'Download an application that was generated with the ADT Quick SAP Fiori Application generator'
     },
     [AppDownloadType.AbapRepository]: {
-        title: 'Download app from UI5 ABAP repository',
+        title: 'Download app from SAPUI5 ABAP repository',
         description: 'Download app from SAPUI5 ABAP repository'
     }
 };
@@ -93,7 +93,8 @@ export const appListResultFields = [
     'url'
 ];
 
-// Fallback for older systems that reject sap.app/sourceTemplate/id with HTTP 400.
+// Fallback for older systems (e.g. ABAP 731) that reject unknown columns with HTTP 400.
+// Drops sourceTemplateIdField and fileType, which older app index versions do not support.
 export const appListFieldsWithoutSourceTemplate = appListResultFields.filter(
-    (field) => field !== sourceTemplateIdField
+    (field) => field !== sourceTemplateIdField && field !== 'fileType'
 );

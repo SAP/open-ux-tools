@@ -64,7 +64,8 @@ export class UITooltip extends React.Component<UITooltipProps, {}> {
                 // Apply some different styles
                 styles: {
                     root: {
-                        display: 'inline-block'
+                        display: 'inline-block',
+                        padding: 0
                     },
                     calloutMain: {
                         padding: 10,

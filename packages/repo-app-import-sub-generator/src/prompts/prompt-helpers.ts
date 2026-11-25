@@ -86,18 +86,24 @@ export const formatAppChoices = (appList: AppIndex): Array<{ name: string; value
  */
 /**
  * Fallback for older ABAP systems that reject sourceTemplate/type search params with HTTP 400.
- * Returns all apps unfiltered — old systems won't have ADT-deployed apps anyway.
+ * Fetches the full unfiltered list and then applies client-side appId filtering if provided,
+ * since older systems cannot handle server-side field filtering.
  *
  * @param appIndex - The app index instance to search against.
- * @returns All apps without filtering, or an empty array if the retry also fails.
+ * @param appId - Optional app ID to filter results client-side.
+ * @returns Matching apps (or all apps when appId is omitted), or an empty array if the retry also fails.
  */
-async function retryAbapAppListFetch(appIndex: ReturnType<AbapServiceProvider['getAppIndex']>): Promise<AppIndex> {
+async function retryAppListFetchForOlderSystems(
+    appIndex: ReturnType<AbapServiceProvider['getAppIndex']>,
+    appId?: string
+): Promise<AppIndex> {
     try {
         // sap.app/type=application is also dropped — older systems may reject it too.
         // Non-application entries in the list are acceptable; they will fail at the download step.
         const results = await appIndex.search({}, appListFieldsWithoutSourceTemplate);
-        RepoAppDownloadLogger.logger?.debug(`Retry succeeded: ${results.length} results`);
-        return results;
+        const filtered = appId ? results.filter((app) => app['sap.app/id'] === appId) : results;
+        RepoAppDownloadLogger.logger?.debug(`Retry succeeded: ${filtered.length} results`);
+        return filtered;
     } catch (retryError) {
         const message = retryError instanceof Error ? retryError.message : String(retryError);
         RepoAppDownloadLogger.logger?.error(t('error.applicationListFetchError', { error: message }));
@@ -165,15 +171,18 @@ async function getAppList(
         }
         return await searchAdtQuickDeployApps(appIndex, appId);
     } catch (error) {
-        if (
-            downloadType === AppDownloadType.AbapRepository &&
-            (error as { response?: { status?: number } })?.response?.status === 400
-        ) {
-            // Older systems may not support sourceTemplateIdField or the sap.app/type search param.
-            RepoAppDownloadLogger.logger?.debug(`Retrying without ${sourceTemplateIdField} and search params`);
-            return retryAbapAppListFetch(appIndex);
-        }
+        const status = (error as { response?: { status?: number } })?.response?.status;
         const message = error instanceof Error ? error.message : String(error);
+        // Older systems rejects unknown fields either as HTTP 400 or with an "unknown column" error message
+        const isOlderSystemError = status === 400 || /column.*unknown|unknown.*column/i.test(message);
+        if (isOlderSystemError) {
+            // Older systems reject sap.app/sourceTemplate/id as an unknown column.
+            // Both flows send it — ADTQuickDeploy as a search param, AbapRepository as a result field.
+            RepoAppDownloadLogger.logger?.debug(
+                `Retrying without ${sourceTemplateIdField} and search params (original error: ${message})`
+            );
+            return retryAppListFetchForOlderSystems(appIndex, appId);
+        }
         RepoAppDownloadLogger.logger?.error(t('error.applicationListFetchError', { error: message }));
         return [];
     }

@@ -7,7 +7,8 @@ import { defaultMinUi5Version, minUi5VersionV4Template } from '@sap-ux/ui5-info'
 import { getManifestVersion } from '@sap-ux/ui5-application-writer';
 import { getUI5Version, stripSpaces } from '../utils/index.js';
 import type { ImportProjectInfo, ProjectMigrate, Service } from '../types.js';
-import { DatasourceType, ODataVersion } from '../types.js';
+import { ODataVersion } from '@sap-ux/axios-extension';
+import { DatasourceType } from '../types.js';
 
 /**
  * Prepare sanitized project names and namespaces
@@ -120,7 +121,7 @@ export function createProjectData(config: CreateProjectDataConfig): ProjectMigra
         ui5Theme: ui5Theme,
         ui5Version: projectUI5Version,
         minSupportedUI5Version: odataVersion === ODataVersion.v4 ? minUi5VersionV4Template : defaultMinUi5Version,
-        localUI5Version: projectUI5Version.length > 0 ? projectUI5Version : (localUI5Version as string),
+        localUI5Version: localUI5Version as string,
         manifestUI5Version,
         neoAppUI5Version,
         sapux: !isSAPApp,

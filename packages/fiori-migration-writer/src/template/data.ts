@@ -10,7 +10,8 @@ import type {
     HasRootIntent,
     Ui5YamlContext
 } from '../types.js';
-import { FLOOR_PLAN, ODataVersion } from '../types.js';
+import { ODataVersion } from '@sap-ux/axios-extension';
+import { FLOOR_PLAN } from '../types.js';
 import { escapeDoubleQuotes } from '../utils/index.js';
 
 /**
@@ -145,7 +146,7 @@ export interface AddV4MockMiddlewareConfig {
     projectInfo: ImportProjectInfo;
     projectData: Partial<ProjectMigrate>;
     ui5Version: string | undefined;
-    ui5SnapshotUrl: string;
+    ui5SnapshotUrl?: string;
     ui5VersionRequestInfo: any;
     ui5Yaml: Ui5Yaml;
 }

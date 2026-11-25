@@ -1,4 +1,3 @@
-// eslint-disable-next-line sonarjs/no-implicit-dependencies
 import type { TaskParameters } from '@ui5/builder';
 import { LogLevel, ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
 import type { AbapDeployConfig } from '../types/index.js';

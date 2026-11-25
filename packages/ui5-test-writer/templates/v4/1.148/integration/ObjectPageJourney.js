@@ -187,8 +187,15 @@ sap.ui.define([
             Then.onThe<%- name%>Generated.iCheckSubSection({ section: "<%- subSection.id %>" });
 <% } -%>
 <% if (subSection.fields && subSection.fields.length > 0) { -%>
-<% subSection.fields.forEach(function(field) { -%>
+<% subSection.fields.forEach(function(field, fieldIndex) { -%>
+<% if (field.checkBoxGroup) { -%>
+<% if (fieldIndex === 0 || !subSection.fields[fieldIndex - 1].checkBoxGroup) { -%>
+            // Checkbox-group members cannot be addressed by sap.fe.test.api
+<% } -%>
+            // Then.onThe<%- name%>Generated.onForm({ section: "<%- subSection.id %>" }).iCheckField({ property: "<%- field.property %>", fieldGroup: "<%- field.fieldGroup %>" });
+<% } else { -%>
             Then.onThe<%- name%>Generated.onForm({ section: "<%- subSection.id %>" }).iCheckField({ property: "<%- field.property %>"<% if (field.connectedFields) { %>, connectedFields: "<%- field.connectedFields %>"<% } %><% if (field.fieldGroup) { %>, fieldGroup: "<%- field.fieldGroup %>"<% } %> });
+<% } -%>
 <% }) -%>
 <% } -%>
 <% if (subSection.tableColumns && Object.keys(subSection.tableColumns).length > 0 && subSection.navigationProperty) { -%>
@@ -197,8 +204,15 @@ sap.ui.define([
 <% }) -%>
 <% } else { -%>
 <% if (section.fields && section.fields.length > 0) { -%>
-<% section.fields.forEach(function(field) { -%>
+<% section.fields.forEach(function(field, fieldIndex) { -%>
+<% if (field.checkBoxGroup) { -%>
+<% if (fieldIndex === 0 || !section.fields[fieldIndex - 1].checkBoxGroup) { -%>
+            // Checkbox-group members cannot be addressed by sap.fe.test.api
+<% } -%>
+            // Then.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" }).iCheckField({ property: "<%- field.property %>", fieldGroup: "<%- field.fieldGroup %>" });
+<% } else { -%>
             Then.onThe<%- name%>Generated.onForm({ section: "<%- section.id %>" }).iCheckField({ property: "<%- field.property %>"<% if (field.connectedFields) { %>, connectedFields: "<%- field.connectedFields %>"<% } %><% if (field.fieldGroup) { %>, fieldGroup: "<%- field.fieldGroup %>"<% } %> });
+<% } -%>
 <% }) -%>
 <% } -%>
 <% if (section.tableColumns && Object.keys(section.tableColumns).length > 0 && section.navigationProperty) { -%>

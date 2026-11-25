@@ -24,7 +24,8 @@ const ESBUILD_BUNDLING_PACKAGES = [
     '@sap-ux/fiori-mcp-server',
     'sap-ux-sap-systems-ext',
     '@sap-ux/eslint-plugin-fiori-tools',
-    '@sap-ux/generator-odata-downloader'
+    '@sap-ux/generator-odata-downloader',
+    '@sap-ux/control-property-editor'
 ];
 
 /**

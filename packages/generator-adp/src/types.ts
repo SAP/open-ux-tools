@@ -33,6 +33,10 @@ export interface AdpTelemetryProperties {
      */
     baseAppTechnicalName?: string;
     /**
+     * The service offering of the CF service instance bound to the project (CF flow only).
+     */
+    cfServiceOffering?: string;
+    /**
      * UI5 version selected by the user.
      */
     ui5VersionSelected?: string;

@@ -1,5 +1,263 @@
 # @sap-ux/ui5-test-writer
 
+## 1.19.20
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-application-writer 2.1.7 → 2.1.8
+- @sap-ux/preview-middleware 1.2.44 → 1.2.45
+- @sap-ux/fiori-generator-shared 1.4.0 → 1.4.1
+- @sap-ux/project-access 2.3.4 → 2.3.5
+
+## 1.19.19
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.2.43 → 1.2.44
+
+## 1.19.18
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-13
+
+#### Bug Fixes
+
+- Split the V4 template buckets at 1.120 so apps below 1.120 no longer emit OPA5 assertions their runtime cannot support. The former 1.84 bucket now serves >=1.120 <1.148, and a new <1.120 (1.84) bucket omits iCheckSection, iCheckNumberOfSections and iCheckColumns (unavailable / empty column headers before 1.120). Object page sections that would be left with only a section-tab navigation and no assertion are now skipped entirely, so the generated journey no longer produces an OPA5 test that fails with "Expected at least one assertion, but none were run". [[4702f41](https://github.com/SAP/open-ux-tools/commit/4702f417a3eacc8d2db3d3bccc7bd7db30e511ce)]
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.2.42 → 1.2.43
+
+## 1.19.17
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-12
+
+#### Bug Fixes
+
+- Improve generated TypeScript OPA5 tests
+
+    - Remove obsolete `@sapui5/types` workaround casts now that upstream types are correct
+    - Restore checkbox-group comments and the `iClickLink` row index in the TS journey templates
+    - Preserve overloaded sub-object method signatures in generated `OpaJourneyTypes` (e.g. `iClickLink`), fixing a `TS2554: Expected 1 arguments, but got 2` type-check error [[404b757](https://github.com/SAP/open-ux-tools/commit/404b757cea93525b907ad28d3a78c01ca035ac51)]
+
+## 1.19.16
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.2.41 → 1.2.42
+
+## 1.19.15
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.3.0 → 1.4.0
+- @sap-ux/ui5-application-writer 2.1.7 → 2.1.7
+- @sap-ux/preview-middleware 1.2.40 → 1.2.41
+
+## 1.19.14
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.2.39 → 1.2.40
+
+## 1.19.13
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-10
+
+#### Bug Fixes
+
+- Configure OPA5 JourneyRunner with autoWait: true (best practice) [[3ec03ef](https://github.com/SAP/open-ux-tools/commit/3ec03efa8602776cdaedbf19155ca4e62005f665)]
+
+## 1.19.12
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.2.38 → 1.2.39
+- @sap-ux/fiori-generator-shared 1.2.27 → 1.3.0
+
+## 1.19.11
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.2.37 → 1.2.38
+
+## 1.19.10
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.2.36 → 1.2.37
+
+## 1.19.9
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.2.35 → 1.2.36
+
+## 1.19.8
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.2.34 → 1.2.35
+- @sap-ux/fiori-generator-shared 1.2.26 → 1.2.27
+
+## 1.19.7
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.2.33 → 1.2.34
+- @sap-ux/ui5-application-writer 2.1.7 → 2.1.7
+- @sap-ux/fiori-generator-shared 1.2.25 → 1.2.26
+- @sap-ux/project-access 2.3.3 → 2.3.4
+
+## 1.19.6
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.2.32 → 1.2.33
+
+## 1.19.5
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade i18next 26.3.6 → 26.5.11 [[d5e9708](https://github.com/SAP/open-ux-tools/commit/d5e9708d60338e575b72fa2dcd64af87120270ef)]
+
+#### Dependency Updates
+
+- Patch dependency updates (Oct 2026) — yaml 2.9.1, xpath 0.0.35, @xml-tools/ast 5.0.6, @xml-tools/parser 1.0.12, @sap-ux/annotation-converter 0.10.23, @sap-devx/feature-toggle-node 2.1.1, folder-hash 4.1.4, @fluentui/react 8.125.8 [[85d5e62](https://github.com/SAP/open-ux-tools/commit/85d5e62bcbc4f65601276277d028d340dc098eab)]
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.2.24 → 1.2.25
+- @sap-ux/ui5-application-writer 2.1.6 → 2.1.7
+- @sap-ux/preview-middleware 1.2.31 → 1.2.32
+- @sap-ux/project-access 2.3.2 → 2.3.3
+
+## 1.19.4
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.2.30 → 1.2.31
+
+## 1.19.3
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.3.1 → 2.3.2
+- @sap-ux/fiori-generator-shared 1.2.23 → 1.2.24
+- @sap-ux/preview-middleware 1.2.29 → 1.2.30
+- @sap-ux/ui5-application-writer 2.1.6 → 2.1.6
+
+## 1.19.2
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.2.28 → 1.2.29
+
+## 1.19.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-23
+
+#### Bug Fixes
+
+- Stop emitting unpassable `iCheckField` steps for ObjectPage checkbox-group fields. A nested all-boolean `UI.FieldGroup` renders as a group of checkboxes whose members are not addressable by the sap.fe.test.api form API; such fields are now emitted commented out with an explanatory note instead of as live assertions. [[9a4ce7f](https://github.com/SAP/open-ux-tools/commit/9a4ce7fbcb9d778fcba88b840f13cda2303ac3d9)]
+
+#### Workspace Updates
+
+- @sap-ux/preview-middleware 1.2.27 → 1.2.28
+- @sap-ux/fiori-generator-shared 1.2.22 → 1.2.23
+
+## 1.19.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-10-22
+
+#### Features
+
+- Generate iCheckSortOrder and iCheckFilterField assertions from PresentationVariant and SelectionVariant annotations [[e84f46e](https://github.com/SAP/open-ux-tools/commit/e84f46ea75f7de5ce45f3e67939ede5ca36ecaba)]
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-22
+
+#### Workspace Updates
+
+- @sap-ux/ui5-application-writer 2.1.6 → 2.1.6
+
+## 1.18.3
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-20
+
+#### Bug Fixes
+
+- Resolve JourneyRunner launchUrl from test/flpSandbox.html instead of defaulting to index.html [[665fd4b](https://github.com/SAP/open-ux-tools/commit/665fd4b6e6ea3ccd22234ddda547f02781a96fc2)]
+
+## 1.18.2
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.2.21 → 1.2.22
+- @sap-ux/preview-middleware 1.2.26 → 1.2.27
+- @sap-ux/project-access 2.3.0 → 2.3.1
+- @sap-ux/ui5-application-writer 2.1.5 → 2.1.6
+
 ## 1.18.1
 
 ### Patch Changes

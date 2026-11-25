@@ -1,5 +1,88 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 1.1.17
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/btp-utils 2.0.8 → 2.0.9
+- @sap-ux/ui5-config 1.0.11 → 1.0.12
+- @sap-ux/project-access 2.3.4 → 2.3.5
+- @sap-ux/nodejs-utils 1.0.14 → 1.0.15
+
+## 1.1.16
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-16
+
+#### Bug Fixes
+
+- Do not add a second standalone approuter when an `approuter.nodejs` module already exists in mta.yaml (e.g. the `.deploy/app-router` module scaffolded by newer `@sap/cds-dk`) [[23236e2](https://github.com/SAP/open-ux-tools/commit/23236e27c29786061694fcc868c9fddf61d4edaf)]
+
+## 1.1.15
+
+### Patch Changes
+
+#### Bug Fixes
+
+- Replace abandoned hasbin (10yr, no releases) with which for binary detection [[73fdfbf](https://github.com/SAP/open-ux-tools/commit/73fdfbfe2a371d5b9666d2a69b55d1ed977bb69e)]
+
+## 1.1.14
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.3.3 → 2.3.4
+
+## 1.1.13
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade i18next 26.3.6 → 26.5.11 [[d5e9708](https://github.com/SAP/open-ux-tools/commit/d5e9708d60338e575b72fa2dcd64af87120270ef)]
+
+#### Workspace Updates
+
+- @sap-ux/nodejs-utils 1.0.13 → 1.0.14
+- @sap-ux/yaml 1.0.2 → 1.0.3
+- @sap-ux/ui5-config 1.0.10 → 1.0.11
+- @sap-ux/project-access 2.3.2 → 2.3.3
+
+## 1.1.12
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.3.1 → 2.3.2
+- @sap-ux/nodejs-utils 1.0.12 → 1.0.13
+
+## 1.1.11
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/btp-utils 2.0.7 → 2.0.8
+- @sap-ux/nodejs-utils 1.0.11 → 1.0.12
+
+## 1.1.10
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/btp-utils 2.0.6 → 2.0.7
+- @sap-ux/ui5-config 1.0.9 → 1.0.10
+- @sap-ux/nodejs-utils 1.0.10 → 1.0.11
+- @sap-ux/project-access 2.3.0 → 2.3.1
+
 ## 1.1.9
 
 ### Patch Changes

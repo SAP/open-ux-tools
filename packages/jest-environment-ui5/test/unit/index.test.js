@@ -1,4 +1,4 @@
-const jestCLI = require('jest'); // eslint-disable-line sonarjs/no-implicit-dependencies
+const jestCLI = require('jest');
 const UI5DOMEnvironment = require('../../src');
 describe('Custom environment', () => {
     it('Can be created', async () => {

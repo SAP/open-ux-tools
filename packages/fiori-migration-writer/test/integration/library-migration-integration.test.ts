@@ -10,6 +10,7 @@ import { fileURLToPath } from 'node:url';
 import { mkdir, writeFile, rm } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { ProjectMigrator, MigrationTypes, initI18n, getReuseLibs, ReuseLibType } from '../../src/index.js';
+import { createMemFsEditor } from '../../src/utils/fs-adapter.js';
 import type { ProjectFolder } from '../../src/index.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -131,11 +132,11 @@ describe('Library Migration Integration Tests', () => {
 
         // Act: Run migration directly (this is what the user does via BAS/VS Code UI)
         // Pass type: library to help migration detect the project type correctly
-        const { fs, result, messages } = await ProjectMigrator.migrate(
-            projectRoot,
-            libNamespacePath, // Pass libPath as baseUri
-            ui5SnapshotUrl,
-            {
+        const { fs, result, messages } = await ProjectMigrator.migrate({
+            projectRoot: projectRoot,
+            baseUri: libNamespacePath,
+            ui5SnapshotUrl: ui5SnapshotUrl,
+            importProjectInfo: {
                 moduleName: 'sap.company.lib.testlib',
                 type: MigrationTypes.library,
                 rootPath: projectRoot,
@@ -151,9 +152,8 @@ describe('Library Migration Integration Tests', () => {
                 flpDatasource: {},
                 uiAdaptation: { reference: '', layer: '' }
             },
-            undefined,
-            false
-        );
+            internalToggle: false
+        });
 
         // Commit changes to disk
         await new Promise<void>((resolve, reject) => {
@@ -248,7 +248,7 @@ describe('Library Migration Integration Tests', () => {
             }
         ];
 
-        const libs = await getReuseLibs(workspaceFolders);
+        const libs = await getReuseLibs(createMemFsEditor(), workspaceFolders);
         expect(libs).toHaveLength(1);
 
         // Assert: Should find innermost package.json (packageRoot), not monorepo root
@@ -257,11 +257,11 @@ describe('Library Migration Integration Tests', () => {
         expect(libs[0].value.type).toBe(ReuseLibType.LIBRARY);
 
         // Run migration using the discovered libRoot
-        const { fs, result, messages } = await ProjectMigrator.migrate(
-            libs[0].value.libRoot,
-            libPath,
-            ui5SnapshotUrl,
-            {
+        const { fs, result, messages } = await ProjectMigrator.migrate({
+            projectRoot: libs[0].value.libRoot,
+            baseUri: libPath,
+            ui5SnapshotUrl: ui5SnapshotUrl,
+            importProjectInfo: {
                 moduleName: 'company.lib',
                 type: MigrationTypes.library,
                 rootPath: libs[0].value.libRoot,
@@ -277,9 +277,8 @@ describe('Library Migration Integration Tests', () => {
                 flpDatasource: {},
                 uiAdaptation: { reference: '', layer: '' }
             },
-            undefined,
-            false
-        );
+            internalToggle: false
+        });
 
         // Commit changes to disk
         await new Promise<void>((resolve, reject) => {

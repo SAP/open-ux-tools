@@ -2,7 +2,7 @@ import type { LiteralUnion } from './literal-union.js';
 import type { JsonObject, JsonValue } from './basic.js';
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
-declare namespace PackageJson {
+export declare namespace PackageJson {
     /**
 	A person who has been involved in creating or maintaining the package.
      */

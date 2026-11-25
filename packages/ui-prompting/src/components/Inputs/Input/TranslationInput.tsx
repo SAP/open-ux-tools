@@ -12,7 +12,7 @@ export interface TranslationInputProps extends InputProps {
 }
 
 export const TranslationInput = (props: TranslationInputProps) => {
-    const { bundle, onEvent: triggerEvent, pendingQuestions } = useTranslation();
+    const { bundle, onEvent: triggerEvent, pendingQuestions, translationInputProps } = useTranslation();
     const { name, onChange, guiOptions = {}, message, errorMessage, id, properties } = props;
     const { mandatory, hint, placeholder } = guiOptions;
     const [value, setValue] = useValue('', props.value);
@@ -44,6 +44,7 @@ export const TranslationInput = (props: TranslationInputProps) => {
 
     return (
         <UITranslationInput
+            {...translationInputProps}
             onRenderLabel={getLabelRenderer(hint)}
             required={mandatory}
             label={typeof message === 'string' ? message : name}

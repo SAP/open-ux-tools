@@ -24,7 +24,7 @@ import { generateSapLibsStr, checkManifestUI5Version } from '../utils/common.js'
 export async function processRegularProject(
     context: RegularProjectContext
 ): Promise<{ projectInfo: ImportProjectInfo; messages: Message[] }> {
-    const { projectRoot, manifest, defaultProjectInfo, services } = context;
+    const { fs, projectRoot, manifest, defaultProjectInfo, services } = context;
     let projectInfo = context.projectInfo; // Use let since this is reassigned
     const { projectData, manifestAnalysis, backendConfig } = services;
 
@@ -78,7 +78,8 @@ export async function processRegularProject(
 
     // Step3. Get the template details
     try {
-        const templateDetails = await extractTemplateDetails(
+        const templateDetails = extractTemplateDetails(
+            fs,
             manifest,
             projectRoot,
             mainService ?? '',
@@ -97,15 +98,16 @@ export async function processRegularProject(
         namespace = namespace || '';
 
         // Extract backend configuration and app title from i18n
-        const backendConfig = await extractBackendAndI18nConfig(
+        const backendConfig = await extractBackendAndI18nConfig({
+            fs,
             projectRoot,
-            projectInfo.webappPath,
+            webappPath: projectInfo.webappPath,
             getFirstBackend,
-            destination,
-            scp,
-            hostname,
-            sapClient
-        );
+            existingDestination: destination,
+            existingScp: scp,
+            existingHostname: hostname,
+            existingSapClient: sapClient
+        });
         // Note: destination will be set from neoAppResult later (line 192)
         scp = backendConfig.scp;
         hostname = backendConfig.hostname;
@@ -119,7 +121,8 @@ export async function processRegularProject(
         const manifestLibsTmp = manifest['sap.ui5']?.dependencies?.libs || {};
 
         // Extract and filter SAP libraries from manifest
-        const { manifestLibs, reuseManifestLibs } = await extractSapLibraries(
+        const { manifestLibs, reuseManifestLibs } = extractSapLibraries(
+            fs,
             manifestLibsTmp,
             projectRoot,
             projectInfo.webappPath
@@ -127,6 +130,7 @@ export async function processRegularProject(
 
         // Process FLP sandbox files to extract libs, intents, and root intent flags
         const flpResult = await processFlpSandboxFiles(
+            fs,
             projectRoot,
             projectInfo.webappPath,
             getFlpIntentFromHtml,
@@ -138,9 +142,7 @@ export async function processRegularProject(
         flpSandboxMockFlpIntent = flpResult.flpSandboxMockFlpIntent;
         hasRootIntent.flpSandboxRootIntent = flpResult.hasRootIntent.flpSandboxRootIntent;
         hasRootIntent.flpSandboxMockRootIntent = flpResult.hasRootIntent.flpSandboxMockRootIntent;
-        if (flpResult.targetMockHtmlFile) {
-            projectInfo.targetMockHtmlFile = flpResult.targetMockHtmlFile;
-        }
+        const targetMockHtmlFile = flpResult.targetMockHtmlFile;
 
         // Process neo-app configuration and determine OData version
         const neoAppResult = await processNeoAppAndODataVersion(
@@ -214,7 +216,8 @@ export async function processRegularProject(
             neoappDestinations,
             firstNeoAppDestination,
             hasRootIntent,
-            reuseLibs: Object.keys(reuseManifestLibs || {}).join(',')
+            reuseLibs: Object.keys(reuseManifestLibs || {}).join(','),
+            ...(targetMockHtmlFile ? { targetMockHtmlFile } : {})
         };
     } catch (error) {
         messages.push({

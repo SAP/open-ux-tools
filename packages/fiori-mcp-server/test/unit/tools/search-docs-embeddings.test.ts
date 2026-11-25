@@ -19,12 +19,12 @@ function createClient(): MultiServerMCPClient {
         throwOnLoadError: true,
         prefixToolNameWithServerName: false,
         additionalToolNamePrefix: '',
-        useStandardContentBlocks: true,
         mcpServers: {
             'fiori-mcp-server': {
                 command: 'node',
                 args: [DIST_SERVER],
-                env: { SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY: 'true' }
+                env: { SAP_UX_FIORI_TOOLS_DISABLE_TELEMETRY: 'true' },
+                mode: 'legacy'
             }
         }
     });

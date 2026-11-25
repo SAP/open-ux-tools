@@ -71,6 +71,37 @@ export const V4_SECOND_TABLE_ANNOTATION = `<Annotations Target="IncidentService.
                                 <Collection/>
                             </Annotation>
                         </Annotations>`;
+export const V4_PRESENTATION_VARIANT_ANNOTATIONS = `
+            <Annotations Target="IncidentService.Incidents">
+                <Annotation Term="UI.Facets">
+                    <Collection>
+                        <Record Type="UI.ReferenceFacet">
+                            <PropertyValue Property="ID" String="IncidentFlows"/>
+                            <PropertyValue Property="Label" String="Incident Flows"/>
+                            <PropertyValue Property="Target" AnnotationPath="incidentFlow/@UI.PresentationVariant"/>
+                        </Record>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="IncidentService.IncidentFlow">
+                <Annotation Term="UI.PresentationVariant">
+                    <Record Type="UI.PresentationVariantType">
+                        <PropertyValue Property="Visualizations">
+                            <Collection>
+                                <AnnotationPath>@UI.LineItem</AnnotationPath>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="UI.LineItem">
+                    <Collection>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="processStep"/>
+                        </Record>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+            `;
 export const V4_METADATA = readFileSync(V4_ANNOTATIONS_PATH, 'utf-8');
 
 // CAP

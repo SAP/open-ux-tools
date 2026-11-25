@@ -17,14 +17,15 @@
 
 import opaTest from "sap/ui/test/opaQunit";
 import type { Given, When, Then } from "./types/OpaJourneyTypes.gen";
-<%_
-const usesFilterFieldIdentifier =
-    !hideFilterBar && filterBarItems && filterBarItems.some(function(item) { return item.custom; });
--%>
-<% if (usesFilterFieldIdentifier) { -%>
-import type { FilterFieldIdentifier } from "sap/fe/test/api/FilterBarAPI";
+<%_ const usesDialogIdentifier = (tabs && tabs.some(function(tab) { return tab.contactCardColumns && tab.contactCardColumns.length > 0; })) || (contactCardColumns && contactCardColumns.length > 0); -%>
+<% if (usesDialogIdentifier) { -%>
+import type { DialogIdentifier } from "sap/fe/test/api/BaseAPI";
 <% } -%>
 import runner from "./pages/JourneyRunner";
+<%_ const needsSortOrder = startLR && ((textAnnotationColumns && textAnnotationColumns.length > 0) || (defaultSortOrder && defaultSortOrder.length > 0) || (tabs && tabs.some(function(tab) { return (tab.textAnnotationColumns && tab.textAnnotationColumns.length > 0) || (tab.defaultSortOrder && tab.defaultSortOrder.length > 0); }))); -%>
+<%_ if (needsSortOrder) { -%>
+import { SortOrder } from "sap/ui/core/library";
+<%_ } -%>
 
 function journey() {
     QUnit.module("<%- name%>ListReport journey");
@@ -44,7 +45,7 @@ function journey() {
     opaTest("Check filter bar", function (_Given: Given, _When: When, Then: Then) {
         <%_ filterBarItems.forEach(function(item) { _%>
         <%_ if (item.custom) { _%>
-        Then.onThe<%- startLR%>Generated.onFilterBar().iCheckFilterField("<%- item.description %>" as unknown as FilterFieldIdentifier);
+        Then.onThe<%- startLR%>Generated.onFilterBar().iCheckFilterField("<%- item.description %>");
         <%_ } else { _%>
         Then.onThe<%- startLR%>Generated.onFilterBar().iCheckFilterField({ property: "<%- item.property %>" });
         <%_ } _%>
@@ -203,6 +204,15 @@ function journey() {
     });
 
 <%_ } -%>
+<%_ if (tab.defaultSortOrder && tab.defaultSortOrder.length > 0) { -%>
+    opaTest(<%- JSON.stringify("Check default sort order from PresentationVariant in view " + tab.key) %>, function (_Given: Given, _When: When, Then: Then) {
+        When.onThe<%- startLR%>Generated.iGoToView({ key: "<%- tab.key %>" });
+        <%_ tab.defaultSortOrder.forEach(function(sort) { _%>
+        Then.onThe<%- startLR %>Generated.onTable("<%- tab.key %>").iCheckSortOrder({ name: "<%- sort.property %>" }, SortOrder.<%- sort.descending ? 'Descending' : 'Ascending' %>, true);
+        <%_ }); -%>
+    });
+
+<%_ } -%>
 <%_ if (tab.textAnnotationColumns && tab.textAnnotationColumns.length > 0) { -%>
 <%_ if (tab.columnPersonalizationSupported !== false) { -%>
     opaTest(<%- JSON.stringify("Check the presence of the text columns for columns with a Text annotation in view " + tab.key) %>, function (_Given: Given, When: When, Then: Then) {
@@ -233,7 +243,7 @@ function journey() {
         <%_ tab.contactCardColumns.forEach(function(column) { _%>
         // May fail if the mock data has no row at index 0 or that row does not render the contact link; adjust the row selector if needed.
         When.onThe<%- startLR %>Generated.onTable("<%- tab.key %>").iClickLink(0, "<%- column.property %>");
-        Then.onThe<%- startLR %>Generated.onDialog().iCheckContactDialog({ controlType: "sap.ui.mdc.link.Panel" });
+        Then.onThe<%- startLR %>Generated.onDialog({} as unknown as DialogIdentifier).iCheckContactDialog({ controlType: "sap.ui.mdc.link.Panel" });
         <%_ }); _%>
     });
 
@@ -354,6 +364,22 @@ function journey() {
 <%_ if (tableColumns && Object.keys(tableColumns).length > 0) { -%>
     opaTest("Check table columns", function (_Given: Given, _When: When, Then: Then) {
         Then.onThe<%- startLR %>Generated.onTable(defaultTableId).iCheckColumns(undefined, <%- JSON.stringify(tableColumns) %>);
+    });
+
+<%_ } -%>
+<%_ if (startLR && defaultSortOrder && defaultSortOrder.length > 0) { -%>
+    opaTest("Check default sort order from PresentationVariant", function (_Given: Given, _When: When, Then: Then) {
+        <%_ defaultSortOrder.forEach(function(sort) { _%>
+        Then.onThe<%- startLR %>Generated.onTable(defaultTableId).iCheckSortOrder({ name: "<%- sort.property %>" }, SortOrder.<%- sort.descending ? 'Descending' : 'Ascending' %>, true);
+        <%_ }); -%>
+    });
+
+<%_ } -%>
+<%_ if (startLR && defaultFilterValues && defaultFilterValues.length > 0) { -%>
+    opaTest("Check default filter values from SelectionVariant", function (_Given: Given, _When: When, Then: Then) {
+        <%_ defaultFilterValues.forEach(function(filter) { _%>
+        Then.onThe<%- startLR %>Generated.onFilterBar().iCheckFilterField({ property: <%- JSON.stringify(filter.property) %> }, <%- filter.value2 !== undefined ? JSON.stringify([filter.value, filter.value2]) : JSON.stringify(filter.value) %><%- filter.operator ? ', ' + JSON.stringify(filter.operator) : '' %>);
+        <%_ }); -%>
     });
 
 <%_ } -%>

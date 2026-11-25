@@ -2,7 +2,7 @@
     "extends": "../../tsconfig.json",
     "compilerOptions": {
         "module": "CommonJS",
-        "moduleResolution": "Node",
+        "moduleResolution": "node10", "ignoreDeprecations": "6.0",
         "outDir": "dist-cjs",
         "rootDir": "./src",
         "lib": ["ES2023", "ESNext.BigInt"],

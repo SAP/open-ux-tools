@@ -16,6 +16,7 @@ import type {
     CfServicesAnswers,
     ConfigAnswers,
     Language,
+    MtaYaml,
     SourceApplication,
     VersionDetail
 } from '@sap-ux/adp-tooling';
@@ -51,15 +52,24 @@ const mockIsCfInstalled = jest.fn<typeof realAdpTooling.isCfInstalled>();
 const mockLoadCfConfig = jest.fn<typeof realAdpTooling.loadCfConfig>();
 const mockIsLoggedInCf = jest.fn<typeof realAdpTooling.isLoggedInCf>();
 const mockGetMtaServices = jest.fn<typeof realAdpTooling.getMtaServices>();
+const mockGetAdpServiceInstances = jest.fn<typeof realAdpTooling.getAdpServiceInstances>();
+const mockGetCfApps = jest.fn<typeof realAdpTooling.getCfApps>();
 const mockGetModuleNames = jest.fn<typeof realAdpTooling.getModuleNames>();
 const mockGetApprouterType = jest.fn<typeof realAdpTooling.getApprouterType>();
 const mockHasApprouter = jest.fn<typeof realAdpTooling.hasApprouter>();
 const mockCreateServices = jest.fn<typeof realAdpTooling.createServices>();
 const mockCreateServiceInstance = jest.fn<typeof realAdpTooling.createServiceInstance>();
 const mockGetOrCreateServiceInstanceKeys = jest.fn<typeof realAdpTooling.getOrCreateServiceInstanceKeys>();
+const mockGetBusinessServiceInfo = jest.fn<typeof realAdpTooling.getBusinessServiceInfo>();
+const mockDownloadAppContent = jest.fn<typeof realAdpTooling.downloadAppContent>();
+const mockGetBackendUrlsFromServiceKeys = jest.fn<typeof realAdpTooling.getBackendUrlsFromServiceKeys>();
+const mockGetOAuthPathsFromXsApp = jest.fn<typeof realAdpTooling.getOAuthPathsFromXsApp>();
+const mockValidateSmartTemplateApplication = jest.fn<typeof realAdpTooling.validateSmartTemplateApplication>();
+const mockValidateODataEndpoints = jest.fn<typeof realAdpTooling.validateODataEndpoints>();
 const mockStoreCredentials = jest.fn<typeof realAdpTooling.storeCredentials>();
 const mockGetSupportedProject = jest.fn<typeof realAdpTooling.getSupportedProject>();
 const mockGetCfBaseAppInbounds = jest.fn<typeof realAdpTooling.getCfBaseAppInbounds>();
+const mockIsAuthRequired = jest.fn<typeof realAdpTooling.isAuthRequired>().mockResolvedValue(false);
 const mockGetPackageInfo = jest.fn().mockReturnValue({ name: '@sap-ux/generator-adp', version: 'mocked-version' });
 const mockInstallDependencies = jest.fn().mockResolvedValue(undefined);
 const mockSendTelemetry = jest.fn().mockResolvedValue(undefined);
@@ -146,6 +156,11 @@ jest.unstable_mockModule('node:child_process', () => ({
 }));
 
 const realAdpTooling = await import('@sap-ux/adp-tooling');
+const realCfApi = await import('../../adp-tooling/dist/cf/services/api.js');
+jest.unstable_mockModule('../../adp-tooling/src/cf/services/api.js', () => ({
+    ...realCfApi,
+    createServices: mockCreateServicesApi
+}));
 jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
     ...realAdpTooling,
     getConfiguredProvider: mockGetConfiguredProvider,
@@ -158,15 +173,24 @@ jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
     loadCfConfig: mockLoadCfConfig,
     isLoggedInCf: mockIsLoggedInCf,
     getMtaServices: mockGetMtaServices,
+    getAdpServiceInstances: mockGetAdpServiceInstances,
+    getCfApps: mockGetCfApps,
     getModuleNames: mockGetModuleNames,
     getApprouterType: mockGetApprouterType,
     hasApprouter: mockHasApprouter,
     createServices: mockCreateServices,
     createServiceInstance: mockCreateServiceInstance,
     getOrCreateServiceInstanceKeys: mockGetOrCreateServiceInstanceKeys,
+    getBusinessServiceInfo: mockGetBusinessServiceInfo,
+    downloadAppContent: mockDownloadAppContent,
+    getBackendUrlsFromServiceKeys: mockGetBackendUrlsFromServiceKeys,
+    getOAuthPathsFromXsApp: mockGetOAuthPathsFromXsApp,
+    validateSmartTemplateApplication: mockValidateSmartTemplateApplication,
+    validateODataEndpoints: mockValidateODataEndpoints,
     storeCredentials: mockStoreCredentials,
     getSupportedProject: mockGetSupportedProject,
     getCfBaseAppInbounds: mockGetCfBaseAppInbounds,
+    isAuthRequired: mockIsAuthRequired,
     // generateCf calls adjustMtaYaml which internally requires '../services/api.js' via CJS.
     // jest.unstable_mockModule cannot intercept relative CJS requires inside compiled dist packages,
     // so the real generateCf would invoke live CF APIs. The mock avoids that.
@@ -257,9 +281,10 @@ const { AdaptationProjectType } = await import('@sap-ux/axios-extension');
 const { default: adpGenerator } = await import('../src/app/index.js');
 const { ConfigPrompter } = await import('../src/app/questions/configuration.js');
 const { KeyUserImportPrompter } = await import('../src/app/questions/key-user.js');
-const { TargetEnv } = await import('../src/app/types.js');
+const { TargetEnv, MtaMode } = await import('../src/app/types.js');
 const { EventName } = await import('../src/telemetry/index.js');
 const { initI18n, t } = await import('../src/utils/i18n.js');
+const { generateCf: generateCfWithMockedServices } = await import('../../adp-tooling/src/writer/cf.js');
 const { workspaceChoices } = await import('../src/utils/workspace.js');
 const { CFServicesPrompter } = await import('../src/app/questions/cf-services.js');
 
@@ -304,7 +329,7 @@ const answers: ConfigAnswers & AttributesAnswers = {
 };
 
 const baseApp: CFApp = {
-    appId: 'test-app-id',
+    appId: 'test.app.id',
     appName: 'test-app-name',
     appVersion: 'test-app-version',
     serviceName: 'test-service-name',
@@ -312,7 +337,7 @@ const baseApp: CFApp = {
     title: 'test-app-title'
 };
 
-import type { TargetEnvAnswers, JsonInput } from '../src/app/types.js';
+import type { TargetEnvAnswers, JsonInput, CfJsonInput } from '../src/app/types.js';
 
 const answersCf: CfServicesAnswers & AttributesAnswers & TargetEnvAnswers = {
     targetEnv: TargetEnv.CF,
@@ -435,7 +460,6 @@ describe('Adaptation Project Generator Integration Test', () => {
             jest.spyOn(SourceManifest.prototype, 'getManifest').mockResolvedValue(mockManifest);
             mockValidateUI5VersionExists.mockReturnValue(true);
             jest.spyOn(SystemLookup.prototype, 'getSystems').mockResolvedValue(endpoints);
-            jest.spyOn(SystemLookup.prototype, 'getSystemRequiresAuth').mockResolvedValue(false);
             jest.spyOn(SystemLookup.prototype, 'getSystemByName').mockResolvedValue({
                 Name: 'SystemA',
                 Client: '010',
@@ -1057,7 +1081,11 @@ describe('Adaptation Project Generator Integration Test', () => {
 
             mockLoadCfConfig.mockReturnValue(cfConfig);
             mockGetModuleNames.mockReturnValue(['module1', 'module2']);
-            mockGetMtaServices.mockResolvedValue(['service1', 'service2']);
+            mockGetMtaServices.mockResolvedValue(['test-service']);
+            mockGetAdpServiceInstances.mockResolvedValue([
+                { name: 'test-service', service: 'hana', servicePlan: 'hdi-shared' }
+            ]);
+            mockGetCfApps.mockResolvedValue([baseApp]);
             mockGetApprouterType.mockReturnValue(AppRouterType.MANAGED);
             mockHasApprouter.mockReturnValue(false);
 
@@ -1118,6 +1146,47 @@ describe('Adaptation Project Generator Integration Test', () => {
             expect(executeCommandSpy).not.toHaveBeenCalled();
         });
 
+        it('should bind a live CF service instance for a new MTA without a declared service', async () => {
+            mockGetMtaServices.mockResolvedValue([]);
+            mockGetAdpServiceInstances.mockResolvedValue([
+                { name: 'my-instance', service: 'hana', servicePlan: 'hdi-shared' }
+            ]);
+
+            // New-MTA mode scaffolds the project inside a parent folder; use a clean subfolder (the
+            // beforeEach seeds cfTestOutputDir itself with an mta.yaml, which would hide the MTA name prompt).
+            const newMtaParent = join(cfTestOutputDir, 'new-mta-parent');
+            fs.mkdirSync(newMtaParent, { recursive: true });
+
+            const runContext = yeomanTest
+                .create(adpGenerator, { resolved: generatorPath }, { cwd: cfTestOutputDir })
+                .withOptions({
+                    shouldInstallDeps: false,
+                    vscode: vscodeMock
+                } as AdpGeneratorOptions)
+                .withPrompts({
+                    ...answersCf,
+                    projectLocation: newMtaParent,
+                    mtaMode: MtaMode.New,
+                    mtaId: 'my-mta',
+                    businessService: undefined,
+                    serviceInstance: { name: 'my-instance', service: 'hana', servicePlan: 'hdi-shared' }
+                });
+
+            await expect(runContext.run()).resolves.not.toThrow();
+
+            expect(mockGetAdpServiceInstances).toHaveBeenCalledWith(cfConfig.space.GUID, expect.any(Object));
+            expect(mockGetOrCreateServiceInstanceKeys).toHaveBeenCalledWith(
+                { names: ['my-instance'], spaceGuids: [cfConfig.space.GUID] },
+                expect.any(Object)
+            );
+            expect(mockGenerateCf).toHaveBeenCalledWith(
+                join(newMtaParent, 'my-mta'),
+                expect.any(Object),
+                expect.any(Object),
+                expect.any(Object)
+            );
+        });
+
         it('should call composeWith for FLP sub-generator when CF inbounds are available', async () => {
             mockGetCfBaseAppInbounds.mockResolvedValue(inbounds);
             jest.spyOn(Generator.prototype, 'composeWith').mockReturnValue([]);
@@ -1168,6 +1237,272 @@ describe('Adaptation Project Generator Integration Test', () => {
 
             expect(mockGetCfBaseAppInbounds).toHaveBeenCalled();
             expect(addFlpGenSpy).not.toHaveBeenCalled();
+        });
+
+        describe('headless JSON input', () => {
+            const html5Content = {
+                entries: [{ entryName: 'manifest.json' }] as unknown as Awaited<
+                    ReturnType<typeof realAdpTooling.downloadAppContent>
+                >['entries'],
+                serviceInstanceGuid: 'html5-repo-guid',
+                manifest: mockManifest
+            };
+
+            const serviceInfo = {
+                serviceKeys: [{ credentials: { uri: 'https://example.com' } }],
+                serviceInstance: { name: 'test-service', guid: 'business-svc-guid' }
+            } as unknown as Awaited<ReturnType<typeof realAdpTooling.getBusinessServiceInfo>>;
+
+            const baseJsonInput: CfJsonInput = {
+                targetEnv: 'CF',
+                application: baseApp.appId,
+                serviceInstanceName: 'test-service',
+                mtaMode: 'existing',
+                targetFolder: cfTestOutputDir
+            };
+
+            const runHeadlessGenerator = (jsonInput: unknown): Promise<unknown> =>
+                yeomanTest
+                    .create(adpGenerator, { resolved: generatorPath }, { cwd: cfTestOutputDir })
+                    .withOptions({ shouldInstallDeps: false, vscode: vscodeMock } as AdpGeneratorOptions)
+                    .withArguments([typeof jsonInput === 'string' ? jsonInput : JSON.stringify(jsonInput)])
+                    .run();
+
+            beforeEach(() => {
+                mockGetBusinessServiceInfo.mockResolvedValue(serviceInfo);
+                mockGetAdpServiceInstances.mockResolvedValue([
+                    { name: 'test-service', service: 'hana', servicePlan: 'hdi-shared' }
+                ]);
+                mockGetCfApps.mockResolvedValue([baseApp]);
+                mockDownloadAppContent.mockResolvedValue(html5Content);
+                mockGetBackendUrlsFromServiceKeys.mockReturnValue(['https://backend.example.com']);
+                mockGetOAuthPathsFromXsApp.mockReturnValue(['/sap/']);
+                mockValidateSmartTemplateApplication.mockResolvedValue(undefined);
+                mockValidateODataEndpoints.mockResolvedValue(undefined);
+                mockGetDefaultProjectName.mockReturnValue('app.variant.cf');
+            });
+
+            it('should preserve the standalone router in an existing MTA when approuter is omitted', async () => {
+                const mtaRoot = join(cfTestOutputDir, 'standalone-mta');
+                fs.mkdirSync(mtaRoot, { recursive: true });
+                fs.writeFileSync(
+                    join(mtaRoot, 'mta.yaml'),
+                    [
+                        "_schema-version: '3.3'",
+                        'ID: standalone-mta',
+                        'version: 1.0.0',
+                        'modules:',
+                        '  - name: standalone-mta-approuter',
+                        '    type: approuter.nodejs',
+                        '    path: standalone-mta-approuter',
+                        '    requires: []',
+                        'resources:',
+                        '  - name: test-service',
+                        '    type: org.cloudfoundry.existing-service',
+                        '    parameters:',
+                        '      service: hana',
+                        '      service-name: test-service'
+                    ].join('\n')
+                );
+                mockGetApprouterType.mockImplementationOnce(realAdpTooling.getApprouterType);
+                mockGenerateCf.mockImplementationOnce(generateCfWithMockedServices);
+
+                await runHeadlessGenerator({ ...baseJsonInput, mtaMode: undefined, targetFolder: mtaRoot });
+
+                const generatedMta = realAdpTooling.getYamlContent<MtaYaml>(join(mtaRoot, 'mta.yaml'));
+                expect(generatedMta.modules).toEqual(
+                    expect.arrayContaining([expect.objectContaining({ name: 'standalone-mta-approuter' })])
+                );
+                expect(generatedMta.modules?.some((module) => module.name.includes('destination-content'))).toBe(false);
+                expect(generatedMta.resources?.some((resource) => resource.parameters.service === 'destination')).toBe(
+                    false
+                );
+            });
+
+            it.each([AppRouterType.MANAGED, AppRouterType.STANDALONE])(
+                'should honor an explicit approuter choice: %s',
+                async (approuter) => {
+                    await runHeadlessGenerator({ ...baseJsonInput, approuter, businessSolutionName: 'my-solution' });
+
+                    expect(mockGetApprouterType).not.toHaveBeenCalled();
+                    expect(mockGenerateCf).toHaveBeenCalledWith(
+                        cfTestOutputDir,
+                        expect.objectContaining({ cf: expect.objectContaining({ approuter }) }),
+                        expect.any(Object),
+                        expect.any(Object)
+                    );
+                }
+            );
+
+            it('should generate from a business service and derive defaults against the existing MTA root', async () => {
+                const otherMtaRoot = join(cfTestOutputDir, 'other-mta-root');
+                fs.mkdirSync(join(otherMtaRoot, 'app.variant'), { recursive: true });
+                fs.copyFileSync(join(__dirname, 'fixtures', 'mta-project', 'mta.yaml'), join(otherMtaRoot, 'mta.yaml'));
+
+                await expect(
+                    runHeadlessGenerator({
+                        ...baseJsonInput,
+                        applicationTitle: 'Headless CF App',
+                        businessSolutionName: 'my-solution',
+                        targetFolder: otherMtaRoot
+                    })
+                ).resolves.not.toThrow();
+
+                expect(mockGetBusinessServiceInfo).toHaveBeenCalledWith('test-service', cfConfig, expect.any(Object));
+                expect(mockGetCfApps).toHaveBeenCalledWith(serviceInfo.serviceKeys, cfConfig, expect.any(Object));
+                expect(mockValidateSmartTemplateApplication).toHaveBeenCalledWith(mockManifest);
+                expect(mockValidateODataEndpoints).toHaveBeenCalledWith(
+                    html5Content.entries,
+                    serviceInfo.serviceKeys,
+                    expect.any(Object)
+                );
+                expect(mockGenerateCf).toHaveBeenCalledWith(
+                    otherMtaRoot,
+                    expect.objectContaining({
+                        app: expect.objectContaining({ id: baseApp.appId }),
+                        cf: expect.objectContaining({ approuter: AppRouterType.MANAGED }),
+                        project: expect.objectContaining({ name: 'app.variant2' })
+                    }),
+                    expect.any(Object),
+                    expect.any(Object)
+                );
+            });
+
+            it('should generate a new MTA using a live service instance and explicit project attributes', async () => {
+                const newMtaParent = join(cfTestOutputDir, 'headless-new-mta');
+                fs.mkdirSync(newMtaParent, { recursive: true });
+                mockGetAdpServiceInstances.mockResolvedValue([
+                    { name: 'live-instance', guid: 'inst-guid', service: 'hana', servicePlan: 'hdi-shared' }
+                ]);
+
+                await expect(
+                    runHeadlessGenerator({
+                        ...baseJsonInput,
+                        serviceInstanceName: 'live-instance',
+                        businessSolutionName: 'my-solution',
+                        projectName: 'app.variant.cf',
+                        namespace: 'customer.app.variant.cf',
+                        mtaMode: 'new',
+                        mtaId: 'brand-new-mta',
+                        targetFolder: newMtaParent
+                    })
+                ).resolves.not.toThrow();
+
+                expect(mockGetAdpServiceInstances).toHaveBeenCalledWith(cfConfig.space.GUID, expect.any(Object));
+                expect(mockGetApprouterType).not.toHaveBeenCalled();
+                expect(mockGenerateCf).toHaveBeenCalledWith(
+                    join(newMtaParent, 'brand-new-mta'),
+                    expect.objectContaining({
+                        app: expect.objectContaining({ id: baseApp.appId }),
+                        project: expect.objectContaining({ name: 'app.variant.cf' }),
+                        cf: expect.objectContaining({
+                            approuter: AppRouterType.MANAGED,
+                            existingService: expect.objectContaining({ name: 'live-instance' })
+                        })
+                    }),
+                    expect.any(Object),
+                    expect.any(Object)
+                );
+            });
+
+            it('should generate a default businessSolutionName for a new managed-approuter MTA when it is missing', async () => {
+                const newMtaParent = join(cfTestOutputDir, 'headless-new-mta-no-solution');
+                fs.mkdirSync(newMtaParent, { recursive: true });
+                mockGetAdpServiceInstances.mockResolvedValue([
+                    { name: 'live-instance', guid: 'inst-guid', service: 'hana', servicePlan: 'hdi-shared' }
+                ]);
+
+                await expect(
+                    runHeadlessGenerator({
+                        ...baseJsonInput,
+                        serviceInstanceName: 'live-instance',
+                        mtaMode: 'new',
+                        mtaId: 'brand-new-mta',
+                        targetFolder: newMtaParent
+                    })
+                ).resolves.not.toThrow();
+
+                expect(mockGenerateCf).toHaveBeenCalledWith(
+                    join(newMtaParent, 'brand-new-mta'),
+                    expect.objectContaining({
+                        cf: expect.objectContaining({
+                            businessSolutionName: expect.stringMatching(/^solution-[0-9a-f]{10}$/)
+                        })
+                    }),
+                    expect.any(Object),
+                    expect.any(Object)
+                );
+            });
+
+            it('should reject invalid JSON and report headless generation failures without prompting or generating', async () => {
+                const emptyDir = join(cfTestOutputDir, 'headless-invalid-mta');
+                fs.mkdirSync(emptyDir, { recursive: true });
+                const failureCases: { input: Partial<CfJsonInput>; error?: string; loggedIn?: boolean }[] = [
+                    { input: {}, loggedIn: false, error: t('error.cfNotLoggedIn') },
+                    {
+                        input: { application: 'missing-app-id' },
+                        error: t('error.applicationNotFound', { appName: 'missing-app-id' })
+                    },
+                    {
+                        input: { mtaMode: 'new', targetFolder: emptyDir },
+                        error: t('error.mtaIdRequired')
+                    },
+                    {
+                        input: { mtaMode: 'new', mtaId: '../outside', targetFolder: emptyDir },
+                        error: t('error.mtaIdInvalid')
+                    },
+                    { input: { targetFolder: emptyDir }, error: t('error.projectDoesNotExistMta') },
+                    {
+                        input: { serviceInstanceName: 'missing-instance' },
+                        error: t('error.serviceInstanceNotFound', { name: 'missing-instance' })
+                    },
+                    { input: { projectName: '../escape' } }
+                ];
+                const promptSpy = jest.spyOn(Generator.prototype, 'prompt');
+
+                try {
+                    for (const { input, error, loggedIn = true } of failureCases) {
+                        jest.clearAllMocks();
+                        mockIsLoggedInCf.mockResolvedValue(loggedIn);
+
+                        await expect(
+                            runHeadlessGenerator({
+                                ...baseJsonInput,
+                                businessSolutionName: 'my-solution',
+                                id: 'orchestrator-id',
+                                ...input
+                            })
+                        ).rejects.toThrow(t('error.updatingApp'));
+
+                        expect(mockWriteResult).toHaveBeenCalledWith(
+                            'orchestrator-id',
+                            error ? 'Failure: ' + error : expect.stringMatching(/^Failure:/)
+                        );
+                        expect(promptSpy).not.toHaveBeenCalled();
+                        expect(mockGenerateCf).not.toHaveBeenCalled();
+                    }
+
+                    for (const { jsonInput, expectedError } of [
+                        { jsonInput: '{"targetEnv":"CF",', expectedError: t('error.invalidJsonSyntax') },
+                        {
+                            jsonInput: { targetEnv: 'CF', application: baseApp.appId },
+                            expectedError: t('error.invalidJsonInput', { env: 'Cloud Foundry' })
+                        },
+                        { jsonInput: { system: 'urlA' }, expectedError: t('error.invalidJsonInput', { env: 'ABAP' }) }
+                    ]) {
+                        jest.clearAllMocks();
+                        await expect(runHeadlessGenerator(jsonInput)).rejects.toThrow(expectedError);
+
+                        expect(promptSpy).not.toHaveBeenCalled();
+                        expect(mockIsCfInstalled).not.toHaveBeenCalled();
+                        expect(mockLoadCfConfig).not.toHaveBeenCalled();
+                        expect(mockIsLoggedInCf).not.toHaveBeenCalled();
+                        expect(mockGenerateCf).not.toHaveBeenCalled();
+                    }
+                } finally {
+                    promptSpy.mockRestore();
+                }
+            });
         });
     });
 });

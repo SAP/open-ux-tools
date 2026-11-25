@@ -16,6 +16,6 @@ mylocation.reload();
 
 Warning message: _location.reload() is not permitted._
 
-## Bug report
+## Bug Report
 
 In case you think the finding is a false positive please open a Github issue [here](https://github.com/SAP/open-ux-tools/issues).

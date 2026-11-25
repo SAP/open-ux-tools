@@ -57,15 +57,13 @@ describe('Legacy NEO App - Coverage Tests', () => {
 
         const fs = loadProjectIntoMemFs(testInputBase);
 
-        const { result, messages } = await ProjectMigrator.migrate(
-            testInputBase,
-            DUMMY_BACKEND_URL,
-            UI5_SNAPSHOT_URL,
-            undefined,
-            undefined,
-            false,
+        const { result, messages } = await ProjectMigrator.migrate({
+            projectRoot: testInputBase,
+            baseUri: DUMMY_BACKEND_URL,
+            ui5SnapshotUrl: UI5_SNAPSHOT_URL,
+            internalToggle: false,
             fs
-        );
+        });
 
         // Should succeed or have warnings only
         expect(result).toBe(true);

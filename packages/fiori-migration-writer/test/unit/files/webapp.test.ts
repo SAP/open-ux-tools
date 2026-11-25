@@ -6,9 +6,12 @@ import { createExtensionProjectManifest, createWebappFolderAndMigrateFiles } fro
 import type { ImportProjectInfo } from '../../../src/types.js';
 import { MigrationTypes } from '../../../src/utils/constants.js';
 import { initI18n, fileExists, readFile, writeFile as writeFileUtil } from '../../../src/index.js';
-import { createMemFsEditor, runWithEditor } from '../../../src/utils/fs-adapter.js';
+import { createMemFsEditor } from '../../../src/utils/fs-adapter.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
+
+// The editor is now threaded explicitly; this helper preserves the test structure.
+const withEditor = async (_fs: Editor, cb: () => Promise<void>): Promise<void> => cb();
 
 describe('webapp', () => {
     let fs: Editor;
@@ -26,11 +29,11 @@ describe('webapp', () => {
 
     describe('createExtensionProjectManifest', () => {
         test('should create manifest.json for extension project when missing', async () => {
-            await runWithEditor(fs, async () => {
+            await withEditor(fs, async () => {
                 const rootPath = join(testOutputDir, 'extension-no-manifest');
                 await mkdir(join(rootPath, 'webapp'), { recursive: true });
                 // Create a file in webapp directory in mem-fs so exists() sees it
-                writeFileUtil(join(rootPath, 'webapp', '.keep'), '');
+                writeFileUtil(fs, join(rootPath, 'webapp', '.keep'), '');
 
                 const projectInfo: ImportProjectInfo = {
                     moduleName: 'test.extension',
@@ -44,17 +47,17 @@ describe('webapp', () => {
                     rootPath
                 } as ImportProjectInfo;
 
-                await createExtensionProjectManifest(rootPath, projectInfo);
+                await createExtensionProjectManifest(fs, rootPath, projectInfo);
 
                 // Manifest should be created at webapp/manifest.json
                 const manifestPath = join(rootPath, 'webapp', 'manifest.json');
-                const manifestExists = await fileExists(manifestPath);
+                const manifestExists = await fileExists(fs, manifestPath);
                 expect(manifestExists).toBe(true);
             });
         });
 
         test('should not create manifest.json if it already exists', async () => {
-            await runWithEditor(fs, async () => {
+            await withEditor(fs, async () => {
                 const rootPath = join(testOutputDir, 'extension-with-manifest');
                 await mkdir(join(rootPath, 'webapp'), { recursive: true });
 
@@ -64,7 +67,7 @@ describe('webapp', () => {
                         type: 'application'
                     }
                 };
-                writeFileUtil(join(rootPath, 'webapp', 'manifest.json'), JSON.stringify(existingManifest));
+                writeFileUtil(fs, join(rootPath, 'webapp', 'manifest.json'), JSON.stringify(existingManifest));
 
                 const projectInfo: ImportProjectInfo = {
                     moduleName: 'test.extension',
@@ -76,17 +79,17 @@ describe('webapp', () => {
                     rootPath
                 } as ImportProjectInfo;
 
-                await createExtensionProjectManifest(rootPath, projectInfo);
+                await createExtensionProjectManifest(fs, rootPath, projectInfo);
 
                 // Existing manifest should remain unchanged
-                const content = readFile(join(rootPath, 'webapp', 'manifest.json'));
+                const content = await readFile(fs, join(rootPath, 'webapp', 'manifest.json'));
                 const parsed = JSON.parse(content);
                 expect(parsed['sap.app'].id).toBe('existing');
             });
         });
 
         test('should not create manifest.json for non-extension projects', async () => {
-            await runWithEditor(fs, async () => {
+            await withEditor(fs, async () => {
                 const rootPath = join(testOutputDir, 'lrop-project');
                 await mkdir(rootPath, { recursive: true });
 
@@ -97,16 +100,16 @@ describe('webapp', () => {
                     rootPath
                 } as ImportProjectInfo;
 
-                await createExtensionProjectManifest(rootPath, projectInfo);
+                await createExtensionProjectManifest(fs, rootPath, projectInfo);
 
                 // No manifest should be created for LROP
-                const manifestExists = await fileExists(join(rootPath, 'manifest.json'));
+                const manifestExists = await fileExists(fs, join(rootPath, 'manifest.json'));
                 expect(manifestExists).toBe(false);
             });
         });
 
         test('should create manifest at root if webapp does not exist', async () => {
-            await runWithEditor(fs, async () => {
+            await withEditor(fs, async () => {
                 const rootPath = join(testOutputDir, 'extension-no-webapp');
                 await mkdir(rootPath, { recursive: true });
 
@@ -122,7 +125,7 @@ describe('webapp', () => {
                     rootPath
                 } as ImportProjectInfo;
 
-                await createExtensionProjectManifest(rootPath, projectInfo);
+                await createExtensionProjectManifest(fs, rootPath, projectInfo);
 
                 // Should update webappPath to empty string
                 expect(projectInfo.webappPath).toBe('');
@@ -130,11 +133,11 @@ describe('webapp', () => {
         });
 
         test('should use ui5Version when manifestUI5Version is undefined', async () => {
-            await runWithEditor(fs, async () => {
+            await withEditor(fs, async () => {
                 const rootPath = join(testOutputDir, 'extension-ui5version');
                 await mkdir(join(rootPath, 'webapp'), { recursive: true });
                 // Create a file in webapp directory in mem-fs so exists() sees it
-                writeFileUtil(join(rootPath, 'webapp', '.keep'), '');
+                writeFileUtil(fs, join(rootPath, 'webapp', '.keep'), '');
 
                 const projectInfo: ImportProjectInfo = {
                     moduleName: 'test.extension.ui5ver',
@@ -148,20 +151,20 @@ describe('webapp', () => {
                     rootPath
                 } as ImportProjectInfo;
 
-                await createExtensionProjectManifest(rootPath, projectInfo);
+                await createExtensionProjectManifest(fs, rootPath, projectInfo);
 
                 // Manifest should be created and use ui5Version as fallback
                 const manifestPath = join(rootPath, 'webapp', 'manifest.json');
-                expect(await fileExists(manifestPath)).toBe(true);
+                expect(await fileExists(fs, manifestPath)).toBe(true);
             });
         });
 
         test('should include SHELL_TITLE in manifest', async () => {
-            await runWithEditor(fs, async () => {
+            await withEditor(fs, async () => {
                 const rootPath = join(testOutputDir, 'extension-shell-title');
                 await mkdir(join(rootPath, 'webapp'), { recursive: true });
                 // Create a file in webapp directory in mem-fs so exists() sees it
-                writeFileUtil(join(rootPath, 'webapp', '.keep'), '');
+                writeFileUtil(fs, join(rootPath, 'webapp', '.keep'), '');
 
                 const projectInfo: ImportProjectInfo = {
                     moduleName: 'test.shell.title',
@@ -174,27 +177,27 @@ describe('webapp', () => {
                     rootPath
                 } as ImportProjectInfo;
 
-                await createExtensionProjectManifest(rootPath, projectInfo);
+                await createExtensionProjectManifest(fs, rootPath, projectInfo);
 
                 // Manifest should be created with SHELL_TITLE
                 const manifestPath = join(rootPath, 'webapp', 'manifest.json');
-                expect(await fileExists(manifestPath)).toBe(true);
+                expect(await fileExists(fs, manifestPath)).toBe(true);
             });
         });
     });
 
     describe('createWebappFolderAndMigrateFiles', () => {
         test('should create webapp folder and move files when manifest.json is at root', async () => {
-            await runWithEditor(fs, async () => {
+            await withEditor(fs, async () => {
                 const rootPath = join(testOutputDir, 'migrate-to-webapp');
                 await mkdir(rootPath, { recursive: true });
 
                 // Create manifest at root using mem-fs
-                writeFileUtil(join(rootPath, 'manifest.json'), JSON.stringify({ 'sap.app': { id: 'test' } }));
+                writeFileUtil(fs, join(rootPath, 'manifest.json'), JSON.stringify({ 'sap.app': { id: 'test' } }));
 
                 // Create some files to migrate using mem-fs
-                writeFileUtil(join(rootPath, 'Component.js'), 'component code');
-                writeFileUtil(join(rootPath, 'view.xml'), 'view xml');
+                writeFileUtil(fs, join(rootPath, 'Component.js'), 'component code');
+                writeFileUtil(fs, join(rootPath, 'view.xml'), 'view xml');
 
                 const projectInfo: ImportProjectInfo = {
                     moduleName: 'test.migrate',
@@ -202,7 +205,7 @@ describe('webapp', () => {
                     rootPath
                 } as ImportProjectInfo;
 
-                await createWebappFolderAndMigrateFiles(rootPath, projectInfo);
+                await createWebappFolderAndMigrateFiles(fs, rootPath, projectInfo);
 
                 // webappPath should be updated
                 expect(projectInfo.webappPath).toBe('webapp');
@@ -210,11 +213,15 @@ describe('webapp', () => {
         });
 
         test('should not migrate when webapp path is already set', async () => {
-            await runWithEditor(fs, async () => {
+            await withEditor(fs, async () => {
                 const rootPath = join(testOutputDir, 'already-has-webapp');
                 await mkdir(join(rootPath, 'webapp'), { recursive: true });
 
-                writeFileUtil(join(rootPath, 'webapp', 'manifest.json'), JSON.stringify({ 'sap.app': { id: 'test' } }));
+                writeFileUtil(
+                    fs,
+                    join(rootPath, 'webapp', 'manifest.json'),
+                    JSON.stringify({ 'sap.app': { id: 'test' } })
+                );
 
                 const projectInfo: ImportProjectInfo = {
                     moduleName: 'test.existing.webapp',
@@ -222,7 +229,7 @@ describe('webapp', () => {
                     rootPath
                 } as ImportProjectInfo;
 
-                await createWebappFolderAndMigrateFiles(rootPath, projectInfo);
+                await createWebappFolderAndMigrateFiles(fs, rootPath, projectInfo);
 
                 // webappPath should remain unchanged
                 expect(projectInfo.webappPath).toBe('webapp');
@@ -230,7 +237,7 @@ describe('webapp', () => {
         });
 
         test('should not migrate when manifest.json does not exist at root', async () => {
-            await runWithEditor(fs, async () => {
+            await withEditor(fs, async () => {
                 const rootPath = join(testOutputDir, 'no-manifest-at-root');
                 await mkdir(rootPath, { recursive: true });
 
@@ -240,7 +247,7 @@ describe('webapp', () => {
                     rootPath
                 } as ImportProjectInfo;
 
-                await createWebappFolderAndMigrateFiles(rootPath, projectInfo);
+                await createWebappFolderAndMigrateFiles(fs, rootPath, projectInfo);
 
                 // webappPath should remain empty
                 expect(projectInfo.webappPath).toBe('');
@@ -248,21 +255,21 @@ describe('webapp', () => {
         });
 
         test('should exclude specific files from migration', async () => {
-            await runWithEditor(fs, async () => {
+            await withEditor(fs, async () => {
                 const rootPath = join(testOutputDir, 'exclude-files');
                 await mkdir(rootPath, { recursive: true });
 
-                writeFileUtil(join(rootPath, 'manifest.json'), JSON.stringify({ 'sap.app': { id: 'test' } }));
+                writeFileUtil(fs, join(rootPath, 'manifest.json'), JSON.stringify({ 'sap.app': { id: 'test' } }));
 
                 // Create files that should be excluded
-                writeFileUtil(join(rootPath, 'neo-app.json'), '{}');
-                writeFileUtil(join(rootPath, 'package.json'), '{}');
-                writeFileUtil(join(rootPath, '.gitignore'), '');
-                writeFileUtil(join(rootPath, 'pom.xml'), '<xml/>');
-                writeFileUtil(join(rootPath, '.DS_Store'), '');
+                writeFileUtil(fs, join(rootPath, 'neo-app.json'), '{}');
+                writeFileUtil(fs, join(rootPath, 'package.json'), '{}');
+                writeFileUtil(fs, join(rootPath, '.gitignore'), '');
+                writeFileUtil(fs, join(rootPath, 'pom.xml'), '<xml/>');
+                writeFileUtil(fs, join(rootPath, '.DS_Store'), '');
 
                 // Create file that should be migrated
-                writeFileUtil(join(rootPath, 'Component.js'), 'code');
+                writeFileUtil(fs, join(rootPath, 'Component.js'), 'code');
 
                 const projectInfo: ImportProjectInfo = {
                     moduleName: 'test.exclude',
@@ -270,7 +277,7 @@ describe('webapp', () => {
                     rootPath
                 } as ImportProjectInfo;
 
-                await createWebappFolderAndMigrateFiles(rootPath, projectInfo);
+                await createWebappFolderAndMigrateFiles(fs, rootPath, projectInfo);
 
                 expect(projectInfo.webappPath).toBe('webapp');
                 // Excluded files should remain at root (lines 140-156)
@@ -278,12 +285,12 @@ describe('webapp', () => {
         });
 
         test('should handle git not available gracefully', async () => {
-            await runWithEditor(fs, async () => {
+            await withEditor(fs, async () => {
                 const rootPath = join(testOutputDir, 'no-git');
                 await mkdir(rootPath, { recursive: true });
 
-                writeFileUtil(join(rootPath, 'manifest.json'), JSON.stringify({ 'sap.app': { id: 'test' } }));
-                writeFileUtil(join(rootPath, 'file.js'), 'code');
+                writeFileUtil(fs, join(rootPath, 'manifest.json'), JSON.stringify({ 'sap.app': { id: 'test' } }));
+                writeFileUtil(fs, join(rootPath, 'file.js'), 'code');
 
                 const projectInfo: ImportProjectInfo = {
                     moduleName: 'test.nogit',
@@ -292,7 +299,7 @@ describe('webapp', () => {
                 } as ImportProjectInfo;
 
                 // Should fallback to file system operations (lines 173-176)
-                await createWebappFolderAndMigrateFiles(rootPath, projectInfo);
+                await createWebappFolderAndMigrateFiles(fs, rootPath, projectInfo);
 
                 expect(projectInfo.webappPath).toBe('webapp');
             });
@@ -319,7 +326,7 @@ describe('webapp', () => {
             } as ImportProjectInfo;
 
             // Call without runWithEditor to exercise real fs code path
-            await createWebappFolderAndMigrateFiles(rootPath, projectInfo);
+            await createWebappFolderAndMigrateFiles(fs, rootPath, projectInfo);
 
             // webappPath should be updated
             expect(projectInfo.webappPath).toBe('webapp');
@@ -341,7 +348,7 @@ describe('webapp', () => {
 
             // Without runWithEditor, uses real fs
             // This exercises the catch block at lines 231-234 and fallback at 236-243
-            await createWebappFolderAndMigrateFiles(rootPath, projectInfo);
+            await createWebappFolderAndMigrateFiles(fs, rootPath, projectInfo);
 
             expect(projectInfo.webappPath).toBe('webapp');
         });
@@ -368,7 +375,7 @@ describe('webapp', () => {
                 rootPath
             } as ImportProjectInfo;
 
-            await createWebappFolderAndMigrateFiles(rootPath, projectInfo);
+            await createWebappFolderAndMigrateFiles(fs, rootPath, projectInfo);
 
             expect(projectInfo.webappPath).toBe('webapp');
 
@@ -397,7 +404,7 @@ describe('webapp', () => {
             } as ImportProjectInfo;
 
             // This exercises recursiveMove function (lines 37-77)
-            await createWebappFolderAndMigrateFiles(rootPath, projectInfo);
+            await createWebappFolderAndMigrateFiles(fs, rootPath, projectInfo);
 
             expect(projectInfo.webappPath).toBe('webapp');
         });
@@ -405,13 +412,13 @@ describe('webapp', () => {
 
     describe('path validation', () => {
         test('should validate paths with control characters during migration', async () => {
-            await runWithEditor(fs, async () => {
+            await withEditor(fs, async () => {
                 const rootPath = join(testOutputDir, 'control-char-test');
                 await mkdir(rootPath, { recursive: true });
-                writeFileUtil(join(rootPath, 'manifest.json'), JSON.stringify({ 'sap.app': { id: 'test' } }));
+                writeFileUtil(fs, join(rootPath, 'manifest.json'), JSON.stringify({ 'sap.app': { id: 'test' } }));
 
                 // Create test file
-                writeFileUtil(join(rootPath, 'Component.js'), 'code');
+                writeFileUtil(fs, join(rootPath, 'Component.js'), 'code');
 
                 const projectInfo: ImportProjectInfo = {
                     moduleName: 'test',
@@ -421,16 +428,16 @@ describe('webapp', () => {
 
                 // Validation happens during migration, but only for unsafe paths
                 // This test ensures the function doesn't crash with normal paths
-                await createWebappFolderAndMigrateFiles(rootPath, projectInfo);
+                await createWebappFolderAndMigrateFiles(fs, rootPath, projectInfo);
                 expect(projectInfo.webappPath).toBe('webapp');
             });
         });
 
         test('should validate shell metacharacters during migration', async () => {
-            await runWithEditor(fs, async () => {
+            await withEditor(fs, async () => {
                 const rootPath = join(testOutputDir, 'metachar-test');
                 await mkdir(rootPath, { recursive: true });
-                writeFileUtil(join(rootPath, 'manifest.json'), JSON.stringify({ 'sap.app': { id: 'test' } }));
+                writeFileUtil(fs, join(rootPath, 'manifest.json'), JSON.stringify({ 'sap.app': { id: 'test' } }));
 
                 const projectInfo: ImportProjectInfo = {
                     moduleName: 'test',
@@ -439,13 +446,13 @@ describe('webapp', () => {
                 } as ImportProjectInfo;
 
                 // Normal paths should work fine
-                await createWebappFolderAndMigrateFiles(rootPath, projectInfo);
+                await createWebappFolderAndMigrateFiles(fs, rootPath, projectInfo);
                 expect(projectInfo.webappPath).toBe('webapp');
             });
         });
 
         test('should handle non-existent directories gracefully', async () => {
-            await runWithEditor(fs, async () => {
+            await withEditor(fs, async () => {
                 const rootPath = join(testOutputDir, 'does-not-exist-xyz');
                 const projectInfo: ImportProjectInfo = {
                     moduleName: 'test',
@@ -455,16 +462,16 @@ describe('webapp', () => {
 
                 // Directory doesn't exist, so validation will fail if conditions are met
                 // But since manifest.json doesn't exist, migration is skipped
-                await createWebappFolderAndMigrateFiles(rootPath, projectInfo);
+                await createWebappFolderAndMigrateFiles(fs, rootPath, projectInfo);
                 expect(projectInfo.webappPath).toBe('');
             });
         });
 
         test('should reject empty git relative path', async () => {
-            await runWithEditor(fs, async () => {
+            await withEditor(fs, async () => {
                 const rootPath = join(testOutputDir, 'git-empty-path');
                 await mkdir(rootPath, { recursive: true });
-                writeFileUtil(join(rootPath, 'manifest.json'), JSON.stringify({ 'sap.app': { id: 'test' } }));
+                writeFileUtil(fs, join(rootPath, 'manifest.json'), JSON.stringify({ 'sap.app': { id: 'test' } }));
 
                 // This will be tested internally during git mv operation (line 46: empty path check)
                 const projectInfo: ImportProjectInfo = {
@@ -474,16 +481,16 @@ describe('webapp', () => {
                 } as ImportProjectInfo;
 
                 // Should not throw at top level - migration should complete
-                await createWebappFolderAndMigrateFiles(rootPath, projectInfo);
+                await createWebappFolderAndMigrateFiles(fs, rootPath, projectInfo);
                 expect(projectInfo.webappPath).toBe('webapp');
             });
         });
 
         test('should reject git paths that escape root', async () => {
-            await runWithEditor(fs, async () => {
+            await withEditor(fs, async () => {
                 const rootPath = join(testOutputDir, 'git-escape');
                 await mkdir(rootPath, { recursive: true });
-                writeFileUtil(join(rootPath, 'manifest.json'), JSON.stringify({ 'sap.app': { id: 'test' } }));
+                writeFileUtil(fs, join(rootPath, 'manifest.json'), JSON.stringify({ 'sap.app': { id: 'test' } }));
 
                 // Paths like '../../../etc/passwd' should be rejected (line 48-50: escape check)
                 const projectInfo: ImportProjectInfo = {
@@ -492,7 +499,7 @@ describe('webapp', () => {
                     rootPath
                 } as ImportProjectInfo;
 
-                await createWebappFolderAndMigrateFiles(rootPath, projectInfo);
+                await createWebappFolderAndMigrateFiles(fs, rootPath, projectInfo);
                 // Internal validation prevents escape attempts - migration should complete
                 expect(projectInfo.webappPath).toBe('webapp');
             });

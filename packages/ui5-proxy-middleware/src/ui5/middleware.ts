@@ -13,9 +13,9 @@ import {
 import dotenv from 'dotenv';
 import type { UI5ProxyConfig } from '@sap-ux/ui5-config';
 import type { Manifest } from '@sap-ux/project-access';
-// eslint-disable-next-line sonarjs/no-implicit-dependencies
+
 import type { MiddlewareParameters } from '@ui5/server';
-// eslint-disable-next-line sonarjs/no-implicit-dependencies
+
 import type { ReaderCollection } from '@ui5/fs';
 
 /**

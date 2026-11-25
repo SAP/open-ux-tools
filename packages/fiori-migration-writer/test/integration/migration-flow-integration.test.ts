@@ -166,15 +166,13 @@ describe('Migration Integration Tests', () => {
                 fs: updatedFs,
                 result,
                 messages
-            } = await ProjectMigrator.migrate(
-                projectPath,
-                DUMMY_BACKEND_URL,
-                UI5_SNAPSHOT_URL,
-                undefined,
-                undefined,
-                false,
+            } = await ProjectMigrator.migrate({
+                projectRoot: projectPath,
+                baseUri: DUMMY_BACKEND_URL,
+                ui5SnapshotUrl: UI5_SNAPSHOT_URL,
+                internalToggle: false,
                 fs
-            );
+            });
 
             // Verify migration succeeded
             expect(result).toBe(true);
@@ -214,15 +212,13 @@ describe('Migration Integration Tests', () => {
                 fs: updatedFs,
                 result,
                 messages
-            } = await ProjectMigrator.migrate(
-                projectPath,
-                DUMMY_BACKEND_URL,
-                UI5_SNAPSHOT_URL,
-                undefined,
-                undefined,
-                false,
+            } = await ProjectMigrator.migrate({
+                projectRoot: projectPath,
+                baseUri: DUMMY_BACKEND_URL,
+                ui5SnapshotUrl: UI5_SNAPSHOT_URL,
+                internalToggle: false,
                 fs
-            );
+            });
 
             expect(result).toBe(true);
             expect(messages.filter((m) => m.type === 'ERROR')).toHaveLength(0);
@@ -243,15 +239,13 @@ describe('Migration Integration Tests', () => {
                 fs: updatedFs,
                 result,
                 messages
-            } = await ProjectMigrator.migrate(
-                projectPath,
-                DUMMY_BACKEND_URL,
-                UI5_SNAPSHOT_URL,
-                undefined,
-                undefined,
-                false,
+            } = await ProjectMigrator.migrate({
+                projectRoot: projectPath,
+                baseUri: DUMMY_BACKEND_URL,
+                ui5SnapshotUrl: UI5_SNAPSHOT_URL,
+                internalToggle: false,
                 fs
-            );
+            });
 
             expect(result).toBe(true);
             expect(messages.filter((m) => m.type === 'ERROR')).toHaveLength(0);
@@ -268,15 +262,13 @@ describe('Migration Integration Tests', () => {
                 fs: updatedFs,
                 result,
                 messages
-            } = await ProjectMigrator.migrate(
-                projectPath,
-                DUMMY_BACKEND_URL,
-                UI5_SNAPSHOT_URL,
-                undefined,
-                undefined,
-                false,
+            } = await ProjectMigrator.migrate({
+                projectRoot: projectPath,
+                baseUri: DUMMY_BACKEND_URL,
+                ui5SnapshotUrl: UI5_SNAPSHOT_URL,
+                internalToggle: false,
                 fs
-            );
+            });
 
             expect(result).toBe(true);
             expect(messages.filter((m) => m.type === 'ERROR')).toHaveLength(0);
@@ -293,15 +285,13 @@ describe('Migration Integration Tests', () => {
                 fs: updatedFs,
                 result,
                 messages
-            } = await ProjectMigrator.migrate(
-                projectPath,
-                DUMMY_BACKEND_URL,
-                UI5_SNAPSHOT_URL,
-                undefined,
-                undefined,
-                false,
+            } = await ProjectMigrator.migrate({
+                projectRoot: projectPath,
+                baseUri: DUMMY_BACKEND_URL,
+                ui5SnapshotUrl: UI5_SNAPSHOT_URL,
+                internalToggle: false,
                 fs
-            );
+            });
 
             expect(result).toBe(true);
             expect(messages.filter((m) => m.type === 'ERROR')).toHaveLength(0);
@@ -318,15 +308,13 @@ describe('Migration Integration Tests', () => {
                 fs: updatedFs,
                 result,
                 messages
-            } = await ProjectMigrator.migrate(
-                projectPath,
-                DUMMY_BACKEND_URL,
-                UI5_SNAPSHOT_URL,
-                undefined,
-                undefined,
-                false,
+            } = await ProjectMigrator.migrate({
+                projectRoot: projectPath,
+                baseUri: DUMMY_BACKEND_URL,
+                ui5SnapshotUrl: UI5_SNAPSHOT_URL,
+                internalToggle: false,
                 fs
-            );
+            });
 
             expect(result).toBe(true);
             expect(messages.filter((m) => m.type === 'ERROR')).toHaveLength(0);
@@ -343,15 +331,13 @@ describe('Migration Integration Tests', () => {
                 fs: updatedFs,
                 result,
                 messages
-            } = await ProjectMigrator.migrate(
-                projectPath,
-                DUMMY_BACKEND_URL,
-                UI5_SNAPSHOT_URL,
-                undefined,
-                undefined,
-                false,
+            } = await ProjectMigrator.migrate({
+                projectRoot: projectPath,
+                baseUri: DUMMY_BACKEND_URL,
+                ui5SnapshotUrl: UI5_SNAPSHOT_URL,
+                internalToggle: false,
                 fs
-            );
+            });
 
             expect(result).toBe(true);
             expect(messages.filter((m) => m.type === 'ERROR')).toHaveLength(0);
@@ -368,15 +354,13 @@ describe('Migration Integration Tests', () => {
                 fs: updatedFs,
                 result,
                 messages
-            } = await ProjectMigrator.migrate(
-                projectPath,
-                DUMMY_BACKEND_URL,
-                UI5_SNAPSHOT_URL,
-                undefined,
-                undefined,
-                false,
+            } = await ProjectMigrator.migrate({
+                projectRoot: projectPath,
+                baseUri: DUMMY_BACKEND_URL,
+                ui5SnapshotUrl: UI5_SNAPSHOT_URL,
+                internalToggle: false,
                 fs
-            );
+            });
 
             expect(result).toBe(true);
             expect(messages.filter((m) => m.type === 'ERROR')).toHaveLength(0);
@@ -399,15 +383,13 @@ describe('Migration Integration Tests', () => {
                     fs: updatedFs,
                     result,
                     messages
-                } = await ProjectMigrator.migrate(
-                    projectPath,
-                    DUMMY_BACKEND_URL,
-                    UI5_SNAPSHOT_URL,
-                    undefined,
-                    undefined,
-                    false,
+                } = await ProjectMigrator.migrate({
+                    projectRoot: projectPath,
+                    baseUri: DUMMY_BACKEND_URL,
+                    ui5SnapshotUrl: UI5_SNAPSHOT_URL,
+                    internalToggle: false,
                     fs
-                );
+                });
 
                 expect(result).toBe(true);
                 expect(messages.filter((m) => m.type === 'ERROR')).toHaveLength(0);
@@ -424,15 +406,13 @@ describe('Migration Integration Tests', () => {
                 fs: updatedFs,
                 result,
                 messages
-            } = await ProjectMigrator.migrate(
-                projectPath,
-                DUMMY_BACKEND_URL,
-                UI5_SNAPSHOT_URL,
-                undefined,
-                undefined,
-                false,
+            } = await ProjectMigrator.migrate({
+                projectRoot: projectPath,
+                baseUri: DUMMY_BACKEND_URL,
+                ui5SnapshotUrl: UI5_SNAPSHOT_URL,
+                internalToggle: false,
                 fs
-            );
+            });
 
             // Note: This might not succeed as it's an OpenUI5 project
             // Just verify it doesn't crash
@@ -450,15 +430,13 @@ describe('Migration Integration Tests', () => {
                 fs: updatedFs,
                 result,
                 messages
-            } = await ProjectMigrator.migrate(
-                projectPath,
-                DUMMY_BACKEND_URL,
-                UI5_SNAPSHOT_URL,
-                undefined,
-                undefined,
-                false,
+            } = await ProjectMigrator.migrate({
+                projectRoot: projectPath,
+                baseUri: DUMMY_BACKEND_URL,
+                ui5SnapshotUrl: UI5_SNAPSHOT_URL,
+                internalToggle: false,
                 fs
-            );
+            });
 
             expect(result).toBe(true);
             expect(messages.filter((m) => m.type === 'ERROR')).toHaveLength(0);
@@ -480,15 +458,13 @@ describe('Migration Integration Tests', () => {
                 fs: updatedFs,
                 result,
                 messages
-            } = await ProjectMigrator.migrate(
-                projectPath,
-                DUMMY_BACKEND_URL,
-                UI5_SNAPSHOT_URL,
-                undefined,
-                undefined,
-                false,
+            } = await ProjectMigrator.migrate({
+                projectRoot: projectPath,
+                baseUri: DUMMY_BACKEND_URL,
+                ui5SnapshotUrl: UI5_SNAPSHOT_URL,
+                internalToggle: false,
                 fs
-            );
+            });
 
             // Debug output - CI is failing here with result=false
             if (!result) {
@@ -511,15 +487,13 @@ describe('Migration Integration Tests', () => {
                 fs: updatedFs,
                 result,
                 messages
-            } = await ProjectMigrator.migrate(
-                projectPath,
-                DUMMY_BACKEND_URL,
-                UI5_SNAPSHOT_URL,
-                undefined,
-                undefined,
-                false,
+            } = await ProjectMigrator.migrate({
+                projectRoot: projectPath,
+                baseUri: DUMMY_BACKEND_URL,
+                ui5SnapshotUrl: UI5_SNAPSHOT_URL,
+                internalToggle: false,
                 fs
-            );
+            });
 
             expect(result).toBe(true);
             expect(messages.filter((m) => m.type === 'ERROR')).toHaveLength(0);
@@ -540,15 +514,13 @@ describe('Migration Integration Tests', () => {
                 fs: updatedFs,
                 result,
                 messages
-            } = await ProjectMigrator.migrate(
-                projectPath,
-                DUMMY_BACKEND_URL,
-                UI5_SNAPSHOT_URL,
-                undefined,
-                undefined,
-                false,
+            } = await ProjectMigrator.migrate({
+                projectRoot: projectPath,
+                baseUri: DUMMY_BACKEND_URL,
+                ui5SnapshotUrl: UI5_SNAPSHOT_URL,
+                internalToggle: false,
                 fs
-            );
+            });
 
             expect(result).toBe(true);
             expect(messages.filter((m) => m.type === 'ERROR')).toHaveLength(0);
@@ -565,15 +537,13 @@ describe('Migration Integration Tests', () => {
                 fs: updatedFs,
                 result,
                 messages
-            } = await ProjectMigrator.migrate(
-                projectPath,
-                DUMMY_BACKEND_URL,
-                UI5_SNAPSHOT_URL,
-                undefined,
-                undefined,
-                false,
+            } = await ProjectMigrator.migrate({
+                projectRoot: projectPath,
+                baseUri: DUMMY_BACKEND_URL,
+                ui5SnapshotUrl: UI5_SNAPSHOT_URL,
+                internalToggle: false,
                 fs
-            );
+            });
 
             expect(result).toBe(true);
             // May have warnings but should not fail
@@ -589,15 +559,13 @@ describe('Migration Integration Tests', () => {
                 fs: updatedFs,
                 result,
                 messages
-            } = await ProjectMigrator.migrate(
-                projectPath,
-                DUMMY_BACKEND_URL,
-                UI5_SNAPSHOT_URL,
-                undefined,
-                undefined,
-                false,
+            } = await ProjectMigrator.migrate({
+                projectRoot: projectPath,
+                baseUri: DUMMY_BACKEND_URL,
+                ui5SnapshotUrl: UI5_SNAPSHOT_URL,
+                internalToggle: false,
                 fs
-            );
+            });
 
             expect(result).toBe(true);
             expect(messages.filter((m) => m.type === 'ERROR')).toHaveLength(0);
@@ -615,15 +583,13 @@ describe('Migration Integration Tests', () => {
                 fs: updatedFs,
                 result,
                 messages
-            } = await ProjectMigrator.migrate(
-                projectPath,
-                DUMMY_BACKEND_URL,
-                UI5_SNAPSHOT_URL,
-                undefined,
-                undefined,
-                false,
+            } = await ProjectMigrator.migrate({
+                projectRoot: projectPath,
+                baseUri: DUMMY_BACKEND_URL,
+                ui5SnapshotUrl: UI5_SNAPSHOT_URL,
+                internalToggle: false,
                 fs
-            );
+            });
 
             expect(result).toBe(true);
             expect(messages.filter((m) => m.type === 'ERROR')).toHaveLength(0);
@@ -638,15 +604,13 @@ describe('Migration Integration Tests', () => {
                 fs: updatedFs,
                 result,
                 messages
-            } = await ProjectMigrator.migrate(
-                projectPath,
-                DUMMY_BACKEND_URL,
-                UI5_SNAPSHOT_URL,
-                undefined,
-                undefined,
-                false,
+            } = await ProjectMigrator.migrate({
+                projectRoot: projectPath,
+                baseUri: DUMMY_BACKEND_URL,
+                ui5SnapshotUrl: UI5_SNAPSHOT_URL,
+                internalToggle: false,
                 fs
-            );
+            });
 
             expect(result).toBe(true);
             // May have warnings for edge cases
@@ -655,23 +619,41 @@ describe('Migration Integration Tests', () => {
     });
 
     describe('Legacy Folder Structure Migration', () => {
+        let tempDir: string;
+
+        beforeEach(async () => {
+            const { tmpdir } = await import('node:os');
+            const { mkdtemp, cp } = await import('node:fs/promises');
+            tempDir = await mkdtemp(join(tmpdir(), 'legacy-migration-test-'));
+            // Copy legacy fixtures to temp dir so fallbackFsMove doesn't corrupt source fixtures
+            await cp(join(TEST_INPUT, 'legacy_fin_ar_lineitems'), join(tempDir, 'legacy_fin_ar_lineitems'), {
+                recursive: true
+            });
+            await cp(join(TEST_INPUT, 'legacy_fin_co_costcenter'), join(tempDir, 'legacy_fin_co_costcenter'), {
+                recursive: true
+            });
+        });
+
+        afterEach(async () => {
+            const { rm } = await import('node:fs/promises');
+            await rm(tempDir, { recursive: true, force: true });
+        });
+
         test('should migrate project with src/main/webapp structure (AR)', async () => {
-            const projectPath = join(TEST_INPUT, 'legacy_fin_ar_lineitems');
+            const projectPath = join(tempDir, 'legacy_fin_ar_lineitems');
             const fs = loadProjectIntoMemFs(projectPath);
 
             const {
                 fs: updatedFs,
                 result,
                 messages
-            } = await ProjectMigrator.migrate(
-                projectPath,
-                DUMMY_BACKEND_URL,
-                UI5_SNAPSHOT_URL,
-                undefined,
-                undefined,
-                false,
+            } = await ProjectMigrator.migrate({
+                projectRoot: projectPath,
+                baseUri: DUMMY_BACKEND_URL,
+                ui5SnapshotUrl: UI5_SNAPSHOT_URL,
+                internalToggle: false,
                 fs
-            );
+            });
 
             expect(result).toBe(true);
             expect(messages.filter((m) => m.type === 'ERROR')).toHaveLength(0);
@@ -687,22 +669,20 @@ describe('Migration Integration Tests', () => {
         });
 
         test('should migrate project with src/main/webapp structure (CostCenter)', async () => {
-            const projectPath = join(TEST_INPUT, 'legacy_fin_co_costcenter');
+            const projectPath = join(tempDir, 'legacy_fin_co_costcenter');
             const fs = loadProjectIntoMemFs(projectPath);
 
             const {
                 fs: updatedFs,
                 result,
                 messages
-            } = await ProjectMigrator.migrate(
-                projectPath,
-                DUMMY_BACKEND_URL,
-                UI5_SNAPSHOT_URL,
-                undefined,
-                undefined,
-                false,
+            } = await ProjectMigrator.migrate({
+                projectRoot: projectPath,
+                baseUri: DUMMY_BACKEND_URL,
+                ui5SnapshotUrl: UI5_SNAPSHOT_URL,
+                internalToggle: false,
                 fs
-            );
+            });
 
             expect(result).toBe(true);
             expect(messages.filter((m) => m.type === 'ERROR')).toHaveLength(0);

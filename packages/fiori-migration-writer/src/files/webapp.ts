@@ -4,10 +4,11 @@
 
 import { join } from 'node:path';
 import { stat, readdir, access } from 'node:fs/promises';
+import type { Editor } from 'mem-fs-editor';
 import { fileExists, updateJSON, readFile, writeFile, deleteFile } from '../utils/index.js';
 import { DirName, FileName } from '../project-spec-types.js';
 import { CommandRunner } from '@sap-ux/nodejs-utils';
-import { mkdir, exists, isMemFsEnabled, getCurrentEditor } from '../utils/fs-adapter.js';
+import { editorHasPath } from '../utils/fs-adapter.js';
 import type { ImportProjectInfo } from '../types.js';
 import { MigrationTypes } from '../utils/constants.js';
 import { validateRootDirectory, validateGitRelativePath } from '../utils/path-validation.js';
@@ -31,11 +32,13 @@ async function pathExistsOnDisk(path: string): Promise<boolean> {
 /**
  * Move files using git and fallback to filesystem move
  *
+ * @param fs - mem-fs editor
  * @param rootPath - Project root path
  * @param dirContent - Directory entries to process
  * @param direntToFilter - Files/directories to exclude
  */
 async function moveFilesWithGitFallback(
+    fs: Editor,
     rootPath: string,
     dirContent: Dirent[],
     direntToFilter: string[]
@@ -65,7 +68,7 @@ async function moveFilesWithGitFallback(
                 const sourcePath = join(rootPath, entry.name);
                 const destPath = join(rootPath, DirName.Webapp, entry.name);
 
-                await recursiveMove(sourcePath, destPath); // NOSONAR - Filesystem race prevention
+                await recursiveMove(fs, sourcePath, destPath); // NOSONAR - Filesystem race prevention
             }
         }
     }
@@ -75,12 +78,13 @@ async function moveFilesWithGitFallback(
  * Recursively move files and directories from source to destination
  * Handles both mem-fs and real filesystem operations
  *
+ * @param fs - mem-fs editor
  * @param sourcePath - Source path
  * @param destPath - Destination path
  */
-async function recursiveMove(sourcePath: string, destPath: string): Promise<void> {
-    // Check if source exists (handles both mem-fs and real fs)
-    if (!(await exists(sourcePath)) && !(await pathExistsOnDisk(sourcePath))) {
+async function recursiveMove(fs: Editor, sourcePath: string, destPath: string): Promise<void> {
+    // Check if source exists (staged in mem-fs or on the real filesystem)
+    if (!editorHasPath(fs, sourcePath) && !(await pathExistsOnDisk(sourcePath))) {
         return; // Nothing to move
     }
 
@@ -92,10 +96,7 @@ async function recursiveMove(sourcePath: string, destPath: string): Promise<void
     }
 
     if (isDirectory) {
-        // Ensure destination directory exists
-        mkdir(destPath);
-
-        // Read directory contents (real fs)
+        // Read directory contents (real fs); mem-fs creates directories implicitly on write
         const entries = await readdir(sourcePath, { withFileTypes: true });
 
         // Recursively move each entry sequentially to maintain filesystem consistency
@@ -103,21 +104,15 @@ async function recursiveMove(sourcePath: string, destPath: string): Promise<void
             const srcEntry = join(sourcePath, entry.name);
             const destEntry = join(destPath, entry.name);
 
-            await recursiveMove(srcEntry, destEntry); // NOSONAR: Parent-child order preservation required
-        }
-
-        // Delete the now-empty source directory (real fs only)
-        if (!isMemFsEnabled() && (await pathExistsOnDisk(sourcePath))) {
-            const { rm } = await import('node:fs/promises');
-            await rm(sourcePath, { recursive: true, force: true });
+            await recursiveMove(fs, srcEntry, destEntry); // NOSONAR: Parent-child order preservation required
         }
     } else {
         // It's a file - copy it
-        const content = readFile(sourcePath);
-        writeFile(destPath, content);
+        const content = readFile(fs, sourcePath);
+        writeFile(fs, destPath, content);
 
         // Delete source file after copying
-        deleteFile(sourcePath);
+        deleteFile(fs, sourcePath);
     }
 }
 
@@ -125,14 +120,15 @@ async function recursiveMove(sourcePath: string, destPath: string): Promise<void
  * Create basic extension project manifest.json
  * Creates a minimal manifest needed for extension project preview
  *
+ * @param fs
  * @param rootPath
  * @param projectInfo
  */
-export async function createExtensionProjectManifest(rootPath: string, projectInfo: ImportProjectInfo): Promise<void> {
+export function createExtensionProjectManifest(fs: Editor, rootPath: string, projectInfo: ImportProjectInfo): void {
     // Only create if manifest doesn't exist and it's an extension project
     if (
-        !(await fileExists(join(rootPath, projectInfo.webappPath, FileName.Manifest))) &&
-        !(await fileExists(join(rootPath, FileName.Manifest))) &&
+        !fileExists(fs, join(rootPath, projectInfo.webappPath, FileName.Manifest)) &&
+        !fileExists(fs, join(rootPath, FileName.Manifest)) &&
         projectInfo.type === MigrationTypes.projectExtension
     ) {
         // Add a basic manifest.json (not linked in component.json) needed for preview
@@ -173,13 +169,13 @@ export async function createExtensionProjectManifest(rootPath: string, projectIn
         };
 
         // Write manifest to appropriate location
-        // Check if webapp directory exists (works for both mem-fs and real fs)
-        const shouldWriteToWebapp = projectInfo.webappPath && (await exists(join(rootPath, projectInfo.webappPath)));
+        // Check if webapp directory exists (staged in mem-fs or on disk, including an empty real dir)
+        const shouldWriteToWebapp = projectInfo.webappPath && fileExists(fs, join(rootPath, projectInfo.webappPath));
 
         if (shouldWriteToWebapp) {
-            updateJSON(join(rootPath, projectInfo.webappPath, FileName.Manifest), manifestJson);
+            updateJSON(fs, join(rootPath, projectInfo.webappPath, FileName.Manifest), manifestJson);
         } else {
-            updateJSON(join(rootPath, FileName.Manifest), manifestJson);
+            updateJSON(fs, join(rootPath, FileName.Manifest), manifestJson);
             projectInfo.webappPath = '';
         }
     }
@@ -189,23 +185,23 @@ export async function createExtensionProjectManifest(rootPath: string, projectIn
  * Create webapp folder and migrate files into it
  * For projects with manifest.json at root level, creates webapp folder and moves appropriate files
  *
+ * @param fs
  * @param rootPath
  * @param projectInfo
  */
 export async function createWebappFolderAndMigrateFiles(
+    fs: Editor,
     rootPath: string,
     projectInfo: ImportProjectInfo
 ): Promise<void> {
     // Only proceed if webapp path is empty and manifest exists in root
     const manifestPath = join(rootPath, FileName.Manifest);
-    const manifestExists = await fileExists(manifestPath);
+    const manifestExists = fileExists(fs, manifestPath);
 
     if (projectInfo.webappPath === '' && manifestExists) {
         // manifest.json is outside of webapp folder and should not be a legacy project
         // as previous block will have updated this folder structure
         // create webapp, move files into it and update current webapp path
-
-        mkdir(join(rootPath, DirName.Webapp));
 
         // List of files/directories to exclude from migration
         const direntToFilter = [
@@ -226,9 +222,7 @@ export async function createWebappFolderAndMigrateFiles(
             '.eslintrc.ext'
         ];
 
-        const editor = getCurrentEditor();
-
-        if (editor && hasStore(editor)) {
+        if (hasStore(fs)) {
             // Use mem-fs to get directory listing
             // mem-fs stores keys with forward slashes, so normalize separators for Windows compatibility
             const normalizedRoot = rootPath.replaceAll('\\', '/');
@@ -236,7 +230,7 @@ export async function createWebappFolderAndMigrateFiles(
             const filesToMove: string[] = [];
 
             // Collect all files under root, excluding those whose top-level segment is filtered
-            editor.store.each((file) => {
+            fs.store.each((file) => {
                 const filePath = file.path.replaceAll('\\', '/'); // Normalize mem-fs keys
                 if (filePath.startsWith(rootPathWithSep)) {
                     const relativePath = filePath.substring(rootPathWithSep.length);
@@ -254,14 +248,14 @@ export async function createWebappFolderAndMigrateFiles(
                 const normalizedPath = filePath.replaceAll('\\', '/');
                 const relativePath = normalizedPath.substring(rootPathWithSep.length);
                 const destPath = join(rootPath, DirName.Webapp, relativePath);
-                const content = readFile(filePath);
-                writeFile(destPath, content);
-                deleteFile(filePath);
+                const content = readFile(fs, filePath);
+                writeFile(fs, destPath, content);
+                deleteFile(fs, filePath);
             }
         } else {
             // Use real filesystem - extracted to helper for reduced complexity
             const dirContent = await readdir(rootPath, { withFileTypes: true });
-            await moveFilesWithGitFallback(rootPath, dirContent, direntToFilter);
+            await moveFilesWithGitFallback(fs, rootPath, dirContent, direntToFilter);
         }
 
         // Update webapp path

@@ -7,10 +7,14 @@ import { applyTemplates } from '../../../src/template/template-helpers.js';
 import { MigrationTypes } from '../../../src/utils/constants.js';
 import { DirName } from '../../../src/project-spec-types.js';
 import { TemplateFileName, initI18n, fileExists, writeFile } from '../../../src/index.js';
-import { createMemFsEditor, runWithEditor } from '../../../src/utils/fs-adapter.js';
+import { createMemFsEditor } from '../../../src/utils/fs-adapter.js';
 import type { TemplateData, TemplateMap } from '../../../src/types.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
+
+// The editor is now threaded explicitly; this helper preserves the test structure
+// while simply running the callback (no implicit context needed).
+const withEditor = async (_fs: Editor, cb: () => Promise<void>): Promise<void> => cb();
 
 describe('template/template-helpers', () => {
     let fs: Editor;
@@ -44,19 +48,19 @@ describe('template/template-helpers', () => {
 
     describe('applyTemplates', () => {
         it('should apply templates without errors for empty template map', async () => {
-            await runWithEditor(fs, async () => {
+            await withEditor(fs, async () => {
                 const templates: TemplateMap = {};
                 const templateData = createTemplateData();
 
                 // Should not throw - verify by checking promise resolves
-                await expect(applyTemplates(templates, templateData, testOutputDir)).resolves.toBeUndefined();
+                await expect(applyTemplates(fs, templates, templateData, testOutputDir)).resolves.toBeUndefined();
             });
         });
 
         it('should update index.html theme for extension projects when file exists', async () => {
             const rootPath = join(testOutputDir, 'extension-theme');
 
-            await runWithEditor(fs, async () => {
+            await withEditor(fs, async () => {
                 // Create webapp directory and index.html
                 await mkdir(join(rootPath, DirName.Webapp), { recursive: true });
                 const indexHtmlContent = `<!DOCTYPE html>
@@ -66,17 +70,17 @@ describe('template/template-helpers', () => {
 </head>
 <body></body>
 </html>`;
-                writeFile(join(rootPath, DirName.Webapp, TemplateFileName.IndexHtml), indexHtmlContent);
+                writeFile(fs, join(rootPath, DirName.Webapp, TemplateFileName.IndexHtml), indexHtmlContent);
 
                 const templateData = createTemplateData({
                     type: MigrationTypes.projectExtension,
                     ui5Theme: 'sap_fiori_3'
                 });
 
-                await applyTemplates({}, templateData, rootPath, undefined, '1.120.0');
+                await applyTemplates(fs, {}, templateData, rootPath, undefined, '1.120.0');
 
                 // Verify file exists (theme update was attempted)
-                const exists = await fileExists(join(rootPath, DirName.Webapp, TemplateFileName.IndexHtml));
+                const exists = await fileExists(fs, join(rootPath, DirName.Webapp, TemplateFileName.IndexHtml));
                 expect(exists).toBe(true);
             });
         });
@@ -84,7 +88,7 @@ describe('template/template-helpers', () => {
         it('should handle missing index.html gracefully for extension projects', async () => {
             const rootPath = join(testOutputDir, 'extension-no-index');
 
-            await runWithEditor(fs, async () => {
+            await withEditor(fs, async () => {
                 await mkdir(join(rootPath, DirName.Webapp), { recursive: true });
 
                 const templateData = createTemplateData({
@@ -93,17 +97,19 @@ describe('template/template-helpers', () => {
                 });
 
                 // Should not throw when index.html doesn't exist - verify promise resolves
-                await expect(applyTemplates({}, templateData, rootPath, undefined, '1.136.0')).resolves.toBeUndefined();
+                await expect(
+                    applyTemplates(fs, {}, templateData, rootPath, undefined, '1.136.0')
+                ).resolves.toBeUndefined();
             });
         });
 
         it('should not update index.html for non-extension projects', async () => {
             const rootPath = join(testOutputDir, 'lrop-project');
 
-            await runWithEditor(fs, async () => {
+            await withEditor(fs, async () => {
                 await mkdir(join(rootPath, DirName.Webapp), { recursive: true });
                 const indexHtmlContent = `<html><script data-sap-ui-theme="sap_bluecrystal"></script></html>`;
-                writeFile(join(rootPath, DirName.Webapp, TemplateFileName.IndexHtml), indexHtmlContent);
+                writeFile(fs, join(rootPath, DirName.Webapp, TemplateFileName.IndexHtml), indexHtmlContent);
 
                 const templateData = createTemplateData({
                     type: MigrationTypes.lrop,
@@ -112,18 +118,20 @@ describe('template/template-helpers', () => {
 
                 // For non-extension projects, theme update code path is not executed
                 // Verify the function completes without errors
-                await expect(applyTemplates({}, templateData, rootPath, undefined, '1.120.0')).resolves.toBeUndefined();
+                await expect(
+                    applyTemplates(fs, {}, templateData, rootPath, undefined, '1.120.0')
+                ).resolves.toBeUndefined();
             });
         });
 
         it('should handle theme update errors gracefully', async () => {
             const rootPath = join(testOutputDir, 'extension-error');
 
-            await runWithEditor(fs, async () => {
+            await withEditor(fs, async () => {
                 // Create an invalid index.html that will cause update to fail
                 await mkdir(join(rootPath, DirName.Webapp), { recursive: true });
                 // Write valid HTML but the theme update may still succeed
-                writeFile(join(rootPath, DirName.Webapp, TemplateFileName.IndexHtml), '');
+                writeFile(fs, join(rootPath, DirName.Webapp, TemplateFileName.IndexHtml), '');
 
                 const templateData = createTemplateData({
                     type: MigrationTypes.projectExtension,
@@ -131,28 +139,30 @@ describe('template/template-helpers', () => {
                 });
 
                 // Should not throw - errors are caught and migration continues
-                await expect(applyTemplates({}, templateData, rootPath, undefined, '1.120.0')).resolves.toBeUndefined();
+                await expect(
+                    applyTemplates(fs, {}, templateData, rootPath, undefined, '1.120.0')
+                ).resolves.toBeUndefined();
             });
         });
 
         it('should use default template root when not specified', async () => {
-            await runWithEditor(fs, async () => {
+            await withEditor(fs, async () => {
                 const templates: TemplateMap = {};
                 const templateData = createTemplateData();
 
                 // Should use AppSettings as default template root - verify completes without error
-                await expect(applyTemplates(templates, templateData, testOutputDir)).resolves.toBeUndefined();
+                await expect(applyTemplates(fs, templates, templateData, testOutputDir)).resolves.toBeUndefined();
             });
         });
 
         it('should use custom template root when specified', async () => {
-            await runWithEditor(fs, async () => {
+            await withEditor(fs, async () => {
                 const templates: TemplateMap = {};
                 const templateData = createTemplateData();
 
                 // Should use custom template root - verify completes without error
                 await expect(
-                    applyTemplates(templates, templateData, testOutputDir, 'customRoot')
+                    applyTemplates(fs, templates, templateData, testOutputDir, 'customRoot')
                 ).resolves.toBeUndefined();
             });
         });

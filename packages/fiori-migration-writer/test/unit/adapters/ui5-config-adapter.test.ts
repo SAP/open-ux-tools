@@ -291,3 +291,21 @@ describe('UI5 Config Adapter - generateUI5MockYamlContent', () => {
         expect(result).toContain('webapp');
     });
 });
+
+describe('UI5 Config Adapter - mockserver middleware in ui5-local.yaml', () => {
+    test('adds the sap-fe-mockserver middleware when generateMockData and servicePath are set', async () => {
+        const templateData = createTemplateData({
+            ui5Yaml: {
+                name: 'test-app',
+                ui5Url: 'https://ui5.sap.com',
+                generateMockData: true,
+                servicePath: '/sap/opu/odata/sap/TEST_SERVICE'
+            }
+        });
+
+        const result = await generateUI5LocalYamlContent(createOptions(templateData));
+        const parsed = parse(result);
+        const mockserver = parsed.server?.customMiddleware?.find((m: any) => m.name === 'sap-fe-mockserver');
+        expect(mockserver).toBeDefined();
+    });
+});

@@ -1,5 +1,7 @@
 import { basename, dirname, join, sep } from 'node:path';
 import fg from 'fast-glob';
+import type { Editor } from 'mem-fs-editor';
+import { createMemFsEditor } from './fs-adapter.js';
 import { DirName, FileName } from '../project-spec-types.js';
 import { isFioriToolsProject, findAllManifest } from './project-access-adapters.js';
 import type { ProjectAppPath, ProjectFolder } from '../types.js';
@@ -8,9 +10,13 @@ import { isProjectFolderArray } from '../types/project-folder.js';
 /**
  * Find all maven project(s) by locating pom.xml in the VS code workspace(s)
  *
+ * @param fs
  * @param wsFolders
  */
-export async function findAllWebIDEProjectFolders(wsFolders: readonly ProjectFolder[] | string[]): Promise<string[]> {
+export async function findAllWebIDEProjectFolders(
+    fs: Editor,
+    wsFolders: readonly ProjectFolder[] | string[]
+): Promise<string[]> {
     let wsRoots: string[];
     if (isProjectFolderArray(wsFolders)) {
         wsRoots = wsFolders.filter((folder) => folder.uri.scheme === 'file').map((folder) => folder.uri.fsPath);
@@ -18,11 +24,11 @@ export async function findAllWebIDEProjectFolders(wsFolders: readonly ProjectFol
         wsRoots = wsFolders || [];
     }
 
-    // Process all workspace roots in parallel
+    // Process all workspace roots in parallel, skipping src/ to avoid nested test suites
     const projectArrays = await Promise.all(
         wsRoots.map(async (root) => {
             try {
-                return await findWebIDEProject(root);
+                return await findWebIDEProject(fs, root, true);
             } catch {
                 // Continue scanning other roots even if one fails
                 return [];
@@ -37,23 +43,28 @@ export async function findAllWebIDEProjectFolders(wsFolders: readonly ProjectFol
 /**
  * Find all maven project(s) by locating pom.xml in the VS code workspace root
  *
+ * @param fs
  * @param wsRoot
+ * @param skipSrcDirs - If true, skip scanning src/ directories (used for getProjectRoots)
  * @returns Array of project paths
  */
-async function findWebIDEProject(wsRoot: string): Promise<string[]> {
+async function findWebIDEProject(fs: Editor, wsRoot: string, skipSrcDirs = true): Promise<string[]> {
     const projects: string[] = [];
+    const ignore = [
+        '.git',
+        'node_modules',
+        '**/node_modules/**',
+        'dist',
+        '**/dist/**',
+        `**/${DirName.Webapp}/**`,
+        '**/Web/MDKModule/**'
+    ];
+    if (skipSrcDirs) {
+        ignore.push(`**/${DirName.Sapux}/**`); // GH #14290 — skip src/ to avoid nested test suites
+    }
     const entries = await fg([`**/${FileName.Pom}`, `**/${FileName.NeoApp}`], {
         cwd: wsRoot,
-        ignore: [
-            '.git',
-            'node_modules',
-            '**/node_modules/**',
-            'dist',
-            '**/dist/**',
-            `**/${DirName.Sapux}/**`,
-            `**/${DirName.Webapp}/**`,
-            '**/Web/MDKModule/**'
-        ] // GH #14290
+        ignore
     });
 
     // Process all entries in parallel
@@ -65,8 +76,8 @@ async function findWebIDEProject(wsRoot: string): Promise<string[]> {
             // Check for neo-app.json or pom.xml file present
             // Check both tooling packages (await in series is intentional - short-circuit on first match)
             const fioriToolsProject =
-                (await isFioriToolsProject(dir, '@sap-ux/ui5-tooling')) ||
-                (await isFioriToolsProject(dir, '@sap/ux-ui5-tooling'));
+                (await isFioriToolsProject(fs, dir, '@sap-ux/ui5-tooling')) ||
+                (await isFioriToolsProject(fs, dir, '@sap/ux-ui5-tooling'));
 
             return !fioriToolsProject ? dir : null;
         })
@@ -81,12 +92,36 @@ async function findWebIDEProject(wsRoot: string): Promise<string[]> {
 
 /**
  * Get Pom project paths as labels for use in project picker
+ * Uses a broader scan (including src/ dirs) to find all WebIDE projects.
  *
  * @param workspaceRoots
+ * @param fsEditor - optional mem-fs editor; a fresh one is created when omitted
  */
-export async function getWebIDEProjectPathsAsLabels(workspaceRoots: ProjectFolder[]): Promise<ProjectAppPath[]> {
-    const result = [];
-    let roots = await findAllWebIDEProjectFolders(workspaceRoots);
+export async function getWebIDEProjectPathsAsLabels(
+    workspaceRoots: ProjectFolder[],
+    fsEditor?: Editor
+): Promise<ProjectAppPath[]> {
+    const fs = fsEditor ?? createMemFsEditor();
+    const result: ProjectAppPath[] = [];
+    let wsRoots: string[];
+    if (isProjectFolderArray(workspaceRoots)) {
+        wsRoots = workspaceRoots.filter((folder) => folder.uri.scheme === 'file').map((folder) => folder.uri.fsPath);
+    } else {
+        wsRoots = (workspaceRoots as any) || [];
+    }
+
+    // Use broader scan (skipSrcDirs=false) to also find nested WebIDE projects in src/
+    const projectArrays = await Promise.all(
+        wsRoots.map(async (root) => {
+            try {
+                return await findWebIDEProject(fs, root, false);
+            } catch {
+                return [];
+            }
+        })
+    );
+
+    let roots = projectArrays.flat();
     if (workspaceRoots.length > 1) {
         roots = [...new Set(roots)];
     }

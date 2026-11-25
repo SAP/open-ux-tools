@@ -5,6 +5,7 @@ import { promises as FSpromises, existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { generatorConfigOData, PREDEFINED_GENERATOR_VALUES } from './schemas/index.js';
 import { checkIfGeneratorInstalled, logger, runCmd, validateWithSchema } from '../utils/index.js';
+import { getLatestUI5Version } from '@sap-ux/ui5-info';
 import { getExternalServiceReferences } from '@sap-ux/odata-service-writer';
 import type { Annotations, ExternalService, ServiceProvider } from '@sap-ux/axios-extension';
 import { createForDestination, AbapServiceProvider, ODataVersion } from '@sap-ux/axios-extension';
@@ -60,6 +61,13 @@ async function executeOData(validated: GeneratorConfigOData, appPath: string): P
     const metadataPath = generatorConfig.service?.metadataFilePath ?? join(targetDir, 'metadata.xml');
 
     try {
+        if (!generatorConfig.project.ui5Version) {
+            const latestVersion = await getLatestUI5Version();
+            if (latestVersion) {
+                generatorConfig.project.ui5Version = latestVersion;
+            }
+        }
+
         if (generatorConfig.service) {
             const { servicePath, host, client, destination } = generatorConfig.service;
             const { edmx, externalServices, annotations, authenticationType } = await resolveServiceMetadata(

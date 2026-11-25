@@ -26,6 +26,7 @@ const runner = new JourneyRunner({
             CustomBooksObjectPageGenerated
         )
     },
+    opaConfig: { autoWait: true },
     async: true
 });
 

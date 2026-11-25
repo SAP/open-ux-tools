@@ -10,10 +10,11 @@ function makeSubSection(id: string, property: string) {
     return { id, fields: [{ property }], contactCardFields: [], contactCardColumns: [], tableColumns: {} };
 }
 
-function renderJourney(bodySections: unknown[]): string {
+function renderJourney(bodySections: unknown[], template: string = templatePath): string {
     const fs = create(createStorage());
-    const out = join(__dirname, 'out.gen.js');
-    fs.copyTpl(templatePath, out, {
+    const ext = template.endsWith('.ts') ? '.ts' : '.js';
+    const out = join(__dirname, `out.gen${ext}`);
+    fs.copyTpl(template, out, {
         name: 'GLLineItem',
         navigationParents: {
             parentLRName: '',
@@ -101,5 +102,65 @@ describe('ObjectPageJourney template - sub-section assertions', () => {
         expect(content).not.toContain('iCheckSubSection');
         expect(content).toContain('iClickLink({ property: "Author" })');
         expect(content).toContain('function (_Given, When, Then)');
+    });
+});
+
+describe('ObjectPageJourney template (1.84 bucket) - empty section guard', () => {
+    const buckets = [
+        ['JS', join(__dirname, '../../templates/v4/1.84/integration/ObjectPageJourney.js')],
+        ['TS', join(__dirname, '../../templates/v4/1.84/integration/ObjectPageJourney.ts')]
+    ] as const;
+
+    // A plain table section below 1.120 has no iCheckColumns/iCheckSection to emit, and with no
+    // actions, create/delete buttons or form fields its only output would be the section-tab press.
+    // OPA5 rejects a test that runs zero assertions ("Expected at least one assertion, but none were
+    // run"), so the whole opaTest block must be skipped for such a section.
+    const bareTableSection = {
+        id: 'BookingSupplement',
+        isTable: true,
+        navigationProperty: '_BookSupplement',
+        actions: [],
+        contactCardColumns: [],
+        contactCardFields: [],
+        fields: [],
+        tableColumns: {},
+        subSections: []
+    };
+    const sectionWithField = {
+        id: 'GeneralInformation',
+        isTable: false,
+        navigationProperty: undefined,
+        actions: [],
+        contactCardColumns: [],
+        contactCardFields: [],
+        fields: [{ property: 'BookingID' }],
+        tableColumns: {},
+        subSections: []
+    };
+
+    test.each(buckets)('%s: omits the opaTest block for a bare table section with no assertions', (_name, tpl) => {
+        const content = renderJourney([sectionWithField, bareTableSection], tpl);
+        // The sibling section that does assert is still generated.
+        expect(content).toContain('Check the GeneralInformation section of the Object Page');
+        // The bare table section must be skipped entirely — no block, no section-tab press for it.
+        expect(content).not.toContain('Check the BookingSupplement section of the Object Page');
+        expect(content).not.toContain('iPressSectionIconTabFilterButton("BookingSupplement")');
+    });
+
+    test.each(buckets)('%s: never emits a section tab press without a following Then assertion', (_name, tpl) => {
+        const content = renderJourney([sectionWithField, bareTableSection], tpl);
+        // Scan every opaTest(...) body: any that presses a section tab must also run an assertion.
+        const opaTestBlock = /opaTest\([^]*?\{([^]*?)\n {4,8}\}\);/g;
+        let match: RegExpExecArray | null;
+        let scanned = 0;
+        while ((match = opaTestBlock.exec(content)) !== null) {
+            const body = match[1];
+            if (body.includes('iPressSectionIconTabFilterButton')) {
+                scanned++;
+                expect(body).toMatch(/\bThen\./);
+            }
+        }
+        // Guard against the regex silently matching nothing: the asserting sibling presses its tab.
+        expect(scanned).toBeGreaterThan(0);
     });
 });

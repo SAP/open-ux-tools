@@ -1,5 +1,107 @@
 # @sap-ux/ui-prompting
 
+## 2.0.1
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui-components 4.0.0 → 4.0.1
+
+## 2.0.0
+
+### Major Changes
+
+#### Release Date
+
+2026-11-20
+
+#### Bug Fixes
+
+- Narrow peerDependencies react/react-dom to >=18 to match @sap-ux/ui-components requirement [[7952e31](https://github.com/SAP/open-ux-tools/commit/7952e3192861a3eb96f2f37e5cb09ed8a0701fd9)]
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui-components 3.2.1 → 4.0.0
+
+## 1.0.26
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui-components 3.2.0 → 3.2.1
+
+## 1.0.25
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui-components 3.1.0 → 3.2.0
+
+## 1.0.24
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui-components 3.0.21 → 3.1.0
+
+## 1.0.23
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui-components 3.0.20 → 3.0.21
+
+## 1.0.22
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui-components 3.0.19 → 3.0.20
+
+## 1.0.21
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui-components 3.0.18 → 3.0.19
+
+## 1.0.20
+
+### Patch Changes
+
+#### Release Date
+
+2026-10-29
+
+#### Bug Fixes
+
+- Allow consumers to prevent translation callout focus restoration on accept so external file pickers retain focus. [[b824f0e](https://github.com/SAP/open-ux-tools/commit/b824f0e18aa129fd8d15828b25c5762d3234359b)]
+
+## 1.0.19
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui-components 3.0.17 → 3.0.18
+
+## 1.0.18
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui-components 3.0.16 → 3.0.17
+
 ## 1.0.17
 
 ### Patch Changes

@@ -325,7 +325,7 @@ describe('LayeredRepositoryService', () => {
         test('successful call with provided package and without provided language', async () => {
             nock(server)
                 .get((path) => path.startsWith(`${LayeredRepositoryService.PATH}/dta_folder/system_info`))
-                .reply(200, (_path) => {
+                .reply(200, (_req: Request) => {
                     return mockResult;
                 });
             const systemInfo = await service.getSystemInfo('Z_TEST_PACKAGE');
@@ -337,7 +337,8 @@ describe('LayeredRepositoryService', () => {
             const cloudPackage = 'path/to/cloud-package0';
             nock(server)
                 .get((path) => path.startsWith(`${LayeredRepositoryService.PATH}/dta_folder/system_info`))
-                .reply(200, (path) => {
+                .reply(200, (req: Request) => {
+                    const path = new URL(req.url).search;
                     expect(path).toContain(`package=${cloudPackage}`);
                     return mockResult;
                 });

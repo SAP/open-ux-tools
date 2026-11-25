@@ -140,7 +140,8 @@ export function getManifestVersion(ui5Version: string, manifestVersion?: string)
      * @returns closest matching manifest version or undefined, if none found (below lowest value)
      */
     const getClosestManifestVersion = (version: SemVer) => {
-        const verToManifestVer = versionToManifestDescMapping as Record<string, string>;
+        // TS6 infers a narrow literal-keyed type for the JSON import; widen via unknown to the flat string map. TODO: revisit when @ui5/manifest moves to the nested $byUI5Version schema (>1.89).
+        const verToManifestVer = versionToManifestDescMapping as unknown as Record<string, string>;
 
         let matchVersion = verToManifestVer[`${semVer.major(version)}.${semVer.minor(version)}`];
         if (!matchVersion) {
