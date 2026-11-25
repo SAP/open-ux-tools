@@ -34,6 +34,8 @@ const AppRouterType = {
     STANDALONE: 'Standalone HTML5 Application Runtime'
 } as const;
 
+const mockGetApprouterType = jest.fn<() => (typeof AppRouterType)[keyof typeof AppRouterType]>();
+
 const actualValidation = await import('../../../../adp-tooling/src/cf/project-validation.js');
 const mockValidateProjectPath = jest.fn<typeof actualValidation.validateProjectPath>();
 const mockGetDefaultProjectName = jest.fn().mockReturnValue('app.variant');
@@ -56,7 +58,7 @@ jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
     validateProjectPath: mockValidateProjectPath,
     validateMtaId: actualValidation.validateMtaId,
     validateBusinessSolutionName: actualValidation.validateBusinessSolutionName,
-    getApprouterType: jest.fn().mockReturnValue(AppRouterType.MANAGED),
+    getApprouterType: mockGetApprouterType,
     getModuleNames: jest.fn().mockReturnValue([]),
     hasApprouter: jest.fn().mockReturnValue(false),
     getConfiguredProvider: mockGetConfiguredProvider,
@@ -126,6 +128,7 @@ describe('generateAdaptationProject', () => {
         jest.clearAllMocks();
         mockExistsSync.mockReturnValue(false);
         mockValidateProjectPath.mockReturnValue(true);
+        mockGetApprouterType.mockReturnValue(AppRouterType.MANAGED);
         mockGetDefaultProjectName.mockReturnValue('app.variant');
         mockRunCmdArgs.mockResolvedValue({ stdout: 'done', stderr: '' });
         // Default to an on-premise-only system so existing tests resolve to a concrete type
@@ -1196,6 +1199,37 @@ describe('generateAdaptationProject', () => {
             expect(result.projectPath).toEqual(join(cfTarget, 'app.variant'));
             expect(result.mtaRoot).toEqual(cfTarget);
         });
+
+        test.each([
+            ['existing', undefined, AppRouterType.MANAGED, 'Error', 1],
+            ['existing', undefined, AppRouterType.STANDALONE, 'Success', 1],
+            ['new', undefined, AppRouterType.STANDALONE, 'Error', 0],
+            ['existing', 'managed', AppRouterType.STANDALONE, 'Error', 0],
+            ['existing', 'standalone', AppRouterType.MANAGED, 'Success', 0],
+            ['new', 'standalone', AppRouterType.MANAGED, 'Success', 0]
+        ] as const)(
+            'preserves business-solution validation for %s MTA, requested router %s and detected router %s',
+            async (mtaMode, approuter, detected, status, lookups) => {
+                mockGetApprouterType.mockReturnValue(detected);
+                const result = await generateAdaptationProject({
+                    application: 'app.id',
+                    targetEnvironment: 'CF',
+                    appPath: '/tmp/app',
+                    mtaMode,
+                    mtaId: 'my-mta',
+                    approuter,
+                    businessSolutionName: 'Invalid Name'
+                });
+                expect(result.status).toBe(status);
+                expect(mockGetApprouterType).toHaveBeenCalledTimes(lookups);
+                if (status === 'Error') {
+                    expect(result.issues?.[0].field).toBe('businessSolutionName');
+                    expect(mockRunCmdArgs).not.toHaveBeenCalled();
+                } else {
+                    expect(mockRunCmdArgs).toHaveBeenCalledTimes(1);
+                }
+            }
+        );
 
         test('maps the friendly approuter value to the generator value', async () => {
             await generateAdaptationProject({

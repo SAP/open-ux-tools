@@ -238,37 +238,38 @@ export async function findServiceInstancesForApp(
         return name !== undefined && adaptable.has(name);
     });
 
-    const matches: CfServiceInstanceChoice[] = [];
-    for (const instance of candidates) {
-        try {
-            const serviceInfo = await getBusinessServiceInfo(instance.name, cfConfig, logger);
-            if (!serviceInfo?.serviceKeys.length) {
+    const candidateMatches = await Promise.all(
+        candidates.map(async (instance) => {
+            try {
+                const serviceInfo = await getBusinessServiceInfo(instance.name, cfConfig, logger);
+                if (!serviceInfo?.serviceKeys.length) {
+                    incompleteInstances.push({
+                        instance,
+                        code: 'service_credentials_unavailable',
+                        message: t('error.noServiceKeysFoundForInstance', { serviceInstanceName: instance.name })
+                    });
+                    return undefined;
+                }
+                const apps = await getCfApps(serviceInfo.serviceKeys, cfConfig, logger);
+                return apps.some((app) => app.appId === appId) ? instance : undefined;
+            } catch (error) {
                 incompleteInstances.push({
                     instance,
-                    code: 'service_credentials_unavailable',
-                    message: t('error.noServiceKeysFoundForInstance', { serviceInstanceName: instance.name })
+                    code: 'service_instance_probe_failed',
+                    message: t('error.serviceInstanceDiscoveryFailed', {
+                        serviceInstanceName: instance.name,
+                        error: error instanceof Error ? error.message : String(error)
+                    })
                 });
-                continue;
+                logger?.warn(`Failed to inspect apps for service instance '${instance.name}': ${error}`);
+                return undefined;
             }
-            const apps = await getCfApps(serviceInfo.serviceKeys, cfConfig, logger);
-            if (apps.some((app) => app.appId === appId)) {
-                matches.push(instance);
-            }
-        } catch (error) {
-            incompleteInstances.push({
-                instance,
-                code: 'service_instance_probe_failed',
-                message: t('error.serviceInstanceDiscoveryFailed', {
-                    serviceInstanceName: instance.name,
-                    error: error instanceof Error ? error.message : String(error)
-                })
-            });
-            logger?.warn(`Failed to inspect apps for service instance '${instance.name}': ${error}`);
-        }
-    }
+        })
+    );
+    const matches = candidateMatches.filter((instance): instance is CfServiceInstanceChoice => instance !== undefined);
 
     return {
         matches,
-        incompleteInstances: incompleteInstances.sort((a, b) => a.instance.name.localeCompare(b.instance.name))
+        incompleteInstances: incompleteInstances.toSorted((a, b) => a.instance.name.localeCompare(b.instance.name))
     };
 }

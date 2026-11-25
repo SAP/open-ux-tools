@@ -3,6 +3,7 @@ import { dirname } from 'node:path';
 import { validateClient, validateNamespaceAdp, validateProjectName } from '@sap-ux/project-input-validator';
 import {
     downloadAppContent,
+    findServiceInstancesForApp,
     getAdpServiceInstances,
     getBusinessServiceInfo,
     getCfApps,
@@ -58,9 +59,11 @@ export function generationError(
  * @returns Error result, or undefined when valid.
  */
 export function validationError(field: string, result: string | boolean): GenerateAdaptationProjectOutput | undefined {
-    return result === true
-        ? undefined
-        : generationError(field, typeof result === 'string' ? result : 'Invalid ' + field + '.');
+    if (result === true) {
+        return undefined;
+    }
+    const message = typeof result === 'string' ? result : 'Invalid ' + field + '.';
+    return generationError(field, message);
 }
 
 /**
@@ -145,6 +148,66 @@ export function validateAttributes(
     return issues.length
         ? { status: 'Error', phase: 'validation', message: issues.map((issue) => issue.message).join(' '), issues }
         : undefined;
+}
+
+/**
+ * Resolves a service name from complete CF discovery or returns the required selection/diagnostic.
+ * Explicitly supplied service names bypass discovery in the caller and are validated separately.
+ *
+ * @param application - Requested base application ID.
+ * @param cfConfig - Current authenticated CF org and space context.
+ * @returns A uniquely discovered service name, or a structured selection/validation result.
+ */
+export async function resolveCfServiceInstanceName(
+    application: string,
+    cfConfig: CfConfig
+): Promise<string | GenerateAdaptationProjectOutput> {
+    const { matches, incompleteInstances } = await preflightStep(
+        'serviceInstanceName',
+        'service_discovery_failed',
+        () => findServiceInstancesForApp(application, cfConfig, logger)
+    );
+    if (incompleteInstances.length > 0) {
+        return {
+            status: 'InputRequired',
+            message:
+                'Cloud Foundry service discovery is incomplete. Select a service instance explicitly; unresolved instances may also expose the application.',
+            missingFields: ['serviceInstanceName'],
+            choices: {
+                serviceInstanceName: [...matches, ...incompleteInstances.map((entry) => entry.instance)].map(
+                    (instance) => ({ value: instance.name, label: instance.name })
+                )
+            },
+            issues: incompleteInstances.map((entry) => ({
+                field: 'serviceInstanceName',
+                code: entry.code,
+                message: entry.message
+            }))
+        };
+    }
+    if (matches.length === 0) {
+        return generationError(
+            'application',
+            'No Cloud Foundry service instance in org ' +
+                cfConfig.org.Name +
+                ' / space ' +
+                cfConfig.space.Name +
+                ' exposes application ' +
+                application +
+                '.',
+            'application_not_found'
+        );
+    }
+    if (matches.length === 1) {
+        return matches[0].name;
+    } else {
+        return {
+            status: 'InputRequired',
+            message: `Multiple Cloud Foundry service instances expose application '${application}'.`,
+            missingFields: ['serviceInstanceName'],
+            choices: { serviceInstanceName: matches.map((match) => ({ value: match.name, label: match.name })) }
+        };
+    }
 }
 
 /**

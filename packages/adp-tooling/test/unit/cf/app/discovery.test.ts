@@ -1,4 +1,5 @@
 import { jest } from '@jest/globals';
+import { setImmediate } from 'node:timers/promises';
 import type AdmZip from 'adm-zip';
 import type { ToolsLogger } from '@sap-ux/logger';
 
@@ -736,6 +737,31 @@ describe('CF App Discovery', () => {
 
             const result = await findServiceInstancesForApp('target-app', cfConfig, mockLogger);
 
+            expect(result).toEqual({ matches: [inst1, inst2], incompleteInstances: [] });
+        });
+
+        test('preserves candidate order when probes finish in reverse order', async () => {
+            const inst1 = instance('inst-1', 'guid-1');
+            const inst2 = instance('inst-2', 'guid-2');
+            const completedProbes: string[] = [];
+            mockGetAdpServiceInstances.mockResolvedValue([inst1, inst2]);
+            mockGetSapCloudServiceName.mockResolvedValue('cloud-a');
+            mockGetAdaptableBusinessServices.mockResolvedValue(new Set(['cloud-a']));
+            mockGetBusinessServiceInfo.mockResolvedValue(serviceInfo);
+            mockGetFDCApps
+                .mockImplementationOnce(async () => {
+                    await setImmediate();
+                    completedProbes.push(inst1.name);
+                    return mockApps;
+                })
+                .mockImplementationOnce(async () => {
+                    completedProbes.push(inst2.name);
+                    return mockApps;
+                });
+
+            const result = await findServiceInstancesForApp('app-1', cfConfig, mockLogger);
+
+            expect(completedProbes).toEqual([inst2.name, inst1.name]);
             expect(result).toEqual({ matches: [inst1, inst2], incompleteInstances: [] });
         });
 

@@ -12,13 +12,13 @@ import {
     preflightStep,
     validateAttributes,
     validateCfApplication,
+    resolveCfServiceInstanceName,
     validateGenerationFolder,
     validationError
 } from '../utils/adaptation-project-validation.js';
 import {
     AppRouterType,
     fetchKeyUserChanges,
-    findServiceInstancesForApp,
     getConfiguredProvider,
     getDefaultProjectName,
     getApprouterType,
@@ -320,7 +320,7 @@ export async function generateAdaptationProject(input: unknown): Promise<Generat
         return folderError;
     }
 
-    if (targetEnvironment !== 'ABAP' && targetEnvironment !== 'CF') {
+    if (targetEnvironment === undefined) {
         return {
             status: 'InputRequired',
             message: 'targetEnvironment is required before generation.',
@@ -496,9 +496,12 @@ function resolveCfDestination(
         return attributeError;
     }
 
-    const explicitApprouter = approuter === 'managed' ? AppRouterType.MANAGED : AppRouterType.STANDALONE;
-    const defaultApprouter = mtaMode === 'new' || approuter ? AppRouterType.MANAGED : getApprouterType(mtaRoot);
-    const resolvedApprouter = approuter ? explicitApprouter : defaultApprouter;
+    const approuterTypes: Partial<Record<string, AppRouterType>> = {
+        managed: AppRouterType.MANAGED,
+        standalone: AppRouterType.STANDALONE
+    };
+    const resolvedApprouter =
+        approuterTypes[approuter ?? ''] ?? (mtaMode === 'new' ? AppRouterType.MANAGED : getApprouterType(mtaRoot));
     if (
         businessSolutionName?.trim() &&
         resolvedApprouter === AppRouterType.MANAGED &&
@@ -569,54 +572,10 @@ async function runCfFlow(
             return generationError('targetEnvironment', message, 'cf_login_required');
         }
 
-        let resolvedServiceInstanceName = serviceInstanceName;
-        if (!resolvedServiceInstanceName) {
-            const { matches, incompleteInstances } = await preflightStep(
-                'serviceInstanceName',
-                'service_discovery_failed',
-                () => findServiceInstancesForApp(application, cfConfig, logger)
-            );
-            if (incompleteInstances.length > 0) {
-                return {
-                    status: 'InputRequired',
-                    message:
-                        'Cloud Foundry service discovery is incomplete. Select a service instance explicitly; unresolved instances may also expose the application.',
-                    missingFields: ['serviceInstanceName'],
-                    choices: {
-                        serviceInstanceName: [...matches, ...incompleteInstances.map((entry) => entry.instance)].map(
-                            (instance) => ({ value: instance.name, label: instance.name })
-                        )
-                    },
-                    issues: incompleteInstances.map((entry) => ({
-                        field: 'serviceInstanceName',
-                        code: entry.code,
-                        message: entry.message
-                    }))
-                };
-            }
-            if (matches.length === 0) {
-                return generationError(
-                    'application',
-                    'No Cloud Foundry service instance in org ' +
-                        cfConfig.org.Name +
-                        ' / space ' +
-                        cfConfig.space.Name +
-                        ' exposes application ' +
-                        application +
-                        '.',
-                    'application_not_found'
-                );
-            }
-            if (matches.length === 1) {
-                resolvedServiceInstanceName = matches[0].name;
-            } else {
-                return {
-                    status: 'InputRequired',
-                    message: `Multiple Cloud Foundry service instances expose application '${application}'.`,
-                    missingFields: ['serviceInstanceName'],
-                    choices: { serviceInstanceName: matches.map((match) => ({ value: match.name, label: match.name })) }
-                };
-            }
+        const resolvedServiceInstanceName =
+            serviceInstanceName ?? (await resolveCfServiceInstanceName(application, cfConfig));
+        if (typeof resolvedServiceInstanceName !== 'string') {
+            return resolvedServiceInstanceName;
         }
 
         const applicationError = await validateCfApplication(resolvedServiceInstanceName, application, cfConfig);
