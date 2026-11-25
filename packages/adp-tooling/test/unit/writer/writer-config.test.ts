@@ -36,6 +36,7 @@ const { FlexLayer, getConfig, SupportedProject } = await import('../../../src/in
 const { getCfConfig } = await import('../../../src/writer/writer-config.js');
 const { t } = await import('../../../src/i18n.js');
 const { AppRouterType } = await import('../../../src/types.js');
+const { Feature } = await import('../../../src/feature.js');
 import type {
     AttributesAnswers,
     ConfigAnswers,
@@ -152,6 +153,7 @@ describe('getConfig', () => {
         mockIsFeatureEnabled.mockReturnValue(true);
         const config = await getConfig({ ...baseConfig, layer: FlexLayer.VENDOR });
 
+        expect(mockIsFeatureEnabled).toHaveBeenCalledWith(Feature.OPA_TESTS);
         expect(config.options?.addOpaTests).toBe(true);
         expect(config.options?.addMockServer).toBeUndefined();
     });
@@ -160,6 +162,7 @@ describe('getConfig', () => {
         isAbapCloudMock.mockResolvedValue(false);
         const config = await getConfig({ ...baseConfig, layer: FlexLayer.VENDOR });
 
+        expect(mockIsFeatureEnabled).toHaveBeenCalledWith(Feature.OPA_TESTS);
         expect(config.options?.addOpaTests).toBe(false);
         expect(config.options?.addMockServer).toBe(false);
     });
@@ -193,6 +196,36 @@ describe('getConfig', () => {
         });
 
         expect(config.options?.addMockServer).toBe(false);
+    });
+
+    it('sets flpIntent from manifest crossNavigation inbounds', async () => {
+        isAbapCloudMock.mockResolvedValue(false);
+        const config = await getConfig({
+            ...baseConfig,
+            manifest: {
+                ...manifest,
+                'sap.app': {
+                    ...manifest['sap.app'],
+                    crossNavigation: {
+                        inbounds: {
+                            managePurchaseOrder: {
+                                semanticObject: 'PurchaseOrder',
+                                action: 'ppsmanage'
+                            }
+                        }
+                    }
+                }
+            } as any
+        });
+
+        expect(config.options?.flpIntent).toBe('PurchaseOrder-ppsmanage');
+    });
+
+    it('sets flpIntent to undefined when manifest has no inbounds', async () => {
+        isAbapCloudMock.mockResolvedValue(false);
+        const config = await getConfig(baseConfig);
+
+        expect(config.options?.flpIntent).toBeUndefined();
     });
 });
 

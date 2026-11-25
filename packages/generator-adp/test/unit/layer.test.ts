@@ -1,9 +1,13 @@
 import { jest } from '@jest/globals';
 
 const mockIsInternalFeaturesSettingEnabled = jest.fn() as jest.Mock;
+const mockIsFeatureEnabled = jest.fn() as jest.Mock;
 
+const realFeatureToggle = await import('@sap-ux/feature-toggle');
 jest.unstable_mockModule('@sap-ux/feature-toggle', () => ({
-    isInternalFeaturesSettingEnabled: mockIsInternalFeaturesSettingEnabled
+    ...realFeatureToggle,
+    isInternalFeaturesSettingEnabled: mockIsInternalFeaturesSettingEnabled,
+    isFeatureEnabled: mockIsFeatureEnabled
 }));
 
 const { FlexLayer } = await import('@sap-ux/adp-tooling');
