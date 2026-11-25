@@ -39,7 +39,7 @@ export function t(key: string, options?: TOptions): string {
     if (!options?.ns) {
         options = Object.assign(options ?? {}, { ns: FLP_CONFIG_NAMESPACE });
     }
-    return (i18n.t as (key: string, opts?: TOptions) => string)(key, options);
+    return (i18n.t as unknown as (key: string, opts?: TOptions) => string)(key, options);
 }
 
 void initI18n().catch(() => undefined);
