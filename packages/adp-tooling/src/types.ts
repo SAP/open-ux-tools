@@ -161,11 +161,10 @@ export interface AdpWriterConfig {
          */
         templatePathOverwrite?: string;
         /**
-         * Optional: if set to true then OPA5 test scaffolding and a ui5-mock.yaml will be generated.
+         * Optional: if set to true then OPA5 test scaffolding will be generated.
          * Automatically set for VENDOR-layer (internal developer) projects.
          */
         addOpaTests?: boolean;
-
         /**
          * Optional: if set to true then mock server template files will be generated,
          * enabling local development against mock data without a live backend.
@@ -191,7 +190,6 @@ export interface ConfigAnswers {
     fioriId?: string;
     ach?: string;
     shouldCreateExtProject?: boolean;
-    addMockServer?: boolean;
 }
 
 export interface AttributesAnswers {
@@ -204,6 +202,7 @@ export interface AttributesAnswers {
     addDeployConfig?: boolean;
     addFlpConfig?: boolean;
     importKeyUserChanges?: boolean;
+    addMockServer?: boolean;
 }
 
 export interface SourceApplication {

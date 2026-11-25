@@ -18,6 +18,9 @@
       "path": "../btp-utils"
     },
     {
+      "path": "../feature-toggle"
+    },
+    {
       "path": "../i18n"
     },
     {

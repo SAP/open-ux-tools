@@ -1,44 +1,55 @@
+import type { AppWizard as AppWizardType, IPrompt, Prompts as YeomanUiStepsType } from '@sap-devx/yeoman-ui-types';
+import { AppWizard, MessageType, Prompts as YeomanUiSteps } from '@sap-devx/yeoman-ui-types';
 import fs from 'node:fs';
 import { join } from 'node:path';
-import Generator from 'yeoman-generator';
 import { v4 as uuidv4 } from 'uuid';
-import { AppWizard, MessageType, Prompts as YeomanUiSteps } from '@sap-devx/yeoman-ui-types';
-import type { IPrompt, AppWizard as AppWizardType, Prompts as YeomanUiStepsType } from '@sap-devx/yeoman-ui-types';
+import Generator from 'yeoman-generator';
 
+import type {
+    AttributesAnswers,
+    CFApp,
+    CfConfig,
+    CfServicesAnswers,
+    ConfigAnswers,
+    UI5Version
+} from '@sap-ux/adp-tooling';
 import {
-    FlexLayer,
-    SourceManifest,
-    SupportedProject,
-    SystemLookup,
+    AppRouterType,
+    downloadAppContent,
+    Feature,
     fetchPublicVersions,
+    FlexLayer,
     generate,
     generateCf,
-    getCfBaseAppInbounds,
     getApprouterType,
+    getBackendUrlsFromServiceKeys,
+    getBusinessServiceInfo,
+    getCfApps,
+    getCfBaseAppInbounds,
     getCfConfig,
     getConfig,
     getConfiguredProvider,
-    getSupportedProject,
+    getDefaultProjectName,
     getFormattedVersion,
     getLatestVersion,
+    getOAuthPathsFromXsApp,
+    getOrCreateServiceInstanceKeys,
+    getSupportedProject,
     getYamlContent,
     isCfInstalled,
     isLoggedInCf,
     isMtaProject,
     loadApps,
     loadCfConfig,
+    SourceManifest,
     storeCredentials,
-    getDefaultProjectName,
-    getOrCreateServiceInstanceKeys,
-    getBusinessServiceInfo,
-    getCfApps,
-    downloadAppContent,
-    getBackendUrlsFromServiceKeys,
-    getOAuthPathsFromXsApp,
-    validateSmartTemplateApplication,
+    SupportedProject,
+    SystemLookup,
     validateODataEndpoints,
-    AppRouterType
+    validateSmartTemplateApplication
 } from '@sap-ux/adp-tooling';
+import { AdaptationProjectType, type AbapServiceProvider } from '@sap-ux/axios-extension';
+import { isFeatureEnabled, isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import {
     getDefaultTargetFolder,
     isCli,
@@ -49,40 +60,33 @@ import {
 } from '@sap-ux/fiori-generator-shared';
 import { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
-import { AdaptationProjectType, type AbapServiceProvider } from '@sap-ux/axios-extension';
-import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import { validateNamespaceAdp, validateProjectName } from '@sap-ux/project-input-validator';
-import type {
-    CfConfig,
-    CfServicesAnswers,
-    CFApp,
-    AttributesAnswers,
-    ConfigAnswers,
-    UI5Version
-} from '@sap-ux/adp-tooling';
 
+import { initTelemetrySettings } from '@sap-ux/telemetry';
+import { EventName, TelemetryCollector } from '../telemetry/index.js';
+import type { AdpTelemetryData } from '../types.js';
 import { cacheClear, cacheGet, cachePut, initCache } from '../utils/appWizardCache.js';
 import { getPackageInfo, installDependencies } from '../utils/deps.js';
 import { initI18n, t } from '../utils/i18n.js';
 import { readJsonInputFile } from '../utils/json-input-file.js';
 import AdpGeneratorLogger from '../utils/logger.js';
 import { setHeaderTitle } from '../utils/opts.js';
-import { getFirstArg, parseJsonInput, getInvalidJsonInputMessage } from '../utils/parse-json-input.js';
 import type { ParseFailure } from '../utils/parse-json-input.js';
-import { isCfJsonInput } from '../utils/type-guards.js';
-import { TelemetryCollector, EventName } from '../telemetry/index.js';
+import { getFirstArg, getInvalidJsonInputMessage, parseJsonInput } from '../utils/parse-json-input.js';
 import {
     getDeployPage,
+    getKeyUserImportPage,
     getWizardPages,
     updateCfWizardSteps,
     updateFlpWizardSteps,
-    updateWizardSteps,
-    getKeyUserImportPage
+    updateWizardSteps
 } from '../utils/steps.js';
 import { addDeployGen, addExtProjectGen, addFlpGen } from '../utils/subgenHelpers.js';
 import { getTemplatesOverwritePath } from '../utils/templates.js';
-import { writeResult } from '../utils/write-result.js';
+import { isCfJsonInput } from '../utils/type-guards.js';
 import { existsInWorkspace, handleWorkspaceFolderChoice, showWorkspaceFolderWarning } from '../utils/workspace.js';
+import { writeResult } from '../utils/write-result.js';
+import { hasExistingApprouter, resolveCfProjectPath, resolveCfServiceInstance } from './headless/cf.js';
 import { getFlexLayer } from './layer.js';
 import { getPrompts } from './questions/attributes.js';
 import { CFServicesPrompter } from './questions/cf-services.js';
@@ -93,28 +97,25 @@ import {
     resolveProjectName
 } from './questions/helper/default-values.js';
 import {
-    validateJsonInput,
+    assertValidationPassed,
     validateBusinessSolutionName,
-    assertValidationPassed
+    validateJsonInput
 } from './questions/helper/validators.js';
+import { KeyUserImportPrompter } from './questions/key-user.js';
+import { getMtaIdPrompt, getMtaModePrompt, getProjectPathPrompt, getTargetEnvPrompt } from './questions/target-env.js';
 import {
-    TargetEnv,
     MtaMode,
-    type TargetEnvAnswers,
+    TargetEnv,
     type AdpGeneratorOptions,
     type AttributePromptOptions,
-    type JsonInput,
-    type CfJsonInput,
     type CfArtifactInputs,
+    type CfJsonInput,
+    type JsonInput,
     type JsonInputFile,
     type OptionalPromptsConfig,
-    type ProjectLocationAnswers
+    type ProjectLocationAnswers,
+    type TargetEnvAnswers
 } from './types.js';
-import { getMtaIdPrompt, getMtaModePrompt, getProjectPathPrompt, getTargetEnvPrompt } from './questions/target-env.js';
-import type { AdpTelemetryData } from '../types.js';
-import { KeyUserImportPrompter } from './questions/key-user.js';
-import { hasExistingApprouter, resolveCfProjectPath, resolveCfServiceInstance } from './headless/cf.js';
-import { initTelemetrySettings } from '@sap-ux/telemetry';
 
 const generatorTitle = 'Adaptation Project';
 
@@ -361,9 +362,12 @@ export default class extends Generator {
                 projectType: this.prompter.projectType,
                 systemType: this.prompter.systemType,
                 layer: this.layer,
-                prompts: this.prompts
+                prompts: this.prompts,
+                isApplicationSupported: this.prompter.isAppSupported,
+                shouldCreateExtProject: this.shouldCreateExtProject
             };
             const defaultFolder = getDefaultTargetFolder(this.options.vscode) ?? process.cwd();
+            const isAdpOpaTestsFeatureEnabled = isFeatureEnabled(Feature.OPA_TESTS);
             const options: AttributePromptOptions = {
                 targetFolder: { default: defaultFolder, hide: this.shouldCreateExtProject },
                 ui5ValidationCli: { hide: !this.isCli },
@@ -373,7 +377,8 @@ export default class extends Generator {
                     hide: this.shouldCreateExtProject
                 },
                 addDeployConfig: { hide: this.shouldCreateExtProject || !this.isCustomerBase },
-                importKeyUserChanges: { hide: this.shouldCreateExtProject }
+                importKeyUserChanges: { hide: this.shouldCreateExtProject },
+                addMockServer: { hide: !isAdpOpaTestsFeatureEnabled }
             };
             const attributesQuestions = getPrompts(this.destinationPath(), optionalPromptsConfig, options);
             this.attributeAnswers = await this.prompt(attributesQuestions);
@@ -685,7 +690,9 @@ export default class extends Generator {
                 isVersionDetected: false,
                 layer: this.layer,
                 prompts: this.prompts,
-                isCfEnv: true
+                isCfEnv: true,
+                isApplicationSupported: true,
+                shouldCreateExtProject: false
             },
             options
         );

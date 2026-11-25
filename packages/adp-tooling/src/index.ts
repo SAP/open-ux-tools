@@ -23,3 +23,4 @@ export * from './writer/writer-config.js';
 export { generate, migrate } from './writer/index.js';
 export { generateChange } from './writer/editors.js';
 export { generateInboundConfig } from './writer/inbound-navigation.js';
+export * from './feature.js';

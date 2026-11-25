@@ -10,6 +10,7 @@ import { type AbapServiceProvider, AdaptationProjectType } from '@sap-ux/axios-e
 
 const mockGetProviderConfig = jest.fn() as jest.Mock;
 const mockGetSupportedProject = jest.fn() as jest.Mock;
+const mockIsFeatureEnabled = jest.fn() as jest.Mock;
 
 const realAbapConfig = await import('../../../dist/abap/config.js');
 const realSystems = await import('../../../dist/source/systems.js');
@@ -25,6 +26,10 @@ jest.unstable_mockModule('../../../src/source/systems', () => ({
     getEndpointNames: realSystems.getEndpointNames,
     transformBackendSystem: realSystems.transformBackendSystem,
     SupportedProject: realSystems.SupportedProject
+}));
+
+jest.unstable_mockModule('@sap-ux/feature-toggle', () => ({
+    isFeatureEnabled: mockIsFeatureEnabled
 }));
 
 const { FlexLayer, getConfig, SupportedProject } = await import('../../../src/index.js');
@@ -98,6 +103,7 @@ describe('getConfig', () => {
     beforeEach(() => {
         mockGetProviderConfig.mockResolvedValue(systemDetails);
         mockGetSupportedProject.mockResolvedValue(SupportedProject.CLOUD_READY_AND_ON_PREM);
+        mockIsFeatureEnabled.mockReturnValue(false);
     });
 
     it('returns the correct config with provided parameters when system and the project type are cloud ready', async () => {
@@ -136,17 +142,26 @@ describe('getConfig', () => {
                 shouldSetMinVersion: true,
                 version: '1.135.0'
             },
-            options: { fioriTools: true, enableTypeScript: false, addMockServer: undefined, addOpaTests: false },
+            options: { fioriTools: true, enableTypeScript: false, addMockServer: false, addOpaTests: false },
             keyUserChanges: []
         });
     });
 
-    it('sets addOpaTests to true and addMockServer to false for VENDOR layer', async () => {
+    it('sets addOpaTests to true and addMockServer to undefined for VENDOR layer when feature flag is enabled', async () => {
         isAbapCloudMock.mockResolvedValue(false);
+        mockIsFeatureEnabled.mockReturnValue(true);
         const config = await getConfig({ ...baseConfig, layer: FlexLayer.VENDOR });
 
         expect(config.options?.addOpaTests).toBe(true);
         expect(config.options?.addMockServer).toBeUndefined();
+    });
+
+    it('sets addOpaTests to false for VENDOR layer when feature flag is disabled', async () => {
+        isAbapCloudMock.mockResolvedValue(false);
+        const config = await getConfig({ ...baseConfig, layer: FlexLayer.VENDOR });
+
+        expect(config.options?.addOpaTests).toBe(false);
+        expect(config.options?.addMockServer).toBe(false);
     });
 
     it('sets addOpaTests to false for CUSTOMER_BASE layer', async () => {
@@ -154,26 +169,27 @@ describe('getConfig', () => {
         const config = await getConfig({ ...baseConfig, layer: FlexLayer.CUSTOMER_BASE });
 
         expect(config.options?.addOpaTests).toBe(false);
-        expect(config.options?.addMockServer).toBeUndefined();
+        expect(config.options?.addMockServer).toBe(false);
     });
 
-    it('passes addMockServer: true from configAnswers into options', async () => {
+    it('passes addMockServer: true from attributeAnswers into options when feature flag is enabled', async () => {
         isAbapCloudMock.mockResolvedValue(false);
+        mockIsFeatureEnabled.mockReturnValue(true);
         const config = await getConfig({
             ...baseConfig,
             layer: FlexLayer.VENDOR,
-            configAnswers: { ...configAnswers, addMockServer: true }
+            attributeAnswers: { ...attributeAnswers, addMockServer: true }
         });
 
         expect(config.options?.addMockServer).toBe(true);
     });
 
-    it('passes addMockServer: false from configAnswers into options', async () => {
+    it('passes addMockServer: false when feature flag is disabled even if attributeAnswers has addMockServer: true', async () => {
         isAbapCloudMock.mockResolvedValue(false);
         const config = await getConfig({
             ...baseConfig,
             layer: FlexLayer.VENDOR,
-            configAnswers: { ...configAnswers, addMockServer: false }
+            attributeAnswers: { ...attributeAnswers, addMockServer: true }
         });
 
         expect(config.options?.addMockServer).toBe(false);

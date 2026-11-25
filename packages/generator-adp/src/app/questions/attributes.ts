@@ -1,12 +1,12 @@
 import type { Prompts as YeomanUiSteps } from '@sap-devx/yeoman-ui-types';
 
-import type { ConfirmQuestion, InputQuestion, ListQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
 import {
     type AttributesAnswers,
     FlexLayer,
     getDefaultProjectName,
     validateUI5VersionExists
 } from '@sap-ux/adp-tooling';
+import type { ConfirmQuestion, InputQuestion, ListQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
 import {
     validateEmptyString,
     validateNamespaceAdp,
@@ -14,26 +14,27 @@ import {
     validateProjectName
 } from '@sap-ux/project-input-validator';
 
+import { AdaptationProjectType } from '@sap-ux/axios-extension';
+import { t } from '../../utils/i18n.js';
+import { getDeployPage, getKeyUserImportPage, updateFlpWizardSteps, updateWizardSteps } from '../../utils/steps.js';
 import type {
-    AttributesQuestion,
-    AttributePromptOptions,
-    ProjectNamePromptOptions,
-    ApplicationTitlePromptOptions,
-    NamespacePromptOptions,
-    TargetFolderPromptOptions,
-    EnableTypeScriptPromptOptions,
     AddDeployConfigPromptOptions,
     AddFlpConfigPromptOptions,
+    AddMockServerPromptOptions,
+    ApplicationTitlePromptOptions,
+    AttributePromptOptions,
+    AttributesQuestion,
+    EnableTypeScriptPromptOptions,
+    ImportKeyUserChangesPromptOptions,
+    NamespacePromptOptions,
     OptionalPromptsConfig,
-    ImportKeyUserChangesPromptOptions
+    ProjectNamePromptOptions,
+    TargetFolderPromptOptions
 } from '../types.js';
-import { t } from '../../utils/i18n.js';
 import { attributePromptNames, SystemType } from '../types.js';
-import { getProjectNameTooltip } from './helper/tooltip.js';
 import { getVersionAdditionalMessages } from './helper/additional-messages.js';
-import { updateWizardSteps, getDeployPage, updateFlpWizardSteps, getKeyUserImportPage } from '../../utils/steps.js';
 import { getDefaultNamespace, getDefaultVersion } from './helper/default-values.js';
-import { AdaptationProjectType } from '@sap-ux/axios-extension';
+import { getProjectNameTooltip } from './helper/tooltip.js';
 
 /**
  * Returns all project attribute prompts, filtering based on promptOptions.
@@ -48,7 +49,17 @@ export function getPrompts(
     config: OptionalPromptsConfig,
     promptOptions?: AttributePromptOptions
 ): AttributesQuestion[] {
-    const { isVersionDetected, ui5Versions, systemType, projectType, layer, prompts, isCfEnv = false } = config;
+    const {
+        isVersionDetected,
+        ui5Versions,
+        systemType,
+        projectType,
+        layer,
+        prompts,
+        isCfEnv = false,
+        isApplicationSupported,
+        shouldCreateExtProject
+    } = config;
     const isCustomerBase = layer === FlexLayer.CUSTOMER_BASE;
 
     const keyedPrompts: Record<attributePromptNames, AttributesQuestion> = {
@@ -82,7 +93,13 @@ export function getPrompts(
         [attributePromptNames.importKeyUserChanges]: getImportKeyUserChangesPrompt(
             prompts,
             promptOptions?.[attributePromptNames.importKeyUserChanges]
-        )
+        ),
+        [attributePromptNames.addMockServer]: getAddMockServerPrompt({
+            options: promptOptions?.[attributePromptNames.addMockServer],
+            isApplicationSupported,
+            shouldCreateExtProject,
+            isCustomerBase
+        })
     };
 
     const questions = Object.entries(keyedPrompts)
@@ -354,4 +371,38 @@ function getImportKeyUserChangesPrompt(
             return true;
         }
     } as ConfirmQuestion<AttributesAnswers>;
+}
+
+/**
+ * Creates the Add Mock Server confirm prompt for the Attributes step.
+ * Shown only for VENDOR-layer projects where the application is supported and no extension project is being created.
+ *
+ * @param {object} params - Prompt parameters.
+ * @param {AddMockServerPromptOptions} [params.options] - Optional prompt options (hide, default).
+ * @param {boolean} params.isCustomerBase - Whether the layer is CUSTOMER_BASE.
+ * @param {boolean} params.shouldCreateExtProject - Whether an extension project is being created.
+ * @param {boolean} params.isApplicationSupported - Whether the selected application is supported.
+ * @returns {ConfirmQuestion<AttributesAnswers>} The prompt configuration for mock server toggle.
+ */
+function getAddMockServerPrompt({
+    options,
+    isCustomerBase,
+    shouldCreateExtProject,
+    isApplicationSupported
+}: {
+    options?: AddMockServerPromptOptions;
+    isCustomerBase: boolean;
+    shouldCreateExtProject: boolean;
+    isApplicationSupported: boolean;
+}): ConfirmQuestion<AttributesAnswers> {
+    return {
+        type: 'confirm',
+        name: attributePromptNames.addMockServer,
+        message: t('prompts.addOpaMockServerLabel'),
+        default: options?.default ?? false,
+        guiOptions: {
+            applyDefaultWhenDirty: true
+        },
+        when: () => !isCustomerBase && isApplicationSupported && !shouldCreateExtProject
+    };
 }

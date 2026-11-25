@@ -46,8 +46,7 @@ export enum configPromptNames {
     appValidationCli = 'appValidationCli',
     fioriId = 'fioriId',
     ach = 'ach',
-    shouldCreateExtProject = 'shouldCreateExtProject',
-    addMockServer = 'addMockServer'
+    shouldCreateExtProject = 'shouldCreateExtProject'
 }
 
 /**
@@ -106,10 +105,6 @@ export interface ShouldCreateExtProjectPromptOptions {
     isExtensibilityExtInstalled?: boolean;
 }
 
-export interface AddMockServerPromptOptions {
-    hide?: boolean;
-}
-
 /**
  * Options for the configuration inquirer & the prompts.
  */
@@ -127,7 +122,6 @@ export type ConfigPromptOptions = Partial<{
     [configPromptNames.fioriId]: FioriIdPromptOptions;
     [configPromptNames.ach]: AchPromptOptions;
     [configPromptNames.shouldCreateExtProject]: ShouldCreateExtProjectPromptOptions;
-    [configPromptNames.addMockServer]: AddMockServerPromptOptions;
 }>;
 
 export enum attributePromptNames {
@@ -140,7 +134,8 @@ export enum attributePromptNames {
     enableTypeScript = 'enableTypeScript',
     addDeployConfig = 'addDeployConfig',
     addFlpConfig = 'addFlpConfig',
-    importKeyUserChanges = 'importKeyUserChanges'
+    importKeyUserChanges = 'importKeyUserChanges',
+    addMockServer = 'addMockServer'
 }
 
 export type AttributesQuestion = YUIQuestion<AttributesAnswers>;
@@ -187,6 +182,14 @@ export interface ImportKeyUserChangesPromptOptions {
     default?: boolean;
 }
 
+/** Options for the Add Mock Server confirm prompt in the Attributes step. */
+export interface AddMockServerPromptOptions {
+    /** When `true`, the prompt is excluded from the rendered question list. */
+    hide?: boolean;
+    /** Initial checked state shown to the user. Defaults to `false`. */
+    default?: boolean;
+}
+
 export type AttributePromptOptions = Partial<{
     [attributePromptNames.projectName]: ProjectNamePromptOptions;
     [attributePromptNames.title]: ApplicationTitlePromptOptions;
@@ -198,6 +201,7 @@ export type AttributePromptOptions = Partial<{
     [attributePromptNames.addDeployConfig]: AddDeployConfigPromptOptions;
     [attributePromptNames.addFlpConfig]: AddFlpConfigPromptOptions;
     [attributePromptNames.importKeyUserChanges]: ImportKeyUserChangesPromptOptions;
+    [attributePromptNames.addMockServer]: AddMockServerPromptOptions;
 }>;
 
 export type KeyUserImportQuestion = YUIQuestion<KeyUserImportAnswers>;
@@ -459,4 +463,8 @@ export interface OptionalPromptsConfig {
     isVersionDetected: boolean;
     prompts: YeomanUiSteps;
     isCfEnv?: boolean;
+    /** Whether the selected base application is supported for adaptation. */
+    isApplicationSupported: boolean;
+    /** Whether the project is being created as an extension project (skips most attribute prompts). */
+    shouldCreateExtProject: boolean;
 }

@@ -52,7 +52,9 @@ const mockConfig = {
     layer: FlexLayer.CUSTOMER_BASE,
     ui5Versions: ['1.118.0', '1.119.0'],
     isVersionDetected: true,
-    prompts: new YeomanUiSteps(getWizardPages(false))
+    prompts: new YeomanUiSteps(getWizardPages(false)),
+    isApplicationSupported: false,
+    shouldCreateExtProject: false
 };
 
 describe('Attribute Prompts', () => {
@@ -206,6 +208,79 @@ describe('Attribute Prompts', () => {
             expect(prompt.type).toBe('confirm');
             expect(prompt.message).toBe('Enable TypeScript');
             expect(prompt.default).toBe(false);
+        });
+    });
+
+    describe('Add Mock Server Prompt', () => {
+        const vendorSupportedConfig = {
+            ...mockConfig,
+            layer: FlexLayer.VENDOR,
+            isApplicationSupported: true,
+            shouldCreateExtProject: false
+        };
+
+        it('should have correct type, message, and default', () => {
+            const prompts = getPrompts(mockPath, vendorSupportedConfig);
+            const prompt = prompts.find((p) => p.name === attributePromptNames.addMockServer)!;
+
+            expect(prompt.type).toBe('confirm');
+            expect(prompt.message).toBe(t('prompts.addOpaMockServerLabel'));
+            expect(prompt.default).toBe(false);
+        });
+
+        it('when() returns true for VENDOR layer when application is supported and no extension project', () => {
+            const prompts = getPrompts(mockPath, vendorSupportedConfig);
+            const prompt = prompts.find((p) => p.name === attributePromptNames.addMockServer)!;
+
+            expect((prompt as any).when()).toBe(true);
+        });
+
+        it('when() returns false for CUSTOMER_BASE layer', () => {
+            const prompts = getPrompts(mockPath, {
+                ...vendorSupportedConfig,
+                layer: FlexLayer.CUSTOMER_BASE
+            });
+            const prompt = prompts.find((p) => p.name === attributePromptNames.addMockServer)!;
+
+            expect((prompt as any).when()).toBe(false);
+        });
+
+        it('when() returns false when application is not supported', () => {
+            const prompts = getPrompts(mockPath, {
+                ...vendorSupportedConfig,
+                isApplicationSupported: false
+            });
+            const prompt = prompts.find((p) => p.name === attributePromptNames.addMockServer)!;
+
+            expect((prompt as any).when()).toBe(false);
+        });
+
+        it('when() returns false when creating an extension project', () => {
+            const prompts = getPrompts(mockPath, {
+                ...vendorSupportedConfig,
+                shouldCreateExtProject: true
+            });
+            const prompt = prompts.find((p) => p.name === attributePromptNames.addMockServer)!;
+
+            expect((prompt as any).when()).toBe(false);
+        });
+
+        it('respects hide option from promptOptions', () => {
+            const prompts = getPrompts(mockPath, vendorSupportedConfig, {
+                [attributePromptNames.addMockServer]: { hide: true }
+            });
+            const prompt = prompts.find((p) => p.name === attributePromptNames.addMockServer);
+
+            expect(prompt).toBeUndefined();
+        });
+
+        it('respects default override from promptOptions', () => {
+            const prompts = getPrompts(mockPath, vendorSupportedConfig, {
+                [attributePromptNames.addMockServer]: { default: true }
+            });
+            const prompt = prompts.find((p) => p.name === attributePromptNames.addMockServer)!;
+
+            expect(prompt.default).toBe(true);
         });
     });
 });

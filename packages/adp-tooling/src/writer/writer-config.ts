@@ -27,6 +27,8 @@ import { getProviderConfig } from '../abap/index.js';
 import { AppRouterType, FlexLayer } from '../types.js';
 import { t } from '../i18n.js';
 import { getSupportedProject } from '../source/index.js';
+import { isFeatureEnabled } from '@sap-ux/feature-toggle';
+import { Feature } from '../feature.js';
 
 export interface ConfigOptions {
     /**
@@ -153,6 +155,7 @@ export async function getConfig(options: ConfigOptions): Promise<AdpWriterConfig
     }
 
     const ui5 = getUi5Config(ui5Version, publicVersions, systemVersion);
+    const isAdpOpaTestsFeatureEnabled = isFeatureEnabled(Feature.OPA_TESTS);
 
     return {
         app,
@@ -173,8 +176,8 @@ export async function getConfig(options: ConfigOptions): Promise<AdpWriterConfig
         options: {
             fioriTools: true,
             enableTypeScript,
-            addOpaTests: isVendorLayer,
-            addMockServer: configAnswers.addMockServer
+            addOpaTests: isAdpOpaTestsFeatureEnabled && isVendorLayer,
+            addMockServer: isAdpOpaTestsFeatureEnabled && attributeAnswers.addMockServer
         },
         keyUserChanges
     };
