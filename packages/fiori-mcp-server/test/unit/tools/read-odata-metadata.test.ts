@@ -53,17 +53,6 @@ function makeAbapProvider(serviceMetadata = makeMetadata()) {
 }
 
 describe('readODataMetadataAdp', () => {
-    test('rejects an unsupported UI5 version before reading manifests or contacting the backend', async () => {
-        mockValidateAdpUi5Version.mockRejectedValueOnce(new Error('Unsupported SAPUI5 version'));
-
-        await expect(readODataMetadataAdp({ appPath: APP_PATH })).rejects.toThrow('Unsupported SAPUI5 version');
-
-        expect(mockValidateAdpUi5Version).toHaveBeenCalledWith(APP_PATH);
-        expect(mockGetMergedManifest).not.toHaveBeenCalled();
-        expect(mockCreateAbapServiceProvider).not.toHaveBeenCalled();
-        expect(mockPersistMetadata).not.toHaveBeenCalled();
-    });
-
     beforeEach(() => {
         jest.clearAllMocks();
         mockIsCFEnvironment.mockResolvedValue(false);
@@ -73,6 +62,17 @@ describe('readODataMetadataAdp', () => {
                 configuration: { adp: { target: { url: 'http://host', client: '100' } } }
             })
         });
+    });
+
+    test('rejects an unsupported UI5 version before reading manifests or contacting the backend', async () => {
+        mockValidateAdpUi5Version.mockRejectedValueOnce(new Error('Unsupported SAPUI5 version'));
+
+        await expect(readODataMetadataAdp({ appPath: APP_PATH })).rejects.toThrow('Unsupported SAPUI5 version');
+
+        expect(mockValidateAdpUi5Version).toHaveBeenCalledWith(APP_PATH);
+        expect(mockGetMergedManifest).not.toHaveBeenCalled();
+        expect(mockCreateAbapServiceProvider).not.toHaveBeenCalled();
+        expect(mockPersistMetadata).not.toHaveBeenCalled();
     });
 
     function setupProvider(

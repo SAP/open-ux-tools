@@ -71,6 +71,12 @@ class FakeChildProcess extends EventEmitter {
 }
 
 describe('openAdaptationEditor', () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+        mockExistsSync.mockReturnValue(false);
+        mockIsCFEnvironment.mockResolvedValue(false);
+    });
+
     test('rejects an unsupported UI5 version before resolving or spawning the editor', async () => {
         mockValidateAdpUi5Version.mockRejectedValueOnce(new Error('Unsupported SAPUI5 version'));
 
@@ -80,12 +86,6 @@ describe('openAdaptationEditor', () => {
         expect(mockValidateAdpUi5Version).toHaveBeenCalledWith('/tmp/myapp');
         expect(mockIsCFEnvironment).not.toHaveBeenCalled();
         expect(mockSpawn).not.toHaveBeenCalled();
-    });
-
-    beforeEach(() => {
-        jest.clearAllMocks();
-        mockExistsSync.mockReturnValue(false);
-        mockIsCFEnvironment.mockResolvedValue(false);
     });
 
     function fakeSubprocess(child: FakeChildProcess): { nodeChildProcess: Promise<FakeChildProcess> } {
