@@ -22,16 +22,3 @@ The submodule contains functionality required in different scenarios, e.g. promp
 
 ## Templates
 The templates folder contains ejs templates to be used for the generation of new adaptation projects as well as to generate artifacts in existing adaptation projects.
-
-### CF project validation
-
-`validateProjectPath`, `validateMtaId`, and `validateBusinessSolutionName` provide shared validation for the interactive adaptation generator, its standalone JSON flow, and MCP generation. Each returns `true` or a translatable error message. Call them before generation; the standalone generator also validates its inputs independently.
-
-~~~typescript
-import { validateMtaId } from '@sap-ux/adp-tooling';
-
-const result = validateMtaId('my-mta', parentFolder);
-if (result !== true) {
-    throw new Error(String(result));
-}
-~~~

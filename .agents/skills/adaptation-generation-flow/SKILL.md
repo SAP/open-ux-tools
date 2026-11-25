@@ -23,10 +23,10 @@ Create an adaptation project with `generate_adaptation_project`. Guide the user 
 
 ## Prerequisites
 
-- SAP Fiori MCP server with ADP tools enabled using `SAP_FIORI_MCP_ADP_TOOLS=true`.
+- SAP Fiori MCP server exposing the `generate_adaptation_project` tool.
 - **Backend:** an existing adaptable ABAP application (including RAP applications), or a CF application exposed by a live service instance. This skill does not create CAP or RAP services.
 - **OData:** V2 or V4 as supported by the base application. Preserve its service contract; the generator validates application compatibility.
-- **Hosts:** GitHub Copilot in VS Code/BAS or Claude with MCP access. Use available system discovery tools; a host-specific extension is optional for CLI generation.
+- **Hosts:** Any coding agent with access to the required MCP tools. Use available system discovery tools; a host-specific extension is optional for CLI generation.
 - Without MCP, use the installed standalone `yo @sap-ux/adp` generator. Its interactive wizard collects the configuration and enforces validation independently.
 - **Scope:** create local project files and update a selected existing MTA when applicable. CF preflight may create service keys or provision the HTML5 repository runtime service while downloading base application metadata. Generation does not deploy the application.
 
@@ -92,7 +92,7 @@ The input schema and shared code remain authoritative; do not copy their naming 
 
 | Status | Action |
 | --- | --- |
-| `InputRequired` | Read `missingFields` and `choices`. Present each relevant choice using the fixed wording above when applicable, otherwise its returned label; collect the answer, then retry with its unchanged value. No project files have been generated. |
+| `InputRequired` | Read `missingFields` and `choices`. Present each relevant choice using the fixed wording above when applicable, otherwise its returned label; collect the answer, then retry with its unchanged value. For incomplete CF discovery, explain the returned probe diagnostics and ask for an explicit service selection, even with one confirmed match. Do not claim that unresolved choices expose the application. No project files have been generated. |
 | `Error` with `phase: "validation"` | Creation was not invoked. Use each `issues[].field`, `code`, and `message` to identify corrections or prerequisite recovery. If `choices` are supplied, present them. Correct all reported independent fields together and retry with the retained configuration. |
 | `Error` with `phase: "generation"` | Preflight passed, but creation failed. Inspect the diagnostic and destination for partial output before retrying. Do not relabel this as an input validation failure or repeatedly invoke creation with unchanged inputs. |
 | `Success` | Store `projectPath` as the adaptation application root and `mtaRoot` separately for CF. Verify the generated files before reporting completion. |

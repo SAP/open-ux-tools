@@ -150,8 +150,8 @@ export const GenerateAdaptationProjectInputSchema = zod.strictObject({
         .min(1, 'serviceInstanceName must not be empty.')
         .optional()
         .describe(
-            'CF only. Validated live service instance in the current space exposing application. Explicit names are checked before creation. If omitted, one match resolves automatically; ' +
-                'multiple matches return InputRequired with choices, and no matches return Error.'
+            'CF only. Validated live service instance in the current space exposing application. Explicit names are checked before creation. If omitted, only complete discovery with one match resolves automatically; ' +
+                'multiple matches or incomplete discovery return InputRequired with choices and probe diagnostics; complete discovery with no matches returns Error.'
         ),
     mtaMode: zod
         .enum(CF_MTA_MODES)

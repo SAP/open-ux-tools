@@ -46,17 +46,14 @@ const adpTools = [
     },
     {
         name: 'generate_adaptation_project',
-        description:
-            'Generates an ABAP or Cloud Foundry SAP Fiori adaptation project using the @sap-ux/adp ' +
-            'Yeoman generator. Validates all applicable inputs and backend compatibility before invoking creation. Requires an explicit targetEnvironment. ' +
-            'Creates project files, updates an existing MTA for CF, and invokes the generator with overwrite enabled. ' +
-            'Connects to the selected backend; CF preflight/generation may create service keys or provision the HTML5 repository runtime service. ' +
-            'Detects CF login without performing login. ' +
-            'Success returns the adaptation app projectPath and, for CF, mtaRoot. ' +
-            'InputRequired returns missingFields and available choices without generating project files. ' +
-            'Error returns field-level issues and phase (validation before creation, or generation during creation). ' +
-            'system is required for ABAP; mtaId is required for CF when mtaMode is new. ' +
-            'Parameter defaults and environment-specific requirements are defined in the input schema.',
+        description: `Generates SAP Fiori adaptation projects for ABAP or CF with @sap-ux/generator-adp.
+Require application, absolute appPath, and targetEnvironment selected for this request; never infer it.
+ABAP: system required (list_sap_systems fallback). Unset projectType resolves or returns InputRequired.
+CF: requires CLI login to an org/space; never logs in. Existing MTA needs its root; new needs mtaId/existing parent. Validates serviceInstanceName; auto-selects one match only from complete discovery. Multiple/partial results need selection; complete/no match is Error.
+InputRequired: no project files; ask using missingFields/choices, retry with answers, preserve selections.
+Error: inspect issues; phase validation precedes creation, generation may leave partial files.
+Success: projectPath for editor; CF mtaRoot contains it.
+Overwrites files/updates MTAs; CF may create keys/HTML5 runtime service. Schema lists constraints/defaults.`,
         annotations: {
             title: 'Generate Adaptation Project',
             readOnlyHint: false,

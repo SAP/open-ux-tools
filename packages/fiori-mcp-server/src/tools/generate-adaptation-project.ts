@@ -14,7 +14,7 @@ import {
     validateCfApplication,
     validateGenerationFolder,
     validationError
-} from './adaptation-project-validation.js';
+} from '../utils/adaptation-project-validation.js';
 import {
     AppRouterType,
     fetchKeyUserChanges,
@@ -61,7 +61,7 @@ function isYoAvailable(): boolean {
 }
 
 /**
- * Builds the command + args to invoke the {@link https://www.npmjs.com/package/@sap-ux/adp-tooling | sap-ux/adp} Yeoman generator.
+ * Builds the command + args to invoke the {@link https://www.npmjs.com/package/@sap-ux/generator-adp | @sap-ux/generator-adp} Yeoman generator.
  * Uses the globally-installed `yo` when available to avoid network round-trips;
  * falls back to `npx -y yo@4` for fresh environments.
  *
@@ -272,7 +272,7 @@ function cleanupKeyUserChangesFile(filePath: string | undefined): void {
 }
 
 /**
- * Generates a new SAP Fiori adaptation project by invoking the `sap-ux/adp` Yeoman generator.
+ * Generates a new SAP Fiori adaptation project by invoking the `@sap-ux/generator-adp` Yeoman generator.
  *
  * The target is selected solely by `targetEnvironment` ('ABAP' or 'CF') nothing is inferred from the
  * other parameters. When `targetEnvironment` is missing the tool returns `InputRequired` so the caller
@@ -571,9 +571,29 @@ async function runCfFlow(
 
         let resolvedServiceInstanceName = serviceInstanceName;
         if (!resolvedServiceInstanceName) {
-            const matches = await preflightStep('serviceInstanceName', 'service_discovery_failed', () =>
-                findServiceInstancesForApp(application, cfConfig, logger)
+            const { matches, incompleteInstances } = await preflightStep(
+                'serviceInstanceName',
+                'service_discovery_failed',
+                () => findServiceInstancesForApp(application, cfConfig, logger)
             );
+            if (incompleteInstances.length > 0) {
+                return {
+                    status: 'InputRequired',
+                    message:
+                        'Cloud Foundry service discovery is incomplete. Select a service instance explicitly; unresolved instances may also expose the application.',
+                    missingFields: ['serviceInstanceName'],
+                    choices: {
+                        serviceInstanceName: [...matches, ...incompleteInstances.map((entry) => entry.instance)].map(
+                            (instance) => ({ value: instance.name, label: instance.name })
+                        )
+                    },
+                    issues: incompleteInstances.map((entry) => ({
+                        field: 'serviceInstanceName',
+                        code: entry.code,
+                        message: entry.message
+                    }))
+                };
+            }
             if (matches.length === 0) {
                 return generationError(
                     'application',

@@ -178,14 +178,6 @@ Lists all SAP systems stored in the user's environment (e.g. SAP Fiori tools sys
 #### `download_odata_service_metadata`
 Downloads the EDMX metadata of a specific OData service from a SAP system and saves it as `metadata.xml`. Use this before calling `generate_fiori_app_odata` when the user provides a SAP system reference or service URL.
 
-#### `generate_adaptation_project`
-
-Generates an ABAP or Cloud Foundry adaptation project. Enable ADP tools on the server with `SAP_FIORI_MCP_ADP_TOOLS=true`. The tool validates its inputs independently of skills before invoking creation; the standalone `yo @sap-ux/adp` generator also enforces validation. Preflight checks names, namespaces, clients, destination access, backend/application availability, and CF service binding and application compatibility. Explicit service instance names are checked against the current CF space. CF metadata checks may create service keys or provision the HTML5 repository runtime service.
-
-`InputRequired` returns `missingFields` and available `choices`; `Error` returns field/code/message `issues` and a `phase`: `validation` means creation was not invoked; `generation` means creation failed after successful preflight. Unknown parameter names and blank supplied strings are rejected. `Success` returns the adaptation application root as `projectPath`, with its containing `mtaRoot` separately for CF. Use `projectPath` when opening the adaptation editor.
-
-For guided generation, use the repository [adaptation generation](../../.agents/skills/adaptation-generation-flow/SKILL.md) skill.
-
 #### `generate_fiori_app_odata`
 Generates a new SAP Fiori UI application for OData (non-CAP) projects, for example [ABAP RESTful Application Programming Model](https://pages.community.sap.com/topics/abap/rap)-based OData services.
 

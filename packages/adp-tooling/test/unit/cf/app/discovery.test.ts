@@ -660,14 +660,26 @@ describe('CF App Discovery', () => {
         } as CfConfig;
 
         const instance = (name: string, guid: string) => ({ name, guid, service: 'svc', servicePlan: 'plan' });
-        const serviceInfo = { serviceKeys: [] as ServiceKeys[], serviceInstance: { guid: 'si-guid' } };
+        const serviceInfo = {
+            serviceKeys: [
+                {
+                    credentials: {
+                        uaa: { clientid: 'id', clientsecret: 'secret', url: 'https://auth.example' },
+                        uri: 'https://repo.example',
+                        endpoints: {},
+                        'html5-apps-repo': { app_host_id: 'host' }
+                    }
+                }
+            ],
+            serviceInstance: { name: 'instance', guid: 'si-guid' }
+        };
 
-        test('returns [] and skips discovery when there are no instances', async () => {
+        test('reports complete empty discovery without probing when there are no instances', async () => {
             mockGetAdpServiceInstances.mockResolvedValue([]);
 
             const result = await findServiceInstancesForApp('target-app', cfConfig, mockLogger);
 
-            expect(result).toEqual([]);
+            expect(result.matches).toEqual([]);
             expect(mockGetSapCloudServiceName).not.toHaveBeenCalled();
             expect(mockGetAdaptableBusinessServices).not.toHaveBeenCalled();
             expect(mockGetBusinessServiceInfo).not.toHaveBeenCalled();
@@ -680,7 +692,7 @@ describe('CF App Discovery', () => {
 
             const result = await findServiceInstancesForApp('target-app', cfConfig, mockLogger);
 
-            expect(result).toEqual([]);
+            expect(result.matches).toEqual([]);
             // getBusinessServiceInfo creates a key as a side effect — it must not run for excluded instances.
             expect(mockGetBusinessServiceInfo).not.toHaveBeenCalled();
         });
@@ -695,7 +707,7 @@ describe('CF App Discovery', () => {
 
             const result = await findServiceInstancesForApp('target-app', cfConfig, mockLogger);
 
-            expect(result).toEqual([inst]);
+            expect(result).toEqual({ matches: [inst], incompleteInstances: [] });
             expect(mockGetBusinessServiceInfo).toHaveBeenCalledWith('inst-1', cfConfig, mockLogger);
         });
 
@@ -708,7 +720,7 @@ describe('CF App Discovery', () => {
 
             const result = await findServiceInstancesForApp('target-app', cfConfig, mockLogger);
 
-            expect(result).toEqual([]);
+            expect(result.matches).toEqual([]);
         });
 
         test('returns every instance that exposes the app', async () => {
@@ -724,7 +736,7 @@ describe('CF App Discovery', () => {
 
             const result = await findServiceInstancesForApp('target-app', cfConfig, mockLogger);
 
-            expect(result).toEqual([inst1, inst2]);
+            expect(result).toEqual({ matches: [inst1, inst2], incompleteInstances: [] });
         });
 
         test('skips an instance whose business-service name lookup fails, keeping the others', async () => {
@@ -739,10 +751,16 @@ describe('CF App Discovery', () => {
 
             const result = await findServiceInstancesForApp('target-app', cfConfig, mockLogger);
 
-            expect(result).toEqual([inst2]);
+            expect(result.matches).toEqual([inst2]);
+            expect(result.incompleteInstances).toEqual([
+                expect.objectContaining({
+                    instance: instance('inst-1', 'guid-1'),
+                    code: 'service_instance_probe_failed'
+                })
+            ]);
         });
 
-        test('skips a candidate whose app inspection fails, without throwing', async () => {
+        test('reports a failed app inspection without throwing', async () => {
             mockGetAdpServiceInstances.mockResolvedValue([instance('inst-1', 'guid-1')]);
             mockGetSapCloudServiceName.mockResolvedValue('cloud-a');
             mockGetAdaptableBusinessServices.mockResolvedValue(new Set(['cloud-a']));
@@ -750,19 +768,59 @@ describe('CF App Discovery', () => {
 
             const result = await findServiceInstancesForApp('target-app', cfConfig, mockLogger);
 
-            expect(result).toEqual([]);
+            expect(result.matches).toEqual([]);
         });
 
-        test('excludes an instance that has no existing service key (blind spot)', async () => {
+        test('reports an instance without business-service metadata as unresolved', async () => {
             mockGetAdpServiceInstances.mockResolvedValue([instance('inst-1', 'guid-1')]);
             mockGetSapCloudServiceName.mockResolvedValue(undefined);
             mockGetAdaptableBusinessServices.mockResolvedValue(new Set<string>());
 
             const result = await findServiceInstancesForApp('target-app', cfConfig, mockLogger);
 
-            expect(result).toEqual([]);
+            expect(result.matches).toEqual([]);
+            expect(result.incompleteInstances).toEqual([
+                expect.objectContaining({
+                    instance: instance('inst-1', 'guid-1'),
+                    code: 'service_metadata_unavailable'
+                })
+            ]);
             expect(mockGetAdaptableBusinessServices).toHaveBeenCalledWith([], cfConfig, mockLogger);
             expect(mockGetBusinessServiceInfo).not.toHaveBeenCalled();
+        });
+
+        test('returns one match and the failed candidate instead of claiming discovery is complete', async () => {
+            const good = instance('inst-1', 'guid-1');
+            const failed = instance('inst-2', 'guid-2');
+            mockGetAdpServiceInstances.mockResolvedValue([good, failed]);
+            mockGetSapCloudServiceName.mockResolvedValue('cloud-a');
+            mockGetAdaptableBusinessServices.mockResolvedValue(new Set(['cloud-a']));
+            mockGetBusinessServiceInfo.mockImplementation((name) =>
+                name === 'inst-2' ? Promise.reject(new Error('unreachable')) : Promise.resolve(serviceInfo)
+            );
+            mockGetFDCApps.mockResolvedValue([{ appId: 'target-app' } as CFApp]);
+
+            const result = await findServiceInstancesForApp('target-app', cfConfig, mockLogger);
+
+            expect(result.matches).toEqual([good]);
+            expect(result.incompleteInstances).toEqual([
+                expect.objectContaining({ instance: failed, code: 'service_instance_probe_failed' })
+            ]);
+        });
+
+        test('reports missing credentials as incomplete discovery', async () => {
+            const unresolved = instance('inst-1', 'guid-1');
+            mockGetAdpServiceInstances.mockResolvedValue([unresolved]);
+            mockGetSapCloudServiceName.mockResolvedValue('cloud-a');
+            mockGetAdaptableBusinessServices.mockResolvedValue(new Set(['cloud-a']));
+            mockGetBusinessServiceInfo.mockResolvedValue(null);
+
+            const result = await findServiceInstancesForApp('target-app', cfConfig, mockLogger);
+
+            expect(result.matches).toEqual([]);
+            expect(result.incompleteInstances).toEqual([
+                expect.objectContaining({ instance: unresolved, code: 'service_credentials_unavailable' })
+            ]);
         });
     });
 });

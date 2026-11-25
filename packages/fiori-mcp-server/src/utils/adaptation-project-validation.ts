@@ -12,7 +12,7 @@ import {
 import type { CfConfig } from '@sap-ux/adp-tooling';
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import type { GenerateAdaptationProjectInput, GenerateAdaptationProjectOutput } from '../types/index.js';
-import { logger } from '../utils/index.js';
+import { logger } from './index.js';
 
 /** A backend preflight failure associated with a specific generation input. */
 export class GenerationValidationError extends Error {

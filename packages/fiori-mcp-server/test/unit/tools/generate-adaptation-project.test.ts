@@ -147,7 +147,10 @@ describe('generateAdaptationProject', () => {
         });
         mockIsCfInstalled.mockResolvedValue(true);
         mockIsLoggedInCf.mockResolvedValue(true);
-        mockFindServiceInstancesForApp.mockResolvedValue([{ name: 'svc-1', guid: 'si-1' }]);
+        mockFindServiceInstancesForApp.mockResolvedValue({
+            matches: [{ name: 'svc-1', guid: 'si-1' }],
+            incompleteInstances: []
+        });
         mockGetAdpServiceInstances.mockResolvedValue([{ name: 'svc-1', guid: 'si-1' }]);
         mockGetBusinessServiceInfo.mockResolvedValue({ serviceKeys: [{}], serviceInstance: { guid: 'si-1' } });
         mockGetCfApps.mockResolvedValue([{ appId: 'app.id', title: 'Base app' }]);
@@ -1018,7 +1021,7 @@ describe('generateAdaptationProject', () => {
         });
 
         test('returns Error when no service instance exposes the application', async () => {
-            mockFindServiceInstancesForApp.mockResolvedValue([]);
+            mockFindServiceInstancesForApp.mockResolvedValue({ matches: [], incompleteInstances: [] });
 
             const result = await generateAdaptationProject({
                 application: 'app.id',
@@ -1049,7 +1052,10 @@ describe('generateAdaptationProject', () => {
         });
 
         test('returns InputRequired listing instances when several match', async () => {
-            mockFindServiceInstancesForApp.mockResolvedValue([{ name: 'svc-a' }, { name: 'svc-b' }]);
+            mockFindServiceInstancesForApp.mockResolvedValue({
+                matches: [{ name: 'svc-a' }, { name: 'svc-b' }],
+                incompleteInstances: []
+            });
 
             const result = await generateAdaptationProject({
                 application: 'app.id',
@@ -1065,6 +1071,38 @@ describe('generateAdaptationProject', () => {
             ]);
             expect(mockRunCmdArgs).not.toHaveBeenCalled();
         });
+
+        test.each([0, 1])(
+            'requires explicit selection after incomplete discovery with %i confirmed matches',
+            async (count) => {
+                mockFindServiceInstancesForApp.mockResolvedValue({
+                    matches: count ? [{ name: 'svc-1', guid: 'si-1' }] : [],
+                    incompleteInstances: [
+                        {
+                            instance: { name: 'svc-2', guid: 'si-2' },
+                            code: 'service_instance_probe_failed',
+                            message: 'svc-2 is unavailable'
+                        }
+                    ]
+                });
+                const result = await generateAdaptationProject({
+                    application: 'app.id',
+                    targetEnvironment: 'CF',
+                    appPath: '/tmp/app'
+                });
+                expect(result.status).toBe('InputRequired');
+                expect(result.missingFields).toEqual(['serviceInstanceName']);
+                expect(result.choices?.serviceInstanceName.map((choice) => choice.value)).toEqual(
+                    count ? ['svc-1', 'svc-2'] : ['svc-2']
+                );
+                expect(result.issues?.[0]).toMatchObject({
+                    field: 'serviceInstanceName',
+                    code: 'service_instance_probe_failed'
+                });
+                expect(mockRunCmdArgs).not.toHaveBeenCalled();
+                expect(mockGetBusinessServiceInfo).not.toHaveBeenCalled();
+            }
+        );
 
         test('validates an explicit service instance before creating the project', async () => {
             const result = await generateAdaptationProject({
