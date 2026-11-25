@@ -6,21 +6,18 @@
         "allowJs": true,
         "strict": true,
         "strictPropertyInitialization": false,
-        "moduleResolution": "node",
-        "rootDir": "./webapp",
-        "outDir": "./dist",
-        "baseUrl": "./",
+        "moduleResolution": "bundler",
         "paths": {
             "<%-app.id.replace(/\./g, '/') %>/*": [
                 "./webapp/*"
             ]
         },
         "typeRoots": [
-            "./node_modules/@types",
-            "./node_modules/<%- ui5.typesPackage %>"
+            "./node_modules/@types"
         ]
     },
     "include": [
-        "./webapp/**/*"
+        "./webapp/**/*",
+        "./node_modules/<%- ui5.typesPackage %>/types/index.d.ts"
     ]
 }
