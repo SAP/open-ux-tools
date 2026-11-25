@@ -45,4 +45,11 @@ export interface FrontendActionTransport {
     disconnectSite(site: string): Promise<void>;
     /** Close every registered page and the underlying transport (browser). */
     stopBrowser(): Promise<void>;
+    /**
+     * Reloads the page at `site` so the editor re-reads on-disk `webapp/changes`
+     * (the `restart` step). When absent, `restart` falls back to re-invoking `startRTA`.
+     */
+    reloadPage?(site: string): Promise<void>;
+    /** Close the owned tab/server and report server termination, without process discovery. */
+    stopEditor?(site: string): Promise<boolean>;
 }

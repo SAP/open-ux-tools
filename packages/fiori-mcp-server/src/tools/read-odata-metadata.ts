@@ -1,5 +1,5 @@
-import { readUi5Config, isCFEnvironment, getMergedManifest } from '@sap-ux/adp-tooling';
-import type { AbapTarget } from '@sap-ux/system-access';
+import { getAdpConfig, isCFEnvironment, getMergedManifest } from '@sap-ux/adp-tooling';
+import type { AdpPreviewConfig } from '@sap-ux/adp-tooling';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
@@ -22,16 +22,19 @@ export type ODataMetadataEntry = {
  * Only meaningful for ABAP (on-premise / S/4) adaptation projects — CF projects have no
  * ABAP backend and never reach this.
  *
+ * Uses the shared `getAdpConfig` reader so the full `AbapTarget` is passed through unchanged —
+ * this covers both the `fiori-tools-preview` and `preview-middleware` middleware and preserves
+ * the `destination` field used to connect in SAP Business Application Studio.
+ *
  * @param appPath - Adaptation project root.
  * @returns ABAP service provider for the configured target.
  */
 async function getAbapProvider(appPath: string): Promise<AbapServiceProvider> {
-    const ui5Config = await readUi5Config(appPath, 'ui5.yaml');
-    const target = ui5Config.findCustomMiddleware<{ adp?: { target?: Partial<{ url: string; client: string }> } }>(
-        'fiori-tools-preview'
-    )?.configuration?.adp?.target;
-    const abapTarget: AbapTarget = { url: target?.url ?? '', client: target?.client ?? '' };
-    return createAbapServiceProvider(abapTarget, { ignoreCertErrors: false }, false, logger);
+    const config = await getAdpConfig<AdpPreviewConfig>(appPath, 'ui5.yaml');
+    if (!('target' in config)) {
+        throw new Error('read_odata_metadata_adp requires an ABAP target system configured in ui5.yaml.');
+    }
+    return createAbapServiceProvider(config.target, { ignoreCertErrors: false }, false, logger);
 }
 
 /**
