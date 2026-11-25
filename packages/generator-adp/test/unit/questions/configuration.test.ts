@@ -1320,6 +1320,14 @@ describe('ConfigPrompter Integration Tests', () => {
         });
     });
 
+    describe('Add Mock Server Prompt', () => {
+        it('is not present in the config prompts list (moved to attributes step)', () => {
+            const prompts = configPrompter.getPrompts();
+            const prompt = prompts.find((p) => p.name === 'addMockServer');
+            expect(prompt).toBeUndefined();
+        });
+    });
+
     function getPrompt(promptName: configPromptNames) {
         const prompts = configPrompter.getPrompts();
         return prompts.find((prompt) => prompt.name === promptName);

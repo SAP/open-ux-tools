@@ -10,6 +10,7 @@ import { type AbapServiceProvider, AdaptationProjectType } from '@sap-ux/axios-e
 
 const mockGetProviderConfig = jest.fn() as jest.Mock;
 const mockGetSupportedProject = jest.fn() as jest.Mock;
+const mockIsFeatureEnabled = jest.fn() as jest.Mock;
 
 const realAbapConfig = await import('../../../dist/abap/config.js');
 const realSystems = await import('../../../dist/source/systems.js');
@@ -27,10 +28,15 @@ jest.unstable_mockModule('../../../src/source/systems', () => ({
     SupportedProject: realSystems.SupportedProject
 }));
 
+jest.unstable_mockModule('@sap-ux/feature-toggle', () => ({
+    isFeatureEnabled: mockIsFeatureEnabled
+}));
+
 const { FlexLayer, getConfig, SupportedProject } = await import('../../../src/index.js');
 const { getCfConfig } = await import('../../../src/writer/writer-config.js');
 const { t } = await import('../../../src/i18n.js');
 const { AppRouterType } = await import('../../../src/types.js');
+const { Feature } = await import('../../../src/feature.js');
 import type {
     AttributesAnswers,
     ConfigAnswers,
@@ -98,6 +104,7 @@ describe('getConfig', () => {
     beforeEach(() => {
         mockGetProviderConfig.mockResolvedValue(systemDetails);
         mockGetSupportedProject.mockResolvedValue(SupportedProject.CLOUD_READY_AND_ON_PREM);
+        mockIsFeatureEnabled.mockReturnValue(false);
     });
 
     it('returns the correct config with provided parameters when system and the project type are cloud ready', async () => {
@@ -136,9 +143,89 @@ describe('getConfig', () => {
                 shouldSetMinVersion: true,
                 version: '1.135.0'
             },
-            options: { fioriTools: true, enableTypeScript: false },
+            options: { fioriTools: true, enableTypeScript: false, addMockServer: false, addOpaTests: false },
             keyUserChanges: []
         });
+    });
+
+    it('sets addOpaTests to true and addMockServer to undefined for VENDOR layer when feature flag is enabled', async () => {
+        isAbapCloudMock.mockResolvedValue(false);
+        mockIsFeatureEnabled.mockReturnValue(true);
+        const config = await getConfig({ ...baseConfig, layer: FlexLayer.VENDOR });
+
+        expect(mockIsFeatureEnabled).toHaveBeenCalledWith(Feature.OPA_TESTS);
+        expect(config.options?.addOpaTests).toBe(true);
+        expect(config.options?.addMockServer).toBeUndefined();
+    });
+
+    it('sets addOpaTests to false for VENDOR layer when feature flag is disabled', async () => {
+        isAbapCloudMock.mockResolvedValue(false);
+        const config = await getConfig({ ...baseConfig, layer: FlexLayer.VENDOR });
+
+        expect(mockIsFeatureEnabled).toHaveBeenCalledWith(Feature.OPA_TESTS);
+        expect(config.options?.addOpaTests).toBe(false);
+        expect(config.options?.addMockServer).toBe(false);
+    });
+
+    it('sets addOpaTests to false for CUSTOMER_BASE layer', async () => {
+        isAbapCloudMock.mockResolvedValue(false);
+        const config = await getConfig({ ...baseConfig, layer: FlexLayer.CUSTOMER_BASE });
+
+        expect(config.options?.addOpaTests).toBe(false);
+        expect(config.options?.addMockServer).toBe(false);
+    });
+
+    it('passes addMockServer: true from attributeAnswers into options when feature flag is enabled', async () => {
+        isAbapCloudMock.mockResolvedValue(false);
+        mockIsFeatureEnabled.mockReturnValue(true);
+        const config = await getConfig({
+            ...baseConfig,
+            layer: FlexLayer.VENDOR,
+            attributeAnswers: { ...attributeAnswers, addMockServer: true }
+        });
+
+        expect(config.options?.addMockServer).toBe(true);
+    });
+
+    it('passes addMockServer: false when feature flag is disabled even if attributeAnswers has addMockServer: true', async () => {
+        isAbapCloudMock.mockResolvedValue(false);
+        const config = await getConfig({
+            ...baseConfig,
+            layer: FlexLayer.VENDOR,
+            attributeAnswers: { ...attributeAnswers, addMockServer: true }
+        });
+
+        expect(config.options?.addMockServer).toBe(false);
+    });
+
+    it('sets flpIntent from manifest crossNavigation inbounds', async () => {
+        isAbapCloudMock.mockResolvedValue(false);
+        const config = await getConfig({
+            ...baseConfig,
+            manifest: {
+                ...manifest,
+                'sap.app': {
+                    ...manifest['sap.app'],
+                    crossNavigation: {
+                        inbounds: {
+                            managePurchaseOrder: {
+                                semanticObject: 'PurchaseOrder',
+                                action: 'ppsmanage'
+                            }
+                        }
+                    }
+                }
+            } as any
+        });
+
+        expect(config.options?.flpIntent).toBe('PurchaseOrder-ppsmanage');
+    });
+
+    it('sets flpIntent to undefined when manifest has no inbounds', async () => {
+        isAbapCloudMock.mockResolvedValue(false);
+        const config = await getConfig(baseConfig);
+
+        expect(config.options?.flpIntent).toBeUndefined();
     });
 });
 

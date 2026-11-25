@@ -18,6 +18,9 @@
             "type": "extensionHost",
             "name": "ADP: Launch Extension for Debugging",
             "runtimeExecutable": "${execPath}",
+            "env": {
+                "TOOLSUITE_FEATURES": "SAP_FIORI_ADP_OPA_TESTS"
+            },
             "args": [
                 "--extensionDevelopmentPath=${workspaceFolder}/packages/adp-tooling",
                 "--extensionDevelopmentPath=${workspaceFolder}/packages/system-access",

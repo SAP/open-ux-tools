@@ -160,6 +160,21 @@ export interface AdpWriterConfig {
          * Optional: path to the template files to be used for generation
          */
         templatePathOverwrite?: string;
+        /**
+         * Optional: if set to true then OPA5 test scaffolding will be generated.
+         * Automatically set for VENDOR-layer (internal developer) projects.
+         */
+        addOpaTests?: boolean;
+        /**
+         * Optional: if set to true then mock server template files will be generated,
+         * enabling local development against mock data without a live backend.
+         */
+        addMockServer?: boolean;
+        /**
+         * Optional: FLP intent (SemanticObject-action) derived from the base app manifest inbounds.
+         * Used as the hash fragment in the OPA test launch URL.
+         */
+        flpIntent?: string;
     };
     /**
      * Optional: Key-user changes to be written to the project.
@@ -192,6 +207,7 @@ export interface AttributesAnswers {
     addDeployConfig?: boolean;
     addFlpConfig?: boolean;
     importKeyUserChanges?: boolean;
+    addMockServer?: boolean;
 }
 
 export interface SourceApplication {

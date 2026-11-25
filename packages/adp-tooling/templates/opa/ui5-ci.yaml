@@ -1,0 +1,30 @@
+# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: "3.1"
+metadata:
+  name: <%- app.id %>
+type: application
+server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertError: false
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: <%- ui5.frameworkUrl %>
+          version: <%- ui5.version %><% if (options?.addMockServer) { %>
+    - name: sap-fe-mockserver
+      beforeMiddleware: csp
+      configuration:
+        mockFolder: ./webapp/localService/
+        watch: true
+      mountPath: /<% } %>
+builder:
+  customTasks:
+    - name: app-variant-bundler-build
+      beforeTask: escapeNonAsciiCharacters
+      configuration:
+        type: abap
