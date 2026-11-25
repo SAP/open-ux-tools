@@ -16,19 +16,28 @@ export function updateTsConfig(fs: Editor, appRoot: string): void {
     const tsConfigPath = join(appRoot, FileName.Tsconfig);
     if (fs.exists(tsConfigPath)) {
         const tsConfig: any = fs.readJSON(tsConfigPath);
+        const updates: any = { compilerOptions: {} };
+
         if (tsConfig['compilerOptions']['typeRoots']) {
             const typeRoots = tsConfig['compilerOptions']['typeRoots'];
             const updatedTypeRoots = typeRoots.map((entry: string) => {
                 return entry.replace(/\.\//g, '../../');
             });
-
-            // Update the tsconfig.json file
-            fs.extendJSON(tsConfigPath, {
-                compilerOptions: {
-                    typeRoots: [...typeRoots, ...updatedTypeRoots]
-                }
-            });
+            updates.compilerOptions.typeRoots = [...typeRoots, ...updatedTypeRoots];
         }
+
+        if (tsConfig['include']) {
+            const include = tsConfig['include'];
+            const updatedInclude = include
+                .filter((entry: string) => entry.includes('node_modules'))
+                .map((entry: string) => {
+                    return entry.replace(/\.\//g, '../../');
+                });
+            updates.include = [...include, ...updatedInclude];
+        }
+
+        // Update the tsconfig.json file
+        fs.extendJSON(tsConfigPath, updates);
     }
 }
 
