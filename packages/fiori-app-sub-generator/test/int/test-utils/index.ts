@@ -29,7 +29,6 @@ export function cleanTestDir(path: string): void {
 }
 /**
  * Gets the specified service test data
- *
  * @param pathToFixtures
  * @param serviceName
  * @param fileType
@@ -68,7 +67,6 @@ export const ignoreMatcherOpts: MatcherIgnore = {
 /**
  * Sets the output test directory path appending the specified path if provided.
  * If this function is not called the default test directoty will be used.
- *
  * @param testGroup - subfolder to enable parallel test execution so output are not overwritten or deleted
  * @returns the path to the test directory
  */

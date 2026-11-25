@@ -36,7 +36,6 @@ export default class ManualTestCaseReporter implements Reporter {
 
     /**
      * Creates an empty manual test case object for the given test.
-     *
      * @param test The test case for which to create the manual test case object.
      * @returns An empty ManualTestCase object.
      */
@@ -50,7 +49,6 @@ export default class ManualTestCaseReporter implements Reporter {
 
     /**
      * On begin handler.
-     *
      * @param config - config
      * @param suite - test suite
      */
@@ -80,7 +78,6 @@ export default class ManualTestCaseReporter implements Reporter {
 
     /**
      * On step begin handler.
-     *
      * @param test - test case.
      * @param result - test result.
      * @param step - test step
@@ -155,7 +152,6 @@ export default class ManualTestCaseReporter implements Reporter {
     }
     /**
      * On test begin handler.
-     *
      * @param test - test case
      * @param _result - test result
      */
@@ -169,7 +165,6 @@ export default class ManualTestCaseReporter implements Reporter {
 
     /**
      * Called when a test ends.
-     *
      * @param test - The test case that just ended
      * @param _result - Result of the test run
      */
@@ -202,7 +197,6 @@ export default class ManualTestCaseReporter implements Reporter {
 
     /**
      * Called when all tests have finished.
-     *
      * @param _result - Result of the entire test run
      */
     async onEnd(_result: FullResult) {
@@ -222,7 +216,6 @@ export default class ManualTestCaseReporter implements Reporter {
 
     /**
      * Generates documentation for tests from a specific file.
-     *
      * @param relativePath of the file to generate documentation for
      */
     private async generateFileDocumentation(relativePath: string): Promise<void> {
@@ -299,7 +292,6 @@ export default class ManualTestCaseReporter implements Reporter {
 
     /**
      * Checks if all tests from a specific file have completed.
-     *
      * @param filename The filename to check (e.g., 'list-report-v2.spec.ts')
      * @returns True if all tests from the file have completed
      */
@@ -319,7 +311,6 @@ export default class ManualTestCaseReporter implements Reporter {
 
     /**
      * Generate documentation immediately if a file is complete.
-     *
      * @param testFile The name of the test file
      */
     private async checkAndGenerateFileDocumentation(testFile: string): Promise<void> {
@@ -331,7 +322,6 @@ export default class ManualTestCaseReporter implements Reporter {
 
     /**
      * Gets the latest UI5 version from environment or versions.json.
-     *
      * @returns The latest version string, or null if not found.
      */
     private getLatestVersion(): string | null {

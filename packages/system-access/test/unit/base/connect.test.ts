@@ -20,7 +20,6 @@ const { createAbapServiceProvider, isUrlTarget } = await import('../../../src/ba
 
 /**
  * Create a mock ABAP service provider with the given options.
- *
  * @param options provider options
  * @returns mock provider
  */

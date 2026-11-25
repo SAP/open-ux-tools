@@ -4,7 +4,6 @@ import type { ProjectContext } from '../../../src/project-context/project-contex
 import { FioriLanguage } from '../../../src/language/fiori-language.js';
 import { normalizePath } from '@sap-ux/project-access';
 
-// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 const DUMMY_PROJECT_CONTEXT: ProjectContext = {} as any;
 
 describe('FioriJSONSourceCode', () => {
