@@ -3,7 +3,6 @@
 "@sap-ux/control-property-editor": patch
 "@sap-ux/fiori-tools-plugin": patch
 "@sap-ux/preview-middleware": patch
-"@sap-ux/jest-file-matchers": patch
 ---
 
 BUMP: Rebuild bundles and revert building block skill
