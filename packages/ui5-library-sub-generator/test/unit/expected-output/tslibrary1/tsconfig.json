@@ -2,17 +2,13 @@
   "compilerOptions": {
       "target": "es2022",
       "module": "es2022",
-      "moduleResolution": "node",
+      "moduleResolution": "bundler",
       "skipLibCheck": true,
       "allowJs": true,
       "strict": true,
       "strictPropertyInitialization": false,
-      "rootDir": "./",
-      "outDir": "./dist",
-      "baseUrl": "./",
       "typeRoots": [
-        "./node_modules/@types",
-        "./node_modules/@sapui5/ts-types-esm"
+        "./node_modules/@types"
       ],
       "paths": {
           "com/sap/tslibrary1/*": [
@@ -22,6 +18,7 @@
   },
   "include": [
       "./src/**/*",
-      "./test/**/*"
+      "./test/**/*",
+      "./node_modules/@sapui5/ts-types-esm/types/index.d.ts"
   ]
 }

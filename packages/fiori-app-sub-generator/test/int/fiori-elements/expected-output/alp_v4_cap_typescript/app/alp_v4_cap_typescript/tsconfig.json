@@ -6,10 +6,7 @@
     "allowJs": true,
     "strict": true,
     "strictPropertyInitialization": false,
-    "moduleResolution": "node",
-    "rootDir": "./webapp",
-    "outDir": "./dist",
-    "baseUrl": "./",
+    "moduleResolution": "bundler",
     "paths": {
       "testnamespace/alpv4captypescript/*": [
         "./webapp/*"
@@ -17,12 +14,12 @@
     },
     "typeRoots": [
       "./node_modules/@types",
-      "./node_modules/@sapui5/ts-types-esm",
-      "../../node_modules/@types",
-      "../../node_modules/@sapui5/ts-types-esm"
+      "../../node_modules/@types"
     ]
   },
   "include": [
-    "./webapp/**/*"
+    "./webapp/**/*",
+    "./node_modules/@sapui5/ts-types-esm/types/index.d.ts",
+    "../../node_modules/@sapui5/ts-types-esm/types/index.d.ts"
   ]
 }
