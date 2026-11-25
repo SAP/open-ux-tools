@@ -3867,8 +3867,8 @@ importers:
         specifier: 9.1.0
         version: 9.1.0
       prettier:
-        specifier: 3.9.10
-        version: 3.9.10
+        specifier: 3.10.1
+        version: 3.10.1
       tsx:
         specifier: 4.23.15
         version: 4.23.15
@@ -4730,11 +4730,11 @@ importers:
         specifier: 2.0.2
         version: 2.0.2
       sass:
-        specifier: 1.102.0
-        version: 1.102.0
+        specifier: 1.108.2
+        version: 1.108.2
       sass-loader:
         specifier: 16.0.7
-        version: 16.0.7(sass-embedded@1.97.3)(sass@1.102.0)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.32)(uglify-js@3.19.3))
+        version: 16.0.7(sass-embedded@1.97.3)(sass@1.108.2)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.32)(uglify-js@3.19.3))
       storybook:
         specifier: 10.5.1
         version: 10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.3)(@types/react@18.3.23)(prettier@3.9.10)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -4839,11 +4839,11 @@ importers:
         specifier: 18.3.1
         version: 18.3.1(react@18.3.1)
       sass:
-        specifier: 1.102.0
-        version: 1.102.0
+        specifier: 1.108.2
+        version: 1.108.2
       sass-loader:
         specifier: 16.0.7
-        version: 16.0.7(sass-embedded@1.97.3)(sass@1.102.0)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.32)(uglify-js@3.19.3))
+        version: 16.0.7(sass-embedded@1.97.3)(sass@1.108.2)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.32)(uglify-js@3.19.3))
       storybook:
         specifier: 10.5.1
         version: 10.5.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.3)(@types/react@18.3.23)(prettier@3.9.10)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -5613,8 +5613,8 @@ importers:
         specifier: 9.1.0
         version: 9.1.0
       prettier:
-        specifier: 3.9.10
-        version: 3.9.10
+        specifier: 3.10.1
+        version: 3.10.1
 
   packages/yaml:
     dependencies:
@@ -16096,6 +16096,11 @@ packages:
     engines: {node: '>=10.13.0'}
     hasBin: true
 
+  prettier@3.10.1:
+    resolution: {integrity: sha512-70vp3ZUYoPlFbF9uiTdXHUUCGEIp7d4+6p+8DYbkm2jP7x/3i/paXVF6dopSI3zd/CEitrZN1rc4i85xWmmXlg==}
+    engines: {node: '>=14'}
+    hasBin: true
+
   prettier@3.9.10:
     resolution: {integrity: sha512-skGHTH1Yb9QvaTC4hWnRTzEYtCpApF0UMBPz+t/0ZPzP8ihefo/btKd+QA7pUE0fEwA1SbS/NmhyEcstdXOIdA==}
     engines: {node: '>=14'}
@@ -22698,10 +22703,10 @@ snapshots:
       '@pnpm/network.ca-file': 1.0.2
       config-chain: 1.1.13
 
-  '@prettier/sync@0.6.1(prettier@3.9.10)':
+  '@prettier/sync@0.6.1(prettier@3.10.1)':
     dependencies:
       make-synchronized: 0.8.0
-      prettier: 3.9.10
+      prettier: 3.10.1
 
   '@protobufjs/aspromise@1.1.2': {}
 
@@ -31555,6 +31560,8 @@ snapshots:
 
   prettier@2.8.8: {}
 
+  prettier@3.10.1: {}
+
   prettier@3.9.10: {}
 
   pretty-bytes@5.6.0: {}
@@ -32525,6 +32532,14 @@ snapshots:
       neo-async: 2.6.2
     optionalDependencies:
       sass: 1.102.0
+      sass-embedded: 1.97.3
+      webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.32)(uglify-js@3.19.3)
+
+  sass-loader@16.0.7(sass-embedded@1.97.3)(sass@1.108.2)(webpack@5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.32)(uglify-js@3.19.3)):
+    dependencies:
+      neo-async: 2.6.2
+    optionalDependencies:
+      sass: 1.108.2
       sass-embedded: 1.97.3
       webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.32)(uglify-js@3.19.3)
 
@@ -33733,7 +33748,7 @@ snapshots:
   ui5-tooling-modules@3.43.2(@ui5/project@4.1.0(@ui5/builder@4.3.8)(supports-color@8.1.1)):
     dependencies:
       '@javascript-obfuscator/escodegen': 2.4.2
-      '@prettier/sync': 0.6.1(prettier@3.9.10)
+      '@prettier/sync': 0.6.1(prettier@3.10.1)
       '@rollup/plugin-commonjs': 29.0.3(rollup@4.68.8)
       '@rollup/plugin-inject': 5.0.5(rollup@4.68.8)
       '@rollup/plugin-json': 6.1.0(rollup@4.68.8)
@@ -33750,7 +33765,7 @@ snapshots:
       js-yaml: 4.3.2
       minimatch: 10.2.6
       oxc-parser: 0.153.0
-      prettier: 3.9.10
+      prettier: 3.10.1
       rollup: 4.68.8
       rollup-plugin-polyfill-node: 0.13.0(rollup@4.68.8)
       sanitize-filename: 1.6.5

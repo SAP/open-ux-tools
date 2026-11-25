@@ -40,7 +40,7 @@
         "@xml-tools/parser": "1.0.12",
         "chevrotain": "7.1.1",
         "npm-run-all2": "9.1.0",
-        "prettier": "3.9.10"
+        "prettier": "3.10.1"
     },
     "engines": {
         "node": ">=22.x"
