@@ -21093,7 +21093,7 @@ snapshots:
 
   '@jest/pattern@30.5.0':
     dependencies:
-      '@types/node': 22.20.1
+      '@types/node': 22.20.6
       jest-regex-util: 30.5.0
 
   '@jest/reporters@30.5.2(supports-color@8.1.1)':
@@ -21228,7 +21228,7 @@ snapshots:
       '@jest/schemas': 30.5.0
       '@types/istanbul-lib-coverage': 2.0.6
       '@types/istanbul-reports': 3.0.4
-      '@types/node': 22.20.1
+      '@types/node': 22.20.6
       '@types/yargs': 17.0.35
       chalk: 4.1.2
 
@@ -29218,7 +29218,7 @@ snapshots:
     dependencies:
       '@jest/types': 30.5.1
       '@parcel/watcher': 2.6.0
-      '@types/node': 22.20.1
+      '@types/node': 22.20.6
       anymatch: 3.1.3
       fb-watchman: 2.0.2
       fdir: 6.5.0(picomatch@4.0.4)
@@ -29471,7 +29471,7 @@ snapshots:
   jest-util@30.5.1:
     dependencies:
       '@jest/types': 30.5.1
-      '@types/node': 22.20.1
+      '@types/node': 22.20.6
       chalk: 4.1.2
       ci-info: 4.4.0
       graceful-fs: 4.2.12
@@ -29503,7 +29503,7 @@ snapshots:
 
   jest-worker@27.5.1:
     dependencies:
-      '@types/node': 22.20.1
+      '@types/node': 22.20.6
       merge-stream: 2.0.0
       supports-color: 8.1.1
 
@@ -29516,7 +29516,7 @@ snapshots:
 
   jest-worker@30.5.1:
     dependencies:
-      '@types/node': 22.20.1
+      '@types/node': 22.20.6
       '@ungap/structured-clone': 1.3.0
       jest-util: 30.5.1
       merge-stream: 2.0.0
@@ -32735,7 +32735,7 @@ snapshots:
     dependencies:
       '@img/colour': 1.1.0
       detect-libc: 2.1.2
-      semver: 7.8.5
+      semver: 7.8.6
     optionalDependencies:
       '@img/sharp-darwin-arm64': 0.35.5
       '@img/sharp-darwin-x64': 0.35.5

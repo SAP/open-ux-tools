@@ -1,5 +1,34 @@
 # @sap-ux/generator-odata-downloader
 
+## 0.3.66
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade dotenv 18.0.8→18.0.10, semver 7.8.5→7.8.6, sanitize-html 2.18.1→2.18.2, sanitize-filename 1.6.4→1.6.5, xml-formatter 3.7.0→3.7.1, fast-xml-validator 1.4.2→1.4.4, applicationinsights 3.17.0→3.17.1, @ui5/fs 4.0.6→4.0.7, @zowe/secrets-for-zowe-sdk 8.35.3→8.39.1, xpath 0.0.36→0.1.0 [[df4b038](https://github.com/SAP/open-ux-tools/commit/df4b038c7178d0e373aef0a7036b294c465eae8d)]
+
+#### Release Date
+
+2026-11-25
+
+#### Dependency Updates
+
+- Rebuild bundles with updated @sap-ux/adp-tooling, @sap-ux/project-access, @sap-ux-private/preview-middleware-client [[adfa16e](https://github.com/SAP/open-ux-tools/commit/adfa16e598c7a609fd5eeaca458fc02ad73a10c1)]
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.4.1 → 1.4.2
+- @sap-ux/inquirer-common 1.0.56 → 1.0.57
+- @sap-ux/odata-service-writer 1.0.30 → 1.0.31
+- @sap-ux/project-access 2.3.5 → 2.3.6
+- @sap-ux/ui5-config 1.0.12 → 1.0.13
+- @sap-ux/telemetry 2.0.16 → 2.0.17
+- @sap-ux/store 2.0.8 → 2.0.9
+- @sap-ux/axios-extension 2.1.7 → 2.1.8
+- @sap-ux/odata-service-inquirer 3.2.34 → 3.2.35
+- @sap-ux/mockserver-config-writer 1.0.27 → 1.0.28
+
 ## 0.3.65
 
 ### Patch Changes

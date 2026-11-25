@@ -1,5 +1,17 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.17.2
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade @sap/service-provider-apis 2.13.2→2.13.4, @fluentui/react 8.125.8→8.125.10, @langchain/mcp-adapters 2.0.1→2.0.3, @modelcontextprotocol/sdk 1.32.1→1.32.2 [[4b49abf](https://github.com/SAP/open-ux-tools/commit/4b49abf8d3b80759fc6ecfdc1a65f999523b3b15)]
+
+#### Dependency Updates
+
+- Rebuild bundles with updated @sap-ux/adp-tooling, @sap-ux/project-access, @sap-ux-private/preview-middleware-client [[adfa16e](https://github.com/SAP/open-ux-tools/commit/adfa16e598c7a609fd5eeaca458fc02ad73a10c1)]
+
 ## 1.17.1
 
 ### Patch Changes
