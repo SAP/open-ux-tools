@@ -1,5 +1,21 @@
 # @sap-ux/fiori-annotation-api
 
+## 1.1.8
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade vscode-languageserver-textdocument 1.0.15 → 1.0.16 [[07a23e3](https://github.com/SAP/open-ux-tools/commit/07a23e3a07e4116e54ad78c5ee4eb8543595ac5a)]
+
+#### Workspace Updates
+
+- @sap-ux/odata-vocabularies 1.1.4 → 1.1.5
+- @sap-ux/project-access 2.3.4 → 2.3.5
+- @sap-ux/cds-annotation-parser 1.1.2 → 1.1.3
+- @sap-ux/cds-odata-annotation-converter 1.1.3 → 1.1.4
+- @sap-ux/xml-odata-annotation-converter 1.0.6 → 1.0.6
+
 ## 1.1.7
 
 ### Patch Changes

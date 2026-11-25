@@ -3,6 +3,7 @@ import { jest } from '@jest/globals';
 
 const mockWebViewReady = jest.fn();
 const mockRender = jest.fn();
+const mockCreateRoot = jest.fn(() => ({ render: mockRender }));
 const mockDispatch = jest.fn();
 const mockGetState = jest.fn();
 const mockSubscribe = jest.fn();
@@ -12,9 +13,8 @@ jest.unstable_mockModule('../../src/state', () => ({
     store: { getState: mockGetState, dispatch: mockDispatch, subscribe: mockSubscribe }
 }));
 
-jest.unstable_mockModule('react-dom', () => ({
-    default: { render: mockRender },
-    render: mockRender
+jest.unstable_mockModule('react-dom/client', () => ({
+    createRoot: mockCreateRoot
 }));
 
 jest.unstable_mockModule('../../src/components/App', () => ({
@@ -36,6 +36,7 @@ describe('entry point', () => {
 
         await import('../../src/store');
 
+        expect(mockCreateRoot).toHaveBeenCalled();
         expect(mockRender).toHaveBeenCalled();
         expect(mockWebViewReady).toHaveBeenCalled();
     });

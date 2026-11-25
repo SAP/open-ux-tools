@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { Provider } from 'react-redux';
 
 import { initIcons, initTheme } from '@sap-ux/ui-components';
@@ -45,12 +45,14 @@ export function start(options: StartOptions): void {
     store.dispatch(setProjectScenario(scenario));
     store.dispatch(initializeLivereload({ port: options.livereloadPort, url: options.livereloadUrl }));
 
-    ReactDOM.render(
-        <React.StrictMode>
-            <Provider store={store}>
-                <App previewUrl={previewUrl} scenario={scenario} />
-            </Provider>
-        </React.StrictMode>,
-        document.getElementById(rootElementId)
-    );
+    const container = document.getElementById(rootElementId);
+    if (container) {
+        createRoot(container).render(
+            <React.StrictMode>
+                <Provider store={store}>
+                    <App previewUrl={previewUrl} scenario={scenario} />
+                </Provider>
+            </React.StrictMode>
+        );
+    }
 }

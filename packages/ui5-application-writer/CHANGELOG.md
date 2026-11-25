@@ -1,5 +1,21 @@
 # @sap-ux/ui5-application-writer
 
+## 2.1.8
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-24
+
+#### Bug Fixes
+
+- widen @ui5/manifest mapping cast for TypeScript 6 compatibility [[6cb87da](https://github.com/SAP/open-ux-tools/commit/6cb87da8703f31d16e7d6eeb850f5159b465963f)]
+
+#### Workspace Updates
+
+- @sap-ux/ui5-config 1.0.11 → 1.0.12
+
 ## 2.1.7
 
 ### Patch Changes
