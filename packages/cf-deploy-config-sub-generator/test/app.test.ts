@@ -17,9 +17,9 @@ const __testdirname = dirname(fileURLToPath(import.meta.url));
 // CJS mock for 'fs' — intercepted by yeoman-generator and other CJS consumers
 jest.mock('fs', () => {
     const fsLib = jest.requireActual('fs');
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+
     const Union = require('unionfs').Union;
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+
     const vol = require('memfs').vol;
     const _fs = new Union().use(fsLib);
     const unionFs = _fs.use(vol as unknown as typeof fs);

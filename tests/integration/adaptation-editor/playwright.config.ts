@@ -34,7 +34,6 @@ try {
 
 /**
  * Get the appropriate reporters based on environment and version.
- *
  * @returns Array of reporter configurations
  */
 function getReporters(): ReporterDescription[] {
