@@ -1,5 +1,25 @@
 # @sap-ux/control-property-editor
 
+## 1.0.21
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade uuid 11.1.1 → 14.0.3 [[0ade21d](https://github.com/SAP/open-ux-tools/commit/0ade21d80bbbe39fecb4681e4bd18cd3471a5264)]
+
+## 1.0.20
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-20
+
+#### Bug Fixes
+
+- Replace ReactDOM.render with createRoot for React 19 compatibility [[7952e31](https://github.com/SAP/open-ux-tools/commit/7952e3192861a3eb96f2f37e5cb09ed8a0701fd9)]
+
 ## 1.0.19
 
 ### Patch Changes

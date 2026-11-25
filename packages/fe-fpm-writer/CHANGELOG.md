@@ -1,5 +1,27 @@
 # @sap-ux/fe-fpm-writer
 
+## 1.5.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-24
+
+#### Dependency Updates
+
+- Upgrade xpath 0.0.35 → 0.0.36 [[07a23e3](https://github.com/SAP/open-ux-tools/commit/07a23e3a07e4116e54ad78c5ee4eb8543595ac5a)]
+
+#### Release Date
+
+2026-11-24
+
+#### Workspace Updates
+
+- @sap-ux/fiori-annotation-api 1.1.7 → 1.1.8
+- @sap-ux/i18n 1.0.7 → 1.0.8
+- @sap-ux/project-access 2.3.4 → 2.3.5
+
 ## 1.5.0
 
 ### Minor Changes
