@@ -21215,7 +21215,7 @@ snapshots:
       chalk: 4.1.2
       convert-source-map: 2.0.0
       fast-json-stable-stringify: 2.1.0
-      graceful-fs: 4.2.12
+      graceful-fs: 4.2.11
       jest-haste-map: 30.5.1
       jest-regex-util: 30.5.0
       jest-util: 30.5.1
@@ -24809,7 +24809,7 @@ snapshots:
       escape-unicode: 0.3.0
       escope: 4.0.0
       espree: 10.4.0
-      graceful-fs: 4.2.12
+      graceful-fs: 4.2.11
       jsdoc: 4.0.5
       less-openui5: 0.12.0
       pretty-data: 0.40.0
@@ -25740,7 +25740,7 @@ snapshots:
       babel-plugin-istanbul: 8.0.0(supports-color@8.1.1)
       babel-preset-jest: 30.5.0(@babel/core@7.29.7(supports-color@8.1.1))
       chalk: 4.1.2
-      graceful-fs: 4.2.12
+      graceful-fs: 4.2.11
       slash: 3.0.0
     transitivePeerDependencies:
       - supports-color
@@ -25780,7 +25780,7 @@ snapshots:
     dependencies:
       '@babel/runtime': 7.29.2
       cosmiconfig: 7.1.0
-      resolve: 1.22.14
+      resolve: 1.22.13
 
   babel-plugin-polyfill-corejs2@0.4.15(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1):
     dependencies:
@@ -26998,7 +26998,7 @@ snapshots:
 
   enhanced-resolve@5.19.0:
     dependencies:
-      graceful-fs: 4.2.12
+      graceful-fs: 4.2.11
       tapable: 2.3.0
 
   enquirer@2.3.6:
@@ -29244,7 +29244,7 @@ snapshots:
       anymatch: 3.1.3
       fb-watchman: 2.0.2
       fdir: 6.5.0(picomatch@4.0.4)
-      graceful-fs: 4.2.12
+      graceful-fs: 4.2.11
       jest-regex-util: 30.5.0
       jest-util: 30.5.1
       jest-worker: 30.5.1
@@ -29496,7 +29496,7 @@ snapshots:
       '@types/node': 22.20.1
       chalk: 4.1.2
       ci-info: 4.4.0
-      graceful-fs: 4.2.12
+      graceful-fs: 4.2.11
       picomatch: 4.0.4
 
   jest-validate@30.5.1:
@@ -29888,7 +29888,7 @@ snapshots:
 
   load-yaml-file@0.2.0:
     dependencies:
-      graceful-fs: 4.2.12
+      graceful-fs: 4.2.11
       js-yaml: 3.15.2
       pify: 4.0.1
       strip-bom: 3.0.0
@@ -30587,7 +30587,7 @@ snapshots:
     dependencies:
       env-paths: 2.2.1
       exponential-backoff: 3.1.3
-      graceful-fs: 4.2.12
+      graceful-fs: 4.2.11
       nopt: 10.0.1
       proc-log: 7.0.0
       semver: 7.8.6
@@ -30600,7 +30600,7 @@ snapshots:
     dependencies:
       env-paths: 2.2.1
       glob: 7.2.3
-      graceful-fs: 4.2.12
+      graceful-fs: 4.2.11
       make-fetch-happen: 14.0.3(supports-color@8.1.1)
       nopt: 5.0.0
       npmlog: 6.0.2
@@ -32096,7 +32096,7 @@ snapshots:
     dependencies:
       debuglog: 1.0.1
       dezalgo: 1.0.4
-      graceful-fs: 4.2.12
+      graceful-fs: 4.2.11
       once: 1.4.0
 
   readdirp@3.6.0:
@@ -34131,7 +34131,7 @@ snapshots:
   watchpack@2.5.1:
     dependencies:
       glob-to-regexp: 0.4.1
-      graceful-fs: 4.2.12
+      graceful-fs: 4.2.11
 
   wbuf@1.7.3:
     dependencies:
@@ -34182,7 +34182,7 @@ snapshots:
       eslint-scope: 5.1.1
       events: 3.3.0
       glob-to-regexp: 0.4.1
-      graceful-fs: 4.2.12
+      graceful-fs: 4.2.11
       json-parse-even-better-errors: 2.3.1
       loader-runner: 4.3.1
       mime-types: 2.1.35
