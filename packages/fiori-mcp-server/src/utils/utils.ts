@@ -31,7 +31,13 @@ export async function validateAdpUi5Version(appPath: string): Promise<void> {
     if (!isFeatureSupportedVersion(MIN_ADAPTATION_UI5_VERSION, version)) {
         throw new Error(
             `The configured SAPUI5 version "${version ?? 'not configured'}" is not supported. ` +
-                `These adaptation tools require SAPUI5 ${MIN_ADAPTATION_UI5_VERSION} or newer.`
+                `These adaptation tools require SAPUI5 ${MIN_ADAPTATION_UI5_VERSION} or newer. ` +
+                'Report this error to the user and stop the workflow. ' +
+                'Do not suggest version changes, recommend alternative versions, offer to update the version, ' +
+                'or ask the user to choose or approve a version change. ' +
+                'Do not change or remove the configured SAPUI5 version, switch to snapshot/latest, ' +
+                'or modify project configuration to bypass validation. ' +
+                'Only discuss or perform version changes if the user explicitly requests them.'
         );
     }
 }
