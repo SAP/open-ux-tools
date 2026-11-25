@@ -6,4 +6,4 @@
 "@sap-ux/jest-file-matchers": patch
 ---
 
-BUMP: Rebuild bundles and sync versions for updated @sap-ux/ui-components, @sap-ux/fiori-mcp-server and @sap-ux/control-property-editor
+BUMP: Rebuild bundles and revert building block skill
