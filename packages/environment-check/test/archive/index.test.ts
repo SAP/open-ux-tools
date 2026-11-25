@@ -18,8 +18,7 @@ jest.unstable_mockModule('glob-gitignore', () => ({
 
 let zipMock: any;
 jest.unstable_mockModule('archiver', () => ({
-    __esModule: true,
-    default: (): typeof zipMock => zipMock
+    ZipArchive: jest.fn((): typeof zipMock => zipMock)
 }));
 
 const { archiveProject } = await import('../../src/archive/index.js');

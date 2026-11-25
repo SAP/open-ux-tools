@@ -8,8 +8,7 @@ jest.unstable_mockModule('node:fs', () => ({
 
 let zipMock: any;
 jest.unstable_mockModule('archiver', () => ({
-    __esModule: true,
-    default: (): typeof zipMock => zipMock
+    ZipArchive: jest.fn((): typeof zipMock => zipMock)
 }));
 
 const { storeResultsZip } = await import('../../src/output/index.js');

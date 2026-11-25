@@ -1,6 +1,6 @@
 import { createWriteStream, existsSync, promises } from 'node:fs';
 import { basename, dirname, join } from 'node:path';
-import * as archiver from 'archiver';
+import { ZipArchive } from 'archiver';
 import { glob } from 'glob-gitignore';
 
 import { t } from '../i18n.js';
@@ -32,7 +32,7 @@ export async function archiveProject({
     const fileList = await getFileList(projectRoot);
     return new Promise((resolve, reject) => {
         try {
-            const zip = archiver.default('zip', { zlib: { level: 9 } });
+            const zip = new ZipArchive({ zlib: { level: 9 } });
             let targetName = '';
             if (typeof targetFileName === 'string') {
                 targetName = targetFileName.toLocaleLowerCase().endsWith('.zip')
