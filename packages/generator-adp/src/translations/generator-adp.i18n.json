@@ -71,7 +71,7 @@
         "mtaModeLabel": "MTA Project",
         "mtaModeTooltip": "Choose whether to create a new MTA project or use an existing one for your Adaptation Project.",
         "mtaModeBreadcrumb": "MTA Project",
-        "mtaModeNewLabel": "Use a new MTA project for creating an adaptation project",
+        "mtaModeNewLabel": "Use a New MTA Project for Creating an Adaptation Project",
         "mtaModeExistingLabel": "Use an Existing MTA Project for Creating an Adaptation Project",
         "mtaIdLabel": "MTA Project Name",
         "mtaIdTooltip": "Enter the name of the new MTA project to create. It must be unique within the selected folder, be 20 characters or fewer, and use letters, numbers, dots (.), underscores (_), and hyphens (-) only.",
