@@ -1,5 +1,17 @@
 # @sap-ux/control-property-editor
 
+## 1.0.22
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-25
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/ui-components [[adfa16e](https://github.com/SAP/open-ux-tools/commit/adfa16e598c7a609fd5eeaca458fc02ad73a10c1)]
+
 ## 1.0.21
 
 ### Patch Changes

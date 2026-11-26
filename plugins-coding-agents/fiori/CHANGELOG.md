@@ -1,5 +1,25 @@
 # @sap-ux/fiori-tools-plugin
 
+## 1.17.4
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-25
+
+#### Dependency Updates
+
+- Sync version with @sap-ux/fiori-mcp-server [[c9cb1de](https://github.com/SAP/open-ux-tools/commit/c9cb1de93fd3859f95618b8041b033e8c12ca55f)]
+
+#### Dependency Updates
+
+- Rebuild bundles with updated @sap-ux/adp-tooling, @sap-ux/project-access, @sap-ux-private/preview-middleware-client [[adfa16e](https://github.com/SAP/open-ux-tools/commit/adfa16e598c7a609fd5eeaca458fc02ad73a10c1)]
+
+#### Bug Fixes
+
+- revert building block skill [[9f8cc39](https://github.com/SAP/open-ux-tools/commit/9f8cc39828986bc24589c84ae083d0fd42b49e32)]
+
 ## 1.17.3
 
 ### Patch Changes

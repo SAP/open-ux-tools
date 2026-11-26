@@ -172,7 +172,6 @@ describe('KeyUserImportPrompter', () => {
         /**
          * Populates the prompter's key-user changes via system validation, then returns the
          * `when` result of the restricted-views label prompt (which calls `detectRestrictedViews`).
-         *
          * @returns {Promise<boolean>} `true` if the label should be shown.
          */
         const resolveLabelWhen = async (): Promise<boolean> => {
