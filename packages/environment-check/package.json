@@ -34,7 +34,7 @@
         "@sap-ux/store": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
         "@sap/bas-sdk": "3.13.16",
-        "archiver": "7.0.1",
+        "archiver": "8.0.0",
         "axios": "1.21.1",
         "glob-gitignore": "1.0.15",
         "i18next": "26.5.11",
@@ -44,7 +44,7 @@
     },
     "devDependencies": {
         "@jest/globals": "30.5.2",
-        "@types/archiver": "7.0.0",
+        "@types/archiver": "8.0.0",
         "@types/minimist": "1.2.5",
         "@types/prompts": "2.4.9",
         "@types/vscode": "1.110.0"

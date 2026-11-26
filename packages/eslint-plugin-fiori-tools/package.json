@@ -38,7 +38,7 @@
         "@eslint/config-helpers": "0.5.3",
         "@eslint/core": "1.1.1",
         "@eslint/js": "10.0.1",
-        "@eslint/json": "0.14.0",
+        "@eslint/json": "2.1.1",
         "@eslint/plugin-kit": "0.6.1",
         "@humanwhocodes/momoa": "^3.3.13",
         "@jest/globals": "30.5.2",

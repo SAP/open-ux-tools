@@ -1,5 +1,5 @@
 import { createWriteStream } from 'node:fs';
-import * as archiver from 'archiver';
+import { ZipArchive } from 'archiver';
 import type { EnvironmentCheckResult } from '../types.js';
 import { byteNumberToSizeString } from '../formatter.js';
 import { convertResultsToMarkdown } from './markdown.js';
@@ -11,7 +11,7 @@ import { convertResultsToMarkdown } from './markdown.js';
  * @param targetFile - path and filename of target zip archive. Default is 'envcheck-results.zip'.
  */
 export function storeResultsZip(results: EnvironmentCheckResult, targetFile = 'envcheck-results.zip'): void {
-    const zip = archiver.default('zip', { zlib: { level: 9 } });
+    const zip = new ZipArchive({ zlib: { level: 9 } });
     const writeStream = createWriteStream(targetFile);
     writeStream.on('close', () => {
         console.log(`Results written to file '${targetFile}' ${byteNumberToSizeString(zip.pointer())}`);
