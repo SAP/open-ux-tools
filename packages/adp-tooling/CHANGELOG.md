@@ -1,5 +1,57 @@
 # @sap-ux/adp-tooling
 
+## 1.3.0
+
+### Minor Changes
+
+#### Features
+
+- Support headless Cloud Foundry adaptation generation with shared validators, MCP preflight, and explicit service selection when discovery is incomplete [[183e9dd](https://github.com/SAP/open-ux-tools/commit/183e9ddff96dc793767b20541b2980c99affdc61)]
+
+## 1.2.5
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-26
+
+#### Features
+
+- Enhanced loging in Adaptation project creation wizard [[9689a3a](https://github.com/SAP/open-ux-tools/commit/9689a3a6c5df2ef001b4dd16db188f7bcdc273b4)]
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.1.8 → 2.1.9
+- @sap-ux/odata-service-writer 1.0.31 → 1.0.31
+- @sap-ux/system-access 1.0.22 → 1.0.23
+- @sap-ux/inquirer-common 1.0.57 → 1.0.58
+
+## 1.2.4
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade dotenv 18.0.8→18.0.10, semver 7.8.5→7.8.6, sanitize-html 2.18.1→2.18.2, sanitize-filename 1.6.4→1.6.5, xml-formatter 3.7.0→3.7.1, fast-xml-validator 1.4.2→1.4.4, applicationinsights 3.17.0→3.17.1, @ui5/fs 4.0.6→4.0.7, @zowe/secrets-for-zowe-sdk 8.35.3→8.39.1, xpath 0.0.36→0.1.0 [[df4b038](https://github.com/SAP/open-ux-tools/commit/df4b038c7178d0e373aef0a7036b294c465eae8d)]
+
+#### Dependency Updates
+
+- Upgrade @ui5/task-adaptation 1.6.8→1.7.0, @ui5/manifest 1.89.0→1.92.0, ui5-tooling-modules 3.35.0→3.43.2, ui5-tooling-transpile 3.11.3→3.14.1 [[adfa16e](https://github.com/SAP/open-ux-tools/commit/adfa16e598c7a609fd5eeaca458fc02ad73a10c1)]
+
+#### Workspace Updates
+
+- @sap-ux/inquirer-common 1.0.56 → 1.0.57
+- @sap-ux/nodejs-utils 1.0.15 → 1.0.16
+- @sap-ux/odata-service-writer 1.0.30 → 1.0.31
+- @sap-ux/project-access 2.3.5 → 2.3.6
+- @sap-ux/ui5-config 1.0.12 → 1.0.13
+- @sap-ux/ui5-info 1.0.8 → 1.0.9
+- @sap-ux/store 2.0.8 → 2.0.9
+- @sap-ux/axios-extension 2.1.7 → 2.1.8
+- @sap-ux/project-input-validator 1.0.28 → 1.0.29
+- @sap-ux/system-access 1.0.21 → 1.0.22
+
 ## 1.2.3
 
 ### Patch Changes

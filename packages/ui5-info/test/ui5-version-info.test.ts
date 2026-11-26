@@ -375,7 +375,6 @@ describe('getUI5Versions: npm listed versions', () => {
 describe('getLatestUI5Version', () => {
     /**
      * Mocks ui5VersionsCache.officialVersions.
-     *
      * @param {string[]} [officialVersions] - Versions to populate the cache. Defaults to an empty array if not provided.
      */
     const mockUi5VersionsCache = (officialVersions?: string[]) => {

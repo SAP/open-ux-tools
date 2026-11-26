@@ -4,8 +4,14 @@ import type { ToolsLogger } from '@sap-ux/logger';
 
 import { t } from '../../i18n.js';
 import { extractXSApp } from '../utils/index.js';
-import { getFDCApps } from '../services/api.js';
-import type { CfConfig, CFApp, ServiceKeys, XsApp } from '../../types.js';
+import {
+    getAdaptableBusinessServices,
+    getAdpServiceInstances,
+    getBusinessServiceInfo,
+    getFDCApps,
+    getSapCloudServiceName
+} from '../services/api.js';
+import type { CfConfig, CfServiceInstanceChoice, CFApp, ServiceKeys, XsApp } from '../../types.js';
 
 /**
  * Get the app host ids from service keys.
@@ -144,7 +150,12 @@ export function getOAuthPathsFromXsApp(zipEntries: AdmZip.IZipEntry[]): string[]
  */
 export async function getCfApps(serviceKeys: ServiceKeys[], cfConfig: CfConfig, logger: ToolsLogger): Promise<CFApp[]> {
     const appHostIds = getAppHostIds(serviceKeys);
+
     logger?.log(`App Host Ids: ${JSON.stringify(appHostIds)}`);
+
+    if (appHostIds.length === 0) {
+        throw new Error(t('error.noAppHostIds'));
+    }
 
     // Validate appHostIds array length (max 100 as per API specification)
     if (appHostIds.length > 100) {
@@ -152,4 +163,118 @@ export async function getCfApps(serviceKeys: ServiceKeys[], cfConfig: CfConfig, 
     }
 
     return getFDCApps(appHostIds, cfConfig, logger);
+}
+
+/** Matching services and any instances that could not be conclusively inspected. */
+export interface CfServiceInstanceDiscoveryResult {
+    matches: CfServiceInstanceChoice[];
+    incompleteInstances: {
+        instance: CfServiceInstanceChoice;
+        code: 'service_instance_probe_failed' | 'service_metadata_unavailable' | 'service_credentials_unavailable';
+        message: string;
+    }[];
+}
+
+/**
+ * Finds every live managed service instance in the current CF space whose apps include one with the
+ * given `appId`. The caller decides what to do with the result (none/one/many) — this stays policy-free.
+ *
+ * The lookup first narrows the candidates with a read-only pre-filter: it resolves each instance's
+ * `sap.cloud.service` name from its existing service key (via {@link getSapCloudServiceName}, which
+ * never creates a key) and asks FDC which of those services expose adaptable apps (via
+ * {@link getAdaptableBusinessServices}). Only the surviving candidates are resolved with
+ * {@link getBusinessServiceInfo} — which may create a service key — so keys are never created on
+ * unrelated instances. A failure while probing a single instance is logged and reported alongside
+ * successful matches rather than aborting the whole search.
+ *
+ * Blind spot (matches the interactive picker): an adaptable instance that has never had a service key
+ * created resolves to no `sap.cloud.service` name and is reported as incomplete, even if it exposes the app.
+ *
+ * @param {string} appId - The base application id to search for (matched against `CFApp.appId`).
+ * @param {CfConfig} cfConfig - The CF configuration (must have a space GUID; caller ensures login first).
+ * @param {ToolsLogger} logger - The logger.
+ * @returns {Promise<CfServiceInstanceDiscoveryResult>} Matches and unresolved instances. Only an empty incompleteInstances list establishes complete discovery.
+ */
+export async function findServiceInstancesForApp(
+    appId: string,
+    cfConfig: CfConfig,
+    logger: ToolsLogger
+): Promise<CfServiceInstanceDiscoveryResult> {
+    const incompleteInstances: CfServiceInstanceDiscoveryResult['incompleteInstances'] = [];
+    const instances = await getAdpServiceInstances(cfConfig.space.GUID, logger);
+    if (instances.length === 0) {
+        return { matches: [], incompleteInstances };
+    }
+
+    // Read-only pre-filter: resolve each instance's business-service name from its existing key.
+    const cloudServiceNameByGuid = new Map<string, string>();
+    await Promise.all(
+        instances.map(async (instance) => {
+            try {
+                const name = await getSapCloudServiceName(instance.guid, logger);
+                if (name) {
+                    cloudServiceNameByGuid.set(instance.guid, name);
+                } else {
+                    incompleteInstances.push({
+                        instance,
+                        code: 'service_metadata_unavailable',
+                        message: t('error.serviceInstanceBusinessServiceUnavailable', {
+                            serviceInstanceName: instance.name
+                        })
+                    });
+                }
+            } catch (error) {
+                incompleteInstances.push({
+                    instance,
+                    code: 'service_instance_probe_failed',
+                    message: t('error.serviceInstanceDiscoveryFailed', {
+                        serviceInstanceName: instance.name,
+                        error: error instanceof Error ? error.message : String(error)
+                    })
+                });
+                logger?.warn(`Failed to resolve business service for instance '${instance.name}': ${error}`);
+            }
+        })
+    );
+
+    const adaptable = await getAdaptableBusinessServices([...cloudServiceNameByGuid.values()], cfConfig, logger);
+    const candidates = instances.filter((instance) => {
+        const name = cloudServiceNameByGuid.get(instance.guid);
+        return name !== undefined && adaptable.has(name);
+    });
+
+    const candidateMatches = await Promise.all(
+        candidates.map(async (instance) => {
+            try {
+                const serviceInfo = await getBusinessServiceInfo(instance.name, cfConfig, logger);
+                if (!serviceInfo?.serviceKeys.length) {
+                    incompleteInstances.push({
+                        instance,
+                        code: 'service_credentials_unavailable',
+                        message: t('error.noServiceKeysFoundForInstance', { serviceInstanceName: instance.name })
+                    });
+                    return undefined;
+                }
+                const apps = await getCfApps(serviceInfo.serviceKeys, cfConfig, logger);
+                return apps.some((app) => app.appId === appId) ? instance : undefined;
+            } catch (error) {
+                incompleteInstances.push({
+                    instance,
+                    code: 'service_instance_probe_failed',
+                    message: t('error.serviceInstanceDiscoveryFailed', {
+                        serviceInstanceName: instance.name,
+                        error: error instanceof Error ? error.message : String(error)
+                    })
+                });
+                logger?.warn(`Failed to inspect apps for service instance '${instance.name}': ${error}`);
+                return undefined;
+            }
+        })
+    );
+    const matches = candidateMatches.filter((instance): instance is CfServiceInstanceChoice => instance !== undefined);
+
+    return {
+        matches,
+        incompleteInstances: incompleteInstances.toSorted((a, b) => a.instance.name.localeCompare(b.instance.name))
+    };
 }

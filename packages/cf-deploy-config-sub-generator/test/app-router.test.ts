@@ -16,9 +16,9 @@ const __testdirname = dirname(fileURLToPath(import.meta.url));
 // jest.mock is hoisted, so we use require() inside the factory
 jest.mock('fs', () => {
     const fsLib = jest.requireActual('fs');
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+
     const Union = require('unionfs').Union;
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+
     const vol = require('memfs').vol;
     const _fs = new Union().use(fsLib);
     const unionFs = _fs.use(vol as unknown as typeof fs);

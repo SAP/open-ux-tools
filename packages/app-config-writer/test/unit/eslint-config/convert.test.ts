@@ -106,7 +106,6 @@ describe('convertEslintConfig', () => {
      * Helper function to set up fixture data in memory for tests.
      * Loads fixture files from disk and copies them into the in-memory file system.
      * This prevents tests from reading/writing to actual fixture files on disk.
-     *
      * @param fileSystem - optional file system instance to populate (defaults to the shared fs instance)
      */
     const setupFixtures = (fileSystem: Editor = fs) => {

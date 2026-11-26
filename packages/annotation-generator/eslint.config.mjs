@@ -1,10 +1,10 @@
-import base from '../../eslint.config.mjs';
+import { createConfig } from '../../eslint.config.mjs';
 
 export default [
     {
         ignores: ['jest.resolver.cjs', 'test/__cjs-proxies/**']
     },
-    ...base,
+    ...createConfig(import.meta.dirname),
     {
         rules: {
             'jsdoc/require-jsdoc': [

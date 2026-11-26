@@ -12,7 +12,6 @@ declare module 'mem-fs-editor' {
         /**
          * Dump files to compare expected result. Provide a cwd for relative path.
          * See also https://github.com/SBoudrias/mem-fs-editor#dumpcwd-filter for further details.
-         *
          * @param [cwd] - optional, relative path
          * @param [filter] - optional, function or glob to focus on specific files
          */

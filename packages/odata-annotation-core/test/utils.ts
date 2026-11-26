@@ -2,7 +2,6 @@ import { Range, Position } from '@sap-ux/odata-annotation-core-types';
 
 /**
  * Cretaes range by given coordinates.
- *
  * @param line1
  * @param character1
  * @param line2

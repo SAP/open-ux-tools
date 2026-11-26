@@ -8,7 +8,6 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 /**
  * Get file base path.
- *
  * @param parts file path parts
  * @returns base
  */
@@ -28,7 +27,6 @@ export function getBase(parts: string[] = []): string {
 
 /**
  * Get file content.
- *
  * @param filePath file path
  * @returns file content
  */
@@ -39,7 +37,6 @@ export async function getFileContent(filePath: string): Promise<string> {
 
 /**
  * Get file content.
- *
  * @param testCasePath path to a test case
  * @param ext file extension
  * @returns file content
@@ -51,7 +48,6 @@ export async function getInput(testCasePath: string, ext: FileExtension): Promis
 
 /**
  * Get normalized folder path.
- *
  * @param ext file extension
  * @param base base location to look for file
  * @param allFolderPath collect folder path
@@ -76,7 +72,6 @@ export function getAllNormalizeFolderPath(ext: FileExtension, base: string, allF
 
 /**
  * Get token.
- *
  * @param testCasePath path to a test case
  * @returns deserialized token
  */
@@ -87,7 +82,6 @@ export async function getToken<T>(testCasePath: string): Promise<T> {
 }
 /**
  * Get AST.
- *
  * @param testCasePath path to a test case
  * @returns deserialized AST content
  */

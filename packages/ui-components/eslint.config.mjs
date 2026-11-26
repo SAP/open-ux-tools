@@ -1,10 +1,10 @@
-import base from '../../eslint.config.mjs';
+import { createConfig } from '../../eslint.config.mjs';
 import reactPlugin from 'eslint-plugin-react';
 import globals from 'globals';
 
 export default [
     { ignores: ['stories', 'storybook'] },
-    ...base,
+    ...createConfig(import.meta.dirname),
     reactPlugin.configs.flat.recommended,
     //   ...storybook.configs['flat/recommended'],
     {
