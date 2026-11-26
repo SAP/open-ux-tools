@@ -5,7 +5,6 @@ import { join } from 'node:path';
 /**
  * Installs npm dependencies for a given project if node_modules directory is empty or doesn't exist.
  * Automatically detects the platform and uses the appropriate npm command (npm.cmd on Windows, npm on others).
- *
  * @param {string} projectPath - The absolute path to the project directory where npm install should be executed
  * @throws {Error} Throws an error if the npm install command fails
  * @returns {void}
@@ -40,7 +39,6 @@ export function npmInstall(projectPath: string): void {
 
 /**
  * Recursively removes a directory and its contents with configurable options.
- *
  * @param {string} dirPath - The absolute path to the directory to remove
  * @param {Object} [options] - Configuration options for the removal operation
  * @param {boolean} [options.skipNodeModules] - If true, skips removal of node_modules directories

@@ -1,5 +1,31 @@
 # @sap-ux/system-access
 
+## 1.0.23
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.1.8 → 2.1.9
+
+## 1.0.22
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/store 2.0.8 → 2.0.9
+- @sap-ux/axios-extension 2.1.7 → 2.1.8
+
+## 1.0.21
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.1.6 → 2.1.7
+- @sap-ux/btp-utils 2.0.8 → 2.0.9
+
 ## 1.0.20
 
 ### Patch Changes

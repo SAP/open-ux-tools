@@ -19,11 +19,13 @@ const FILTER = {
  *
  * @param {AbapServiceProvider} provider - Instance of the ABAP provider.
  * @param {boolean} isCustomerBase - Indicates whether the adaptation layer is CUSTOMER_BASE.
+ * @param logger
  * @returns {Promise<FlexUICapability | undefined>} settings indicating support for onPremise and UI Flex capabilities.
  */
 export async function getFlexUICapability(
     provider: AbapServiceProvider,
-    isCustomerBase: boolean
+    isCustomerBase: boolean,
+    logger: ToolsLogger
 ): Promise<FlexUICapability> {
     if (!isCustomerBase) {
         return {
@@ -40,6 +42,9 @@ export async function getFlexUICapability(
 
     const isDtaFolderDeploymentSupported = response.data.includes(FILTER.term);
     const isUIFlexSupported = response.data.includes(FILTER.scheme);
+    logger.debug(
+        `isDtaFolderDeploymentSupported: ${isDtaFolderDeploymentSupported}, isUIFlexSupported: ${isUIFlexSupported}`
+    );
 
     return { isDtaFolderDeploymentSupported, isUIFlexSupported };
 }
@@ -74,12 +79,15 @@ export async function getSystemUI5Version(
  *
  * @param {string} appId - The ID of the application for which to retrieve inbounds.
  * @param {AbapServiceProvider} provider - Instance of the ABAP provider.
+ * @param logger
  * @returns {Promise<ManifestNamespace.Inbound>} list of tile inbounds of the application.
  */
 export async function getBaseAppInbounds(
     appId: string,
-    provider: AbapServiceProvider
+    provider: AbapServiceProvider,
+    logger?: ToolsLogger
 ): Promise<ManifestNamespace.Inbound | undefined> {
+    logger?.debug(`Fetching inbounds for appId: ${appId}`);
     const lrepService = provider.getLayeredRepository();
     const inbounds = (await lrepService.getSystemInfo(undefined, undefined, appId)).inbounds as Inbound[];
 

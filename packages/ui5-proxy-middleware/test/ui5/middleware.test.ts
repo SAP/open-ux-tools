@@ -44,7 +44,6 @@ const rootProjectMock = {
 
 /**
  * Middleware function wrapper for testing to simplify tests.
- *
  * @param configuration ui5.yaml configuration for testing
  * @returns instance of a supertest server
  */

@@ -1,5 +1,45 @@
 # @sap-ux/axios-extension
 
+## 2.1.9
+
+### Patch Changes
+
+#### Features
+
+- Enhanced loging in Adaptation project creation wizard [[9689a3a](https://github.com/SAP/open-ux-tools/commit/9689a3a6c5df2ef001b4dd16db188f7bcdc273b4)]
+
+## 2.1.8
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade dotenv 18.0.8→18.0.10, semver 7.8.5→7.8.6, sanitize-html 2.18.1→2.18.2, sanitize-filename 1.6.4→1.6.5, xml-formatter 3.7.0→3.7.1, fast-xml-validator 1.4.2→1.4.4, applicationinsights 3.17.0→3.17.1, @ui5/fs 4.0.6→4.0.7, @zowe/secrets-for-zowe-sdk 8.35.3→8.39.1, xpath 0.0.36→0.1.0 [[df4b038](https://github.com/SAP/open-ux-tools/commit/df4b038c7178d0e373aef0a7036b294c465eae8d)]
+
+## 2.1.7
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-24
+
+#### Dependency Updates
+
+- Upgrade xpath 0.0.35 → 0.0.36 [[07a23e3](https://github.com/SAP/open-ux-tools/commit/07a23e3a07e4116e54ad78c5ee4eb8543595ac5a)]
+
+#### Release Date
+
+2026-11-24
+
+#### Dependency Updates
+
+- Upgrade axios 1.20.0 → 1.21.1 [[95b4f5a](https://github.com/SAP/open-ux-tools/commit/95b4f5aa4feea8210150d1144693ee36d2f289e3)]
+
+#### Workspace Updates
+
+- @sap-ux/btp-utils 2.0.8 → 2.0.9
+
 ## 2.1.6
 
 ### Patch Changes

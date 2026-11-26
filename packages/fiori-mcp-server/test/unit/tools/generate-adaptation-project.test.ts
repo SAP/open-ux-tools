@@ -559,7 +559,6 @@ describe('generateAdaptationProject', () => {
     describe('project type resolution', () => {
         /**
          * Reads the JSON payload passed to the generator from the first runCmdArgs call.
-         *
          * @returns The parsed generator payload.
          */
         function generatorPayload(): Record<string, unknown> {

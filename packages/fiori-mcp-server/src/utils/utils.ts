@@ -4,6 +4,43 @@ import { promisify } from 'node:util';
 import { exec as execAsync } from 'node:child_process';
 import spawn, { SubprocessError } from 'nano-spawn';
 import { findInstalledPackages } from '@sap-ux/nodejs-utils';
+import { isCFEnvironment, isFeatureSupportedVersion, readUi5Config } from '@sap-ux/adp-tooling';
+import type { FioriToolsProxyConfig } from '@sap-ux/ui5-config';
+
+const MIN_ADAPTATION_UI5_VERSION = '1.154.0';
+
+/**
+ * Validates the UI5 version configured in an adaptation project's ui5.yaml.
+ * Cloud Foundry projects without a configured version use the latest UI5 version.
+ * Skipped when SAP_FIORI_MCP_SKIP_UI5_VERSION_VALIDATION is set to 'true'.
+ *
+ * @param appPath Adaptation project root directory.
+ * @throws {Error} If the configured version is missing or unsupported.
+ */
+export async function validateAdpUi5Version(appPath: string): Promise<void> {
+    if (process.env.SAP_FIORI_MCP_SKIP_UI5_VERSION_VALIDATION === 'true') {
+        return;
+    }
+
+    const config = await readUi5Config(appPath, 'ui5.yaml');
+    const version =
+        config.findCustomMiddleware<FioriToolsProxyConfig>('fiori-tools-proxy')?.configuration?.ui5?.version;
+    if (!version && (await isCFEnvironment(appPath))) {
+        return;
+    }
+    if (!isFeatureSupportedVersion(MIN_ADAPTATION_UI5_VERSION, version)) {
+        throw new Error(
+            `The configured SAPUI5 version "${version ?? 'not configured'}" is not supported. ` +
+                `These adaptation tools require SAPUI5 ${MIN_ADAPTATION_UI5_VERSION} or newer. ` +
+                'Report this error to the user and stop the workflow. ' +
+                'Do not suggest version changes, recommend alternative versions, offer to update the version, ' +
+                'or ask the user to choose or approve a version change. ' +
+                'Do not change or remove the configured SAPUI5 version, switch to snapshot/latest, ' +
+                'or modify project configuration to bypass validation. ' +
+                'Only discuss or perform version changes if the user explicitly requests them.'
+        );
+    }
+}
 
 /**
  * Checks if the Fiori generator is installed.

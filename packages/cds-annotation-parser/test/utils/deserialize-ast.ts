@@ -2,7 +2,6 @@ import { Range, Position } from '@sap-ux/odata-annotation-core';
 
 /**
  * Parses short hand position expression and creates an object from it.
- *
  * @param value (line,character)
  * @returns position object
  */
@@ -15,7 +14,6 @@ function expandPosition(value: string): Position {
 }
 /**
  * Parses short hand range expression and creates an object from it.
- *
  * @param value [(line,character)..(line..character)]
  * @returns range object
  */
@@ -31,7 +29,6 @@ const rangePropertyPattern = /[a-z]*ranges?/i;
 
 /**
  * Parses JSON text which has short hand notation for ranges.
- *
  * @param text
  * @returns deserialized value
  */

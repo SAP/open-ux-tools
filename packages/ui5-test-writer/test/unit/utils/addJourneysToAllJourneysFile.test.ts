@@ -12,7 +12,6 @@ const ALL_JOURNEYS_PATH = join(TEST_OUT_DIR, 'integration', 'AllJourneys.gen.jso
 /**
  * Builds a minimal `WriteContext` carrying only the fields `addJourneysToAllJourneysFile`
  * reads (`testOutDirPath` and `editor`); the rest is irrelevant to this function.
- *
  * @param editor - the mem-fs editor the function should read from and write to
  * @returns a WriteContext sufficient for exercising addJourneysToAllJourneysFile
  */

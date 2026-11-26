@@ -9,7 +9,6 @@ const writtenFiles: string[] = [];
 
 /**
  * Writes a temp-file payload for the given id and tracks it for cleanup.
- *
  * @param {string} id - Temp file id.
  * @param {string} contents - File contents.
  * @returns {Promise<string>} The written file path.

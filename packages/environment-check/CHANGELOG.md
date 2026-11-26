@@ -1,5 +1,39 @@
 # @sap-ux/environment-check
 
+## 1.0.41
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.1.8 → 2.1.9
+
+## 1.0.40
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.3.5 → 2.3.6
+- @sap-ux/ui5-config 1.0.12 → 1.0.13
+- @sap-ux/store 2.0.8 → 2.0.9
+- @sap-ux/axios-extension 2.1.7 → 2.1.8
+
+## 1.0.39
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade axios 1.20.0 → 1.21.1 [[95b4f5a](https://github.com/SAP/open-ux-tools/commit/95b4f5aa4feea8210150d1144693ee36d2f289e3)]
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.1.6 → 2.1.7
+- @sap-ux/btp-utils 2.0.8 → 2.0.9
+- @sap-ux/ui5-config 1.0.11 → 1.0.12
+- @sap-ux/project-access 2.3.4 → 2.3.5
+
 ## 1.0.38
 
 ### Patch Changes
