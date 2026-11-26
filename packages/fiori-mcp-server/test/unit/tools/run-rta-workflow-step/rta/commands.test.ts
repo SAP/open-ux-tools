@@ -340,8 +340,16 @@ describe('rta/commands', () => {
 
     describe('getODataMetadata', () => {
         const siteOrigin = 'http://localhost:8080';
-        const APP = '/tmp/app';
+        let APP: string;
         const xmlResp = { status: 200, contentType: 'application/xml', body: '<edmx:Edmx><a/></edmx:Edmx>' };
+
+        beforeEach(() => {
+            APP = mkdtempSync(join(tmpdir(), 'md-'));
+        });
+
+        afterEach(() => {
+            rmSync(APP, { recursive: true, force: true });
+        });
 
         test('joins a relative trailing-slash URI to <origin>/<uri>$metadata', async () => {
             transport.fetchViaContext.mockResolvedValue(xmlResp);
@@ -364,12 +372,15 @@ describe('rta/commands', () => {
             expect(transport.fetchViaContext).toHaveBeenCalledWith(SITE, `${siteOrigin}/api/svc/$metadata`);
         });
 
-        test('returns formatted EDMX on an xml response', async () => {
+        test('saves formatted EDMX on an xml response', async () => {
             transport.fetchViaContext.mockResolvedValue(xmlResp);
             const out = await getODataMetadata(transport, SITE, ['api/svc/'], APP);
             expect(out.entries[0]).toMatchObject({ url: 'api/svc/' });
             const entry = out.entries[0];
-            expect('metadata' in entry && entry.metadata).toContain('edmx:Edmx');
+            if (!('metadataFile' in entry)) {
+                throw new Error('Expected a metadata file');
+            }
+            expect(readFileSync(entry.metadataFile, 'utf-8')).toBe('<edmx:Edmx>\n    <a/>\n</edmx:Edmx>');
         });
 
         test.each([199, 300, 401, 500])('rejects HTTP %s even when the body is EDMX', async (status) => {
@@ -409,7 +420,16 @@ describe('rta/commands', () => {
         ])('accepts EDMX with different namespaces and XML preambles: %s', async (body) => {
             transport.fetchViaContext.mockResolvedValue({ ...xmlResp, body });
             const out = await getODataMetadata(transport, SITE, ['api/svc/'], APP);
-            expect(out.entries[0]).toEqual({ url: 'api/svc/', metadata: expect.stringContaining('Edmx') });
+            const entry = out.entries[0];
+            expect(entry).toEqual({
+                url: 'api/svc/',
+                metadataFile: expect.any(String),
+                sizeBytes: expect.any(Number)
+            });
+            if (!('metadataFile' in entry)) {
+                throw new Error('Expected a metadata file');
+            }
+            expect(readFileSync(entry.metadataFile, 'utf-8')).toContain('Edmx');
         });
 
         test('keeps a successful entry when another service returns an XML backend error', async () => {
@@ -423,8 +443,13 @@ describe('rta/commands', () => {
             const out = await getODataMetadata(transport, SITE, ['api/failing/', 'api/working/'], APP);
             expect(out.entries).toEqual([
                 { url: 'api/failing/', error: expect.any(String) },
-                { url: 'api/working/', metadata: expect.stringContaining('edmx:Edmx') }
+                { url: 'api/working/', metadataFile: expect.any(String), sizeBytes: expect.any(Number) }
             ]);
+            const entry = out.entries[1];
+            if (!('metadataFile' in entry)) {
+                throw new Error('Expected a metadata file for the successful service');
+            }
+            expect(readFileSync(entry.metadataFile, 'utf-8')).toContain('edmx:Edmx');
         });
 
         test('maps a text/html login response to a per-entry error', async () => {
@@ -465,14 +490,19 @@ describe('rta/commands', () => {
 
         const bigEdmx = `<edmx:Edmx>${'x'.repeat(100_000)}</edmx:Edmx>`;
 
-        test('returns metadata inline when under the threshold', async () => {
+        test('writes small metadata to a file and returns its byte size', async () => {
             transport.fetchViaContext.mockResolvedValue(xmlResp);
-            const out = await getODataMetadata(transport, SITE, ['api/svc/'], '/tmp/doesnotmatter');
-            expect(out.entries[0]).toHaveProperty('metadata');
-            expect(out.entries[0]).not.toHaveProperty('metadataFile');
+            const out = await getODataMetadata(transport, SITE, ['api/svc/'], APP);
+            const entry = out.entries[0];
+            expect(entry).not.toHaveProperty('metadata');
+            if (!('metadataFile' in entry)) {
+                throw new Error('Expected a metadata file');
+            }
+            expect(entry.metadataFile.startsWith(join(APP, '.context'))).toBe(true);
+            expect(entry.sizeBytes).toBe(readFileSync(entry.metadataFile).byteLength);
         });
 
-        test('writes to a file and returns metadataFile + sizeBytes when over the threshold', async () => {
+        test('writes large metadata to a file and returns metadataFile + sizeBytes', async () => {
             const dir = mkdtempSync(join(tmpdir(), 'md-'));
             try {
                 transport.fetchViaContext.mockResolvedValue({

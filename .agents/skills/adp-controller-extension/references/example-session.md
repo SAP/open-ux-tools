@@ -20,6 +20,8 @@ This intent maps to **two actions** (see *Disambiguation by intent* in [rta-acti
 8. **Iteration 2 — add the controller extension:**
    - The same overlay's `actionIds` still includes `CTX_EXTEND_CONTROLLER`
    - `get_context` for `(<toolbar>, CTX_EXTEND_CONTROLLER)` → returns `viewId`
+   - **Step 7 — read OData metadata:** `read_odata_metadata_adp({ appPath })` → fetch and save metadata for the order-detail handler on ABAP, or list data sources on CF. For CF, follow with `run_rta_workflow_step({ step: "get_odata_metadata", site, frameId, appPath, payload: { uris: <returned service URLs> } })` to retrieve the EDMX. For both ABAP and CF, fetched EDMX is always saved to disk under `<appPath>/.context/`, regardless of size. Use the returned `metadataFile`. Search the local files with targeted `rg`/`grep` queries to identify the required properties and annotations and determine which properties need fetching on demand.
+   - **Step 7a — inspect base app content:** `download_base_app_adp({ appPath })` → on `status: "success"`, inspect related controllers and helper modules under `<appPath>/.context/`, preferring `*-dbg.js` files. Identify existing order-detail behavior and suitable public APIs to reuse in the Step 12 implementation; leave downloaded resources unchanged.
    - Payload `{ codeRef: "coding/OrderDetailsExt.js", viewId: "<viewId>" }` confidence 0.93 → High
    - `call_action` → `success: true`
 9. `save` → `saved: true`

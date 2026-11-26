@@ -345,8 +345,7 @@ export async function executeUfaAction(
  * Fetches OData `$metadata` (EDMX) for each supplied data-source URI through the authenticated
  * browser context registered for `site` — the way to obtain real EDMX for a CF project, which has
  * no ABAP provider. Each URI is independent: a bad response or failed fetch becomes a per-entry
- * `error`, small EDMX is returned inline as `metadata`, and large EDMX is spilled to `.context`
- * as `{ metadataFile, sizeBytes }` (see `persistMetadata`).
+ * `error`,  EDMX is spilled to `.context` as `{ metadataFile, sizeBytes }` (see `persistMetadata`).
  *
  * @param transport Transport whose `fetchViaContext` carries the auth cookies.
  * @param site Editor URL returned by `start`; its origin is the fetch target.
