@@ -220,7 +220,7 @@ export function getTargetPropertiesPrompt(
     return {
         ...properties,
         type: 'list',
-        name: 'buildingBlockData.targetProperty',
+        name: properties.name ?? 'buildingBlockData.targetProperty',
         choices: project
             ? async (answers?: Answers) => {
                   const entitySets = await loadEntitySets(context);

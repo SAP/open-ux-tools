@@ -36,6 +36,7 @@ export async function getBuildingBlockTypePrompts(): Promise<Prompts<BuildingBlo
                 choices: [
                     { name: t('buildingBlockType.choices.chart') as string, value: BuildingBlockType.Chart },
                     { name: t('buildingBlockType.choices.filterBar') as string, value: BuildingBlockType.FilterBar },
+                    { name: t('buildingBlockType.choices.kpiTag') as string, value: BuildingBlockType.KPITag },
                     { name: t('buildingBlockType.choices.table') as string, value: BuildingBlockType.Table }
                 ]
             }
