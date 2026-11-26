@@ -117,6 +117,7 @@ export async function isAppSupported(provider: AbapServiceProvider, id: string, 
  * @param {AbapServiceProvider} provider - The ABAP service provider used to retrieve application data.
  * @param {boolean} isCustomerBase - Flag indicating whether the system is customer-based. Affects application selection.
  * @param {SupportedProject | undefined} supportedProject - The supported ADP projects by the system.
+ * @param {ToolsLogger} logger - Optional logger for debugging purposes.
  * @returns {Promise<SourceApplication[]>} If the project type is cloudReady resolves with
  * applications for which the {@link SourceApplication.cloudDevAdaptationStatus} is `released`.
  * If the project type is onPremise we display all applications, plus applications with variant descriptor
@@ -126,11 +127,13 @@ export async function isAppSupported(provider: AbapServiceProvider, id: string, 
 export async function loadApps(
     provider: AbapServiceProvider,
     isCustomerBase: boolean,
-    supportedProject?: SupportedProject
+    supportedProject?: SupportedProject,
+    logger?: ToolsLogger
 ): Promise<SourceApplication[]> {
     if (!supportedProject) {
         return [];
     }
+    logger?.debug(`Loading applications...`);
 
     try {
         const appIndexService = provider.getAppIndex();
