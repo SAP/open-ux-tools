@@ -1,8 +1,8 @@
-import base from '../../eslint.config.mjs';
+import { createConfig } from '../../eslint.config.mjs';
 
 export default [
     {
         ignores: ['**/*.cjs']
     },
-    ...base
+    ...createConfig(import.meta.dirname)
 ];

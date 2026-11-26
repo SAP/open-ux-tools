@@ -13,7 +13,6 @@ export function getAllFixtures(root: string): string[] {
 
 /**
  * Parses position string.
- *
  * @param value position string in format (line,character)
  * @returns position object
  */
@@ -28,7 +27,6 @@ const expandPosition = (value: string): Position =>
 
 /**
  * Parses range string.
- *
  * @param value [(line,character)..(line..character)]
  * @returns range object
  */

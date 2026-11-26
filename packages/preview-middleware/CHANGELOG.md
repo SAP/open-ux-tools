@@ -1,5 +1,27 @@
 # @sap-ux/preview-middleware
 
+## 1.2.46
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-25
+
+#### Dependency Updates
+
+- Update pinned version of @sap-ux/control-property-editor [[c9cb1de](https://github.com/SAP/open-ux-tools/commit/c9cb1de93fd3859f95618b8041b033e8c12ca55f)]
+
+#### Dependency Updates
+
+- Rebuild bundles with updated @sap-ux/adp-tooling, @sap-ux/project-access, @sap-ux-private/preview-middleware-client [[adfa16e](https://github.com/SAP/open-ux-tools/commit/adfa16e598c7a609fd5eeaca458fc02ad73a10c1)]
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.3.5 → 2.3.6
+- @sap-ux/adp-tooling 1.2.3 → 1.2.4
+- @sap-ux/system-access 1.0.21 → 1.0.22
+
 ## 1.2.45
 
 ### Patch Changes

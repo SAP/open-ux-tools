@@ -1,10 +1,10 @@
-import base from '../../eslint.config.mjs';
+import { createConfig } from '../../eslint.config.mjs';
 
 export default [
     {
         ignores: ['*.cjs', 'test/__cjs-proxies/**']
     },
-    ...base,
+    ...createConfig(import.meta.dirname),
     {
         files: ['src/**/*.ts'],
         ignores: ['dist', 'test/fixtures/**', 'coverage', 'node_modules/**', 'eslint.config.js'],

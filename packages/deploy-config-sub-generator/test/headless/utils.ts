@@ -7,7 +7,6 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 /**
  * Runs the headless generator for deployment sub generators.
- *
  * @param testNameOrJsonOrPath - can be the partial test file name or the actual json as string, or a file path to the config file
  * @param target - the deploy target i.e ABAP or CF
  * @param targetDir - override the standard output path

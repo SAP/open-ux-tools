@@ -16,7 +16,6 @@ await initI18n();
 /**
  * Builds a `OpaPageWriteInfo` with the rework-shape: `.gen` filename, plus the
  * metadata fields the TS / type-defs splicer relies on.
- *
  * @param targetKey - the page's target key
  * @param template - the framework template
  * @returns a fully populated OpaPageWriteInfo

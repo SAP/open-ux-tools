@@ -27,7 +27,6 @@ const testCwd = getDestinationProjectRoot(cwd);
 
 /**
  * Returns true if the given UI5 version qualifies for the new FLP sandbox (>= 1.150).
- *
  * @param ui5Version UI5 version string, e.g. "1.120.3"
  */
 const isNewSandboxEligible = (ui5Version: string): boolean => {
@@ -39,7 +38,6 @@ const isNewSandboxEligible = (ui5Version: string): boolean => {
 
 /**
  * This content will overwrite existing `ui5.yaml` file content.
- *
  * @param ui5Version UI5 version
  * @param useNewSandbox whether to enable the new FLP sandbox
  * @returns YAML content
