@@ -645,6 +645,22 @@ describe('FioriFunctionalityServer', () => {
         describe('ADP tools (SAP_FIORI_MCP_ADP_TOOLS=true)', () => {
             let originalEnv: string | undefined;
 
+            test.each([
+                ['run_rta_workflow_step', mockRunRtaWorkflowStep],
+                ['read_odata_metadata_adp', mockReadODataMetadataAdp]
+            ] as const)('marks validation failures from %s as MCP tool errors', async (name, tool) => {
+                tool.mockRejectedValueOnce(new Error('Unsupported SAPUI5 version'));
+                new FioriFunctionalityServer();
+                const onRequestCB = setRequestHandlerMock.mock.calls[2][1];
+
+                const result = await onRequestCB({ params: { name, arguments: { appPath: '/proj' } } });
+
+                expect(result).toEqual({
+                    isError: true,
+                    content: [{ type: 'text', text: 'Error: Unsupported SAPUI5 version' }]
+                });
+            });
+
             beforeEach(() => {
                 originalEnv = process.env.SAP_FIORI_MCP_ADP_TOOLS;
                 process.env.SAP_FIORI_MCP_ADP_TOOLS = 'true';

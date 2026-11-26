@@ -932,7 +932,7 @@ describe('ConfigPrompter Integration Tests', () => {
             expect(result).toEqual(true);
             expect(configPrompter.projectType).toBe(AdaptationProjectType.CLOUD_READY);
             expect(configPrompter.baseAppInbounds).toEqual(baseAppInbounds);
-            expect(mockGetBaseAppInbounds).toHaveBeenCalledWith(app.id, provider);
+            expect(mockGetBaseAppInbounds).toHaveBeenCalledWith(app.id, provider, configPrompter['logger']);
         });
 
         it('cloud application prompt validate should return error message if base app inbounds api call fails', async () => {
@@ -951,7 +951,7 @@ describe('ConfigPrompter Integration Tests', () => {
             expect(configPrompter.projectType).toBe(AdaptationProjectType.CLOUD_READY);
             expect(configPrompter.baseAppInbounds).toBeUndefined();
 
-            expect(mockGetBaseAppInbounds).toHaveBeenCalledWith(app.id, provider);
+            expect(mockGetBaseAppInbounds).toHaveBeenCalledWith(app.id, provider, configPrompter['logger']);
         });
 
         it('application prompt validate should return string when manifest fetching fails in VS Code', async () => {

@@ -1,5 +1,32 @@
 # @sap-ux/adp-tooling
 
+## 1.3.0
+
+### Minor Changes
+
+#### Features
+
+- Support headless Cloud Foundry adaptation generation with shared validators, MCP preflight, and explicit service selection when discovery is incomplete [[183e9dd](https://github.com/SAP/open-ux-tools/commit/183e9ddff96dc793767b20541b2980c99affdc61)]
+
+## 1.2.5
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-26
+
+#### Features
+
+- Enhanced loging in Adaptation project creation wizard [[9689a3a](https://github.com/SAP/open-ux-tools/commit/9689a3a6c5df2ef001b4dd16db188f7bcdc273b4)]
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.1.8 → 2.1.9
+- @sap-ux/odata-service-writer 1.0.31 → 1.0.31
+- @sap-ux/system-access 1.0.22 → 1.0.23
+- @sap-ux/inquirer-common 1.0.57 → 1.0.58
+
 ## 1.2.4
 
 ### Patch Changes

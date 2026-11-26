@@ -4,6 +4,7 @@ description: Use when the user wants to make UI changes to a SAP Fiori adaptatio
 metadata:
   author: sap-fiori-tools
   version: "0.0.1"
+  internal: true
 ---
 
 # SAP Fiori ADP Controller Extension

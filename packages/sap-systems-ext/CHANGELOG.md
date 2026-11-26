@@ -1,5 +1,13 @@
 # sap-ux-sap-systems-ext
 
+## 1.0.57
+
+### Patch Changes
+
+#### Features
+
+- Enhanced loging in Adaptation project creation wizard [[9689a3a](https://github.com/SAP/open-ux-tools/commit/9689a3a6c5df2ef001b4dd16db188f7bcdc273b4)]
+
 ## 1.0.56
 
 ### Patch Changes

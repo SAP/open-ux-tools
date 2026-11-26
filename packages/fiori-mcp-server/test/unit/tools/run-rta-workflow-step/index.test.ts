@@ -8,6 +8,11 @@ const mockStopBrowser = jest.fn<() => Promise<void>>().mockResolvedValue(undefin
 const mockCallFrontendAction = jest.fn<FrontendActionTransport['callFrontendAction']>();
 const mockFetchViaContext = jest.fn<FrontendActionTransport['fetchViaContext']>();
 const mockRegisterSite = jest.fn<(site: string, appPath: string) => Promise<void>>().mockResolvedValue(undefined);
+const mockValidateAdpUi5Version = jest.fn<(appPath: string) => Promise<void>>().mockResolvedValue(undefined);
+
+jest.unstable_mockModule('../../../../src/utils/utils.js', () => ({
+    validateAdpUi5Version: mockValidateAdpUi5Version
+}));
 let registryEmpty = true;
 
 jest.unstable_mockModule('../../../../src/tools/run-rta-workflow-step/browser/index.js', () => ({
@@ -67,6 +72,43 @@ describe('runRtaWorkflowStep dispatcher', () => {
     beforeEach(() => {
         jest.clearAllMocks();
         registryEmpty = true;
+    });
+
+    test.each(['start', 'restart'] as const)(
+        'rejects an unsupported UI5 version before the %s step has side effects',
+        async (step) => {
+            mockValidateAdpUi5Version.mockRejectedValueOnce(new Error('Unsupported SAPUI5 version'));
+
+            await expect(runRtaWorkflowStep({ step, site: SITE, appPath: '/tmp/app' })).rejects.toThrow(
+                'Unsupported SAPUI5 version'
+            );
+
+            expect(mockValidateAdpUi5Version).toHaveBeenCalledWith('/tmp/app');
+            for (const action of [
+                mockDisconnectSite,
+                mockStopBrowser,
+                mockRegisterSite,
+                mockStartRta,
+                mockGetOverlays,
+                mockGetElementContext,
+                mockExecuteAction,
+                mockSaveChanges,
+                mockCleanup,
+                mockDescribeUi,
+                mockExecuteUfaAction,
+                mockGetODataMetadata
+            ]) {
+                expect(action).not.toHaveBeenCalled();
+            }
+        }
+    );
+
+    test('subsequent steps keep working without appPath or repeating version validation', async () => {
+        mockSaveChanges.mockResolvedValue(true);
+
+        await expect(runRtaWorkflowStep({ step: 'save', site: SITE })).resolves.toEqual({ saved: true });
+
+        expect(mockValidateAdpUi5Version).not.toHaveBeenCalled();
     });
 
     describe('start step', () => {

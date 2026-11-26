@@ -14,7 +14,9 @@ const mockValidateMtaId = jest.fn() as jest.Mock;
 const mockIsMtaProject = jest.fn() as jest.Mock;
 
 jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
-    isMtaProject: mockIsMtaProject
+    isMtaProject: mockIsMtaProject,
+    validateProjectPath: mockValidateProjectPath,
+    validateMtaId: mockValidateMtaId
 }));
 
 const realFioriGenShared = await import('@sap-ux/fiori-generator-shared');
@@ -28,9 +30,7 @@ jest.unstable_mockModule('../../../src/app/questions/helper/additional-messages'
 }));
 
 jest.unstable_mockModule('../../../src/app/questions/helper/validators', () => ({
-    validateEnvironment: mockValidateEnvironment,
-    validateProjectPath: mockValidateProjectPath,
-    validateMtaId: mockValidateMtaId
+    validateEnvironment: mockValidateEnvironment
 }));
 
 const { initI18n, t } = await import('../../../src/utils/i18n.js');
