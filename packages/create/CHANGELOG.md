@@ -1,5 +1,18 @@
 # @sap-ux/create
 
+## 1.5.32
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.2.5 → 1.3.0
+- @sap-ux/fiori-migration-writer 1.2.5 → 1.2.6
+- @sap-ux/flp-config-inquirer 1.0.79 → 1.0.80
+- @sap-ux/preview-middleware 1.2.47 → 1.2.48
+- @sap-ux/app-config-writer 1.1.36 → 1.1.36
+- @sap-ux/ui5-test-writer 1.19.22 → 1.19.23
+
 ## 1.5.31
 
 ### Patch Changes

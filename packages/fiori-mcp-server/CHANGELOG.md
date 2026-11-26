@@ -1,5 +1,13 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.18.0
+
+### Minor Changes
+
+#### Features
+
+- Support headless Cloud Foundry adaptation generation with shared validators, MCP preflight, and explicit service selection when discovery is incomplete [[183e9dd](https://github.com/SAP/open-ux-tools/commit/183e9ddff96dc793767b20541b2980c99affdc61)]
+
 ## 1.17.5
 
 ### Patch Changes

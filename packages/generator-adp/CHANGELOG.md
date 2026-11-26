@@ -1,5 +1,23 @@
 # @sap-ux/generator-adp
 
+## 1.3.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-11-26
+
+#### Features
+
+- Support headless Cloud Foundry adaptation generation with shared validators, MCP preflight, and explicit service selection when discovery is incomplete [[183e9dd](https://github.com/SAP/open-ux-tools/commit/183e9ddff96dc793767b20541b2980c99affdc61)]
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.2.5 → 1.3.0
+
 ## 1.2.3
 
 ### Patch Changes
