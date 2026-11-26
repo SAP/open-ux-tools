@@ -118,5 +118,3 @@ export function assertValidationPassed(result: string | boolean): void {
         throw new Error(result);
     }
 }
-
-export { validateProjectPath, validateMtaId, validateBusinessSolutionName } from '@sap-ux/adp-tooling';
