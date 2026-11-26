@@ -1,5 +1,13 @@
 # @sap-ux/fiori-tools-plugin
 
+## 1.17.5
+
+### Patch Changes
+
+#### Bug Fixes
+
+- Add bb-sync.test.ts to catch unwired BuildingBlockType entries and developer skill for wiring new types [[5661178](https://github.com/SAP/open-ux-tools/commit/56611784c00520886bcc4faef21fbdfaf9a52a7c)]
+
 ## 1.17.4
 
 ### Patch Changes
