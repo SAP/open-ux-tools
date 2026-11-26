@@ -50,7 +50,7 @@ class ApplicationInsightClient extends Client {
      * @param properties A set of string properties to be reported
      * @param measurements  A set of numeric measurements to be reported
      * @param sampleRate Sampling the event to be sent
-     * @param ignoreSettings Ignore telemetryEnabled settings and skip submitting telemetry data
+     * @param _ignoreSettings Deprecated and without effect, an event is never sent if the user has disabled telemetry
      * @returns Promise<void>
      */
     public reportBlocking(
@@ -58,9 +58,9 @@ class ApplicationInsightClient extends Client {
         properties: TelemetryProperties,
         measurements: TelemetryMeasurements,
         sampleRate: SampleRate | undefined,
-        ignoreSettings: boolean = false
+        _ignoreSettings: boolean = false
     ): Promise<void> {
-        if (!ignoreSettings || TelemetrySettings.telemetryEnabled) {
+        if (TelemetrySettings.telemetryEnabled) {
             const { client, event } = this.prepareClientAndEvent(eventName, properties, measurements, sampleRate);
             return this.trackEventBlocking(client, event);
         }
