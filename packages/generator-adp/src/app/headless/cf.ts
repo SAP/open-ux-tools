@@ -1,13 +1,19 @@
 import fs from 'node:fs';
 import { join } from 'node:path';
 
-import { getAdpServiceInstances, getModuleNames, hasApprouter } from '@sap-ux/adp-tooling';
+import {
+    getAdpServiceInstances,
+    getModuleNames,
+    hasApprouter,
+    validateMtaId,
+    validateProjectPath
+} from '@sap-ux/adp-tooling';
 import type { CfConfig, CfServiceInstanceChoice } from '@sap-ux/adp-tooling';
 import type { ToolsLogger } from '@sap-ux/logger';
 
 import { t } from '../../utils/i18n.js';
 import { MtaMode } from '../types.js';
-import { assertValidationPassed, validateMtaId, validateProjectPath } from '../questions/helper/validators.js';
+import { assertValidationPassed } from '../questions/helper/validators.js';
 
 /**
  * Validates the MTA inputs and resolves the destination project path for the headless CF flow.

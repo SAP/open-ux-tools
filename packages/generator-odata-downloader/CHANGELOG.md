@@ -1,5 +1,21 @@
 # @sap-ux/generator-odata-downloader
 
+## 0.3.67
+
+### Patch Changes
+
+#### Features
+
+- Enhanced loging in Adaptation project creation wizard [[9689a3a](https://github.com/SAP/open-ux-tools/commit/9689a3a6c5df2ef001b4dd16db188f7bcdc273b4)]
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.1.8 → 2.1.9
+- @sap-ux/fiori-generator-shared 1.4.2 → 1.4.3
+- @sap-ux/odata-service-inquirer 3.2.35 → 3.2.36
+- @sap-ux/odata-service-writer 1.0.31 → 1.0.31
+- @sap-ux/inquirer-common 1.0.57 → 1.0.58
+
 ## 0.3.66
 
 ### Patch Changes

@@ -3,6 +3,12 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { GeneratorConfigCAPWithAPI } from '../../../src/tools/schemas/index.js';
 
+jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
+    isCFEnvironment: jest.fn(),
+    isFeatureSupportedVersion: jest.fn(),
+    readUi5Config: jest.fn()
+}));
+
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const mockFindInstalledPackages = jest.fn<any>().mockResolvedValue([

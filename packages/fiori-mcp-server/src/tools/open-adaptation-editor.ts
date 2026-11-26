@@ -5,7 +5,7 @@ import { createInterface } from 'node:readline';
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { isCFEnvironment } from '@sap-ux/adp-tooling';
-import { logger } from '../utils/index.js';
+import { logger, validateAdpUi5Version } from '../utils/index.js';
 
 /** Startup timeout for ABAP projects — `fiori run` is quick to announce its URL. */
 const ABAP_TIMEOUT_MS = 30000;
@@ -210,6 +210,7 @@ export async function openAdaptationEditor(params: OpenAdaptationEditorInput): P
     const { appPath } = params;
 
     try {
+        await validateAdpUi5Version(appPath);
         const isWindows = process.platform === 'win32';
         const launch = await resolveLaunch(appPath);
         if ('reason' in launch) {

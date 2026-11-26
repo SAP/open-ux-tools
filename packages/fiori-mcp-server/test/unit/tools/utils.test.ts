@@ -4,6 +4,12 @@ import listReportSchema from '../page-editor-api/test-data/schema/ListReport.jso
 import * as zod from 'zod';
 import type { JSONSchema4 } from 'json-schema';
 
+jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
+    isCFEnvironment: jest.fn(),
+    isFeatureSupportedVersion: jest.fn(),
+    readUi5Config: jest.fn()
+}));
+
 const mockFindProjectRoot = jest.fn() as jest.Mock;
 const mockCreateApplicationAccess = jest.fn() as jest.Mock;
 const mockGetProject = jest.fn() as jest.Mock;

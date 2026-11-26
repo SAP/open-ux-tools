@@ -1,5 +1,16 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 3.0.148
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.4.2 → 1.4.3
+- @sap-ux/odata-service-writer 1.0.31 → 1.0.31
+- @sap-ux/ui5-test-writer 1.19.21 → 1.19.22
+- @sap-ux/cap-config-writer 1.0.53 → 1.0.54
+
 ## 3.0.147
 
 ### Patch Changes

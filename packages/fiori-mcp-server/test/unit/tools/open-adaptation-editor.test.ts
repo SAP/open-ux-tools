@@ -5,10 +5,12 @@ const mockLoggerWarn = jest.fn<any>();
 const mockLoggerInfo = jest.fn<any>();
 const mockLoggerError = jest.fn<any>();
 const mockLoggerDebug = jest.fn<any>();
+const mockValidateAdpUi5Version = jest.fn<() => Promise<void>>().mockResolvedValue(undefined);
 
 const actualUtils = await import('../../../src/utils/index.js');
 jest.unstable_mockModule('../../../src/utils', () => ({
     ...actualUtils,
+    validateAdpUi5Version: mockValidateAdpUi5Version,
     logger: {
         ...actualUtils.logger,
         warn: mockLoggerWarn,
@@ -73,6 +75,17 @@ describe('openAdaptationEditor', () => {
         jest.clearAllMocks();
         mockExistsSync.mockReturnValue(false);
         mockIsCFEnvironment.mockResolvedValue(false);
+    });
+
+    test('rejects an unsupported UI5 version before resolving or spawning the editor', async () => {
+        mockValidateAdpUi5Version.mockRejectedValueOnce(new Error('Unsupported SAPUI5 version'));
+
+        const result = await openAdaptationEditor({ appPath: '/tmp/myapp' });
+
+        expect(result).toMatchObject({ status: 'Error', message: expect.stringContaining('Unsupported SAPUI5') });
+        expect(mockValidateAdpUi5Version).toHaveBeenCalledWith('/tmp/myapp');
+        expect(mockIsCFEnvironment).not.toHaveBeenCalled();
+        expect(mockSpawn).not.toHaveBeenCalled();
     });
 
     function fakeSubprocess(child: FakeChildProcess): { nodeChildProcess: Promise<FakeChildProcess> } {

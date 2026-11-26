@@ -355,6 +355,7 @@ Never skip steps or guess functionalityIds. Never use a functionalityId as a too
                 logger.debug(error);
                 const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
                 return {
+                    isError: true,
                     content: [
                         {
                             type: 'text',
