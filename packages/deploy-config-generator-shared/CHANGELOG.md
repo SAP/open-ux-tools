@@ -1,5 +1,17 @@
 # @sap-ux/deploy-config-generator-shared
 
+## 1.0.54
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-26
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.4.2 → 1.4.3
+
 ## 1.0.53
 
 ### Patch Changes
