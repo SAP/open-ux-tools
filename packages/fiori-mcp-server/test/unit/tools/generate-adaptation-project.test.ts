@@ -964,7 +964,6 @@ describe('generateAdaptationProject', () => {
 
         /**
          * Reads the JSON payload passed to the generator from the first runCmdArgs call.
-         *
          * @returns The parsed generator payload.
          */
         function cfPayload(): Record<string, unknown> {
