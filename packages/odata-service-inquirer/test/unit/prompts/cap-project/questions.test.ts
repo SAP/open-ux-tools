@@ -360,7 +360,6 @@ describe('getLocalCapProjectPrompts', () => {
      * `isAbsolute` / `resolve` swapped for the supplied flavor via the top-level mock's
      * mutable `pathFlavor`. This lets us deterministically exercise the `capProjectPath`
      * prompt's filter for both Windows and POSIX paths, regardless of the OS running the test.
-     *
      * @param pathImpl - `path.win32` or `path.posix`
      */
     function loadQuestionsWithPath(pathImpl: typeof actualPath.win32 | typeof actualPath.posix): {

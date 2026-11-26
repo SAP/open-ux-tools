@@ -5,7 +5,6 @@ import { readdirSync, statSync, readFileSync } from 'node:fs';
 
 /**
  * Load a test project directory into mem-fs
- *
  * @param projectPath - Path to project directory
  * @returns Mem-fs editor with project loaded
  */
@@ -21,7 +20,6 @@ export function loadProjectIntoMemFs(projectPath: string): Editor {
 
 /**
  * Recursively copy directory contents to mem-fs
- *
  * @param sourcePath - Source directory path
  * @param targetPath - Target path in mem-fs
  * @param fs - Mem-fs editor
@@ -48,7 +46,6 @@ function copyDirectoryToMemFs(sourcePath: string, targetPath: string, fs: Editor
 
 /**
  * Extract files from mem-fs for verification
- *
  * @param fs - Mem-fs editor
  * @param basePath - Base path to dump from
  * @returns Map of file paths to contents
@@ -66,7 +63,6 @@ export function extractFromMemFs(fs: Editor, basePath: string): Record<string, s
 
 /**
  * Get file content from mem-fs dump
- *
  * @param fs - Mem-fs editor
  * @param basePath - Base path for the project
  * @param filePath - Relative file path
@@ -83,7 +79,6 @@ export function getFileFromMemFs(fs: Editor, basePath: string, filePath: string)
 
 /**
  * Check if file exists in mem-fs
- *
  * @param fs - Mem-fs editor
  * @param basePath - Base path
  * @param filePath - Relative file path

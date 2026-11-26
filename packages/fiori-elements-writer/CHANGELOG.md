@@ -1,5 +1,39 @@
 # @sap-ux/fiori-elements-writer
 
+## 3.1.106
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade dotenv 18.0.8→18.0.10, semver 7.8.5→7.8.6, sanitize-html 2.18.1→2.18.2, sanitize-filename 1.6.4→1.6.5, xml-formatter 3.7.0→3.7.1, fast-xml-validator 1.4.2→1.4.4, applicationinsights 3.17.0→3.17.1, @ui5/fs 4.0.6→4.0.7, @zowe/secrets-for-zowe-sdk 8.35.3→8.39.1, xpath 0.0.36→0.1.0 [[df4b038](https://github.com/SAP/open-ux-tools/commit/df4b038c7178d0e373aef0a7036b294c465eae8d)]
+
+#### Workspace Updates
+
+- @sap-ux/cap-config-writer 1.0.52 → 1.0.53
+- @sap-ux/fe-fpm-writer 1.5.1 → 1.5.2
+- @sap-ux/fiori-generator-shared 1.4.1 → 1.4.2
+- @sap-ux/odata-service-writer 1.0.30 → 1.0.31
+- @sap-ux/ui5-config 1.0.12 → 1.0.13
+- @sap-ux/ui5-application-writer 2.1.8 → 2.1.9
+- @sap-ux/ui5-test-writer 1.19.20 → 1.19.21
+- @sap-ux/annotation-generator 1.0.37 → 1.0.38
+
+## 3.1.105
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fe-fpm-writer 1.5.0 → 1.5.1
+- @sap-ux/ui5-application-writer 2.1.7 → 2.1.8
+- @sap-ux/ui5-config 1.0.11 → 1.0.12
+- @sap-ux/fiori-generator-shared 1.4.0 → 1.4.1
+- @sap-ux/odata-service-writer 1.0.29 → 1.0.30
+- @sap-ux/annotation-generator 1.0.36 → 1.0.37
+- @sap-ux/ui5-test-writer 1.19.19 → 1.19.20
+- @sap-ux/cap-config-writer 1.0.51 → 1.0.52
+
 ## 3.1.104
 
 ### Patch Changes

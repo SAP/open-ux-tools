@@ -12,7 +12,6 @@ const fixturesProjectRoots = join(__dirname, '../../fixtures/project-roots');
 
 /**
  * Build a ProjectFolder for the given absolute path.
- *
  * @param fsPath - absolute path of the folder
  * @param index - ordinal index
  */

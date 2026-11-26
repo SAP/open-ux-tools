@@ -176,7 +176,6 @@ async function loadSession(): Promise<typeof SessionModule> {
 /**
  * Whether `dir`'s filesystem enforces POSIX file permissions. Some mounts ignore
  * mode bits, where the on-disk-mode assertion would spuriously fail. Probe once per call.
- *
  * @param dir Directory to probe (the test's own temp dir).
  * @returns `true` when a 0o600 mode is reflected back by statSync.
  */

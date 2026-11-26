@@ -2,7 +2,6 @@ import { Range, Position } from '@sap-ux/text-document-utils';
 
 /**
  * Parses short hand position expression and creates an object from it.
- *
  * @param value (line,character)
  * @returns expanded information
  */
@@ -20,7 +19,6 @@ function expandPosition(value: string): Position {
 }
 /**
  * Parses a short hand range expression and creates an object from it.
- *
  * @param value [(line,character)..(line..character)]
  * @returns expanded range information
  */
@@ -36,7 +34,6 @@ const rangePropertyPattern = /ranges?/i;
 
 /**
  * Parses JSON text which has short hand notation for ranges.
- *
  * @param text text to parse
  * @returns parsed deserialized content
  */

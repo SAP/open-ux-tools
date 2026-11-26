@@ -35,7 +35,6 @@ function getAst(annotations?: string): AnnotationFile {
     return artifacts.annotationFiles['annotations.xml'];
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 const DUMMY_PROJECT_CONTEXT: ProjectContext = {} as any;
 
 describe('FioriAnnotationSourceCode', () => {
