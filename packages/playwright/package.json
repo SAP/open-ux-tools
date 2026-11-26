@@ -40,7 +40,7 @@
         "jest-dev-server": "11.0.0",
         "folder-hash": "4.1.4",
         "@types/fs-extra": "11.0.4",
-        "@types/folder-hash": "4.0.4",
+        "@types/folder-hash": "4.0.5",
         "portfinder": "1.0.38",
         "promisify-child-process": "5.0.1"
     },

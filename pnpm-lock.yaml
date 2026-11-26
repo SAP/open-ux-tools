@@ -1566,8 +1566,8 @@ importers:
         specifier: 18.3.7
         version: 18.3.7(@types/react@18.3.23)
       '@types/react-redux':
-        specifier: 7.1.34
-        version: 7.1.34
+        specifier: 7.1.35
+        version: 7.1.35
       '@types/redux-logger':
         specifier: 3.0.13
         version: 3.0.13
@@ -3882,8 +3882,8 @@ importers:
         specifier: workspace:*
         version: link:../logger
       '@types/folder-hash':
-        specifier: 4.0.4
-        version: 4.0.4
+        specifier: 4.0.5
+        version: 4.0.5
       '@types/fs-extra':
         specifier: 11.0.4
         version: 11.0.4
@@ -4439,8 +4439,8 @@ importers:
         specifier: 18.3.7
         version: 18.3.7(@types/react@18.3.23)
       '@types/react-redux':
-        specifier: 7.1.34
-        version: 7.1.34
+        specifier: 7.1.35
+        version: 7.1.35
       esbuild-plugin-alias:
         specifier: 0.2.1
         version: 0.2.1
@@ -4624,8 +4624,8 @@ importers:
   packages/text-document-utils:
     dependencies:
       vscode-languageserver-types:
-        specifier: 3.18.5
-        version: 3.18.5
+        specifier: 3.18.6
+        version: 3.18.6
 
   packages/ui-components:
     dependencies:
@@ -7755,9 +7755,6 @@ packages:
   '@jridgewell/source-map@0.3.11':
     resolution: {integrity: sha512-ZMp1V8ZFcPG5dIWnQLr3NSI1MiCU7UETdS/A0G8V/XWHvJv3ZsFqutJn1Y5RPmAPX6F3BiE397OqveU/9NCuIA==}
 
-  '@jridgewell/sourcemap-codec@1.5.5':
-    resolution: {integrity: sha512-cYQ9310grqxueWbl+WuIUIaiUaDcj7WOq5fVhEljNVgRfOUhY9fy2zTvfoqWsnebh8Sl70VScFbICvJnLKB0Og==}
-
   '@jridgewell/sourcemap-codec@1.6.0':
     resolution: {integrity: sha512-T7jf+5zgsZHwNJ4lvQ7/aezbyk0nNX+zJVWpmHA7VYsEx7a7qr5Rg5IbtJFqkgze5Y2sruq1RUY8Q837Od7iFw==}
 
@@ -10401,8 +10398,8 @@ packages:
   '@types/express@4.17.21':
     resolution: {integrity: sha512-ejlPM315qwLpaQlQDTjPdsUFSc6ZsP4AN6AlWnogPjQ7CVi7PYF3YVz+CY3jE2pwYf7E/7HlDAN0rV2GxTG0HQ==}
 
-  '@types/folder-hash@4.0.4':
-    resolution: {integrity: sha512-c+PwHm51Dw3fXM8SDK+93PO3oXdk4XNouCCvV67lj4aijRkZz5g67myk+9wqWWnyv3go6q96hT6ywcd3XtoZiQ==}
+  '@types/folder-hash@4.0.5':
+    resolution: {integrity: sha512-AYx1WnisTOG/ZBKAYg4f+rvNjceEPqkBrdtwQEbMlzOjZvzRdC97bVlr9/FtLJ6pvc+mLQuEgDCzdyjRMcK7Bg==}
 
   '@types/fs-extra@11.0.4':
     resolution: {integrity: sha512-yTbItCNreRooED33qjunPthRcSjERP1r4MqCZc7wv0u2sUkzTFp45tgUfS5+r7FrZPdmCCNflLhVSP/o+SemsQ==}
@@ -10573,8 +10570,8 @@ packages:
     peerDependencies:
       '@types/react': ^18.0.0
 
-  '@types/react-redux@7.1.34':
-    resolution: {integrity: sha512-GdFaVjEbYv4Fthm2ZLvj1VSCedV7TqE5y1kNwnjSdBOTXuRSgowux6J8TAct15T3CKBr63UMk+2CO7ilRhyrAQ==}
+  '@types/react-redux@7.1.35':
+    resolution: {integrity: sha512-iA6Q3vvIh0O5lm/E41bwvXMTVmUb0FW7HYAEt2k1SljUZV4Q9jTtEC17Bg/4t2pttPzJRZ0fxP/j0YhMNGjIFQ==}
 
   '@types/react-transition-group@4.4.12':
     resolution: {integrity: sha512-8TV6R3h2j7a91c+1DXdJi3Syo69zzIZbz7Lg5tORM5LEJG7X/E6a1V3drRyBRZq7/utz7A+c4OgYLiLcYGHG6w==}
@@ -10889,6 +10886,10 @@ packages:
     resolution: {integrity: sha512-wBQv5CqiyVawOyMI2/JmdV724TEPy4GsK9BG/lPy9eUS1Iz9kzVF/3mSQ0DppZVeuQKCJyywZaBtvm9y7Mhwlg==}
     engines: {node: ^20.11.0 || >=22.0.0, npm: '>= 8'}
     hasBin: true
+
+  '@ui5/fs@4.0.6':
+    resolution: {integrity: sha512-Emv91mG1VtRE9v8NktovDh1bJkzFXqY0DYXdfeK5tXc4ZhVr5V3wxo4m0mELYAlkx1mhLv9BNsZy9kU3InPa0w==}
+    engines: {node: ^20.11.0 || >=22.0.0, npm: '>= 8'}
 
   '@ui5/fs@4.0.7':
     resolution: {integrity: sha512-2eQQm1QZh62Sm1fbJjhm7Gcq//r33Ko7O8MMDFffZFpPuOlkvT9tQFqMNij8RRkx/ESD0SLXbYCCSVJWrjRDAQ==}
@@ -11267,9 +11268,6 @@ packages:
 
   '@xml-tools/ast@5.0.6':
     resolution: {integrity: sha512-WFk1M97tg4HWW2cnV8UIQOVkWTsyfB+p2IR+jTUJbl4oqQmfIU6I+syAK3vv08gTrKrbAtNE7oTJc8nShGwpMg==}
-
-  '@xml-tools/common@0.1.6':
-    resolution: {integrity: sha512-7aVZeEYccs1KI/Asd6KKnrB4dTAWXTkjRMjG40ApGEUp5NpfQIvWLEBvMv85Koj2lbSpagcAERwDy9qMsfWGdA==}
 
   '@xml-tools/common@0.1.7':
     resolution: {integrity: sha512-ap1+/SfHFTVDa1OokapE1aSVKXgEI0MD1ffRmp+3gaBXE7Ikq8GfsJXRSH1lyNIUA9GQ+mEVzzAamXQh+2guqA==}
@@ -11961,8 +11959,8 @@ packages:
     resolution: {integrity: sha512-8WB3Jcas3swSvjIeA2yvCJ+Miyz5l1ZmB6HFb9R1317dt9LCQoswg/BGrmAmkWVEszSrrg4RwmO46qIm2OEnSA==}
     engines: {node: '>=16'}
 
-  caniuse-lite@1.0.30001827:
-    resolution: {integrity: sha512-YWEDr46gSO81M8w6uPbaIy4++IXsirx2asUqvllNiD4BPf75ibxclUjWEqp8ObCenRv+UM2n5Y8xuRPT8V8FrQ==}
+  caniuse-lite@1.0.30001816:
+    resolution: {integrity: sha512-+8Yx7BXCoqk6IF8yTicjfUR6D/ldJzdlsodlEOiOSPmhK844WIgk67/zIQaGAOxNkZyyvBlrRFnLvqKIoqbAFw==}
 
   case-sensitive-paths-webpack-plugin@2.4.0:
     resolution: {integrity: sha512-roIFONhcxog0JSSWbvVAh3OocukmSgpqOH6YpMkCvav/ySIV3JKg4Dc8vYtQjYi/UxpNE36r/9v+VqTQqgkYmw==}
@@ -17079,6 +17077,9 @@ packages:
   safer-buffer@2.1.2:
     resolution: {integrity: sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==}
 
+  sanitize-filename@1.6.4:
+    resolution: {integrity: sha512-9ZyI08PsvdQl2r/bBIGubpVdR3RR9sY6RDiWFPreA21C/EFlQhmgo20UZlNjZMMZNubusLhAQozkA0Od5J21Eg==}
+
   sanitize-filename@1.6.5:
     resolution: {integrity: sha512-+dVApt46/oAFWRP0KBSnYNLRw1peY7o/b12tmpllPNFpjfwkPuZut1+DiKaD9zYx5r2SHwc+XMLSBaDiyUJw3g==}
 
@@ -17229,11 +17230,6 @@ packages:
     engines: {node: '>=20.19.0'}
     hasBin: true
 
-  sass@1.108.2:
-    resolution: {integrity: sha512-kugK8djotnG9HQRPTOf36asKYlxg8rWWsNLYHOgWDIVOiZQqlRfKBgF4XXM6kfw146kIDMvm57B4GIkvDSyTzA==}
-    engines: {node: '>=20.19.0'}
-    hasBin: true
-
   sass@1.97.3:
     resolution: {integrity: sha512-fDz1zJpd5GycprAbu4Q2PV/RprsRtKC/0z82z0JLgdytmcq0+ujJbJ/09bPGDxCLkKY3Np5cRAOcWiVkLXJURg==}
     engines: {node: '>=14.0.0'}
@@ -17288,11 +17284,6 @@ packages:
 
   semver@7.7.4:
     resolution: {integrity: sha512-vFKC2IEtQnVhpT78h1Yp8wzwrf8CM+MzKMHGJZfBtzhZNycRFnXsHk6E5TxIkkMsgNS7mdX3AGB7x2QM2di4lA==}
-    engines: {node: '>=10'}
-    hasBin: true
-
-  semver@7.8.4:
-    resolution: {integrity: sha512-rUCObTnP32Q08R2uuIrt7r9PlEonuTmtuXYcW6s5kjdlj3xbnwe+21yXptAUYcMAABLkYYTtnmzb3w3EDZfueA==}
     engines: {node: '>=10'}
     hasBin: true
 
@@ -18529,8 +18520,8 @@ packages:
   vscode-languageserver-types@3.17.5:
     resolution: {integrity: sha512-Ld1VelNuX9pdF39h2Hgaeb5hEZM2Z3jUrrMgWQAu82jMtZp7p3vJT3BzToKtZI7NgQssZje5o0zryOrhQvzQAg==}
 
-  vscode-languageserver-types@3.18.5:
-    resolution: {integrity: sha512-kPd6+JQNz3HMJvjKlqUxERSlZHAntl/aGpsk7ImwIh0ewDKDcjgAEyVSYciPiOJD3ftbK9IrfiqUeTZLSbCizw==}
+  vscode-languageserver-types@3.18.6:
+    resolution: {integrity: sha512-DEDtik4YupS+nOg4JxqJ2H5ec/m4tTD9a5mGcBVGYkQKZQo1AIF3ZToiP8+A0kUzyhyqX5dMnPDEnhtmzts7GA==}
 
   vscode-uri@3.2.0:
     resolution: {integrity: sha512-m2gXo3bn0G1kT9InzMf07fTbqMbGtyckj3bH5ktLO+1Ssv+yiATZ4dhwaQv9UZWxJh6E9IFGnQyjgWVDWVBDrg==}
@@ -20468,7 +20459,7 @@ snapshots:
       package-manager-detector: 0.2.11
       picocolors: 1.1.1
       resolve-from: 5.0.0
-      semver: 7.8.5
+      semver: 7.8.6
       spawndamnit: 3.0.1
       term-size: 2.2.1
     transitivePeerDependencies:
@@ -21635,8 +21626,6 @@ snapshots:
     dependencies:
       '@jridgewell/gen-mapping': 0.3.13
       '@jridgewell/trace-mapping': 0.3.31
-
-  '@jridgewell/sourcemap-codec@1.5.5': {}
 
   '@jridgewell/sourcemap-codec@1.6.0': {}
 
@@ -24679,7 +24668,7 @@ snapshots:
       '@types/qs': 6.15.1
       '@types/serve-static': 2.2.0
 
-  '@types/folder-hash@4.0.4': {}
+  '@types/folder-hash@4.0.5': {}
 
   '@types/fs-extra@11.0.4':
     dependencies:
@@ -24861,7 +24850,7 @@ snapshots:
     dependencies:
       '@types/react': 18.3.23
 
-  '@types/react-redux@7.1.34':
+  '@types/react-redux@7.1.35':
     dependencies:
       '@types/hoist-non-react-statics': 3.3.7(@types/react@18.3.23)
       '@types/react': 18.3.23
@@ -25405,12 +25394,23 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@ui5/fs@4.0.7':
+  '@ui5/fs@4.0.6':
     dependencies:
       '@ui5/logger': 4.0.3
       escape-string-regexp: 5.0.0
       globby: 16.2.4
       graceful-fs: 4.2.12
+      micromatch: 4.0.8
+      minimatch: 10.2.6
+      pretty-hrtime: 1.0.3
+      random-int: 3.1.0
+
+  '@ui5/fs@4.0.7':
+    dependencies:
+      '@ui5/logger': 4.0.2
+      escape-string-regexp: 5.0.0
+      globby: 16.2.4
+      graceful-fs: 4.2.11
       micromatch: 4.0.8
       minimatch: 11.0.9
       pretty-hrtime: 1.0.3
@@ -25487,7 +25487,7 @@ snapshots:
       '@sap-ux/store': 2.0.7(typescript@6.0.3)
       '@sap-ux/system-access': 1.0.12(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)(typescript@6.0.3)
       '@sap/cf-tools': 3.3.1
-      '@ui5/fs': 4.0.7
+      '@ui5/fs': 4.0.6
       '@ui5/logger': 4.0.2
       adm-zip: 0.6.1
       axios: 1.21.1(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
@@ -25827,7 +25827,7 @@ snapshots:
 
   '@xml-tools/ast@5.0.5':
     dependencies:
-      '@xml-tools/common': 0.1.6
+      '@xml-tools/common': 0.1.7
       '@xml-tools/parser': 1.0.12
       lodash: 4.18.1
 
@@ -25836,10 +25836,6 @@ snapshots:
       '@xml-tools/common': 0.1.7
       '@xml-tools/parser': 1.0.12
       chevrotain: 7.1.1
-      lodash: 4.18.1
-
-  '@xml-tools/common@0.1.6':
-    dependencies:
       lodash: 4.18.1
 
   '@xml-tools/common@0.1.7':
@@ -26215,7 +26211,7 @@ snapshots:
   autoprefixer@10.6.1(postcss@8.5.32):
     dependencies:
       browserslist: 4.29.3
-      caniuse-lite: 1.0.30001827
+      caniuse-lite: 1.0.30001816
       fraction.js: 5.3.4
       picocolors: 1.1.1
       postcss: 8.5.32
@@ -26499,7 +26495,7 @@ snapshots:
   browserslist@4.29.3:
     dependencies:
       baseline-browser-mapping: 2.11.28
-      caniuse-lite: 1.0.30001827
+      caniuse-lite: 1.0.30001816
       electron-to-chromium: 1.5.453
       node-releases: 2.0.58
       update-browserslist-db: 1.3.4(browserslist@4.29.3)
@@ -26635,7 +26631,7 @@ snapshots:
 
   camelcase@8.0.0: {}
 
-  caniuse-lite@1.0.30001827: {}
+  caniuse-lite@1.0.30001816: {}
 
   case-sensitive-paths-webpack-plugin@2.4.0: {}
 
@@ -26691,7 +26687,7 @@ snapshots:
       edit-json-file: 1.8.1
       globby: 16.2.0
       js-yaml: 4.3.2
-      semver: 7.7.4
+      semver: 7.8.6
       table: 6.9.0
       type-fest: 5.4.4
 
@@ -27097,7 +27093,7 @@ snapshots:
       postcss-modules-scope: 3.2.1(postcss@8.5.32)
       postcss-modules-values: 4.0.0(postcss@8.5.32)
       postcss-value-parser: 4.2.0
-      semver: 7.8.5
+      semver: 7.8.6
     optionalDependencies:
       webpack: 5.105.0(@swc/core@1.15.46(@swc/helpers@0.5.19))(clean-css@5.3.3)(esbuild@0.28.2)(html-minifier-terser@6.1.0)(postcss@8.5.32)(uglify-js@3.19.3)
 
@@ -27713,7 +27709,7 @@ snapshots:
     dependencies:
       esbuild: 0.28.2
       resolve: 1.22.11
-      sass: 1.108.2
+      sass: 1.102.0
       sass-embedded: 1.97.3
 
   esbuild@0.28.2:
@@ -27790,7 +27786,7 @@ snapshots:
     dependencies:
       debug: 3.2.7(supports-color@8.1.1)
       is-core-module: 2.16.1
-      resolve: 1.22.11
+      resolve: 1.22.14
     transitivePeerDependencies:
       - supports-color
 
@@ -27871,7 +27867,7 @@ snapshots:
       html-entities: 2.6.0
       object-deep-merge: 2.0.1
       parse-imports-exports: 0.2.4
-      semver: 7.8.5
+      semver: 7.8.6
       spdx-expression-parse: 5.0.0
       to-valid-identifier: 1.0.0
     optionalDependencies:
@@ -27929,7 +27925,7 @@ snapshots:
       lodash.merge: 4.6.2
       minimatch: 10.2.6
       scslre: 0.3.0
-      semver: 7.8.5
+      semver: 7.8.6
       ts-api-utils: 2.5.0(typescript@6.0.3)
       typescript: 6.0.3
       yaml: 2.9.1
@@ -30589,7 +30585,7 @@ snapshots:
 
   magic-string@0.30.21:
     dependencies:
-      '@jridgewell/sourcemap-codec': 1.5.5
+      '@jridgewell/sourcemap-codec': 1.6.0
 
   magic-string@1.4.5:
     dependencies:
@@ -32499,7 +32495,7 @@ snapshots:
   react-redux@7.2.9(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
       '@babel/runtime': 7.29.2
-      '@types/react-redux': 7.1.34
+      '@types/react-redux': 7.1.35
       hoist-non-react-statics: 3.3.2
       loose-envify: 1.4.0
       prop-types: 15.8.1
@@ -33051,6 +33047,10 @@ snapshots:
 
   safer-buffer@2.1.2: {}
 
+  sanitize-filename@1.6.4:
+    dependencies:
+      truncate-utf8-bytes: 1.0.2
+
   sanitize-filename@1.6.5:
     dependencies:
       truncate-utf8-bytes: 1.0.2
@@ -33176,14 +33176,6 @@ snapshots:
     optionalDependencies:
       '@parcel/watcher': 2.5.6
 
-  sass@1.108.2:
-    dependencies:
-      chokidar: 5.0.0
-      immutable: 5.1.9
-      source-map-js: 1.2.2
-    optionalDependencies:
-      '@parcel/watcher': 2.6.0
-
   sass@1.97.3:
     dependencies:
       chokidar: 4.0.3
@@ -33248,8 +33240,6 @@ snapshots:
   semver@6.3.1: {}
 
   semver@7.7.4: {}
-
-  semver@7.8.4: {}
 
   semver@7.8.5: {}
 
@@ -33715,7 +33705,7 @@ snapshots:
       oxc-parser: 0.127.0
       oxc-resolver: 11.19.1(@emnapi/core@1.9.2)(@emnapi/runtime@1.11.3)
       recast: 0.23.11
-      semver: 7.8.4
+      semver: 7.8.6
       use-sync-external-store: 1.6.0(react@18.3.1)
       ws: 8.21.0
     optionalDependencies:
@@ -34194,7 +34184,7 @@ snapshots:
       json5: 2.2.3
       lodash.memoize: 4.1.2
       make-error: 1.3.6
-      semver: 7.8.5
+      semver: 7.8.6
       type-fest: 4.41.0
       typescript: 6.0.3
       yargs-parser: 21.1.1
@@ -34421,8 +34411,8 @@ snapshots:
       prettier: 3.10.1
       rollup: 4.68.8
       rollup-plugin-polyfill-node: 0.13.0(rollup@4.68.8)
-      sanitize-filename: 1.6.5
-      semver: 7.8.6
+      sanitize-filename: 1.6.4
+      semver: 7.8.5
 
   ui5-tooling-transpile@3.14.1(@babel/plugin-transform-react-jsx@7.28.6(@babel/core@7.29.7(supports-color@8.1.1))(supports-color@8.1.1))(babel-plugin-istanbul@8.0.0(supports-color@8.1.1))(supports-color@8.1.1):
     dependencies:
@@ -34753,7 +34743,7 @@ snapshots:
 
   vscode-languageserver-types@3.17.5: {}
 
-  vscode-languageserver-types@3.18.5: {}
+  vscode-languageserver-types@3.18.6: {}
 
   vscode-uri@3.2.0: {}
 
@@ -35250,7 +35240,7 @@ snapshots:
       pacote: 22.0.0(supports-color@8.1.1)
       read-pkg-up: 7.0.1
       run-async: 2.4.1
-      semver: 7.7.4
+      semver: 7.8.6
       shelljs: 0.8.5
       sort-keys: 4.2.0
       text-table: 0.2.0
