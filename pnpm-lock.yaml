@@ -320,8 +320,8 @@ importers:
         specifier: workspace:*
         version: link:../../packages/logger
       dotenv:
-        specifier: 18.0.8
-        version: 18.0.8
+        specifier: 18.0.10
+        version: 18.0.10
       fast-xml-parser:
         specifier: 5.11.2
         version: 5.11.2
@@ -5680,8 +5680,8 @@ importers:
         specifier: 0.6.1
         version: 0.6.1
       dotenv:
-        specifier: 18.0.8
-        version: 18.0.8
+        specifier: 18.0.10
+        version: 18.0.10
       express:
         specifier: 4.22.1
         version: 4.22.1(supports-color@8.1.1)
@@ -5695,8 +5695,8 @@ importers:
         specifier: 1.0.38
         version: 1.0.38(supports-color@8.1.1)
       semver:
-        specifier: 7.8.5
-        version: 7.8.5
+        specifier: 7.8.6
+        version: 7.8.6
     devDependencies:
       '@types/adm-zip':
         specifier: 0.5.8
@@ -12506,11 +12506,6 @@ packages:
 
   dotenv@18.0.10:
     resolution: {integrity: sha512-89FAA1xchzK2mxVWdr5F/0rldwiueXs6zJM86rO66EzekR1iBdiXRthyG+m5GvkJaFH3C2LESzamTkgndmLT2A==}
-    engines: {node: '>=12'}
-    hasBin: true
-
-  dotenv@18.0.8:
-    resolution: {integrity: sha512-2KDeoFoK/zRtcnbunCDlLG5VWVMcyqeQc6iK65o231nfNAcuGrKoqUQfJFUtBI+QlShk5HKIHxwebBtUl3rEfA==}
     engines: {node: '>=12'}
     hasBin: true
 
@@ -26871,8 +26866,6 @@ snapshots:
   dotenv@16.6.1: {}
 
   dotenv@18.0.10: {}
-
-  dotenv@18.0.8: {}
 
   dunder-proto@1.0.1:
     dependencies:

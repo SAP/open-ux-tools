@@ -24,12 +24,12 @@
         "@sap-ux/yaml": "workspace:*",
         "@playwright/test": "1.65.1",
         "adm-zip": "0.6.1",
-        "dotenv": "18.0.8",
+        "dotenv": "18.0.10",
         "express": "4.22.1",
         "jest-dev-server": "11.0.0",
         "npm-run-all2": "9.1.0",
         "portfinder": "1.0.38",
-        "semver": "7.8.5"
+        "semver": "7.8.6"
     },
     "devDependencies": {
         "@types/adm-zip": "0.5.8",

@@ -24,7 +24,7 @@
         "@sap-ux/ui-components": "workspace:*",
         "@sap-ux/ui-prompting": "workspace:*",
         "react-markdown": "5.0.3",
-        "sanitize-html": "2.18.1"
+        "sanitize-html": "2.18.2"
     },
     "peerDependencies": {
         "react": ">=18",
