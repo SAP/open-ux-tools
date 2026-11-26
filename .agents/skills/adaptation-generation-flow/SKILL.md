@@ -8,6 +8,7 @@ description: >
 metadata:
   author: sap-fiori-tools
   version: "0.0.1"
+  internal: true
 ---
 
 # SAP Fiori Adaptation Project Generation
@@ -38,7 +39,7 @@ The user's answer confirms the target for this generation request and its valida
 
 Consult only the selected environment's guidance:
 
-- [ABAP prerequisites, application discovery, and configuration](references/abap.md)
+- [ABAP system and base application selection, and configuration](references/abap.md)
 - [CF prerequisites, application discovery, and MTA configuration](references/cf.md)
 
 Exact supported values, defaults, and conditional requirements are defined by the tool input schema. Obtain missing conditional inputs before generation, including the MTA name when creating a new MTA.
@@ -65,9 +66,9 @@ Check whether the current generation request explicitly specifies ABAP or CF. If
 
 ### Step 2 — Resolve prerequisites and the base application
 
-Follow the environment reference to discover systems, service instances, and applications. Use only tools actually available in the host. `list_fiori_apps` scans local projects; it is not a remote application catalog. If remote discovery is unavailable, use the documented interactive generator fallback rather than inventing tool names or application IDs.
+Follow the selected environment reference. Reuse supplied system names, base application IDs, and backend choices. Use only tools actually available in the host; ask for missing values as directed by the reference.
 
-Verify the application ID and selected backend context before collecting project configuration. Recover missing prerequisites according to tool diagnostics; CF login is performed by the user.
+Leave backend access and application compatibility checks to `generate_adaptation_project`. Recover missing prerequisites according to tool diagnostics; CF login is performed by the user.
 
 ### Step 3 — Collect configuration
 
@@ -115,10 +116,6 @@ If the user requested UI changes, continue with [adp-controller-extension](../ad
 - [ ] Missing inputs, choices, and validation/generation phases are handled using structured tool results.
 - [ ] Success points to the adaptation application root and generated files exist.
 - [ ] Any requested editor work receives the verified application path.
-
-## Testing
-
-Inspect the scripts in the generated application's `package.json` and run its build script. Consult [sap-fiori-app-development](https://github.com/SAP/open-ux-tools/blob/main/plugins-coding-agents/fiori/skills/sap-fiori-app-development/SKILL.md) for general preview setup.
 
 ## Common Errors and Solutions
 

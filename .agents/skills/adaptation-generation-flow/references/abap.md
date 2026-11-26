@@ -4,15 +4,17 @@ Read this reference only after the user explicitly specifies or selects ABAP for
 
 Use the exact ABAP environment label defined in [SKILL.md](../SKILL.md#user-facing-wording) when presenting the ABAP choice. Its tool value remains `ABAP`; project-type values are unchanged.
 
-## Prerequisites and discovery
+## Select the system and base application
 
-1. Reuse an explicitly supplied stored system. Otherwise use the Service Center MCP `list_systems` when available, or `list_sap_systems` as the fallback. Resolve the selected stored system name; do not collect credentials in chat.
-2. Discover the base application's technical ID through available backend discovery capabilities. `list_fiori_apps` only finds local projects. If the host has no remote application discovery, use the SAP Fiori Tools adaptation project generator wizard or `yo @sap-ux/adp` interactively to select the application.
-3. Confirm the base application and system. Preflight verifies that the system is accessible, the application is available for adaptation, and its manifest can be loaded. Unknown application IDs are rejected before creation, even when a project type is explicitly supplied. The skill does not reproduce application eligibility rules.
+1. Reuse the stored SAP system name supplied by the user. If none was supplied, call `list_sap_systems` and ask the user to select a system. Pass the selected system name as `system`. Do not collect credentials in chat.
+2. Reuse the base application's technical ID supplied by the user. If it is missing, ask for it. Pass it as `application`.
+3. Obtain the absolute parent folder for the generated project and continue with the configuration below. Preserve inputs and choices the user has already supplied.
+
+The `generate_adaptation_project` tool validates backend access, application availability, and manifest loading. Follow the main skill's guidance for handling `InputRequired` and `Error` responses.
 
 ## Configuration order
 
-Collect the generation parent folder, any supplied SAP client, project name/title/namespace preferences, and whether the user wants to import key user changes.
+Collect any supplied SAP client, project name/title/namespace preferences, and whether the user wants to import key user changes.
 
 Pass an explicitly requested Cloud Ready or Classic type as `projectType`. Otherwise leave it unset: a single supported type resolves automatically. If the tool returns both choices, present `choices.projectType` and pass the selected value. Do not choose a default on the user's behalf.
 
