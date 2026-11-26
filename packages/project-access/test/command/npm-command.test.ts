@@ -236,7 +236,6 @@ describe('Test execNpmCommand(), simulate windows', () => {
 
 /**
  * Helper function to get a mock implementation of child_process.ChildProcess.
- *
  * @param onHandler - handler for process.on
  * @returns - mock implementation of child_process.ChildProcess
  */

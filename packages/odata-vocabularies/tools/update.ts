@@ -147,7 +147,6 @@ const updateVocabulary = async (namespace: string, config: VocabularyConfig, dat
  * Updates vocabulary resources in project.
  *
  * Vocabulary data is uglified (alias -> namespace) to remove complexity for further processing.
- *
  * @public
  */
 export async function updateVocabularies(): Promise<void> {
@@ -315,7 +314,6 @@ export function uglifyAnnotations(object: CSDLAnnotations, namespaceAliasMapping
  * Substitute aliases by namespaces.
  *
  * (Aliases are kept in references and descriptions).
- *
  * @param object                - CSDL JSON data
  * @param namespaceAliasMapping - Mapping: alias->namespace
  * @private

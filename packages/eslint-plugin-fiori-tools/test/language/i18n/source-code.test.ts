@@ -2,7 +2,6 @@ import type { ProjectContext } from '../../../src/project-context/project-contex
 import { FioriI18nSourceCode, parseI18nToAst } from '../../../src/language/i18n/source-code.js';
 import { STEP_PHASE } from '../../../src/language/i18n/traversal-step.js';
 
-// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 const DUMMY_PROJECT_CONTEXT: ProjectContext = {} as any;
 const DUMMY_URI = 'file:///project/webapp/i18n/i18n.properties';
 

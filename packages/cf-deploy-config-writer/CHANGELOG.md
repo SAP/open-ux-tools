@@ -1,5 +1,30 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 1.1.18
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade dotenv 18.0.8→18.0.10, semver 7.8.5→7.8.6, sanitize-html 2.18.1→2.18.2, sanitize-filename 1.6.4→1.6.5, xml-formatter 3.7.0→3.7.1, fast-xml-validator 1.4.2→1.4.4, applicationinsights 3.17.0→3.17.1, @ui5/fs 4.0.6→4.0.7, @zowe/secrets-for-zowe-sdk 8.35.3→8.39.1, xpath 0.0.36→0.1.0 [[df4b038](https://github.com/SAP/open-ux-tools/commit/df4b038c7178d0e373aef0a7036b294c465eae8d)]
+
+#### Workspace Updates
+
+- @sap-ux/nodejs-utils 1.0.15 → 1.0.16
+- @sap-ux/project-access 2.3.5 → 2.3.6
+- @sap-ux/ui5-config 1.0.12 → 1.0.13
+
+## 1.1.17
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/btp-utils 2.0.8 → 2.0.9
+- @sap-ux/ui5-config 1.0.11 → 1.0.12
+- @sap-ux/project-access 2.3.4 → 2.3.5
+- @sap-ux/nodejs-utils 1.0.14 → 1.0.15
+
 ## 1.1.16
 
 ### Patch Changes

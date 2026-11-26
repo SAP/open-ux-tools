@@ -1,5 +1,55 @@
 # @sap-ux/generator-adp
 
+## 1.2.2
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.4.1 → 1.4.2
+- @sap-ux/inquirer-common 1.0.56 → 1.0.57
+- @sap-ux/odata-service-writer 1.0.30 → 1.0.31
+- @sap-ux/project-access 2.3.5 → 2.3.6
+- @sap-ux/adp-tooling 1.2.3 → 1.2.4
+- @sap-ux/telemetry 2.0.16 → 2.0.17
+- @sap-ux/store 2.0.8 → 2.0.9
+- @sap-ux/axios-extension 2.1.7 → 2.1.8
+- @sap-ux/project-input-validator 1.0.28 → 1.0.29
+- @sap-ux/system-access 1.0.21 → 1.0.22
+
+## 1.2.1
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade uuid 11.1.1 → 14.0.3 [[0ade21d](https://github.com/SAP/open-ux-tools/commit/0ade21d80bbbe39fecb4681e4bd18cd3471a5264)]
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.1.6 → 2.1.7
+- @sap-ux/adp-tooling 1.2.2 → 1.2.3
+- @sap-ux/btp-utils 2.0.8 → 2.0.9
+- @sap-ux/inquirer-common 1.0.55 → 1.0.56
+- @sap-ux/telemetry 2.0.15 → 2.0.16
+- @sap-ux/fiori-generator-shared 1.4.0 → 1.4.1
+- @sap-ux/odata-service-writer 1.0.29 → 1.0.30
+- @sap-ux/system-access 1.0.20 → 1.0.21
+- @sap-ux/project-access 2.3.4 → 2.3.5
+- @sap-ux/project-input-validator 1.0.27 → 1.0.28
+
+## 1.2.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-11-20
+
+#### Features
+
+- Support headless generation of a Cloud Foundry adaptation project via the `yo @sap-ux/adp <json>` CLI JSON path (select with `targetEnv: "CF"`) [[7846a42](https://github.com/SAP/open-ux-tools/commit/7846a42530462a6874048450133eed802a752a7d)]
+
 ## 1.1.5
 
 ### Patch Changes

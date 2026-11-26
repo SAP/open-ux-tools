@@ -1,5 +1,41 @@
 # @sap-ux/ui-components
 
+## 4.0.2
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade dotenv 18.0.8→18.0.10, semver 7.8.5→7.8.6, sanitize-html 2.18.1→2.18.2, sanitize-filename 1.6.4→1.6.5, xml-formatter 3.7.0→3.7.1, fast-xml-validator 1.4.2→1.4.4, applicationinsights 3.17.0→3.17.1, @ui5/fs 4.0.6→4.0.7, @zowe/secrets-for-zowe-sdk 8.35.3→8.39.1, xpath 0.0.36→0.1.0 [[df4b038](https://github.com/SAP/open-ux-tools/commit/df4b038c7178d0e373aef0a7036b294c465eae8d)]
+
+#### Release Date
+
+2026-11-25
+
+#### Dependency Updates
+
+- Upgrade @sap/service-provider-apis 2.13.2→2.13.4, @fluentui/react 8.125.8→8.125.10, @langchain/mcp-adapters 2.0.1→2.0.3, @modelcontextprotocol/sdk 1.32.1→1.32.2 [[4b49abf](https://github.com/SAP/open-ux-tools/commit/4b49abf8d3b80759fc6ecfdc1a65f999523b3b15)]
+
+## 4.0.1
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade uuid 11.1.1 → 14.0.3 [[0ade21d](https://github.com/SAP/open-ux-tools/commit/0ade21d80bbbe39fecb4681e4bd18cd3471a5264)]
+
+## 4.0.0
+
+### Major Changes
+
+#### Release Date
+
+2026-11-20
+
+#### Bug Fixes
+
+- Replace ReactDOM.render with createRoot in UIToggle; narrow peerDependencies react/react-dom to >=18 [[7952e31](https://github.com/SAP/open-ux-tools/commit/7952e3192861a3eb96f2f37e5cb09ed8a0701fd9)]
+
 ## 3.2.1
 
 ### Patch Changes

@@ -28,7 +28,6 @@ export const debug = prepareDebug();
 
 /**
  * Initializes the debug object.
- *
  * @returns {{ enabled: boolean; outputDir: string; debugFull: boolean }} - the debug object
  */
 export function prepareDebug(): { enabled: boolean; outputDir: string; debugFull: boolean } {
@@ -44,7 +43,6 @@ const sampleTestStore = create(createStore());
 
 /**
  * Get (and load to store) the specified service test data.
- *
  * @param serviceName
  * @param serviceType
  * @returns
@@ -59,7 +57,6 @@ export const getTestData = (serviceName: string, serviceType: 'metadata' | 'anno
 
 /**
  * Base FE app settings.
- *
  * @param appId
  * @param addUi5Config
  * @returns {(Partial<FioriElementsApp<LROPSettings | FEOPSettings>>)} - the base config

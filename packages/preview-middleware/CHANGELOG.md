@@ -1,5 +1,55 @@
 # @sap-ux/preview-middleware
 
+## 1.2.46
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-25
+
+#### Dependency Updates
+
+- Update pinned version of @sap-ux/control-property-editor [[c9cb1de](https://github.com/SAP/open-ux-tools/commit/c9cb1de93fd3859f95618b8041b033e8c12ca55f)]
+
+#### Dependency Updates
+
+- Rebuild bundles with updated @sap-ux/adp-tooling, @sap-ux/project-access, @sap-ux-private/preview-middleware-client [[adfa16e](https://github.com/SAP/open-ux-tools/commit/adfa16e598c7a609fd5eeaca458fc02ad73a10c1)]
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.3.5 → 2.3.6
+- @sap-ux/adp-tooling 1.2.3 → 1.2.4
+- @sap-ux/system-access 1.0.21 → 1.0.22
+
+## 1.2.45
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Rebuild bundle with updated dependencies (uuid 14.0.3) [[0ade21d](https://github.com/SAP/open-ux-tools/commit/0ade21d80bbbe39fecb4681e4bd18cd3471a5264)]
+
+#### Workspace Updates
+
+- @sap-ux/i18n 1.0.7 → 1.0.8
+- @sap-ux/adp-tooling 1.2.2 → 1.2.3
+- @sap-ux/btp-utils 2.0.8 → 2.0.9
+- @sap-ux/system-access 1.0.20 → 1.0.21
+- @sap-ux/project-access 2.3.4 → 2.3.5
+
+## 1.2.44
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-20
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/control-property-editor (React 19 fix) [[7952e31](https://github.com/SAP/open-ux-tools/commit/7952e3192861a3eb96f2f37e5cb09ed8a0701fd9)]
+
 ## 1.2.43
 
 ### Patch Changes

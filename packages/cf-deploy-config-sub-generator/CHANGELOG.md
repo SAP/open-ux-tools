@@ -1,5 +1,32 @@
 # @sap-ux/cf-deploy-config-sub-generator
 
+## 1.0.66
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/cf-deploy-config-writer 1.1.17 → 1.1.18
+- @sap-ux/fiori-generator-shared 1.4.1 → 1.4.2
+- @sap-ux/inquirer-common 1.0.56 → 1.0.57
+- @sap-ux/project-access 2.3.5 → 2.3.6
+- @sap-ux/deploy-config-generator-shared 1.0.52 → 1.0.53
+- @sap-ux/cf-deploy-config-inquirer 1.0.59 → 1.0.60
+
+## 1.0.65
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/btp-utils 2.0.8 → 2.0.9
+- @sap-ux/inquirer-common 1.0.55 → 1.0.56
+- @sap-ux/deploy-config-generator-shared 1.0.51 → 1.0.52
+- @sap-ux/fiori-generator-shared 1.4.0 → 1.4.1
+- @sap-ux/project-access 2.3.4 → 2.3.5
+- @sap-ux/cf-deploy-config-inquirer 1.0.58 → 1.0.59
+- @sap-ux/cf-deploy-config-writer 1.1.16 → 1.1.17
+
 ## 1.0.64
 
 ### Patch Changes

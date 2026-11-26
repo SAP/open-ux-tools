@@ -35,7 +35,6 @@ function isNode(node: XMLAstNode | XMLToken): node is XMLAstNode {
     return 'type' in node;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 const DUMMY_PROJECT_CONTEXT: ProjectContext = {} as any;
 
 describe('FioriXMLSourceCode', () => {
