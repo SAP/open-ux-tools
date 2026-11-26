@@ -88,7 +88,17 @@ export interface CleanupStepResult {
 }
 
 export interface StopStepResult {
-    stopped: true;
+    /** Whether transport cleanup completed; the HTTP relay requires confirmed editor server shutdown. */
+    stopped: boolean;
+    /**
+     * Whether termination of the owned editor server was confirmed (HTTP relay transport only).
+     * Omitted for transports that own the browser/process lifecycle directly.
+     */
+    editorServerStopped?: boolean;
+    /** Acknowledgement of the close request; actual tab closure is controlled by the browser. */
+    browserCloseRequested?: boolean;
+    /** Guidance for incomplete server cleanup or manual browser tab closure. */
+    message?: string;
 }
 
 export interface RestartStepResult {

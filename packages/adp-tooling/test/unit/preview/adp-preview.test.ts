@@ -240,6 +240,24 @@ describe('AdaptationProject', () => {
     };
 
     const logger = new ToolsLogger();
+    test('does not register preview automation relay routes', async () => {
+        const adp = new AdpPreview(
+            { cfBuildPath: 'dist' },
+            mockProject as unknown as ReaderCollection,
+            middlewareUtil,
+            logger
+        );
+        mockReadManifestFromBuildPath.mockReturnValue({ 'sap.app': { id: 'relay.test' } });
+        await adp.init(JSON.parse(descriptorVariant));
+        const app = express();
+        adp.addApis(app);
+        const server = supertest(app);
+        await server.get('/adp/api/rta/client.js').expect(404);
+        await server.get('/adp/api/rta/poll?clientId=one').expect(404);
+        await server.post('/adp/api/rta/action').send({ actionName: '__ready__' }).expect(404);
+        await server.post('/adp/api/rta/result').send({ id: 'unknown', result: null }).expect(404);
+    });
+
     describe('init', () => {
         beforeAll(() => {
             nock(backend)

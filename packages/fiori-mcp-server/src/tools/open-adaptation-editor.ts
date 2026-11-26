@@ -1,28 +1,29 @@
 import type { OpenAdaptationEditorOutput, OpenAdaptationEditorInput } from '../types/index.js';
 import { type ChildProcess } from 'node:child_process';
+import { createServer } from 'node:net';
+import { randomBytes } from 'node:crypto';
 import spawn from 'nano-spawn';
 import { createInterface } from 'node:readline';
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
+import { isAppStudio, exposePort } from '@sap-ux/btp-utils';
 import { isCFEnvironment } from '@sap-ux/adp-tooling';
 import { logger } from '../utils/index.js';
+import {
+    assertEditorCanStart,
+    registerEditorSession,
+    signalEditor,
+    terminateEditorProcess,
+    trackEditorProcess
+} from '../adaptation-editor/editor-session.js';
+import { isHttpRelayEnabled } from '../adaptation-editor/http-relay.js';
 
 /** Startup timeout for ABAP projects — `fiori run` is quick to announce its URL. */
 const ABAP_TIMEOUT_MS = 30000;
-/**
- * Startup timeout for CF projects. The CF editor (`ui5 serve`) fetches service
- * keys and boots the embedded approuter before it prints its URL — observed to
- * take ~40s even on the no-build path — so it needs far more headroom than ABAP.
- */
+/** Startup timeout for CF projects: the editor boots the embedded approuter (~40s) before printing its URL. */
 const CF_TIMEOUT_MS = 300000;
 
-/**
- * Editor entry path. This is the production editor path that generated
- * adaptation projects expose (see `@sap-ux/adp-tooling` writer `editors` config)
- * for both ABAP and CF — the server serves it regardless of scenario. (Open-source
- * middleware test setups may also expose `/local/editor.html`, but that is a
- * testing artifact, not what production projects use.)
- */
+/** Production editor entry path exposed by generated ABAP and CF adaptation projects. */
 const EDITOR_PATH = '/test/adaptation-editor.html';
 
 /**
@@ -32,6 +33,45 @@ interface LaunchConfig {
     command: string;
     args: string[];
     timeoutMs: number;
+}
+
+/**
+ * In BAS the editor's loopback URL isn't browser-reachable, so rewrite its origin to the
+ * BAS-exposed external HTTPS URL for the given port. Outside BAS the URL is returned unchanged.
+ *
+ * @param editorUrl - The localhost editor URL (origin + editor path).
+ * @param port - The local port the editor server listens on.
+ * @returns The externally reachable editor URL in BAS, otherwise `editorUrl`.
+ * @throws {Error} When BAS cannot provide an HTTPS URL for the editor port.
+ */
+async function resolveExternalEditorUrl(editorUrl: string, port: number | undefined): Promise<string> {
+    if (!isAppStudio()) {
+        return editorUrl;
+    }
+    if (!port) {
+        throw new Error(
+            'Could not determine the adaptation editor port in BAS. ' +
+                'Check the editor startup output before retrying open_adaptation_editor.'
+        );
+    }
+    try {
+        const externalBase = await exposePort(port);
+        const external = new URL(externalBase);
+        if (external.protocol !== 'https:') {
+            throw new Error('BAS did not return an HTTPS URL.');
+        }
+        // exposePort returns an origin (e.g. https://port<N>-...cloud.sap/);
+        // keep the editor's path + search from the original URL.
+        const original = new URL(editorUrl);
+        external.pathname = original.pathname;
+        external.search = original.search;
+        return external.toString();
+    } catch {
+        throw new Error(
+            `Could not obtain a BAS browser URL for editor port ${port}. ` +
+                'Check BAS port exposure in your dev space before retrying open_adaptation_editor.'
+        );
+    }
 }
 
 /**
@@ -46,12 +86,30 @@ function resolveFioriBin(appPath: string): { command: string; args: string[] } {
     const fioriBin = join(appPath, 'node_modules', '.bin', 'fiori');
 
     if (existsSync(fioriBinTarget)) {
-        return { command: process.execPath, args: [fioriBinTarget, 'run', '/test/adaptation-editor.html'] };
+        return { command: process.execPath, args: [fioriBinTarget, 'run', EDITOR_PATH] };
     }
     if (existsSync(fioriBin) || existsSync(`${fioriBin}.cmd`)) {
-        return { command: 'fiori', args: ['run', '/test/adaptation-editor.html'] };
+        return { command: 'fiori', args: ['run', EDITOR_PATH] };
     }
     return { command: 'npm', args: ['run', 'start-editor'] };
+}
+
+/**
+ * Finds a free TCP port by binding to port 0 on the loopback interface.
+ *
+ * @returns A promise resolving to an unused port.
+ */
+function findFreePort(): Promise<number> {
+    return new Promise((resolve, reject) => {
+        const server = createServer();
+        server.unref();
+        server.on('error', reject);
+        server.listen(0, '127.0.0.1', () => {
+            const address = server.address();
+            const port = typeof address === 'object' && address ? address.port : 0;
+            server.close(() => (port ? resolve(port) : reject(new Error('Could not determine a free port'))));
+        });
+    });
 }
 
 /**
@@ -65,9 +123,12 @@ function resolveFioriBin(appPath: string): { command: string; args: string[] } {
  */
 async function resolveLaunch(appPath: string): Promise<LaunchConfig | { reason: string }> {
     const { command, args } = resolveFioriBin(appPath);
+    // Bind the editor to a free port so a stale server left on the default port can never
+    // be mistaken for this one. The npm fallback runs a fixed script and takes no port flag.
+    const launchArgs = command === 'npm' ? args : [...args, '--port', String(await findFreePort())];
     const isCf = await isCFEnvironment(appPath);
     if (!isCf) {
-        return { command, args, timeoutMs: ABAP_TIMEOUT_MS };
+        return { command, args: launchArgs, timeoutMs: ABAP_TIMEOUT_MS };
     }
 
     if (!existsSync(join(appPath, 'dist'))) {
@@ -78,7 +139,7 @@ async function resolveLaunch(appPath: string): Promise<LaunchConfig | { reason: 
         };
     }
 
-    return { command, args, timeoutMs: CF_TIMEOUT_MS };
+    return { command, args: launchArgs, timeoutMs: CF_TIMEOUT_MS };
 }
 
 /**
@@ -87,17 +148,20 @@ async function resolveLaunch(appPath: string): Promise<LaunchConfig | { reason: 
  *
  * @param childProcess - The spawned editor child process to listen on.
  * @param timeoutMs - Maximum milliseconds to wait before resolving with undefined URL.
+ * @param redact - Removes relay credentials from diagnostic output.
  * @returns A promise resolving with the server URL, editor path, and any stderr output.
  */
 function waitForEditorUrl(
     childProcess: ChildProcess,
-    timeoutMs: number
+    timeoutMs: number,
+    redact: (text: string) => string
 ): Promise<{ serverUrl: string | undefined; editorPath: string | undefined; stderrOutput: string }> {
     return new Promise((resolve) => {
         let foundServerUrl: string | undefined;
         let foundEditorPath: string | undefined;
         let stderrOutput = '';
         let settled = false;
+        let rl: ReturnType<typeof createInterface> | undefined;
         const timer = { id: undefined as ReturnType<typeof setTimeout> | undefined };
 
         const done = (): void => {
@@ -106,7 +170,9 @@ function waitForEditorUrl(
             }
             settled = true;
             clearTimeout(timer.id);
-            resolve({ serverUrl: foundServerUrl, editorPath: foundEditorPath, stderrOutput });
+            rl?.close();
+            childProcess.removeListener('exit', done);
+            resolve({ serverUrl: foundServerUrl, editorPath: foundEditorPath, stderrOutput: redact(stderrOutput) });
         };
 
         timer.id = setTimeout(() => {
@@ -115,25 +181,26 @@ function waitForEditorUrl(
         }, timeoutMs);
 
         if (childProcess.stdout) {
-            const rl = createInterface({ input: childProcess.stdout, crlfDelay: Infinity });
+            rl = createInterface({ input: childProcess.stdout, crlfDelay: Infinity });
 
             rl.on('line', (line: string) => {
-                const clean = line.replace(new RegExp(String.fromCodePoint(27) + String.raw`\[[0-9;]*m`, 'g'), '');
+                const clean = redact(
+                    line.replace(new RegExp(String.fromCodePoint(27) + String.raw`\[[0-9;]*m`, 'g'), '')
+                );
                 logger.debug(`Editor: ${clean}`);
 
                 if (!foundEditorPath) {
-                    const pathMatch = /fiori run --open\s+([^\s]+)/.exec(line);
+                    const pathMatch = /fiori run --open\s+([^\s]+)/.exec(clean);
                     if (pathMatch?.[1]) {
                         foundEditorPath = pathMatch[1];
                     }
                 }
 
                 if (!foundServerUrl) {
-                    const urlMatch = /^URL:\s*(https?:\/\/[^\s]+)/.exec(line);
+                    const urlMatch = /^URL:\s*(https?:\/\/[^\s]+)/.exec(clean);
                     if (urlMatch?.[1]) {
                         foundServerUrl = urlMatch[1];
                         logger.info(`Extracted server URL: ${foundServerUrl}`);
-                        rl.close();
                         childProcess.stdout?.resume();
                         done();
                     }
@@ -151,9 +218,13 @@ function waitForEditorUrl(
         }
 
         childProcess.on('error', (error) => {
-            logger.error(`Editor process error: ${error.message}`);
+            logger.error(`Editor process error: ${redact(error.message)}`);
             done();
         });
+        childProcess.once('exit', done);
+        if (childProcess.exitCode != null || childProcess.signalCode != null) {
+            done();
+        }
     });
 }
 
@@ -179,24 +250,17 @@ function parsePort(serverUrl: string): number | undefined {
  * Builds the kill instructions string returned to the caller so they can stop the editor process.
  *
  * @param pid - The process ID of the running editor server.
- * @param port - The listening port, used to generate an alternative port-based kill command.
  * @param isWindows - Whether the current platform is Windows.
+ * @param useHttpRelay - Whether the editor uses the RTA HTTP relay.
  * @returns A formatted string with platform-appropriate instructions for stopping the process.
  */
-function buildKillInstructions(pid: number, port: number | undefined, isWindows: boolean): string {
-    const byPid = isWindows
-        ? `Windows: taskkill /PID ${pid} /F`
-        : `Mac/Linux: kill ${pid} (or kill -9 ${pid} for force kill)`;
-
-    if (!port) {
-        return `To stop the editor:\n${byPid}`;
+function buildKillInstructions(pid: number, isWindows: boolean, useHttpRelay: boolean): string {
+    if (useHttpRelay) {
+        return 'To stop the editor, use run_rta_workflow_step with step "stop" and the exact Editor URL above. You can then close the browser tab.';
     }
-
-    const byPort = isWindows
-        ? `Windows: for /f "tokens=5" %a in ('netstat -ano ^| findstr :${port}') do taskkill /PID %a /F`
-        : `Mac/Linux: kill -9 $(lsof -ti:${port})`;
-
-    return `To stop the editor (recommended - by port):\n${byPort}\n\nAlternative (by PID):\n${byPid}`;
+    return isWindows
+        ? `To stop the owned editor process tree:\nWindows: taskkill /PID ${pid} /T /F`
+        : `To stop the owned editor process group:\nMac/Linux: kill -TERM -- -${pid}`;
 }
 
 /**
@@ -208,31 +272,47 @@ function buildKillInstructions(pid: number, port: number | undefined, isWindows:
  */
 export async function openAdaptationEditor(params: OpenAdaptationEditorInput): Promise<OpenAdaptationEditorOutput> {
     const { appPath } = params;
+    let childProcess: ChildProcess | undefined;
+    let relayToken: string | undefined;
+    const inheritedToken = process.env.SAP_FIORI_MCP_ADP_RELAY_TOKEN;
+    const redact = (text: string): string => {
+        for (const token of [relayToken, inheritedToken]) {
+            if (token) {
+                text = text.replaceAll(token, '[redacted]');
+            }
+        }
+        return text;
+    };
 
     try {
+        assertEditorCanStart();
         const isWindows = process.platform === 'win32';
+        const useHttpRelay = isHttpRelayEnabled();
+        relayToken = useHttpRelay ? randomBytes(32).toString('hex') : undefined;
         const launch = await resolveLaunch(appPath);
         if ('reason' in launch) {
             return { status: 'Error', message: launch.reason };
         }
         const { command, args, timeoutMs } = launch;
+        assertEditorCanStart();
 
-        logger.info(`Spawning editor process: ${command} ${args.join(' ')} in ${appPath}`);
+        logger.info(redact(`Spawning editor process: ${command} ${args.join(' ')} in ${appPath}`));
 
         // nano-spawn handles .cmd/.bat shims on Windows without shell: true.
-        const subprocess = spawn(command, args, { cwd: appPath });
-        const childProcess: ChildProcess = await subprocess.nodeChildProcess;
+        // Its env API merges with process.env; undefined explicitly removes an inherited token.
+        const subprocess = spawn(command, args, {
+            cwd: appPath,
+            detached: !isWindows,
+            env: { SAP_FIORI_MCP_ADP_RELAY_TOKEN: relayToken }
+        });
+        // nano-spawn also returns a completion promise: termination must not cause an unhandled rejection.
+        subprocess.catch(() => {});
+        childProcess = await trackEditorProcess(subprocess.nodeChildProcess, !isWindows);
 
-        const { serverUrl, editorPath, stderrOutput } = await waitForEditorUrl(childProcess, timeoutMs);
+        const { serverUrl, editorPath, stderrOutput } = await waitForEditorUrl(childProcess, timeoutMs, redact);
 
         if (!serverUrl) {
-            if (childProcess.pid) {
-                try {
-                    process.kill(childProcess.pid, 'SIGTERM');
-                } catch {
-                    // Process may have already exited
-                }
-            }
+            await terminateEditorProcess(childProcess);
             const detail = stderrOutput ? `\nProcess stderr:\n${stderrOutput.trim()}` : '';
             return {
                 status: 'Error',
@@ -244,6 +324,7 @@ export async function openAdaptationEditor(params: OpenAdaptationEditorInput): P
 
         const processId = childProcess.pid;
         if (!processId) {
+            await terminateEditorProcess(childProcess);
             return {
                 status: 'Error',
                 message: 'Failed to get process ID from spawned editor process'
@@ -252,13 +333,23 @@ export async function openAdaptationEditor(params: OpenAdaptationEditorInput): P
 
         const port = parsePort(serverUrl);
         const finalEditorPath = editorPath || EDITOR_PATH;
-        const editorUrl = `${serverUrl}${finalEditorPath}`;
+        const localEditorUrl = `${serverUrl}${finalEditorPath}`;
+        const editorUrl = await resolveExternalEditorUrl(localEditorUrl, port);
+        const autoOpen = useHttpRelay;
 
         // Keep draining stdout so its pipe buffer never fills and blocks the child.
         childProcess.stdout?.resume();
         childProcess.unref();
+        registerEditorSession({ localUrl: localEditorUrl, browserUrl: editorUrl, relayToken, childProcess, autoOpen });
+        if (autoOpen) {
+            signalEditor('open', editorUrl);
+        }
 
-        const killCommandsSection = buildKillInstructions(processId, port, isWindows);
+        const browserInstructions = useHttpRelay
+            ? 'The full editor runs in your browser tab. If no tab opened, open the Editor URL above manually. ' +
+              'Complete any login in that tab and keep one editor tab open while running RTA steps.'
+            : '';
+        const killCommandsSection = buildKillInstructions(processId, isWindows, useHttpRelay);
         const portLine = port ? `Actual listening port: ${port}` : '';
 
         const message = `Adaptation editor started successfully.
@@ -266,6 +357,7 @@ Editor URL: ${editorUrl}
 Process ID: ${processId}
 ${portLine}
 
+${browserInstructions}
 ${killCommandsSection}`;
 
         return {
@@ -276,10 +368,15 @@ ${killCommandsSection}`;
             ...(port && { port })
         };
     } catch (error) {
-        logger.error(`Error opening adaptation editor: ${error}`);
+        const cleanupConfirmed = !childProcess || (await terminateEditorProcess(childProcess));
+        let detail = redact(error instanceof Error ? error.message : String(error));
+        if (!cleanupConfirmed) {
+            detail += ' Editor server shutdown was not confirmed. Inspect the MCP logs before starting another editor.';
+        }
+        logger.error(`Error opening adaptation editor: ${detail}`);
         return {
             status: 'Error',
-            message: 'Error opening adaptation editor: ' + (error instanceof Error ? error.message : String(error))
+            message: 'Error opening adaptation editor: ' + detail
         };
     }
 }

@@ -5,10 +5,13 @@ import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 
 const configuration = { appName: 'base.app', destination: 'destination' };
-const abapConfiguration = { target: { url: 'https://host', client: '100' }, ignoreCertErrors: true };
+const abapConfiguration = {
+    target: { url: 'https://host', client: '100', destination: 'ABAP_DEST' },
+    ignoreCertErrors: true
+};
 const ui5Config = {
     findCustomTask: jest.fn<() => { configuration?: Record<string, unknown> } | undefined>(),
-    findCustomMiddleware: jest.fn<() => { configuration: { adp?: typeof abapConfiguration } } | undefined>()
+    findCustomMiddleware: jest.fn<(name: string) => { configuration: { adp?: typeof abapConfiguration } } | undefined>()
 };
 const readUi5Config = jest.fn<() => Promise<typeof ui5Config>>();
 const getVariant = jest.fn<() => Promise<{ id?: unknown }>>();
@@ -112,24 +115,33 @@ describe('manifest-builder', () => {
             await expect(invoke(appPath)).rejects.toBe(error);
         });
 
-        test('uses ABAP preview configuration when the bundler task is absent', async () => {
-            ui5Config.findCustomTask.mockReturnValue(undefined);
-            const task = jest.fn<() => Promise<object>>().mockResolvedValue(result);
-            const appPath = mockTaskModule(name + '-abap-missing-task', { [name]: task });
+        test.each(['fiori-tools-preview', 'preview-middleware'])(
+            'uses ABAP configuration from %s when the bundler task is absent',
+            async (middleware) => {
+                ui5Config.findCustomTask.mockReturnValue(undefined);
+                ui5Config.findCustomMiddleware.mockImplementation((middlewareName) =>
+                    middlewareName === middleware ? { configuration: { adp: abapConfiguration } } : undefined
+                );
+                const task = jest.fn<() => Promise<object>>().mockResolvedValue(result);
+                const appPath = mockTaskModule(name + '-abap-' + middleware, { [name]: task });
 
-            await expect(invoke(appPath)).resolves.toBe(result);
+                await expect(invoke(appPath)).resolves.toBe(result);
 
-            expect(readUi5Config).toHaveBeenCalledWith(appPath, 'ui5.yaml');
-            expect(ui5Config.findCustomMiddleware).toHaveBeenCalledWith('fiori-tools-preview');
-            expect(task).toHaveBeenCalledWith(
-                {
-                    workspace: expect.objectContaining({ byGlob: expect.any(Function) }),
-                    options: { configuration: { ...abapConfiguration, type: 'abap' }, projectNamespace: 'customer/app' }
-                },
-                name === 'downloadAppResources' ? join(appPath, '.context') : undefined
-            );
-            expect(abapConfiguration).not.toHaveProperty('type');
-        });
+                expect(readUi5Config).toHaveBeenCalledWith(appPath, 'ui5.yaml');
+                expect(ui5Config.findCustomMiddleware).toHaveBeenCalledWith(middleware);
+                expect(task).toHaveBeenCalledWith(
+                    {
+                        workspace: expect.objectContaining({ byGlob: expect.any(Function) }),
+                        options: {
+                            configuration: { ...abapConfiguration, type: 'abap' },
+                            projectNamespace: 'customer/app'
+                        }
+                    },
+                    name === 'downloadAppResources' ? join(appPath, '.context') : undefined
+                );
+                expect(abapConfiguration).not.toHaveProperty('type');
+            }
+        );
 
         test('CF project: uses the bundler task configuration as-is, no ABAP stamp', async () => {
             isCFEnvironment.mockResolvedValue(true);
@@ -214,7 +226,7 @@ describe('manifest-builder', () => {
                 ui5Config.findCustomMiddleware.mockReturnValue(middleware);
 
                 await expect(invoke(resolve('missing-config'))).rejects.toThrow(
-                    'Adaptation project has no fiori-tools-preview ADP configuration'
+                    'Adaptation project has no ADP configuration in fiori-tools-preview or preview-middleware'
                 );
             }
         );

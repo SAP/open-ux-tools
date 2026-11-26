@@ -1,6 +1,5 @@
-import { getVariant, readUi5Config } from './helper.js';
+import { extractAdpConfig, getVariant, readUi5Config } from './helper.js';
 import { isCFEnvironment } from './cf.js';
-import type { AdpPreviewConfig } from '../types.js';
 import { getWebappPath, type Manifest } from '@sap-ux/project-access';
 import { createReader, createWorkspace } from '@ui5/fs/resourceFactory';
 import type { UI5Config } from '@sap-ux/ui5-config';
@@ -88,7 +87,7 @@ async function getAdaptationWorkspace(
  * - ABAP with the bundler task (CloudReady / S/4 private): the task's own config
  *   already carries `type: 'abap'`. Use it as-is.
  * - ABAP without the bundler task (on-prem preview): derive the configuration from
- *   the `fiori-tools-preview` middleware and mark it `type: 'abap'`.
+ *   `fiori-tools-preview` or `preview-middleware` and mark it `type: 'abap'`.
  *
  * @param appPath - Absolute path to the project root.
  * @param ui5Config - Parsed ui5.yaml for the project.
@@ -105,10 +104,9 @@ async function resolveBuildConfiguration(appPath: string, ui5Config: UI5Config):
         return buildTask.configuration ?? {};
     }
     // ABAP on-prem preview: no bundler task — fall back to the preview middleware.
-    const adpConfiguration = ui5Config.findCustomMiddleware<{ adp?: AdpPreviewConfig }>('fiori-tools-preview')
-        ?.configuration?.adp;
+    const adpConfiguration = extractAdpConfig(ui5Config);
     if (!adpConfiguration) {
-        throw new Error('Adaptation project has no fiori-tools-preview ADP configuration');
+        throw new Error('Adaptation project has no ADP configuration in fiori-tools-preview or preview-middleware');
     }
     return { ...adpConfiguration, type: 'abap' };
 }
