@@ -11,7 +11,9 @@ const mockPersistMetadata = jest.fn<any>((appPath: string, uri: string, formatte
 );
 
 const mockGetMergedManifest = jest.fn<() => Promise<object>>();
+const mockValidateAdpUi5Version = jest.fn<() => Promise<void>>().mockResolvedValue(undefined);
 jest.unstable_mockModule('../../../src/utils', () => ({
+    validateAdpUi5Version: mockValidateAdpUi5Version,
     formatXml: mockFormatXml,
     persistMetadata: mockPersistMetadata,
     logger: {
@@ -60,6 +62,17 @@ describe('readODataMetadataAdp', () => {
                 configuration: { adp: { target: { url: 'http://host', client: '100' } } }
             })
         });
+    });
+
+    test('rejects an unsupported UI5 version before reading manifests or contacting the backend', async () => {
+        mockValidateAdpUi5Version.mockRejectedValueOnce(new Error('Unsupported SAPUI5 version'));
+
+        await expect(readODataMetadataAdp({ appPath: APP_PATH })).rejects.toThrow('Unsupported SAPUI5 version');
+
+        expect(mockValidateAdpUi5Version).toHaveBeenCalledWith(APP_PATH);
+        expect(mockGetMergedManifest).not.toHaveBeenCalled();
+        expect(mockCreateAbapServiceProvider).not.toHaveBeenCalled();
+        expect(mockPersistMetadata).not.toHaveBeenCalled();
     });
 
     function setupProvider(

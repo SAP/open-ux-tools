@@ -37,6 +37,7 @@ import {
     getOAuthPathsFromXsApp,
     validateSmartTemplateApplication,
     validateODataEndpoints,
+    validateBusinessSolutionName,
     AppRouterType
 } from '@sap-ux/adp-tooling';
 import {
@@ -92,11 +93,7 @@ import {
     getDefaultNamespace,
     resolveProjectName
 } from './questions/helper/default-values.js';
-import {
-    validateJsonInput,
-    validateBusinessSolutionName,
-    assertValidationPassed
-} from './questions/helper/validators.js';
+import { validateJsonInput, assertValidationPassed } from './questions/helper/validators.js';
 import {
     TargetEnv,
     MtaMode,

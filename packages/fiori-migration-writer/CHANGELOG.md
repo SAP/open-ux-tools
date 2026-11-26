@@ -1,5 +1,13 @@
 # @sap-ux/fiori-migration-writer
 
+## 1.2.6
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.2.5 → 1.3.0
+
 ## 1.2.5
 
 ### Patch Changes

@@ -1,5 +1,29 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.18.0
+
+### Minor Changes
+
+#### Features
+
+- Support headless Cloud Foundry adaptation generation with shared validators, MCP preflight, and explicit service selection when discovery is incomplete [[183e9dd](https://github.com/SAP/open-ux-tools/commit/183e9ddff96dc793767b20541b2980c99affdc61)]
+
+## 1.17.5
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-26
+
+#### Bug Fixes
+
+- Validate the configured SAPUI5 version before opening the adaptation editor, starting or restarting RTA, and reading OData metadata, including internal snapshot versions and the latest-version default for Cloud Foundry projects without a configured version.
+
+    Report thrown validation failures as MCP tool errors so clients can display them for tools with output schemas.
+    Validation errors instruct callers to report unsupported versions and stop without suggesting, offering, or performing version changes unless the user explicitly requests them.
+    Allow these checks to be skipped by setting `SAP_FIORI_MCP_SKIP_UI5_VERSION_VALIDATION=true` in the server environment; validation remains enabled by default. [[ffc9e92](https://github.com/SAP/open-ux-tools/commit/ffc9e92be08e5b92d33a9235d7ea5d2974ba995b)]
+
 ## 1.17.4
 
 ### Patch Changes
