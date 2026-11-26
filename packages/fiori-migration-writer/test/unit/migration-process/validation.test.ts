@@ -1,4 +1,5 @@
 import { describe, it, expect, beforeEach } from '@jest/globals';
+import { join } from 'node:path';
 import { checkForErrors, createMigrationErrorMessage } from '../../../src/migration-process/validation.js';
 import type { Message } from '../../../src/types.js';
 import { initI18n } from '../../../src/index.js';
@@ -73,6 +74,17 @@ describe('migration-process/validation', () => {
             const result = createMigrationErrorMessage(error);
 
             expect(result).toContain('Error copying common files:');
+        });
+
+        it('should name the file of a file system error relative to the project and add the code', () => {
+            const error = Object.assign(new Error('EACCES: permission denied'), {
+                code: 'EACCES',
+                path: join('/', 'work', 'app', 'webapp', 'Component.js')
+            });
+
+            expect(createMigrationErrorMessage(error, join('/', 'work', 'app'))).toBe(
+                'Error copying common files: A permission error occurred in webapp/Component.js. Ensure the file is accessible. (code: EACCES)'
+            );
         });
 
         it('should handle error with toString', () => {
