@@ -1,5 +1,18 @@
 # @sap-ux/adp-tooling
 
+## 1.3.1
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/axios-extension 2.1.9 → 2.1.10
+- @sap-ux/odata-service-writer 1.0.31 → 1.0.32
+- @sap-ux/project-access 2.3.6 → 2.3.7
+- @sap-ux/system-access 1.0.23 → 1.0.24
+- @sap-ux/inquirer-common 1.0.58 → 1.0.59
+- @sap-ux/project-input-validator 1.0.29 → 1.0.30
+
 ## 1.3.0
 
 ### Minor Changes

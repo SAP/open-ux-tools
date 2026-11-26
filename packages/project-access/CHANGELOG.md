@@ -1,5 +1,13 @@
 # @sap-ux/project-access
 
+## 2.3.7
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade fast-xml-parser 5.11.2→5.12.1, qs 6.16.0→6.17.1, @sap/approuter 23.3.0→23.5.0, @langchain/core 1.3.1→1.5.0, @sap-ai-sdk/foundation-models+langchain 2.17.0→2.18.0 [[814f624](https://github.com/SAP/open-ux-tools/commit/814f624adf781f14a9af469d247a732439d92fc5)]
+
 ## 2.3.6
 
 ### Patch Changes

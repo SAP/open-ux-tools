@@ -1,5 +1,17 @@
 # @sap-ux/fiori-tools-plugin
 
+## 1.17.9
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-26
+
+#### Dependency Updates
+
+- Sync version with @sap-ux/fiori-mcp-server [[814f624](https://github.com/SAP/open-ux-tools/commit/814f624adf781f14a9af469d247a732439d92fc5)]
+
 ## 1.17.8
 
 ### Patch Changes
