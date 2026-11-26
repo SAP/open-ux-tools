@@ -14,7 +14,10 @@ jobs:
                 # https://github.com/actions/runner-images?tab=readme-ov-file#available-images
                 # not just the latest version of mac os also amd on Mac
                 # os: [ubuntu-latest, windows-2025, macos-13, macos-14, macos-14-large, macos-15, macos-latest-large]
-                node-version: [22.x, 24.x]
+                node-version: [22.x]
+                include:
+                    - os: macos-latest
+                      node-version: 24.x
         runs-on: ${{ matrix.os }}
         environment: ci-secrets
         timeout-minutes: 60
