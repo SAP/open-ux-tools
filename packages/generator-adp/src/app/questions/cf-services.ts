@@ -25,7 +25,8 @@ import {
     validateODataEndpoints,
     getBusinessServiceInfo,
     getOAuthPathsFromXsApp,
-    getBackendUrlsFromServiceKeys
+    getBackendUrlsFromServiceKeys,
+    validateBusinessSolutionName
 } from '@sap-ux/adp-tooling';
 import { Severity } from '@sap-devx/yeoman-ui-types';
 import type { ToolsLogger } from '@sap-ux/logger';
@@ -34,7 +35,6 @@ import { validateEmptyString } from '@sap-ux/project-input-validator';
 import type { InputQuestion, ListQuestion } from '@sap-ux/inquirer-common';
 
 import { t } from '../../utils/i18n.js';
-import { validateBusinessSolutionName } from './helper/validators.js';
 import { getAppRouterChoices, getCFAppChoices, getServiceInstanceChoices } from './helper/choices.js';
 import { shouldShowBaseAppPrompt, showBusinessSolutionNameQuestion } from './helper/conditions.js';
 

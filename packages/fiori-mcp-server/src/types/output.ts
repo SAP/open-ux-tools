@@ -139,9 +139,17 @@ export const OpenAdaptationEditorOutputSchema = zod.object({
 });
 
 export const GenerateAdaptationProjectOutputSchema = zod.object({
-    status: zod.string(),
+    status: zod.enum(['Success', 'InputRequired', 'Error']),
     message: zod.string(),
-    projectPath: zod.string().optional()
+    phase: zod
+        .enum(['validation', 'generation'])
+        .optional()
+        .describe('Error phase: before creation or during the generator command.'),
+    projectPath: zod.string().optional().describe('Absolute path to the generated adaptation application root.'),
+    mtaRoot: zod.string().optional().describe('Cloud Foundry only. Absolute path to the containing MTA project.'),
+    missingFields: zod.array(zod.string()).optional(),
+    choices: zod.record(zod.string(), zod.array(zod.object({ value: zod.string(), label: zod.string() }))).optional(),
+    issues: zod.array(zod.object({ field: zod.string(), code: zod.string(), message: zod.string() })).optional()
 });
 
 export const AdpControllerExtensionOutputSchema = zod.object({
