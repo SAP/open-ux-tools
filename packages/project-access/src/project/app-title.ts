@@ -35,14 +35,35 @@ export async function resolveApplicationTitle(
     }
 
     const i18nKey = extractDoubleCurlyBracketsKey(rawTitle);
-    if (!i18nKey) {
+
+    // No i18n tokens at all — plain string
+    if (i18nKey === undefined && !/\{\{[^{}]+\}\}/.test(rawTitle)) {
+        return rawTitle;
+    }
+    // Empty key {{}} — not a valid i18n reference
+    if (i18nKey === '') {
         return rawTitle;
     }
 
     try {
         const i18nPaths = await getI18nPropertiesPaths(manifestPath, manifest, memFs);
         const bundle = await getPropertiesI18nBundle(i18nPaths['sap.app'], memFs);
-        return bundle[i18nKey]?.[0]?.value?.value;
+
+        if (i18nKey && /^\s*\{\{[^{}]+\}\}\s*$/.test(rawTitle)) {
+            // Full {{key}} pattern — single lookup
+            return bundle[i18nKey]?.[0]?.value?.value;
+        }
+
+        // Partial pattern like "44 {{appTitle}}" — replace all embedded tokens
+        let allResolved = true;
+        const resolved = rawTitle.replace(/\{\{([^{}]+)\}\}/g, (_match, key) => {
+            const value = bundle[key.trim()]?.[0]?.value?.value;
+            if (value === undefined) {
+                allResolved = false;
+            }
+            return value ?? '';
+        });
+        return allResolved ? resolved : undefined;
     } catch (error) {
         logger?.debug(`Failed to load i18n properties bundle: ${error}`);
         return undefined;
