@@ -41,7 +41,7 @@
         "@sap-ux/system-access": "workspace:*",
         "@sap-ux/telemetry": "workspace:*",
         "@sap-ux/ui-service-inquirer": "workspace:*",
-        "i18next": "26.5.11",
+        "i18next": "27.2.9",
         "yeoman-generator": "5.10.0"
     },
     "devDependencies": {
