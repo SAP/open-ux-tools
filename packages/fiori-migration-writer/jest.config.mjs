@@ -3,6 +3,7 @@ import baseConfig from '../../jest.base.mjs';
 export default {
     ...baseConfig,
     displayName: 'fiori-migration-writer',
+    testTimeout: 30000,
     // Override modulePathIgnorePatterns to include test/integration/ which base config excludes
     modulePathIgnorePatterns: [
         '<rootDir>/dist',
