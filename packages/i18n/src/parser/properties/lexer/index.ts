@@ -348,16 +348,18 @@ class PropertiesTokenizer {
                 this.consumeEndOfLine();
                 continue;
             }
+            // Once the separator is consumed, everything up to the end of the line is the value, even if it
+            // starts with a comment or separator character e.g. `key=#value` or `key==value`.
+            if (isValue(this.getTokens())) {
+                this.consumeValue();
+                continue;
+            }
             if (isComment(character)) {
                 this.consumeComment();
                 continue;
             }
             if (isSeparator(character)) {
                 this.consumeSeparator();
-                continue;
-            }
-            if (isValue(this.getTokens())) {
-                this.consumeValue();
                 continue;
             }
             this.consumeKey();
