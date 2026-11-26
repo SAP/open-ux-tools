@@ -111,7 +111,7 @@ export function validateProjectNameInternal(value: string): boolean | string {
         return t('adp.projectNameLengthErrorInt');
     }
 
-    if (!/^[a-z]+[a-z0-9]*(\.[a-z]+[a-z0-9]*)+$/i.test(value)) {
+    if (!/^[a-z][a-z0-9]*(\.[a-z][a-z0-9]*)+$/i.test(value)) {
         return t('adp.projectNameValidationErrorInt');
     }
 

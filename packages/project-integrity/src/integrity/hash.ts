@@ -11,7 +11,7 @@ import type { Content, ContentIntegrity, FileIntegrity } from '../types.js';
 async function computeFileIntegrityData(filePath: string): Promise<FileIntegrity> {
     return new Promise((resolve, reject) => {
         let content = '';
-        const hash = createHash('md5');
+        const hash = createHash('md5'); // NOSONAR: md5 is used for file integrity checksums, not cryptographic security
         const fileStream = createReadStream(filePath);
         fileStream.on('data', (chunk: Buffer | string) => {
             content += typeof chunk === 'string' ? chunk : chunk.toString();
@@ -50,7 +50,7 @@ export function getContentIntegrity(additionalStringContent?: Content): ContentI
             const content = additionalStringContent[contentKey];
             contentIntegrity.push({
                 contentKey,
-                hash: createHash('md5').update(content).digest('hex'),
+                hash: createHash('md5').update(content).digest('hex'), // NOSONAR: md5 is used for file integrity checksums, not cryptographic security
                 content
             });
         }
