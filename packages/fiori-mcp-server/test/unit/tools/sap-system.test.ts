@@ -3,6 +3,12 @@ import type { BackendSystem, ConnectionType, SystemType } from '@sap-ux/store';
 import type { ODataService } from '@sap-ux/axios-extension';
 import { ODataVersion } from '@sap-ux/axios-extension';
 
+jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
+    isCFEnvironment: jest.fn(),
+    isFeatureSupportedVersion: jest.fn(),
+    readUi5Config: jest.fn()
+}));
+
 // Mock dependencies
 const mockGetService = jest.fn<any>();
 const realStore = await import('@sap-ux/store');
