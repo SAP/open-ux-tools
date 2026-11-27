@@ -186,7 +186,10 @@ export function areArraysEquivalent(array1: Array<string> | undefined, array2: A
     if (!array1 || !array2) {
         return false;
     }
-    return [...array1].sort().toString() === [...array2].sort().toString();
+    return (
+        [...array1].sort((a, b) => a.localeCompare(b)).toString() ===
+        [...array2].sort((a, b) => a.localeCompare(b)).toString()
+    );
 }
 
 export { PromptState };
