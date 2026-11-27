@@ -291,7 +291,7 @@ describe('<UIDialog />', () => {
                 Object {
                   "color": "var(--vscode-panelTitle-activeForeground)",
                   "overflow": "hidden",
-                  "padding": "20px 45px 5px",
+                  "padding": "var(--ui-spacing-xl, 20px) var(--ui-spacing-xxl, 50px) var(--ui-spacing-small, 5px)",
                   "textAlign": "center",
                   "textOverflow": "ellipsis",
                   "whiteSpace": "nowrap",
@@ -308,7 +308,7 @@ describe('<UIDialog />', () => {
                 `
                 Object {
                   "color": "var(--vscode-panelTitle-activeForeground)",
-                  "padding": "20px 0  5px",
+                  "padding": "var(--ui-spacing-xl, 20px) 0 var(--ui-spacing-small, 5px)",
                   "textAlign": "center",
                 }
             `
@@ -322,11 +322,11 @@ describe('<UIDialog />', () => {
                 `
                 Object {
                   "action": Object {
-                    "margin": "0px 5px",
+                    "margin": "0 var(--ui-spacing-small, 5px)",
                   },
                   "actions": Object {
                     "lineHeight": "auto",
-                    "margin": "10px 0 20px",
+                    "margin": "var(--ui-spacing-medium, 10px) 0 var(--ui-spacing-xl, 20px)",
                   },
                   "actionsRight": Object {
                     "justifyContent": "center",
@@ -400,7 +400,7 @@ describe('<UIDialog />', () => {
                   "boxSizing": "border-box",
                   "height": "100%",
                   "overflow": "auto",
-                  "padding": "10px 45px",
+                  "padding": "var(--ui-spacing-medium, 10px) var(--ui-spacing-xxl, 50px)",
                 }
             `);
         });
@@ -454,7 +454,7 @@ describe('<UIDialog />', () => {
                 `
                 Object {
                   "boxSizing": "border-box",
-                  "padding": "10px 45px",
+                  "padding": "var(--ui-spacing-medium, 10px) var(--ui-spacing-xxl, 50px)",
                 }
             `
             );

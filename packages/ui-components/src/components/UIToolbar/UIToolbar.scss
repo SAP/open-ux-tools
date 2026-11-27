@@ -20,7 +20,7 @@
     .ui-divider {
         display: inline-block;
         height: 20px;
-        margin: 3px 10px 3px;
+        margin: var(--ui-spacing-xs, 3px) var(--ui-spacing-medium, 10px);
         border-right: 1px solid var(--vscode-contrastBorder, var(--vscode-widget-border));
     }
 
@@ -30,7 +30,7 @@
 
         &__content {
             display: flex;
-            margin: 6px 20px 6px;
+            margin: var(--ui-spacing-small, 5px) var(--ui-spacing-xl, 20px);
             height: 28px;
         }
     }

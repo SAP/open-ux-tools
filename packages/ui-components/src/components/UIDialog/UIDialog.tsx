@@ -39,9 +39,6 @@ export const DIALOG_STYLES = {
     boxShadow: 'var(--ui-box-shadow-medium)',
     borderColor: 'var(--vscode-editorWidget-border)',
     borderRadius: 'var(--vscode-cornerRadius-small, 4px)',
-    vPadding: 20,
-    vPaddingHalf: 10,
-    hPadding: 45,
     title: {
         color: 'var(--vscode-panelTitle-activeForeground)'
     },
@@ -190,11 +187,11 @@ export class UIDialog extends React.Component<DialogProps, DialogState> {
                     margin: '0px'
                 },
                 actions: {
-                    margin: `${DIALOG_STYLES.vPaddingHalf}px 0 ${DIALOG_STYLES.vPadding}px`,
+                    margin: 'var(--ui-spacing-medium, 10px) 0 var(--ui-spacing-xl, 20px)',
                     lineHeight: 'auto'
                 },
                 action: {
-                    margin: '0px 5px'
+                    margin: '0 var(--ui-spacing-small, 5px)'
                 }
             }
         };
@@ -302,14 +299,15 @@ export class UIDialog extends React.Component<DialogProps, DialogState> {
                 titleProps: {
                     className: 'ui-medium-header',
                     style: {
-                        padding: `${DIALOG_STYLES.vPadding}px 0  5px`,
+                        padding: 'var(--ui-spacing-xl, 20px) 0 var(--ui-spacing-small, 5px)',
                         textAlign: 'center',
                         color: DIALOG_STYLES.title.color,
                         ...(!multiLineTitle && {
                             whiteSpace: 'nowrap',
                             overflow: 'hidden',
                             textOverflow: 'ellipsis',
-                            padding: `${DIALOG_STYLES.vPadding}px ${DIALOG_STYLES.hPadding}px 5px`
+                            padding:
+                                'var(--ui-spacing-xl, 20px) var(--ui-spacing-xxl, 50px) var(--ui-spacing-small, 5px)'
                         })
                     },
                     onMouseDown: this.onHeaderMouseDown
@@ -342,7 +340,7 @@ export class UIDialog extends React.Component<DialogProps, DialogState> {
                         })
                     },
                     innerContent: {
-                        padding: `${DIALOG_STYLES.vPaddingHalf}px ${DIALOG_STYLES.hPadding}px`,
+                        padding: 'var(--ui-spacing-medium, 10px) var(--ui-spacing-xxl, 50px)',
                         boxSizing: 'border-box',
                         ...(scrollArea === UIDialogScrollArea.Content && {
                             height: '100%',

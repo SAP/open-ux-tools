@@ -8,7 +8,7 @@ $menu-border-color: var(--vscode-focusBorder);
 $menu-border-radius: var(--vscode-cornerRadius-large, 8px);
 
 $menu-item-height: 22px;
-$menu-item-horizontal-padding: 8px;
+$menu-item-horizontal-padding: var(--ui-spacing-medium, 10px);
 $menu-item-vertical-padding: 0px;
 $menu-item-padding: $menu-item-vertical-padding $menu-item-horizontal-padding;
 $menu-item-font-size: 13px;
