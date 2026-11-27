@@ -46,7 +46,8 @@ const {
     useCreateTrDuringDeploy,
     queryPackages,
     reconcileAnswers,
-    getTransportAnswer
+    getTransportAnswer,
+    isAdaptationProjectType
 } = await import('../src/utils.js');
 const LoggerHelper = (await import('../src/logger-helper.js')).default;
 const { initI18n, t } = await import('../src/i18n.js');
@@ -269,6 +270,28 @@ describe('Test utils', () => {
         it('returns empty string if all inputs are undefined', () => {
             const result = getTransportAnswer();
             expect(result).toBe('');
+        });
+    });
+
+    describe('isAdaptationProjectType', () => {
+        it('returns true for onPremise adaptation project type', () => {
+            expect(isAdaptationProjectType('onPremise')).toBe(true);
+        });
+
+        it('returns true for cloudReady adaptation project type', () => {
+            expect(isAdaptationProjectType('cloudReady')).toBe(true);
+        });
+
+        it('returns false for an unknown string', () => {
+            expect(isAdaptationProjectType('unknown')).toBe(false);
+        });
+
+        it('returns false for undefined', () => {
+            expect(isAdaptationProjectType(undefined)).toBe(false);
+        });
+
+        it('returns false for a non-string value', () => {
+            expect(isAdaptationProjectType(42)).toBe(false);
         });
     });
 });

@@ -1,24 +1,24 @@
+import type { IValidationLink } from '@sap-devx/yeoman-ui-types';
+import type { InputQuestion, ListQuestion, Question } from 'inquirer';
 import { t } from '../../../i18n.js';
-import {
-    defaultOrShowManualTransportQuestion,
-    defaultOrShowTransportCreatedQuestion,
-    defaultOrShowTransportListQuestion,
-    showTransportInputChoice
-} from '../../conditions.js';
-import { getTransportChoices, shouldRunValidation } from '../../helpers.js';
-import { validateTransportChoiceInput, validateTransportQuestion } from '../../validators.js';
-import { PromptState } from '../../prompt-state.js';
 import { transportName } from '../../../service-provider-utils/transport-list.js';
-import { defaultTransportListChoice, defaultTransportRequestChoice } from '../../defaults.js';
 import {
     promptNames,
     type AbapDeployConfigAnswersInternal,
     type AbapDeployConfigPromptOptions,
     type TransportChoices
 } from '../../../types.js';
-import type { InputQuestion, ListQuestion, Question } from 'inquirer';
-import { useCreateTrDuringDeploy } from '../../../utils.js';
-import type { IValidationLink } from '@sap-devx/yeoman-ui-types';
+import { isAdaptationProjectType, useCreateTrDuringDeploy } from '../../../utils.js';
+import {
+    defaultOrShowManualTransportQuestion,
+    defaultOrShowTransportCreatedQuestion,
+    defaultOrShowTransportListQuestion,
+    showTransportInputChoice
+} from '../../conditions.js';
+import { defaultTransportListChoice, defaultTransportRequestChoice } from '../../defaults.js';
+import { getTransportChoices, shouldRunValidation } from '../../helpers.js';
+import { PromptState } from '../../prompt-state.js';
+import { validateTransportChoiceInput, validateTransportQuestion } from '../../validators.js';
 
 /**
  * Returns the transport prompts.
@@ -36,12 +36,13 @@ export function getTransportRequestPrompts(
     let transportInputChoice: TransportChoices;
     let prevAnswers = {};
     let validateTransportChoiceResult: string | boolean | IValidationLink = false;
+    const isAdpWorkflow = isAdaptationProjectType(options.adpProjectType);
 
     PromptState.isYUI = isYUI;
 
     const questions: Question<AbapDeployConfigAnswersInternal>[] = [
         {
-            when: (): boolean => showTransportInputChoice(options.transportInputChoice),
+            when: (): boolean => showTransportInputChoice(isAdpWorkflow, options.transportInputChoice),
             type: 'list',
             name: promptNames.transportInputChoice,
             message: t('prompts.config.transport.transportInputChoice.message'),

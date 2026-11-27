@@ -16,6 +16,7 @@ import type {
 } from './types.js';
 import { PackageInputChoices, TargetSystemType, TransportChoices } from './types.js';
 import { listPackages } from './validator-utils.js';
+import { AdaptationProjectType } from '@sap-ux/axios-extension';
 
 let cachedDestinations: Destinations = {};
 let cachedBackendSystems: BackendSystem[] = [];
@@ -280,4 +281,14 @@ export function getSystemConfig(
         client: configSource?.client,
         destination: configSource?.destination
     };
+}
+
+/**
+ * Type guard that checks whether a given value is a valid {@link AdaptationProjectType}.
+ *
+ * @param projectType - The value to test.
+ * @returns `true` if `projectType` is a member of `AdaptationProjectType`, narrowing its type accordingly.
+ */
+export function isAdaptationProjectType(projectType: unknown): projectType is AdaptationProjectType {
+    return Object.values(AdaptationProjectType).includes(projectType as AdaptationProjectType);
 }
