@@ -6,10 +6,7 @@
     "allowJs": true,
     "strict": true,
     "strictPropertyInitialization": false,
-    "moduleResolution": "node",
-    "rootDir": "./webapp",
-    "outDir": "./dist",
-    "baseUrl": "./",
+    "moduleResolution": "bundler",
     "paths": {
       "test/namespace/simpletypescript/*": [
         "./webapp/*"
@@ -22,11 +19,11 @@
       ]
     },
     "typeRoots": [
-      "./node_modules/@types",
-      "./node_modules/@sapui5/ts-types-esm"
+      "./node_modules/@types"
     ]
   },
   "include": [
-    "./webapp/**/*"
+    "./webapp/**/*",
+    "./node_modules/@sapui5/ts-types-esm/types/index.d.ts"
   ]
 }

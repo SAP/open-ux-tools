@@ -16,7 +16,7 @@
     "eslint": "^10",
     "@sapui5/ts-types-esm": "~1.102.0",
     "ui5-tooling-transpile": "^3.10.0",
-    "typescript": "^5.9.3"
+    "typescript": "^6"
   },
   "scripts": {
     "start": "fiori run --open \"test/flp.html#app-preview\"",

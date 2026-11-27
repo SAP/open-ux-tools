@@ -12,7 +12,7 @@
     "eslint": "^10",
     "@ui5/ts-interface-generator": "^0.8.1",
     "npm-run-all": "^4.1.5",
-    "typescript": "^5.9.3",
+    "typescript": "^6",
     "ui5-tooling-transpile": "^3.10.0",
     "@sap-ux/eslint-plugin-fiori-tools": "^10.0.0"
   },
@@ -26,6 +26,8 @@
     "build-app": "ui5 build --config=ui5.yaml --clean-dest --dest dist",
     "build-interface": "npx @ui5/ts-interface-generator",
     "ts-typecheck": "tsc --noEmit",
+    "prestart": "npm run ts-typecheck",
+    "prebuild": "npm run ts-typecheck",
     "lint": "eslint ."
   }
 }

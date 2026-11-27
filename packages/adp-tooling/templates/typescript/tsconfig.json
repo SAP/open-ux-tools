@@ -2,18 +2,18 @@
   "compilerOptions": {
     "target": "es2022",
     "module": "es2022",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "skipLibCheck": true,
     "allowJs": true,
     "strict": true,
     "strictPropertyInitialization": false,
-    "rootDir": "./",
-    "outDir": "./dist",
-    "baseUrl": "./",
-    "typeRoots": ["./node_modules/@types", "./node_modules/<%- typesPackage %>"],
+    "typeRoots": ["./node_modules/@types"],
     "paths": {
       "<%= id %>/*": ["./webapp/*"]
     }
   },
-  "include": ["./webapp/**/*"]
+  "include": [
+    "./webapp/**/*",
+    "./node_modules/<%- typesPackage %>/types/index.d.ts"
+  ]
 }

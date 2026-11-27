@@ -13182,7 +13182,7 @@ export default [
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sapui5/ts-types-esm\\": \\"~1.94.0\\",
     \\"ui5-tooling-transpile\\": \\"^3.10.0\\",
-    \\"typescript\\": \\"^5.9.3\\",
+    \\"typescript\\": \\"^6\\",
     \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^10.0.0\\",
     \\"eslint\\": \\"^10\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
@@ -13214,22 +13214,19 @@ export default [
         \\"allowJs\\": true,
         \\"strict\\": true,
         \\"strictPropertyInitialization\\": false,
-        \\"moduleResolution\\": \\"node\\",
-        \\"rootDir\\": \\"./webapp\\",
-        \\"outDir\\": \\"./dist\\",
-        \\"baseUrl\\": \\"./\\",
+        \\"moduleResolution\\": \\"bundler\\",
         \\"paths\\": {
             \\"wrk1/*\\": [
                 \\"./webapp/*\\"
             ]
         },
         \\"typeRoots\\": [
-            \\"./node_modules/@types\\",
-            \\"./node_modules/@sapui5/ts-types-esm\\"
+            \\"./node_modules/@types\\"
         ]
     },
     \\"include\\": [
-        \\"./webapp/**/*\\"
+        \\"./webapp/**/*\\",
+        \\"./node_modules/@sapui5/ts-types-esm/types/index.d.ts\\"
     ]
 }",
     "state": "modified",
@@ -16597,7 +16594,7 @@ export default [
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sapui5/ts-types-esm\\": \\"~1.108.0\\",
     \\"ui5-tooling-transpile\\": \\"^3.10.0\\",
-    \\"typescript\\": \\"^5.9.3\\",
+    \\"typescript\\": \\"^6\\",
     \\"@sap-ux/eslint-plugin-fiori-tools\\": \\"^10.0.0\\",
     \\"eslint\\": \\"^10\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
@@ -16629,22 +16626,19 @@ export default [
         \\"allowJs\\": true,
         \\"strict\\": true,
         \\"strictPropertyInitialization\\": false,
-        \\"moduleResolution\\": \\"node\\",
-        \\"rootDir\\": \\"./webapp\\",
-        \\"outDir\\": \\"./dist\\",
-        \\"baseUrl\\": \\"./\\",
+        \\"moduleResolution\\": \\"bundler\\",
         \\"paths\\": {
             \\"wrk1/*\\": [
                 \\"./webapp/*\\"
             ]
         },
         \\"typeRoots\\": [
-            \\"./node_modules/@types\\",
-            \\"./node_modules/@sapui5/ts-types-esm\\"
+            \\"./node_modules/@types\\"
         ]
     },
     \\"include\\": [
-        \\"./webapp/**/*\\"
+        \\"./webapp/**/*\\",
+        \\"./node_modules/@sapui5/ts-types-esm/types/index.d.ts\\"
     ]
 }",
     "state": "modified",

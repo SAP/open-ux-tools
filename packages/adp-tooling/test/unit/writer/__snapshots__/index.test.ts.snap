@@ -692,7 +692,7 @@ Object {
         \\"@ui5/task-adaptation\\": \\"^1.3.0\\",
         \\"@ui5/cli\\": \\"^4.0.33\\",
         \\"@sapui5/types\\": \\"~1.133.0\\",
-        \\"typescript\\": \\"^5.7.3\\",
+        \\"typescript\\": \\"^6\\",
         \\"ui5-tooling-transpile\\": \\"^3.6.1\\"
     },
     \\"scripts\\": {
@@ -712,20 +712,20 @@ Object {
   \\"compilerOptions\\": {
     \\"target\\": \\"es2022\\",
     \\"module\\": \\"es2022\\",
-    \\"moduleResolution\\": \\"node\\",
+    \\"moduleResolution\\": \\"bundler\\",
     \\"skipLibCheck\\": true,
     \\"allowJs\\": true,
     \\"strict\\": true,
     \\"strictPropertyInitialization\\": false,
-    \\"rootDir\\": \\"./\\",
-    \\"outDir\\": \\"./dist\\",
-    \\"baseUrl\\": \\"./\\",
-    \\"typeRoots\\": [\\"./node_modules/@types\\", \\"./node_modules/@sapui5/types\\"],
+    \\"typeRoots\\": [\\"./node_modules/@types\\"],
     \\"paths\\": {
       \\"my/test/app/*\\": [\\"./webapp/*\\"]
     }
   },
-  \\"include\\": [\\"./webapp/**/*\\"]
+  \\"include\\": [
+    \\"./webapp/**/*\\",
+    \\"./node_modules/@sapui5/types/types/index.d.ts\\"
+  ]
 }",
     "state": "modified",
   },
@@ -1996,7 +1996,7 @@ dist/
         \\"@ui5/task-adaptation\\": \\"^1.3.0\\",
         \\"@ui5/cli\\": \\"^4.0.33\\",
         \\"@sapui5/types\\": \\"~1.133.0\\",
-        \\"typescript\\": \\"^5.7.3\\",
+        \\"typescript\\": \\"^6\\",
         \\"ui5-tooling-transpile\\": \\"^3.6.1\\"
     },
     \\"scripts\\": {
@@ -2016,20 +2016,20 @@ dist/
   \\"compilerOptions\\": {
     \\"target\\": \\"es2022\\",
     \\"module\\": \\"es2022\\",
-    \\"moduleResolution\\": \\"node\\",
+    \\"moduleResolution\\": \\"bundler\\",
     \\"skipLibCheck\\": true,
     \\"allowJs\\": true,
     \\"strict\\": true,
     \\"strictPropertyInitialization\\": false,
-    \\"rootDir\\": \\"./\\",
-    \\"outDir\\": \\"./dist\\",
-    \\"baseUrl\\": \\"./\\",
-    \\"typeRoots\\": [\\"./node_modules/@types\\", \\"./node_modules/@sapui5/types\\"],
+    \\"typeRoots\\": [\\"./node_modules/@types\\"],
     \\"paths\\": {
       \\"my/test/app/*\\": [\\"./webapp/*\\"]
     }
   },
-  \\"include\\": [\\"./webapp/**/*\\"]
+  \\"include\\": [
+    \\"./webapp/**/*\\",
+    \\"./node_modules/@sapui5/types/types/index.d.ts\\"
+  ]
 }",
     "state": "modified",
   },
