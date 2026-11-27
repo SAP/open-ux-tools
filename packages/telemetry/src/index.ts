@@ -27,3 +27,6 @@ export { InterceptorTypes } from './base/interceptor/config.js';
 export { PerformanceMeasurementAPI } from './base/performance/api.js';
 export { ParamRecordConfig, ParamRecordConfigField } from './base/utils/param-processing.js';
 export { logTelemetry, logTelemetryAsync } from './base/decorator/index.js';
+
+/* Environment variable opt-out check */
+export { isTelemetryDisabledByEnv } from './base/utils/reporting.js';

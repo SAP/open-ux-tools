@@ -9,6 +9,11 @@ const PACKAGE_JSON_PATH = path.resolve(__dirname, '../package.json');
 const SKILLS_ROOT = path.resolve(__dirname, '../../../plugins-coding-agents/fiori/skills');
 const ROOT_SKILL_DIR = path.resolve(SKILLS_ROOT, 'sap-fiori-create-cli');
 
+// NOTE: The generated SKILL.md has been manually edited to remove duplicate options for the
+// `migrate` command (leaf command with no subcommands). The options table was removed to avoid
+// duplication with references/migrate.md. Running this script will regenerate the file including
+// the options table - after running, manually remove the migrate options table again if needed.
+
 const BEHAVIOR_GUIDANCE = `
 ## How to use this CLI
 
