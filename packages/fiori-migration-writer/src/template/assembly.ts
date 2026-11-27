@@ -4,6 +4,7 @@
 import { FileName } from '../project-spec-types.js';
 import type { PackageJsonMigrate, TemplateData, Ui5Yaml, TemplateAssemblyContext } from '../types.js';
 import { readManifest, MigrationError, devDependencies, ui5Dependencies, v4MockServerDep } from '../utils/index.js';
+import { MigrationErrorCode } from '../utils/error-codes.js';
 import { buildUrlParam, disableCacheParam } from '../utils/common.js';
 import { prepareFlpConfiguration } from '../config/flp/intent.js';
 import { generatePackageJsonConfig } from '../config/package-json.js';
@@ -81,7 +82,7 @@ export async function assembleTemplateData(context: TemplateAssemblyContext): Pr
     try {
         manifestJSON = await readManifest(rootPath, projectInfo.webappPath, projectInfo.uiAdaptation, fs);
     } catch (e) {
-        throw new MigrationError(e, FileName.Manifest);
+        throw new MigrationError(e, FileName.Manifest, false, MigrationErrorCode.MANIFEST_PARSE_ERROR);
     }
 
     // Check if project has datasource (affects mock and local config inclusion)

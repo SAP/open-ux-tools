@@ -3,6 +3,8 @@ import { fileURLToPath } from 'node:url';
 import type { Data } from 'ejs';
 import type { Editor } from 'mem-fs-editor';
 import type { Manifest, SapAppSourceTemplate } from '../project-spec-types.js';
+import { extractErrorCode } from './error-codes.js';
+import type { MigrationErrorCode } from './error-codes.js';
 import { readPackageUpAsync } from './read-package-up-compat.js';
 import { v4 as uuidV4 } from 'uuid';
 import type { UI5FlexLayer } from '@sap-ux/project-access';
@@ -35,15 +37,27 @@ export function generateSapLibsStr(manifestLibs: any, libsStrInput: string): str
 }
 
 /**
- * Custom error class for migration errors
+ * Custom error class for migration errors with error codes attached at source.
+ * Accepts optional explicit code to avoid regex fallback for known error types.
  */
 export class MigrationError extends Error {
+    public readonly code: MigrationErrorCode;
     private readonly useMessage: boolean;
-    constructor(error: unknown, filename?: string, useMessage?: boolean) {
+
+    /**
+     * @param error - The underlying error
+     * @param filename - Optional filename context for error messages
+     * @param useMessage - Whether to use the raw error message
+     * @param explicitCode - Optional explicit error code (avoids regex extraction)
+     */
+    constructor(error: unknown, filename?: string, useMessage?: boolean, explicitCode?: MigrationErrorCode) {
         const msg = error instanceof Error ? error.message : String(error);
         super(msg);
         this.useMessage = useMessage ?? false;
         this.name = 'MigrationError';
+
+        // Use explicit code if provided, otherwise extract from error (may use regex fallback)
+        this.code = explicitCode ?? extractErrorCode(error);
 
         const errorObj = error instanceof Error ? error : new Error(msg);
         this.setMessage(errorObj, filename);

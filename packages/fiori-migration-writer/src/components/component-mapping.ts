@@ -1,6 +1,7 @@
 import type { ImportProjectInfo } from '../types.js';
 import { FLOOR_PLAN } from '../types.js';
 import { MigrationError } from '../utils/common.js';
+import { MigrationErrorCode } from '../utils/error-codes.js';
 import { i18nText } from '../i18n.js';
 
 /**
@@ -56,7 +57,8 @@ export function getComponentMapping(projectInfo: ImportProjectInfo): {
             throw new MigrationError(
                 new Error(i18nText('ERROR_FLOOR_PLAN_NOT_SUPPORTED', { floorPlan })),
                 undefined,
-                true
+                true,
+                MigrationErrorCode.UNSUPPORTED_FLOORPLAN
             );
     }
 

@@ -2,6 +2,7 @@ import { access } from 'node:fs/promises';
 import type { Editor } from 'mem-fs-editor';
 import { findProjectRoot, getProjectType } from '../utils/index.js';
 import { MigrationError } from '../utils/common.js';
+import { MigrationErrorCode } from '../utils/error-codes.js';
 import { i18nText } from '../i18n.js';
 
 /**
@@ -39,6 +40,11 @@ export async function validateProjectForMigration(fs: Editor, projectRoot: strin
     const isCapProject = projectType === 'CAPJava' || projectType === 'CAPNodejs';
 
     if (sapUXProjectRoot !== projectRoot && isCapProject) {
-        throw new MigrationError(new Error(i18nText('ERROR_NOT_SUITABLE_FOR_MIGRATION')), undefined, true);
+        throw new MigrationError(
+            new Error(i18nText('ERROR_NOT_SUITABLE_FOR_MIGRATION')),
+            undefined,
+            true,
+            MigrationErrorCode.NOT_SUITABLE_FOR_MIGRATION
+        );
     }
 }

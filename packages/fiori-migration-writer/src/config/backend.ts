@@ -2,6 +2,7 @@ import { i18nText } from '../i18n.js';
 import type { FioriToolsProxyConfigBackend } from '@sap-ux/ui5-config';
 import type { Message, NeoappDestination, TemplateData } from '../types.js';
 import { getMessageType } from '../utils/validation-severity.js';
+import { MigrationErrorCode } from '../utils/error-codes.js';
 
 /**
  * Updates YAML backends by removing default /sap backend if no datasource exists
@@ -68,11 +69,15 @@ export function updateNeoYamlBackends(
 ): FioriToolsProxyConfigBackend[] {
     let backendRoutes: FioriToolsProxyConfigBackend[] = [];
     let noBackendURL = false;
+    // Note: MIGRATION_NO_BACKEND_URL semantically means "no backend URL configured",
+    // but we use MISSING_ODATA_SERVICE code as it's the closest match in the enum.
+    // This groups similar backend configuration issues together in telemetry.
     const noUrlMessage: Message = {
         type: getMessageType('WARNING', strict, true),
         description: i18nText('MIGRATION_NO_BACKEND_URL'),
         messageUrl:
-            'https://help.sap.com/docs/SAP_FIORI_tools/17d50220bcd848aa854c9c182d65b699/70d41f3ee29d453a90efab3ce025d450.html'
+            'https://help.sap.com/docs/SAP_FIORI_tools/17d50220bcd848aa854c9c182d65b699/70d41f3ee29d453a90efab3ce025d450.html',
+        code: MigrationErrorCode.MISSING_ODATA_SERVICE
     };
     neoappDestinations?.forEach((neoappDestination: NeoappDestination) => {
         const backend: FioriToolsProxyConfigBackend = {
