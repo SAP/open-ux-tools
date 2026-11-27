@@ -4,97 +4,41 @@ Create realistic test data for an OData service, on your own machine, without a 
 
 You give it the service metadata (EDMX or CSN). It gives you rows for each entity set: names that look like names, dates in the right order, codes with matching texts, and references that point to rows that exist. Everything runs offline. The package ships with a small field classifier, a small local language model and curated lists of sample values.
 
-## What it does, in short
-
-- Reads your service metadata and works out what each field is for (a city, an email, a status code, an amount...).
-- Fills each field from the most trustworthy source it has, from your own data down to a safe default.
-- Keeps rows consistent: a text belongs to its code, a start date comes before its end date, a foreign key points to a real row, and the name next to a reference is the name of the row it points to.
-- Checks the result before handing it back, and tells you where a value is only a best guess.
-- Can write the data straight into an application's mock data folder, safely.
-
-## How it works
-
-```mermaid
-flowchart LR
-    A["Service metadata<br/>EDMX or CSN"] --> B["Read the schema<br/>entities, keys, annotations,<br/>value helps, relationships"]
-    B --> C["Understand each field<br/>metadata, rules and<br/>the field classifier"]
-    C --> D["Fill the rows<br/>tier by tier"]
-    D --> E["Make the rows agree<br/>codes and texts, dates,<br/>addresses, references"]
-    E --> F["Check the result<br/>formats, relationships,<br/>realism checks"]
-    F --> G["Rows per entity set<br/>plus a report"]
-```
-
-### Where each value comes from
-
-Every cell is filled by the first source that has a good answer. The sources are called tiers, and the result tells you how many cells each tier filled.
-
-```mermaid
-flowchart TD
-    Start(["A cell to fill"]) --> T0a{"Did you supply<br/>rows for it?"}
-    T0a -- yes --> Keep["Keep your value<br/>T0 authored"]
-    T0a -- no --> T0b{"Does the schema list<br/>the allowed values?<br/>enumeration, boolean"}
-    T0b -- yes --> Declared["Pick an allowed value<br/>T0 declared"]
-    T0b -- no --> T1{"Is the field's meaning<br/>recognised?<br/>city, email, currency..."}
-    T1 -- yes --> Bank["Take a value from the<br/>matching sample list<br/>T1 recognised"]
-    T1 -- no --> T2{"Can the local model<br/>propose a value that<br/>passes the checks?"}
-    T2 -- yes --> Model["Use the model's value<br/>T2 model"]
-    T2 -- no --> T3["Write a value that fits the<br/>declared type and length<br/>T3 typed"]
-```
-
-Rows you already have are kept exactly as you wrote them, fields left out included, and the requested rows are added after them, so a second run adds rows instead of replacing them. Your rows do not shape the new rows: whether they hold real data, placeholders from the standard mock server or hand-written test values, the new rows are planned and filled as they would be in an empty folder (a placeholder's row number still counts the rows before it). Your rows only decide what the new rows must fit: the keys they hold are taken, the rows you supply for a value list are its whole list, and new rows are linked to new parents, to your rows only when a parent set gains no new rows or a row shares its whole key with its parent. Your rows are still checked and reported, without being changed: a value-help value the value help does not list, or dates out of order. Rows of yours that share a key are kept too and reported with a `SUPPLIED_KEY_DUPLICATED` warning; the mock server returns the first of them for that key. New rows repeat no key, semantic key or alternate key of your rows, and new children are linked to the parents that have none first. The rows you supply for a value list are its whole list, so none are added there, and the set is reported with `ROW_COUNT_REDUCED_AUTHORED_DOMAIN`. A set never grows past 1,000 rows; a set that reaches the limit gets fewer new rows and a `ROW_COUNT_REDUCED_ROW_LIMIT` warning.
-
-An entity type without an entity set that another row contains (OData V4 `ContainsTarget`) gets rows too, and they are written inside the rows that contain them, under the navigation property, as the SAP Fiori elements mock server reads them: a list for a to-many navigation, and a list of one row for a to-one navigation. The list of one row is how the mock server stores contained rows itself; its read of the navigation, and of what that row contains, fails on a single object when the container shares a key name with it, and it answers `$expand` of such a navigation with the list as stored, not a single row. Each new row of the requesting entity set holds at least one contained row before any holds two, contained rows hold contained rows of their own at any depth, and a contained row carries the values its container shares with it: the properties its referential constraint copies, or else the keys both declare by name. Rows you supply keep exactly what they contain. The rows of the draft administration navigation are left to the mock server.
-
-Keys and foreign keys are generated so that every reference resolves. When nothing knows what a text field holds, it gets the value the standard SAP Fiori elements mock server would write, the property name and the row number (`BankNumber_3`), or a code of the name's initials in a column too short for the whole name, in upper case in an upper-case field and as a zero-padded number in a digit-sequence field. That is honest: it says plainly that the value is a placeholder, instead of pretending to be real.
-
-### The local model and its time budget
-
-The language model is the slowest part, so it only fills what the earlier tiers could not, and it runs inside a time budget. The entity sets the host names in `sftPriorityTargets` go first (an editor passes the ones the application displays); then code lists the model writes; then the rest, smallest first. The texts next to references are matched to the referenced rows afterwards, so this order never leaves a reference with another row's name. Each entity set may use what is left of the budget, and stops as soon as its fields are done, so the time it does not need goes to the next one. The model writes a few fields per call, so even a slow machine finishes some calls instead of none. Whatever the model does not reach keeps its earlier value.
-
-```mermaid
-sequenceDiagram
-    participant G as Generator
-    participant M as Local model
-    Note over G: Budget starts
-    G->>M: Priority entity set A, a few fields per call
-    M-->>G: Values for A
-    Note over G: A finished early, the rest of the budget stays
-    G->>M: Priority entity set B
-    M-->>G: Values for B
-    G->>M: Other entity sets while time remains
-    Note over G: Budget spent, the remaining fields keep their earlier values
-```
-
-The model's answers are kept in memory, and optionally on disk (`answerCacheDirectory`), so the same request is answered again without running the model.
-
-The model writes a few rows per entity set, and the other rows reuse its values. A text column whose values name one record per row (distinct identifiers such as `B-0042`) is not repeated: the other rows get new numbers in the same form. Times, amounts and columns whose most likely role is not an identifier (a postal code) reuse the model's values. An e-mail or web address the model writes is moved to the reserved `example.com` domain, so mock data never names a real host.
-
 ## Quick start
 
-```ts
-import { createMockDataGenerator, generateProjectData } from '@sap-ux/mock-data-generator';
+Use Node.js 22 or newer. Save this as `request.json` in the application root and run `mockgen generate --input request.json` from that directory. This deterministic example runs without the model files.
 
-const generator = await createMockDataGenerator();
-try {
-    const result = await generator.generateService(request, {
-        mode: 'auto',
-        rowsPerEntity: 10,
-        seed: 1
-    });
-    // result.resources contains rows keyed by entity set.
-} finally {
-    await generator.dispose();
+```json
+{
+    "projectRoot": ".",
+    "dataDirectory": "webapp/localService/mockdata",
+    "request": {
+        "metadata": {
+            "format": "csn",
+            "content": "{\"definitions\":{\"Demo\":{\"kind\":\"service\"},\"Demo.Records\":{\"kind\":\"entity\",\"elements\":{\"ID\":{\"key\":true,\"type\":\"cds.Integer\"},\"Label\":{\"type\":\"cds.String\"}}}}}"
+        },
+        "service": { "urlPath": "/demo", "odataVersion": "4.0", "alias": "Demo" },
+        "targets": [{ "name": "Records", "kind": "entity-set" }],
+        "existingData": {}
+    },
+    "options": { "mode": "deterministic", "rowsPerEntity": 2, "seed": 1 }
 }
-
-await generateProjectData({
-    projectRoot: '/absolute/application/path',
-    dataDirectory: 'webapp/localService/mockdata',
-    request,
-    options: { rowsPerEntity: 10, seed: 1 }
-});
 ```
 
-`request` holds the metadata, the service identity, the entity sets to fill, any rows you already have, and an optional cancellation signal. `generateService()` and `inspectService()` are also exported as one-shot functions that clean up after themselves. `getMockDataGeneratorInfo()` tells you the public API version (`apiVersion: 2`, which hosts pin), the package and model identity, and the native runtime it needs, without loading anything.
+This writes `webapp/localService/mockdata/Records.json`. Repeat runs append rows to the existing file. If a supplied snapshot disagrees with the file, generation leaves the file intact and reports a conflict.
+
+To return the rows in memory, use the same request with the one-shot API:
+
+```js
+import { readFile } from 'node:fs/promises';
+import { generateService } from '@sap-ux/mock-data-generator';
+
+const { request, options } = JSON.parse(await readFile('request.json', 'utf8'));
+const { resources } = await generateService(request, options);
+console.log(resources.Records);
+```
+
+For repeated API calls, create a session with `createMockDataGenerator()` and call `dispose()` when finished. The one-shot `generateService()` and `inspectService()` manage their own sessions.
 
 ### Modes
 
@@ -225,6 +169,39 @@ Diagnostics are not errors: they explain how a result was produced. `MockDataGen
 Everything is read from that directory: the model manifest, the model files, the value banks, the semantic rules and the role registry, and every data file is checked against the manifest's SHA-256 digests before it is read. Importing the package reads no resource file, so a bundle loads even where the package cannot find its own `resources/` directory. In a CommonJS bundle it never can, so a session without `resourceRoot` fails with `CONFIGURATION_INVALID` and a message that says to pass it.
 
 A process uses one set of value banks, rules and registry, read on first use from the root of the first session (the package's own `resources/` when no session named one). A later session on another root is accepted only when that root holds byte-identical files, and is rejected with `CONFIGURATION_INVALID` otherwise.
+
+## Generation details
+
+### Where each value comes from
+
+Every cell is filled by the first source that has a good answer. The sources are called tiers, and the result tells you how many cells each tier filled.
+
+```mermaid
+flowchart TD
+    Start(["A cell to fill"]) --> T0a{"Did you supply<br/>rows for it?"}
+    T0a -- yes --> Keep["Keep your value<br/>T0 authored"]
+    T0a -- no --> T0b{"Does the schema list<br/>the allowed values?<br/>enumeration, boolean"}
+    T0b -- yes --> Declared["Pick an allowed value<br/>T0 declared"]
+    T0b -- no --> T1{"Is the field's meaning<br/>recognised?<br/>city, email, currency..."}
+    T1 -- yes --> Bank["Take a value from the<br/>matching sample list<br/>T1 recognised"]
+    T1 -- no --> T2{"Can the local model<br/>propose a value that<br/>passes the checks?"}
+    T2 -- yes --> Model["Use the model's value<br/>T2 model"]
+    T2 -- no --> T3["Write a value that fits the<br/>declared type and length<br/>T3 typed"]
+```
+
+Rows you already have are kept exactly as you wrote them, fields left out included, and the requested rows are added after them, so a second run adds rows instead of replacing them. Your rows do not shape the new rows: whether they hold real data, placeholders from the standard mock server or hand-written test values, the new rows are planned and filled as they would be in an empty folder (a placeholder's row number still counts the rows before it). Your rows only decide what the new rows must fit: the keys they hold are taken, the rows you supply for a value list are its whole list, and new rows are linked to new parents, to your rows only when a parent set gains no new rows or a row shares its whole key with its parent. Your rows are still checked and reported, without being changed: a value-help value the value help does not list, or dates out of order. Rows of yours that share a key are kept too and reported with a `SUPPLIED_KEY_DUPLICATED` warning; the mock server returns the first of them for that key. New rows repeat no key, semantic key or alternate key of your rows, and new children are linked to the parents that have none first. The rows you supply for a value list are its whole list, so none are added there, and the set is reported with `ROW_COUNT_REDUCED_AUTHORED_DOMAIN`. A set never grows past 1,000 rows; a set that reaches the limit gets fewer new rows and a `ROW_COUNT_REDUCED_ROW_LIMIT` warning.
+
+An entity type without an entity set that another row contains (OData V4 `ContainsTarget`) gets rows too, and they are written inside the rows that contain them, under the navigation property, as the SAP Fiori elements mock server reads them: a list for a to-many navigation, and a list of one row for a to-one navigation. The list of one row is how the mock server stores contained rows itself; its read of the navigation, and of what that row contains, fails on a single object when the container shares a key name with it, and it answers `$expand` of such a navigation with the list as stored, not a single row. Each new row of the requesting entity set holds at least one contained row before any holds two, contained rows hold contained rows of their own at any depth, and a contained row carries the values its container shares with it: the properties its referential constraint copies, or else the keys both declare by name. Rows you supply keep exactly what they contain. The rows of the draft administration navigation are left to the mock server.
+
+Keys and foreign keys are generated so that every reference resolves. When nothing knows what a text field holds, it gets the value the standard SAP Fiori elements mock server would write, the property name and the row number (`BankNumber_3`), or a code of the name's initials in a column too short for the whole name, in upper case in an upper-case field and as a zero-padded number in a digit-sequence field. That is honest: it says plainly that the value is a placeholder, instead of pretending to be real.
+
+### The local model and its time budget
+
+The language model is the slowest part, so it only fills what the earlier tiers could not, and it runs inside a time budget. The entity sets the host names in `sftPriorityTargets` go first (an editor passes the ones the application displays); then code lists the model writes; then the rest, smallest first. The texts next to references are matched to the referenced rows afterwards, so this order never leaves a reference with another row's name. Each entity set may use what is left of the budget, and stops as soon as its fields are done, so the time it does not need goes to the next one. The model writes a few fields per call, so even a slow machine finishes some calls instead of none. Whatever the model does not reach keeps its earlier value.
+
+The model's answers are kept in memory, and optionally on disk (`answerCacheDirectory`), so the same request is answered again without running the model.
+
+The model writes a few rows per entity set, and the other rows reuse its values. A text column whose values name one record per row (distinct identifiers such as `B-0042`) is not repeated: the other rows get new numbers in the same form. Times, amounts and columns whose most likely role is not an identifier (a postal code) reuse the model's values. An e-mail or web address the model writes is moved to the reserved `example.com` domain, so mock data never names a real host.
 
 ## Resources and models
 

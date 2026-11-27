@@ -16,6 +16,7 @@ import type {
 } from './types.js';
 import { compareCodePoints } from './ordering.js';
 import { canonicalJson, sha256 } from './hash.js';
+import { relationshipsResolve } from './generation/rows.js';
 
 function rowsForHash(initialRows: ExistingInitialRows): ReadonlyArray<unknown> | undefined {
     if (initialRows.source === 'json' || (initialRows.source === 'contributor' && initialRows.enumerable)) {
@@ -352,7 +353,7 @@ function coverageReport(
 function invariantsReport(result: MockDataGeneratorResult): MockDataGeneratorInspectionV1['invariants'] {
     return Object.freeze([
         Object.freeze({ name: 'generated-result' as const, passed: true as const }),
-        Object.freeze({ name: 'relationships' as const, passed: true as const }),
+        Object.freeze({ name: 'relationships' as const, passed: relationshipsResolve(result.diagnostics) }),
         Object.freeze({ name: 'semantic-formats' as const, passed: true }),
         Object.freeze({
             name: 'temporal-ordering' as const,

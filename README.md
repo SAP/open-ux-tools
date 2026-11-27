@@ -23,17 +23,14 @@ Our long-term vision is to completely transition our SAP Fiori tools to open sou
 
 As a starting point, we have extracted the templates for generating SAP Fiori applications. The templates have been dissected into small but easy to use building blocks that are simple to combine. We then continued adding the most important UI5 tooling middlewares. The repository also contains reusable helper modules e.g. to modify UI5 tooling configuration files.
 
-The image below gives an overview of the currently included modules and their dependencies. It also shows the known consumers of these modules, the SAP Fiori generator (`@sap/generator-fiori`) and the easyUI5 open source project (`generator-easy-ui5`).
-
-![Open UX tools modules](docs/images/modules-today.svg)
-
-The repository contains no private modules i.e. all modules are published to [npmjs.com](https://www.npmjs.com/search?q=%40sap-ux) under the scope `@sap-ux`. The name of the published modules (without scope) matches the folder name in `packages` e.g. `./packages/fiori-freestyle-writer` is published as `@sap-ux/fiori-freestyle-writer`.
-
-Additionally, we have the `./examples` folder containing show case implementations using multiple of our modules together.
+- Generate OData and CAP mock data with [MockGen](packages/mock-data-generator/README.md).
+- Configure a Fiori mock server with the [mock server config writer](packages/mockserver-config-writer/README.md).
+- Generate SAP Fiori apps with the [Fiori app sub-generator](packages/fiori-app-sub-generator/README.md).
+- Browse the [workspace packages](packages/) and [examples](examples/).
 
 ## Requirements
 
-Everything is released as node modules requiring node with a version matching `">=18"`.
+Use the Node.js and pnpm versions specified by the [workspace manifest](package.json).
 
 ## Contributing
 

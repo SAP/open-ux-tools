@@ -5,6 +5,31 @@ import { MAX_CONTAINED_ENTITIES } from '../../src/limits.js';
 import { parseEdmx } from '../../src/schema/edmx.js';
 import type { MockDataRow, MockDataServiceRequest } from '../../src/types.js';
 
+test('gives independent contained Boolean keys a separate capacity in each parent', async () => {
+    const metadata = `<edmx:Edmx xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx" Version="4.0">
+<edmx:DataServices><Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="Demo">
+<EntityType Name="Parent"><Key><PropertyRef Name="ID"/></Key>
+<Property Name="ID" Type="Edm.Int32" Nullable="false"/>
+<NavigationProperty Name="Children" Type="Collection(Demo.Child)" ContainsTarget="true"/>
+</EntityType><EntityType Name="Child"><Key><PropertyRef Name="Flag"/></Key>
+<Property Name="Flag" Type="Edm.Boolean" Nullable="false"/>
+</EntityType><EntityContainer Name="Container"><EntitySet Name="Parents" EntityType="Demo.Parent"/></EntityContainer>
+</Schema></edmx:DataServices></edmx:Edmx>`;
+    const result = await generateServiceForTesting(
+        {
+            metadata: { format: 'edmx', content: metadata },
+            service: { urlPath: '/containers', odataVersion: '4.0' },
+            targets: [{ name: 'Parents', kind: 'entity-set' }],
+            existingData: {}
+        },
+        { mode: 'deterministic', rowsPerEntity: 5 }
+    );
+    expect(result.resources.Parents.map((row) => (Array.isArray(row.Children) ? row.Children.length : 0))).toEqual([
+        1, 1, 1, 1, 1
+    ]);
+    expect(result.tiers?.slots).toBe(10);
+});
+
 /**
  * A service with meaningless names. Only Ya has an entity set and is draft-enabled through its standard keys.
  * Each Ya contains a list of Yb, which reference their container through a declared constraint and contain

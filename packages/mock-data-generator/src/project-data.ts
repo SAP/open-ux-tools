@@ -2,6 +2,7 @@ import { createHash, randomBytes } from 'node:crypto';
 import type { Stats } from 'node:fs';
 import { cp, lstat, mkdir, mkdtemp, readFile, readdir, realpath, rename, rm, writeFile } from 'node:fs/promises';
 import { basename, isAbsolute, join, relative, resolve, sep } from 'node:path';
+import { isDeepStrictEqual } from 'node:util';
 import { RENAME_REFUSED_CODES, withProjectLock } from './project-lock.js';
 import type { MockDataServiceRequest } from './types.js';
 import {
@@ -14,6 +15,7 @@ import { errnoCode, isPathInside, isRecord, isSha256Hex } from './guards.js';
 import { sha256File } from './hash.js';
 import { MOCKGEN_ERROR_CODE, MockGenError } from './errors.js';
 import { t } from './i18n.js';
+import { parseRows } from './project-data-input.js';
 
 export interface GenerateProjectDataInput {
     projectRoot: string;
@@ -269,8 +271,7 @@ async function recoverProjectTransactions(parent: string, directory: string, tar
 }
 
 /**
- * Finish or undo one entry an interrupted run left: delete a removed transaction, roll back or complete one of
- * this data directory, and leave any other entry alone.
+ * Finish or undo an interrupted transaction whose journal names this data directory.
  *
  * @param parent directory that holds the project data directories
  * @param name name of the entry, a directory
@@ -278,24 +279,17 @@ async function recoverProjectTransactions(parent: string, directory: string, tar
  * @param targetName last path segment of that directory
  */
 async function recoverProjectEntry(parent: string, name: string, directory: string, targetName: string): Promise<void> {
-    if (name.startsWith(REMOVED_TRANSACTION_PREFIX)) {
-        await rm(join(parent, name), { recursive: true, force: true });
-        return;
-    }
     if (!name.startsWith(TRANSACTION_PREFIX)) {
         return;
     }
     const transactionRoot = join(parent, name);
     const journal = await readProjectJournal(transactionRoot);
-    if (journal === undefined || journal.phase === 'staging') {
-        // Nothing outside the transaction was touched yet.
-        await removeTransaction(parent, transactionRoot);
+    if (journal?.targetName !== targetName) {
         return;
     }
-    if (journal.targetName !== targetName) {
-        return;
+    if (journal.phase !== 'staging') {
+        await restoreInterruptedTransaction(transactionRoot, directory, journal);
     }
-    await restoreInterruptedTransaction(transactionRoot, directory, journal);
     await removeTransaction(parent, transactionRoot);
 }
 
@@ -334,6 +328,61 @@ async function restoreInterruptedTransaction(
 }
 
 /**
+ * Read existing destination rows and record targets whose file disagrees with the supplied ownership.
+ *
+ * @param directory the existing destination
+ * @param request selected targets and their caller-supplied rows
+ * @returns the request merged with destination rows and the names that cannot safely be written
+ */
+async function readProjectRows(
+    directory: string,
+    request: MockDataServiceRequest
+): Promise<{ request: MockDataServiceRequest; conflicts: ReadonlySet<string> }> {
+    const existingData = new Map(Object.entries(request.existingData));
+    const conflicts = new Set<string>();
+    for (const { name } of request.targets) {
+        const path = join(directory, `${name}.json`);
+        // Sequential: the output files are read in request order.
+        const details = await lstat(path).catch((error: unknown) => {
+            // NOSONAR
+            if (errnoCode(error) !== 'ENOENT') {
+                throw error;
+            }
+        });
+        if (!details) {
+            continue;
+        }
+        if (!details.isFile() || details.isSymbolicLink()) {
+            conflicts.add(name);
+            continue;
+        }
+        const contents = await readFile(path, 'utf8'); // NOSONAR
+        try {
+            const rows = parseRows(JSON.parse(contents), path);
+            const supplied = existingData.get(name);
+            const initialRows = supplied?.initialRows;
+            if (initialRows?.present && 'rows' in initialRows && isDeepStrictEqual(initialRows.rows, rows)) {
+                continue;
+            }
+            if (initialRows?.present || supplied?.contributor.present) {
+                conflicts.add(name);
+            } else {
+                existingData.set(name, {
+                    initialRows: { source: 'json', present: true, rows },
+                    contributor: { present: false }
+                });
+            }
+        } catch (error) {
+            if (!(error instanceof SyntaxError || error instanceof MockGenError)) {
+                throw error;
+            }
+            conflicts.add(name);
+        }
+    }
+    return { request: { ...request, existingData: Object.fromEntries(existingData) }, conflicts };
+}
+
+/**
  * Generate the selected service and replace its project JSON only after independent validation. Runs that
  * share a parent directory are serialized by a project lock around recovery and the replacement, never
  * around generation.
@@ -363,13 +412,16 @@ export async function generateProjectData(input: GenerateProjectDataInput): Prom
     }
     const originallyPresent = await existingDirectory(directory);
     const initialFingerprint = originallyPresent ? await directoryFingerprint(directory) : null;
+    const snapshot = originallyPresent
+        ? await readProjectRows(directory, input.request)
+        : { request: input.request, conflicts: new Set<string>() };
     const generator = await createMockDataGenerator({
         executionMode: 'start-mock',
         ...(input.resourceRoot === undefined ? {} : { resourceRoot: input.resourceRoot })
     });
     let generation: StandaloneGenerationResult;
     try {
-        generation = await generator.generateService(input.request, input.options);
+        generation = await generator.generateService(snapshot.request, input.options);
     } finally {
         await generator.dispose();
     }
@@ -377,19 +429,39 @@ export async function generateProjectData(input: GenerateProjectDataInput): Prom
         throw new MockGenError(MOCKGEN_ERROR_CODE.PROJECT_DATA_REJECTED, t('projectData.rejectedValidation'));
     }
     input.request.signal?.throwIfAborted();
+    const writableTargets = targetNames.filter((name) => {
+        if (Object.hasOwn(generation.resources, name)) {
+            return true;
+        }
+        if (
+            generation.diagnostics?.some(({ code, target }) => code === 'SCHEMA_ENTITY_SET_SKIPPED' && target === name)
+        ) {
+            return false;
+        }
+        throw new TypeError(`MockGen did not generate resource ${name}`);
+    });
+    if (writableTargets.length === 0) {
+        return { generation, files: Object.freeze([]) };
+    }
 
     const parent = await ensureSafeParent(root, parts.slice(0, -1));
     return withProjectLock(parent, async () => {
         await recoverProjectTransactions(parent, directory, targetName);
-        return replaceProjectData(input, generation, {
-            parts,
-            root,
-            parent,
-            directory,
-            targetName,
-            originallyPresent,
-            initialFingerprint
-        });
+        return replaceProjectData(
+            input,
+            generation,
+            {
+                parts,
+                root,
+                parent,
+                directory,
+                targetName,
+                originallyPresent,
+                initialFingerprint
+            },
+            writableTargets,
+            snapshot.conflicts
+        );
     });
 }
 
@@ -476,6 +548,7 @@ async function takenByAnotherTarget(path: string, written: ReadonlyMap<string, n
  * @param targetNames the requested resources, in request order
  * @param generation the validated generation result
  * @param parts the data directory's path segments below the project
+ * @param conflicts files whose existing contents could not safely be appended
  * @returns the project-relative paths of the files written, in request order, and the targets not written because
  * their file name differs only in case from an earlier target's on a file system that ignores case
  * @throws {TypeError} when a target that was not skipped has no rows
@@ -484,23 +557,14 @@ async function stageGeneratedFiles(
     staged: string,
     targetNames: ReadonlyArray<string>,
     generation: StandaloneGenerationResult,
-    parts: ReadonlyArray<string>
+    parts: ReadonlyArray<string>,
+    conflicts: ReadonlySet<string>
 ): Promise<StagedFiles> {
     const files: string[] = [];
     const collisions: string[] = [];
     const written = new Map<string, number>();
     for (const name of targetNames) {
         const rows = generation.resources[name];
-        if (!rows) {
-            if (
-                generation.diagnostics.some(
-                    ({ code, target }) => code === 'SCHEMA_ENTITY_SET_SKIPPED' && target === name
-                )
-            ) {
-                continue;
-            }
-            throw new TypeError(`MockGen did not generate resource ${name}`);
-        }
         const filename = `${name}.json`;
         const path = join(staged, filename);
         // Sequential: ordered file-system transaction.
@@ -508,6 +572,12 @@ async function stageGeneratedFiles(
         if (taken) {
             collisions.push(name);
             continue;
+        }
+        if (conflicts.has(name)) {
+            throw new MockGenError(
+                MOCKGEN_ERROR_CODE.PROJECT_DATA_CHANGED,
+                t('projectData.existingRowsConflict', { filename })
+            );
         }
         await writeFile(path, `${JSON.stringify(rows, null, 2)}\n`, { flag: 'w' }); // NOSONAR
         written.set(filename.toLowerCase(), (await lstat(path)).ino); // NOSONAR
@@ -551,15 +621,18 @@ function withCollisionDiagnostics(
  * @param input project, data directory, request and options
  * @param generation the validated generation result
  * @param location where the data lives and what it held before generation
+ * @param targetNames the generated targets to write
+ * @param conflicts files whose existing contents could not safely be appended
  * @returns the generation result and the files written
  */
 async function replaceProjectData(
     input: GenerateProjectDataInput,
     generation: StandaloneGenerationResult,
-    location: ProjectDataLocation
+    location: ProjectDataLocation,
+    targetNames: ReadonlyArray<string>,
+    conflicts: ReadonlySet<string>
 ): Promise<GeneratedProjectData> {
     const { parts, parent, directory, targetName, originallyPresent, initialFingerprint } = location;
-    const targetNames = input.request.targets.map(({ name }) => name);
     await assertUnchangedDuringGeneration(location);
 
     const transactionRoot = await mkdtemp(join(parent, TRANSACTION_PREFIX));
@@ -576,7 +649,7 @@ async function replaceProjectData(
         } else {
             await mkdir(staged);
         }
-        const { files, collisions } = await stageGeneratedFiles(staged, targetNames, generation, parts);
+        const { files, collisions } = await stageGeneratedFiles(staged, targetNames, generation, parts, conflicts);
         input.request.signal?.throwIfAborted();
         const journal: ProjectJournal = {
             formatVersion: 1,

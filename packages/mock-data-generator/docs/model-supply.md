@@ -84,6 +84,8 @@ The package is `private` in the workspace, so the shared changesets release skip
 3. runs `pnpm build`, `pnpm lint` and `pnpm test`;
 4. runs `pnpm build:models` and fails unless every model file matches the manifest;
 5. removes the `private` flag (`npm pkg delete private`), so the verified tarball is the published one;
-6. runs `pnpm check:package`, then `pnpm publish --access public`.
+6. packs once, runs `pnpm check:package --archive <tarball>`, and checks the archive's SHA-256 before publishing that file.
 
-Before raising the version, a maintainer runs `pnpm check:release` locally. On top of `pnpm check:package` it requires a qualified classifier head with a complete runtime contract, a qualified relevance head, a content-derived manifest, approved provenance, and, in `MOCKGEN_REALISM_REPORTS` (a path list), a realism sweep report of this exact build for each release profile, made against a baseline with no failed service, no hard-check finding and no check worse than the baseline. These reports are made outside CI with `scripts/realism-sweep.mjs`.
+Before raising the version, a maintainer runs `pnpm check:release --archive <tarball>` locally. Without `--archive`, either check packs the current directory. Release verification requires a qualified classifier head with a complete runtime contract, a qualified relevance head, a content-derived manifest, approved provenance, and a realism sweep report for each release profile in `MOCKGEN_REALISM_REPORTS` (a path list).
+
+Run `scripts/realism-sweep.mjs` outside CI for both `editor/sft-off` and `editor/sft-on`. Assess the same nonempty corpus for each profile's baseline and candidate. A qualifying candidate report covers every service, identifies the candidate build, and records no hard-check findings or baseline regressions. The `editor/sft-on` profile uses the Data Editor worker's 30-second deadline.

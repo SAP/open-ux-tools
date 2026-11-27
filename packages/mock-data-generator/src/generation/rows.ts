@@ -10,6 +10,16 @@ import type {
 /** Row helpers shared by the generation stages. */
 
 /**
+ * Whether every published reference resolves, including references in supplied rows.
+ *
+ * @param diagnostics generation diagnostics
+ * @returns false when a supplied reference does not resolve
+ */
+export function relationshipsResolve(diagnostics: ReadonlyArray<MockDataGeneratorDiagnostic>): boolean {
+    return !diagnostics.some(({ code }) => code === 'SUPPLIED_REFERENCE_UNRESOLVED');
+}
+
+/**
  * Whether two field values are the same JSON value; objects compare by JSON text, so key order matters.
  *
  * @param left first value

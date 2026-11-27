@@ -21,15 +21,6 @@ const i18nInstance = i18next.createInstance({
 });
 
 /**
- * Initialize i18next with this package's translations; already done on module load, so repeating it is harmless.
- */
-export async function initI18n(): Promise<void> {
-    if (!i18nInstance.isInitialized) {
-        await i18nInstance.init();
-    }
-}
-
-/**
  * Helper function facading the call to i18next.
  *
  * @param key i18n key

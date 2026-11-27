@@ -3,8 +3,9 @@
 import { execFileSync } from 'node:child_process';
 import { mkdtempSync, readFileSync, rmSync, statSync, symlinkSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { delimiter, isAbsolute, join } from 'node:path';
+import { delimiter, isAbsolute, join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
+import { parseArgs } from 'node:util';
 import { assertPublicModelMetadata, expectedManifestIdentity } from './build-model-manifest.mjs';
 import { buildFingerprint, realismEvidenceProblems } from './realism-evidence.mjs';
 
@@ -50,12 +51,19 @@ function archiveEntries(archive) {
 
 const temporary = mkdtempSync(join(tmpdir(), 'mockgen-package-'));
 try {
-    const output = execFileSync('pnpm', ['pack', '--pack-destination', temporary], {
-        cwd: process.cwd(),
-        encoding: 'utf8',
-        stdio: ['ignore', 'pipe', 'pipe']
+    const { values } = parseArgs({
+        options: { archive: { type: 'string' }, release: { type: 'boolean' } }
     });
-    const packedName = output.trim().split('\n').at(-1);
+    const packedName = values.archive
+        ? resolve(values.archive)
+        : execFileSync('pnpm', ['pack', '--pack-destination', temporary], {
+              cwd: process.cwd(),
+              encoding: 'utf8',
+              stdio: ['ignore', 'pipe', 'pipe']
+          })
+              .trim()
+              .split('\n')
+              .at(-1);
     if (!packedName || !packedName.endsWith('.tgz')) {
         throw new Error('pnpm did not report the packed MockGen archive');
     }
@@ -103,7 +111,7 @@ try {
         assertPublicModelMetadata(JSON.parse(readFileSync(join(packageRoot, name), 'utf8')));
     }
     assertPackagedClassifierHead(classifierHead, classifier.contract.inputFormat);
-    if (process.argv.includes('--release')) {
+    if (values.release) {
         assertReleaseClassifier(parsed, classifierHead);
         // The release gate checks qualification evidence; the full runtime head contract
         // (serializer, registry, token budget, calibration completeness) is checked here too so a

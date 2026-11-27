@@ -16,19 +16,20 @@
 //              instead of generating them. Generated rows are saved to OUT/rows/ in the same form, so a later
 //              version of the checks can assess them again.
 //   --profile  editor: data-editor mode, 10 rows, seed 1 (default); two-row: api mode, 2 rows, seed 123.
-//   --sft      off: no model answers (default); on: model budgets as in the regression harness; editor: the
-//              data editor's model budget.
+//   --sft      off: 1 ms model budget (default); on: editor budget for the editor profile, longer for two-row;
+//              editor: the data editor's model budget.
 //   --package  package root whose dist/ is assessed (default: this package).
 //
 // The report records the build it assessed (realism-evidence.mjs) and its baseline; `check:release` reads the
 // reports listed in $MOCKGEN_REALISM_REPORTS and refuses a release without a passing one per release profile.
 
+import { createHash } from 'node:crypto';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parseArgs } from 'node:util';
-import { buildFingerprint } from './realism-evidence.mjs';
+import { buildFingerprint, hasCompleteCoverage } from './realism-evidence.mjs';
 
 /**
  * Checks reported but never gating: a creation equal to its change, and a constant column, are legitimate in
@@ -44,8 +45,8 @@ const PROFILES = {
 const SFT = {
     off: { sftBudgetMs: 1, sftTimeoutMs: 30_000 },
     on: { sftBudgetMs: 120_000, sftTimeoutMs: 120_000, sftDeadlineMs: 600_000 },
-    // The budget the data editor gives the model per service.
-    editor: { sftBudgetMs: 30_000, sftTimeoutMs: 30_000 }
+    // Match generateMockgenDatasets in the Data Editor worker, which overrides the package defaults.
+    editor: { sftBudgetMs: 30_000, sftTimeoutMs: 30_000, sftDeadlineMs: 30_000 }
 };
 
 const { values: args } = parseArgs({
@@ -61,7 +62,7 @@ const { values: args } = parseArgs({
     }
 });
 const profile = PROFILES[args.profile];
-const sft = SFT[args.sft];
+const sft = args.profile === 'editor' && args.sft === 'on' ? SFT.editor : SFT[args.sft];
 if (!args.corpus || !args.out || !profile || !sft) {
     console.error(
         'Usage: realism-sweep.mjs --corpus FILE --out DIR [--rows DIR] [--profile editor|two-row] [--sft off|on|editor] [--baseline REPORT] [--require-hard]'
@@ -100,9 +101,15 @@ const units = new Set([...rec20.codes, ...rec20.symbols]);
 const corpus = JSON.parse(readFileSync(resolve(args.corpus), 'utf8'));
 if (
     !Array.isArray(corpus) ||
-    corpus.some((entry) => !entry?.id || !['edmx', 'csn'].includes(entry.format) || !entry.path)
+    corpus.length === 0 ||
+    corpus.some(
+        (entry) => typeof entry?.id !== 'string' || !entry.id || !['edmx', 'csn'].includes(entry.format) || !entry.path
+    ) ||
+    new Set(corpus.map(({ id }) => id)).size !== corpus.length
 ) {
-    throw new TypeError(`Corpus ${args.corpus} must be an array of { id, format: 'edmx'|'csn', path, alias? }`);
+    throw new TypeError(
+        `Corpus ${args.corpus} must contain uniquely named services { id, format: 'edmx'|'csn', path, alias? }`
+    );
 }
 const out = resolve(args.out);
 mkdirSync(out, { recursive: true });
@@ -190,12 +197,21 @@ const services = [];
 const findings = [];
 const withheldFields = [];
 const empties = { cells: 0, empty: 0, fallback: 0 };
+const corpusEntries = [];
 if (!args.rows) {
     mkdirSync(join(out, 'rows'), { recursive: true });
 }
 for (const service of corpus) {
     try {
         const content = readFileSync(service.path, 'utf8');
+        corpusEntries.push(
+            JSON.stringify([
+                service.id,
+                service.format,
+                service.alias,
+                createHash('sha256').update(content).digest('hex')
+            ])
+        );
         const graph = graphOf(service, content);
         const rowsFile = args.rows ? join(resolve(args.rows), `${service.id}.rows.json`) : undefined;
         if (rowsFile && !existsSync(rowsFile)) {
@@ -216,6 +232,7 @@ for (const service of corpus) {
         services.push({
             id: service.id,
             status: 'ok',
+            rows: Object.values(resources).reduce((count, rows) => count + rows.length, 0),
             coverage: assessment.coverage,
             findings: assessment.findings.length
         });
@@ -255,6 +272,8 @@ const worst = Object.fromEntries(
 );
 
 const regressions = [];
+const corpusFingerprint = createHash('sha256').update(JSON.stringify(corpusEntries.sort())).digest('hex');
+const profileName = `${args.profile}/sft-${args.sft}`;
 let baselineIdentity;
 if (args.baseline) {
     const baseline = JSON.parse(readFileSync(resolve(args.baseline), 'utf8'));
@@ -263,10 +282,16 @@ if (args.baseline) {
             `Baseline ${args.baseline} used checks version ${baseline.checksVersion}, not ${REALISM_CHECKS_VERSION}; reassess its rows with --rows first`
         );
     }
+    if (baseline.corpus !== corpusFingerprint || baseline.profile !== profileName || !hasCompleteCoverage(baseline)) {
+        throw new TypeError(
+            `Baseline ${args.baseline} must cover the same corpus and profile with complete service coverage`
+        );
+    }
     baselineIdentity = {
         packageVersion: baseline.packageVersion,
         profile: baseline.profile,
-        checksVersion: baseline.checksVersion
+        checksVersion: baseline.checksVersion,
+        corpus: baseline.corpus
     };
     for (const [check, total] of Object.entries(checks).filter(([check]) => !REPORT_ONLY_CHECKS.has(check))) {
         const before = baseline.checks?.[check];
@@ -295,7 +320,9 @@ const report = {
     packageVersion,
     build: buildFingerprint(packageRoot),
     baseline: baselineIdentity,
-    profile: args.rows ? `rows:${args.rows}` : `${args.profile}/sft-${args.sft}`,
+    profile: profileName,
+    source: args.rows ? 'replay' : 'generation',
+    corpus: corpusFingerprint,
     services: services.length,
     errors: errors.length,
     emptyStrings: empties,
@@ -354,4 +381,9 @@ if (args['require-hard']) {
     hardFailures.forEach((line) => console.error(`hard ${line}`));
 }
 process.exitCode =
-    errors.length > 0 || regressions.length > 0 || (args['require-hard'] && hardFailures.length > 0) ? 1 : 0;
+    !hasCompleteCoverage(report) ||
+    errors.length > 0 ||
+    regressions.length > 0 ||
+    (args['require-hard'] && hardFailures.length > 0)
+        ? 1
+        : 0;

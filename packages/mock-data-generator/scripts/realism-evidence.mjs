@@ -49,6 +49,30 @@ export function buildFingerprint(packageRoot) {
 }
 
 /**
+ * Whether every service contributed to an assessment with checked cells.
+ *
+ * @param {object} report a sweep report
+ * @returns {boolean} whether coverage is complete
+ */
+export function hasCompleteCoverage(report) {
+    return (
+        Number.isSafeInteger(report.services) &&
+        report.services > 0 &&
+        Array.isArray(report.perService) &&
+        report.perService.length === report.services &&
+        report.perService.every(
+            (service) =>
+                typeof service?.id === 'string' &&
+                service.status === 'ok' &&
+                Number.isSafeInteger(service.rows) &&
+                service.rows > 0
+        ) &&
+        new Set(report.perService.map(({ id }) => id)).size === report.services &&
+        Object.values(report.checks ?? {}).some((check) => Number.isSafeInteger(check?.cells) && check.cells > 0)
+    );
+}
+
+/**
  * The reasons a set of realism reports does not qualify a build for release: one passing report per release
  * profile, made on this build with this version of the checks against a baseline, with no service failing, no
  * hard-check finding and no check worse than its baseline.
@@ -77,6 +101,16 @@ export function realismEvidenceProblems(reports, expected) {
         }
         if (!report.baseline) {
             problems.push(`${profile}: report has no baseline`);
+        } else if (
+            !/^[a-f0-9]{64}$/u.test(report.corpus ?? '') ||
+            report.baseline.corpus !== report.corpus ||
+            report.baseline.profile !== profile ||
+            report.baseline.checksVersion !== expected.checksVersion
+        ) {
+            problems.push(`${profile}: baseline used a different profile or corpus`);
+        }
+        if (!hasCompleteCoverage(report) || report.source !== 'generation') {
+            problems.push(`${profile}: no complete service coverage from generation`);
         }
         if (report.errors !== 0) {
             problems.push(`${profile}: ${report.errors} services failed to generate`);

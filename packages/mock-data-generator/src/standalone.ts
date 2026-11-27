@@ -32,6 +32,7 @@ import {
 import { VALUE_BANK_STORE_ID, VALUE_BANK_STORE_PATH, packagedBanks } from './semantics/bank-store.js';
 import { SEMANTIC_RULE_STORE_ID, SEMANTIC_RULE_STORE_PATH, packagedSemanticRules } from './semantics/rule-store.js';
 import { containedTargets } from './generation/containment.js';
+import { relationshipsResolve } from './generation/rows.js';
 import { authoredDomainValues } from './generation/value-list-context.js';
 import {
     DATA_EDITOR_SFT_BUDGET_MS,
@@ -394,17 +395,6 @@ function semanticCoverage(
         evidenceVerifiedFields: count('evidenceVerified'),
         syntheticUnverifiedFields: count('syntheticUnverified')
     });
-}
-
-/**
- * Whether every published reference resolves. Only caller-supplied references can stay unresolved; they
- * carry a `SUPPLIED_REFERENCE_UNRESOLVED` diagnostic.
- *
- * @param result the generation result
- * @returns false when a supplied reference does not resolve
- */
-function relationshipsResolve(result: MockDataGeneratorResult): boolean {
-    return !result.diagnostics.some(({ code }) => code === 'SUPPLIED_REFERENCE_UNRESOLVED');
 }
 
 function domainMeaning(
@@ -854,7 +844,7 @@ async function generateSessionService(
         validation: Object.freeze({
             passed: formats,
             formats,
-            relationships: relationshipsResolve(result),
+            relationships: relationshipsResolve(result.diagnostics),
             domainMeaning: domainMeaning(coverage)
         }),
         semanticCoverage: coverage,

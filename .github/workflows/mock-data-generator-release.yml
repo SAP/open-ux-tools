@@ -92,9 +92,16 @@ jobs:
             - name: Make the package publishable
               if: steps.version.outputs.publish == 'true'
               run: npm pkg delete private
-            - name: Verify the packed package
+            - name: Pack and verify the release archive
               if: steps.version.outputs.publish == 'true'
-              run: pnpm check:package
+              run: |
+                  mkdir -p "$RUNNER_TEMP/mockgen-release"
+                  pnpm pack --pack-destination "$RUNNER_TEMP/mockgen-release"
+                  archive="$RUNNER_TEMP/mockgen-release/sap-ux-mock-data-generator-${{ steps.version.outputs.version }}.tgz"
+                  pnpm check:package --archive "$archive"
+                  sha256sum "$archive" > "$RUNNER_TEMP/mockgen-release.sha256"
             - name: Publish to npmjs
               if: steps.version.outputs.publish == 'true' && !(github.event_name == 'workflow_dispatch' && inputs.dry-run)
-              run: pnpm publish --access public --no-git-checks
+              run: |
+                  sha256sum --check "$RUNNER_TEMP/mockgen-release.sha256"
+                  pnpm publish "$RUNNER_TEMP/mockgen-release/sap-ux-mock-data-generator-${{ steps.version.outputs.version }}.tgz" --access public --no-git-checks

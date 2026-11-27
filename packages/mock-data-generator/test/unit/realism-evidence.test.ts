@@ -21,11 +21,17 @@ interface Evidence {
  * @returns the report
  */
 function passing(profile: string): Record<string, unknown> {
+    const corpus = 'a'.repeat(64);
     return {
         profile,
         build: 'b'.repeat(64),
         checksVersion: 4,
-        baseline: { packageVersion: '0.1.0-dev.25', profile, checksVersion: 4 },
+        corpus,
+        source: 'generation',
+        baseline: { packageVersion: '0.1.0-dev.25', profile, checksVersion: 4, corpus },
+        services: 1,
+        perService: [{ id: 'sample', status: 'ok', rows: 3 }],
+        checks: { placeholder: { cells: 3 } },
         errors: 0,
         hardFailures: [],
         regressions: []
@@ -43,6 +49,35 @@ describe('realism evidence', () => {
     });
 
     it.each([
+        [
+            'an empty sweep',
+            (reports: Record<string, unknown>[]) => [{ ...reports[0], services: 0, perService: [] }, reports[1]],
+            'no complete service coverage'
+        ],
+        [
+            'a skipped service',
+            (reports: Record<string, unknown>[]) => [
+                { ...reports[0], perService: [{ id: 'sample', status: 'no-rows' }] },
+                reports[1]
+            ],
+            'no complete service coverage'
+        ],
+        [
+            'a service with no rows',
+            (reports: Record<string, unknown>[]) => [
+                { ...reports[0], perService: [{ id: 'sample', status: 'ok', rows: 0 }] },
+                reports[1]
+            ],
+            'no complete service coverage'
+        ],
+        [
+            'a different baseline corpus',
+            (reports: Record<string, unknown>[]) => [
+                { ...reports[0], baseline: { profile: reports[0].profile, checksVersion: 4, corpus: 'c'.repeat(64) } },
+                reports[1]
+            ],
+            'baseline used a different profile or corpus'
+        ],
         ['a missing profile', (reports: Record<string, unknown>[]) => reports.slice(1), 'no realism report'],
         [
             'another build',

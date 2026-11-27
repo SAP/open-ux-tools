@@ -127,23 +127,6 @@ function fingerprint(value: unknown): string {
 const GENERATOR_LOGIC_VERSION = 54;
 
 /**
- * Retag the properties of every supplied resource as authored, since `preserveAuthoredRows` restores those rows.
- *
- * @param tally the running value-tier tally
- * @param existingData the caller's own rows, by entity set
- */
-function retagAuthoredResources(tally: ValueTierTally, existingData: Readonly<Record<string, ExistingMockData>>): void {
-    for (const [resourceName, ownership] of Object.entries(existingData)) {
-        if (authoredRows(ownership).length === 0) {
-            continue;
-        }
-        for (const propertyName of tally.get(resourceName)?.keys() ?? []) {
-            retagValueTier(tally, resourceName, propertyName, VALUE_TIER.authored);
-        }
-    }
-}
-
-/**
  * The tier that wrote most of a property's cells during the first generation sweep.
  *
  * @param tally the completed value-tier tally
@@ -185,12 +168,40 @@ function typedFloorCause(
 }
 
 /**
+ * Count actual property values by row ownership. Authored rows can omit columns.
+ *
+ * @param rows published rows
+ * @param generated which rows generation wrote
+ * @returns the authored, generated and empty generated cell counts by property
+ */
+function countPublishedFields(
+    rows: ReadonlyArray<MockDataRow>,
+    generated: ReadonlyArray<boolean>
+): Map<string, { authored: number; generated: number; empty: number }> {
+    const fields = new Map<string, { authored: number; generated: number; empty: number }>();
+    for (const [index, row] of rows.entries()) {
+        for (const [propertyName, value] of Object.entries(row)) {
+            const field = fields.get(propertyName) ?? { authored: 0, generated: 0, empty: 0 };
+            if (generated[index]) {
+                field.generated++;
+                field.empty += value === null || value === '' ? 1 : 0;
+            } else {
+                field.authored++;
+            }
+            fields.set(propertyName, field);
+        }
+    }
+    return fields;
+}
+
+/**
  * Count every published cell against the tier that wrote it, walking the published rows so totals match the result.
  *
  * @param graph the schema graph, for the key and type of each property
  * @param tally the completed value-tier tally
  * @param targets the entity sets the caller asked for
  * @param resources the published rows
+ * @param existingData the caller's supplied rows
  * @param statistics the fine-tuned tier's own per-field accounting
  * @param fallbackByField cells the standard fallback filled, by property key
  * @returns slots by tier, the typed floor by cause, the abstained cell count, and each property's tier split
@@ -200,6 +211,7 @@ function valueTierStatistics(
     tally: ValueTierTally,
     targets: ReadonlyArray<MockDataTarget>,
     resources: Readonly<Record<string, ReadonlyArray<MockDataRow>>>,
+    existingData: Readonly<Record<string, ExistingMockData>>,
     statistics: SftGenerationStatistics,
     fallbackByField: ReadonlyMap<string, number> = new Map()
 ): {
@@ -231,16 +243,19 @@ function valueTierStatistics(
         if (rows.length === 0) {
             continue;
         }
-        const properties = new Map((entities.get(name)?.properties ?? []).map((property) => [property.name, property]));
-        for (const propertyName of Object.keys(rows[0])) {
-            const written = Math.min(rows.length, accepted.get(`${name}\u0000${propertyName}`) ?? 0);
-            const remaining = rows.length - written;
-            const tier = dominantTier(tally, name, propertyName);
+        const entity = entities.get(name);
+        const properties = new Map((entity?.properties ?? []).map((property) => [property.name, property]));
+        const generated = entity ? generatedRowFlags(entity, rows, existingData) : rows.map(() => true);
+        for (const [propertyName, field] of countPublishedFields(rows, generated)) {
+            const written = Math.min(field.generated, accepted.get(`${name}\u0000${propertyName}`) ?? 0);
+            const remaining = field.generated - written;
+            const tier = field.generated === 0 ? VALUE_TIER.authored : dominantTier(tally, name, propertyName);
+            counts.authored += field.authored;
             counts.model += written;
             counts[tier] += remaining;
             fieldTiers.set(
                 semanticPropertyKey(name, propertyName),
-                Object.freeze({ tier, cells: rows.length, modelCells: written })
+                Object.freeze({ tier, cells: field.generated + field.authored, modelCells: written })
             );
             if (tier !== VALUE_TIER.typed) {
                 continue;
@@ -249,9 +264,7 @@ function valueTierStatistics(
             causes[cause] += remaining;
             if (cause === 'addressable') {
                 // The model writes no empty values: empty cells and fallback-filled cells are floor abstentions.
-                const empty =
-                    rows.filter((row) => row[propertyName] === null || row[propertyName] === '').length +
-                    (fallbackByField.get(semanticPropertyKey(name, propertyName)) ?? 0);
+                const empty = field.empty + (fallbackByField.get(semanticPropertyKey(name, propertyName)) ?? 0);
                 abstained += Math.min(remaining, empty);
             }
         }
@@ -1114,7 +1127,6 @@ function generateDeterministicTier(
     resources = applyCapCodeListMetadata(graph, resources, valueTiers, options.locale);
 
     resources = preserveAuthoredRows(graph, resources, request.existingData, diagnostics);
-    retagAuthoredResources(valueTiers, request.existingData);
 
     assertSemanticValues(graph, generatedResources(graph, resources, request.existingData), plannedRoles);
 
@@ -1482,14 +1494,6 @@ function assembleGenerationResult(
     const semanticRoles = Object.freeze(plannedSemanticRoles(world.classifications));
     const learnedComponents = runtimeFingerprints(options, runtime);
     const requestFingerprint = createGenerationFingerprint(request, options, learnedComponents);
-    const tierStatistics = valueTierStatistics(
-        world.graph,
-        valueTiers,
-        world.generationTargets,
-        world.resources,
-        world.sftStatistics,
-        context.withheld.fallbackByField
-    );
     if (world.graph) {
         diagnostics.push(...childlessParentDiagnostics(world.graph, world.resources, request.existingData));
     }
@@ -1506,6 +1510,19 @@ function assembleGenerationResult(
     const resources = world.graph
         ? nestContainedRows(world.graph, world.resources, request.existingData, diagnostics)
         : world.resources;
+    const tierResources =
+        world.graph && world.graph.entities.some(({ containedBy }) => containedBy)
+            ? flattenContainedRows(world.graph, resources, request.existingData)
+            : resources;
+    const tierStatistics = valueTierStatistics(
+        world.graph,
+        valueTiers,
+        world.generationTargets,
+        tierResources,
+        request.existingData,
+        world.sftStatistics,
+        context.withheld.fallbackByField
+    );
     const result = Object.freeze({
         resources,
         semanticRoles,

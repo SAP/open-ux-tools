@@ -26,6 +26,42 @@ const request = (
 });
 
 describe('project data transaction', () => {
+    test('leaves unrelated directories alone even when their names match a transaction prefix', async () => {
+        const root = await mkdtemp(join(tmpdir(), 'mockgen-project-unowned-'));
+        try {
+            for (const name of ['.mockgen-trash-elsewhere', '.mockgen-project-elsewhere']) {
+                await mkdir(join(root, name));
+                await writeFile(join(root, name, 'keep.txt'), 'authored data');
+            }
+            await generateProjectData({ projectRoot: root, dataDirectory: 'mockdata', request: request() });
+            for (const name of ['.mockgen-trash-elsewhere', '.mockgen-project-elsewhere']) {
+                expect(await readFile(join(root, name, 'keep.txt'), 'utf8')).toBe('authored data');
+            }
+        } finally {
+            await rm(root, { recursive: true, force: true });
+        }
+    });
+
+    test('does not create a data directory when every target is skipped', async () => {
+        const root = await mkdtemp(join(tmpdir(), 'mockgen-project-empty-'));
+        try {
+            generateService.mockImplementationOnce(async () => ({
+                validation: { passed: true, semantic: true, relationships: true },
+                resources: { Records: [] },
+                diagnostics: [{ code: 'SCHEMA_ENTITY_SET_SKIPPED', severity: 'warning', target: 'Scans' }]
+            }));
+            const result = await generateProjectData({
+                projectRoot: root,
+                dataDirectory: 'mockdata',
+                request: request(['Scans'])
+            });
+            expect(result.files).toEqual([]);
+            expect(await readdir(root)).toEqual([]);
+        } finally {
+            await rm(root, { recursive: true, force: true });
+        }
+    });
+
     test('restores a directory left in the backup phase by an interrupted process', async () => {
         const root = await mkdtemp(join(tmpdir(), 'mockgen-project-recovery-'));
         const parent = join(root, 'webapp', 'localService');

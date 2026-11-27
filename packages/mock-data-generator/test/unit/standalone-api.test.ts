@@ -163,27 +163,26 @@ describe('standalone MockGen API', () => {
         const generator = await createMockDataGenerator({ executionMode: 'api' });
         try {
             // When the service is generated
-            const result = await generator.generateService(
-                {
-                    metadata: { format: 'edmx', content: catalog },
-                    service: { urlPath: '/catalog', odataVersion: '4.0' },
-                    targets: [
-                        { name: 'Categories', kind: 'entity-set' },
-                        { name: 'Books', kind: 'entity-set' }
-                    ],
-                    existingData: {
-                        Categories: {
-                            contributor: { present: false },
-                            initialRows: { source: 'json', present: true, rows: [{ ID: 101 }] }
-                        },
-                        Books: {
-                            contributor: { present: false },
-                            initialRows: { source: 'json', present: true, rows: [{ ID: 1, CategoryID: 999 }] }
-                        }
+            const request: Parameters<typeof generator.generateService>[0] = {
+                metadata: { format: 'edmx', content: catalog },
+                service: { urlPath: '/catalog', odataVersion: '4.0' },
+                targets: [
+                    { name: 'Categories', kind: 'entity-set' },
+                    { name: 'Books', kind: 'entity-set' }
+                ],
+                existingData: {
+                    Categories: {
+                        contributor: { present: false },
+                        initialRows: { source: 'json', present: true, rows: [{ ID: 101 }] }
+                    },
+                    Books: {
+                        contributor: { present: false },
+                        initialRows: { source: 'json', present: true, rows: [{ ID: 1, CategoryID: 999 }] }
                     }
-                },
-                { mode: 'deterministic', seed: 1, rowsPerEntity: 1 }
-            );
+                }
+            };
+            const options = { mode: 'deterministic', seed: 1, rowsPerEntity: 1 } as const;
+            const result = await generator.generateService(request, options);
 
             // Then the supplied rows are published as written, the new row references an existing category, and
             // the relationships are reported unresolved
@@ -195,6 +194,8 @@ describe('standalone MockGen API', () => {
                 expect.objectContaining({ code: 'SUPPLIED_REFERENCE_UNRESOLVED', target: 'Books.category' })
             );
             expect(result.validation.relationships).toBe(false);
+            const inspection = await generator.inspectService(request, options);
+            expect(inspection.invariants).toContainEqual({ name: 'relationships', passed: false });
         } finally {
             await generator.dispose();
         }
@@ -300,14 +301,14 @@ describe('standalone MockGen API', () => {
         }
     });
 
-    test('replaces project JSON while preserving unrelated authored files', async () => {
+    test('appends to project JSON on repeat runs while preserving unrelated authored files', async () => {
         const root = await mkdtemp(join(tmpdir(), 'mockgen-project-'));
         const dataDirectory = join(root, 'webapp', 'localService', 'mockdata');
         try {
             await mkdir(dataDirectory, { recursive: true });
             await writeFile(join(dataDirectory, 'Records.json'), '[{"ID":999}]');
             await writeFile(join(dataDirectory, 'Unrelated.json'), '[{"Keep":true}]');
-            const result = await generateProjectData({
+            const input: Parameters<typeof generateProjectData>[0] = {
                 projectRoot: root,
                 dataDirectory: 'webapp/localService/mockdata',
                 request: {
@@ -317,10 +318,53 @@ describe('standalone MockGen API', () => {
                     existingData: {}
                 },
                 options: { mode: 'deterministic', seed: 1, rowsPerEntity: 2 }
-            });
+            };
+            const result = await generateProjectData(input);
             expect(result.files).toEqual(['webapp/localService/mockdata/Records.json']);
-            expect(JSON.parse(await readFile(join(dataDirectory, 'Records.json'), 'utf8'))).toHaveLength(2);
+            expect(result.generation.resources.Records).toHaveLength(3);
+            expect(result.generation.resources.Records[0]).toEqual({ ID: 999 });
+            expect(result.generation.tiers).toMatchObject({ authored: 1, slots: 5 });
+            const repeated = await generateProjectData(input);
+            expect(repeated.generation.resources.Records).toHaveLength(5);
+            expect(repeated.generation.resources.Records.slice(0, 3)).toEqual(result.generation.resources.Records);
+            expect(JSON.parse(await readFile(join(dataDirectory, 'Records.json'), 'utf8'))).toEqual(
+                repeated.generation.resources.Records
+            );
             expect(await readFile(join(dataDirectory, 'Unrelated.json'), 'utf8')).toBe('[{"Keep":true}]');
+        } finally {
+            await rm(root, { recursive: true, force: true });
+        }
+    });
+
+    test.each([
+        { contents: '[{"ID":999}]', supplied: [{ ID: 998 }] },
+        { contents: '{"ID":999}', supplied: [] },
+        { contents: 'malformed JSON', supplied: [] }
+    ])('preserves a destination that cannot safely merge with the request', async ({ contents, supplied }) => {
+        const root = await mkdtemp(join(tmpdir(), 'mockgen-project-merge-conflict-'));
+        try {
+            await mkdir(join(root, 'mockdata'));
+            const file = join(root, 'mockdata', 'Records.json');
+            await writeFile(file, contents);
+            await expect(
+                generateProjectData({
+                    projectRoot: root,
+                    dataDirectory: 'mockdata',
+                    request: {
+                        metadata: { format: 'edmx', content: metadata },
+                        service: { urlPath: '/records', odataVersion: '4.0' },
+                        targets: [{ name: 'Records', kind: 'entity-set' }],
+                        existingData: {
+                            Records: {
+                                contributor: { present: false },
+                                initialRows: { source: 'json', present: true, rows: supplied }
+                            }
+                        }
+                    },
+                    options: { mode: 'deterministic', rowsPerEntity: 1 }
+                })
+            ).rejects.toMatchObject({ code: 'PROJECT_DATA_CHANGED' });
+            expect(await readFile(file, 'utf8')).toBe(contents);
         } finally {
             await rm(root, { recursive: true, force: true });
         }

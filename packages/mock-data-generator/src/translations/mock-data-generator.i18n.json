@@ -65,6 +65,7 @@
         "rejectedValidation": "MockGen rejected project data with failed semantic validation",
         "directoryChanged": "MockGen project data directory changed during generation",
         "changedDuringGeneration": "MockGen project data changed during generation",
+        "existingRowsConflict": "MockGen could not append to {{filename}} because its existing rows are invalid or differ from the request",
         "changedBeforeReplacement": "MockGen project data changed before replacement",
         "rollbackFailed": "MockGen rollback failed; originals are retained at {{backup}}",
         "fileNameCollision": "MockGen did not write the data file of {{target}}: on this file system its name is the same as another target's file, which it would overwrite"

@@ -1600,7 +1600,15 @@ function generateTargetRows(
         context.classifications,
         descriptiveKeyNames(context.graph, entity)
     );
-    if (plannedKeys.rowCount < requestedRows) {
+    // Independent contained keys identify rows within a parent. The placement pass checks those tuples
+    // after assigning parents, so a finite key domain can be reused across different parents.
+    const scopedKeys =
+        entity.containedBy !== undefined &&
+        !context.graph.relationships.some(
+            ({ fromEntitySet, toEntitySet }) => fromEntitySet === target.name || toEntitySet === target.name
+        );
+    const rowCount = scopedKeys && plannedKeys.rowCount > 0 ? requestedRows : plannedKeys.rowCount;
+    if (rowCount < requestedRows) {
         diagnostics.push(
             Object.freeze({
                 code: 'ROW_COUNT_REDUCED_UNSATISFIABLE_KEY_DOMAIN',
@@ -1611,7 +1619,7 @@ function generateTargetRows(
         );
     }
     const reconciledProperties = new Set<string>();
-    const rows = Array.from({ length: plannedKeys.rowCount }, (_unused, rowIndex) =>
+    const rows = Array.from({ length: rowCount }, (_unused, rowIndex) =>
         initialRow(context, target, entity, plannedKeys.ordinals, rowIndex)
     );
     const coherentRows = applySemanticCoherence(
@@ -1633,7 +1641,7 @@ function generateTargetRows(
     const keys = entity.properties.filter(({ isKey }) => isKey);
     const seenKeys = new Set<string>();
     const distinctRows =
-        keys.length === 0
+        keys.length === 0 || scopedKeys
             ? coherentRows
             : coherentRows.filter((row) => {
                   const signature = keySignature(keys, row);
@@ -1931,7 +1939,9 @@ function freezeValidatedResources(
                                 throw new TypeError(`Deterministic value violates ${name}.${property.name}`);
                             }
                         }
-                        assertUniqueKeyTuple(row, keys, seenKeys, name);
+                        if (!entity.containedBy) {
+                            assertUniqueKeyTuple(row, keys, seenKeys, name);
+                        }
                     }
                 }
                 return [name, freezeRows(rows)];

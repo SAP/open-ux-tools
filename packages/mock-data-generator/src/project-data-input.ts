@@ -141,7 +141,7 @@ function requiredBoolean(value: unknown, path: string): boolean {
  * @param path JSON path of the rows
  * @returns the rows, each checked to be an object
  */
-function parseRows(value: unknown, path: string): ReadonlyArray<MockDataRow> {
+export function parseRows(value: unknown, path: string): ReadonlyArray<MockDataRow> {
     if (!Array.isArray(value)) {
         return fail(path, 'mustBeList');
     }
