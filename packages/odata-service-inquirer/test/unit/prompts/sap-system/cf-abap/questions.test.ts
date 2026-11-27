@@ -108,7 +108,6 @@ describe('tests cf abap service dicovery prompts for BAS', () => {
                 "message": [Function],
                 "name": "cfAbapBas:serviceSelection",
                 "showOutputTabLink": "validationMessageOverflow",
-                "source": [Function],
                 "type": "list",
                 "validate": [Function],
                 "when": [Function],

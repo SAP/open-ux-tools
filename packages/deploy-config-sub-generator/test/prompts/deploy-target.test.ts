@@ -1,5 +1,5 @@
 import { jest } from '@jest/globals';
-import type { Question } from 'inquirer';
+import type { Question } from '@sap-ux/inquirer-common';
 
 const mockHasbinSync = jest.fn().mockReturnValue(true);
 

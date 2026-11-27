@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import type { Answers } from 'inquirer';
+import type { Answers } from '@sap-ux/inquirer-common';
 import { Question } from '../Question/Question.js';
 import {
     formatDomId,

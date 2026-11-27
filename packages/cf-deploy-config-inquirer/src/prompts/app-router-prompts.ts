@@ -1,4 +1,4 @@
-import type { ListQuestion, ConfirmQuestion, InputQuestion } from '@sap-ux/inquirer-common';
+import type { ListQuestion, InputQuestion, ChoiceOptions } from '@sap-ux/inquirer-common';
 import { t } from '../i18n.js';
 import type {
     CfAppRouterDeployConfigQuestions,
@@ -9,7 +9,6 @@ import { appRouterPromptNames, RouterModuleType } from '../types.js';
 import { validateMtaPath, validateMtaId, validateAbapService } from './validators.js';
 import type { Logger } from '@sap-ux/logger';
 import { getCFAbapInstanceChoices, ErrorHandler } from '@sap-ux/inquirer-common';
-import type { ListChoiceOptions } from 'inquirer';
 
 /**
  * Generates a prompt for selecting the MTA path.
@@ -127,7 +126,7 @@ function getConnectivityServicePrompt(): CfAppRouterDeployConfigQuestions {
         default: (): boolean => {
             return false;
         }
-    } as ConfirmQuestion<CfAppRouterDeployConfigAnswers>;
+    };
 }
 
 /**
@@ -171,12 +170,12 @@ function getServiceProvider(): CfAppRouterDeployConfigQuestions {
         },
         choices: async () => {
             const abapChoices = await getCFAbapInstanceChoices(errorHandler);
-            const choices: ListChoiceOptions[] = [];
+            const choices: ChoiceOptions[] = [];
             if (abapChoices.length > 0) {
                 abapChoices.forEach((choice) => {
                     choices.push({
                         name: choice.name,
-                        value: { label: choice.value['label'], service: choice.value['serviceName'] }
+                        value: { label: choice.value?.['label'], service: choice.value?.['serviceName'] }
                     });
                 });
             } else {

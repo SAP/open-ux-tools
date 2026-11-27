@@ -6,7 +6,7 @@ import { getAbapQuestions, indexHtmlExists } from '@sap-ux/abap-deploy-config-su
 import { getCFQuestions } from '@sap-ux/cf-deploy-config-sub-generator';
 import { FileName } from '@sap-ux/project-access';
 import { getDeployTargetQuestion } from './deploy-target.js';
-import type { CommonPromptOptions, YUIQuestion } from '@sap-ux/inquirer-common';
+import type { Answers, CommonPromptOptions, YUIQuestion } from '@sap-ux/inquirer-common';
 import type { FioriToolsProxyConfigBackend } from '@sap-ux/ui5-config';
 import type { Editor } from 'mem-fs-editor';
 import type {
@@ -19,7 +19,6 @@ import type {
     AbapDeployConfigPromptOptions,
     AbapDeployConfigQuestion
 } from '@sap-ux/abap-deploy-config-sub-generator';
-import type { Answers, Question } from 'inquirer';
 import type { DeployConfigOptions, DeployConfigSubGenPromptOptions, Target } from '../types/index.js';
 
 /**
@@ -65,7 +64,7 @@ export async function getSubGenPrompts(
         isLibrary: boolean;
     },
     targetDeployment?: string
-): Promise<{ questions: Question[]; abapAnswers: Partial<AbapDeployConfigAnswersInternal> }> {
+): Promise<{ questions: YUIQuestion[]; abapAnswers: Partial<AbapDeployConfigAnswersInternal> }> {
     DeploymentGenerator.logger?.debug(t('debug.loadingPrompts'));
     const configExists = fs.exists(join(options.appRootPath, options.config || FileName.UI5DeployYaml));
     const showOverwrite = showOverwriteQuestion(
@@ -109,7 +108,7 @@ export async function getSubGenPrompts(
     }
 
     // Combine all prompts
-    let questions: Question[] = [];
+    let questions: YUIQuestion[] = [];
     if (!targetDeployment) {
         questions = combineAllPrompts(options.projectRoot, {
             supportedTargets,
@@ -118,7 +117,10 @@ export async function getSubGenPrompts(
             promptOptions
         });
     } else {
-        questions = targetDeployment === TargetName.ABAP ? (abapPrompts as Question[]) : (cfPrompts as Question[]);
+        // Each element is a valid question, but `YUIQuestion`'s answer-typed `when`/`validate` make a
+        // concrete-answers array (e.g. `AbapDeployConfigQuestion[]`) non-assignable to `YUIQuestion<Answers>[]`;
+        // the arrays are homogeneous here, so bridge the whole array to the common base for `prompt()`.
+        questions = (targetDeployment === TargetName.ABAP ? abapPrompts : cfPrompts) as YUIQuestion[];
     }
 
     return { questions, abapAnswers: abapAnswers };
@@ -148,14 +150,20 @@ function combineAllPrompts(
         cfPrompts: CfDeployConfigQuestions[];
         promptOptions?: DeployConfigSubGenPromptOptions;
     }
-): Question[] {
-    const questions = getDeployTargetQuestion(supportedTargets, projectRoot);
-    questions.push(
-        ...withCondition(abapPrompts as Question[], (answers: Answers) => answers.targetName === TargetName.ABAP)
-    );
-    questions.push(...withCondition(cfPrompts, (answers: Answers) => answers.targetName === TargetName.CF));
+): YUIQuestion[] {
+    // Each prompt set is typed to its own answers shape; `YUIQuestion`'s answer-typed `when`/`validate`
+    // prevent a concrete-answers array from unifying with `YUIQuestion<Answers>[]`, so the combined
+    // heterogeneous array is assembled at the common base type.
+    const questions: YUIQuestion[] = [
+        ...getDeployTargetQuestion(supportedTargets, projectRoot),
+        ...(withCondition(
+            abapPrompts as YUIQuestion[],
+            (answers: Answers) => answers.targetName === TargetName.ABAP
+        ) as YUIQuestion[]),
+        ...(withCondition(cfPrompts, (answers: Answers) => answers.targetName === TargetName.CF) as YUIQuestion[])
+    ];
 
     return promptOptions
-        ? extendWithOptions(questions as YUIQuestion[], promptOptions as Record<string, CommonPromptOptions>)
+        ? extendWithOptions(questions, promptOptions as Record<string, CommonPromptOptions>)
         : questions;
 }

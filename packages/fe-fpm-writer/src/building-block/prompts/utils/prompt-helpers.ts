@@ -5,7 +5,7 @@ import { getEntitySets } from './service.js';
 import { i18nNamespaces, translate } from '../../../i18n.js';
 import { join } from 'node:path';
 import { getExistingButtonGroups } from '../utils/xml.js';
-import type { Answers } from 'inquirer';
+import type { Answers } from '@sap-ux/inquirer-common';
 import { BUTTON_GROUP_CONFIGS } from '../../processor.js';
 
 /**

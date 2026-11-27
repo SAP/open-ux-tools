@@ -10,7 +10,6 @@ import type {
     AbapDeployConfigPromptOptions,
     AbapDeployConfigQuestion
 } from '@sap-ux/abap-deploy-config-inquirer';
-import type { PromptModule } from 'inquirer';
 import type { AbapDeployConfig, AbapTarget, BspApp, FioriToolsProxyConfigBackend } from '@sap-ux/ui5-config';
 import type { ConnectedSystem } from '@sap-ux/deploy-config-generator-shared';
 import type { Logger } from '@sap-ux/logger';
@@ -90,7 +89,6 @@ function getAbapTarget(
  * @param params.projectType - the project type
  * @param params.logger - the logger
  * @param params.promptOptions - A set of optional feature flags to prompts behavior.
- * @param params.promptModule - optional inquirer prompt module instance used to register plugins
  * @returns - the prompts and answers
  */
 export async function getAbapQuestions({
@@ -102,8 +100,7 @@ export async function getAbapQuestions({
     showOverwriteQuestion = false,
     projectType = DeployProjectType.Application,
     promptOptions = {},
-    logger,
-    promptModule
+    logger
 }: {
     appRootPath: string;
     connectedSystem?: ConnectedSystem;
@@ -114,7 +111,6 @@ export async function getAbapQuestions({
     projectType?: DeployProjectType;
     promptOptions?: AbapDeployConfigPromptOptions;
     logger?: ILogWrapper;
-    promptModule?: PromptModule;
 }): Promise<{ prompts: AbapDeployConfigQuestion[]; answers: Partial<AbapDeployConfigAnswersInternal> }> {
     const { backendSystem, serviceProvider, destination } = connectedSystem || {};
     let existingAbapDeployTask: AbapDeployConfig | undefined;
@@ -161,7 +157,6 @@ export async function getAbapQuestions({
             transportInputChoice: { hideIfOnPremise: promptOptions?.transportInputChoice?.hideIfOnPremise ?? false }
         },
         logger as unknown as Logger,
-        getHostEnvironment() !== hostEnvironment.cli,
-        promptModule
+        getHostEnvironment() !== hostEnvironment.cli
     );
 }

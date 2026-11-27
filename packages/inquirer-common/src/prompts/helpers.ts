@@ -1,5 +1,11 @@
-import type { Answers, Question, Validator } from 'inquirer';
-import type { CommonPromptOptions, PromptDefaultValue, PromptSeverityMessage, YUIQuestion } from '../types.js';
+import type {
+    Answers,
+    CommonPromptOptions,
+    PromptDefaultValue,
+    PromptSeverityMessage,
+    Validator,
+    YUIQuestionBase
+} from '../types.js';
 import cloneDeep from 'lodash/cloneDeep.js';
 
 /**
@@ -10,8 +16,8 @@ import cloneDeep from 'lodash/cloneDeep.js';
  * @param promptState - the runtime state of the prompts, this can be used to provide additional answers not defined by the prompt answers object
  * @returns the extended additional messages function
  */
-export function extendAdditionalMessages(
-    question: YUIQuestion,
+export function extendAdditionalMessages<A extends Answers = Answers>(
+    question: YUIQuestionBase<A>,
     addMsgFunc: PromptSeverityMessage,
     promptState?: Answers
 ): PromptSeverityMessage {
@@ -38,12 +44,12 @@ export function extendAdditionalMessages(
  * @returns the extended validate function
  */
 export function extendValidate<T extends Answers = Answers>(
-    question: Question,
+    question: YUIQuestionBase<T>,
     validateFunc: NonNullable<Validator<T>>,
     promptState?: Answers
 ): NonNullable<Validator<T>> {
-    const validate: Validator<T> = question.validate;
-    return (value: unknown, previousAnswers?: T): ReturnType<NonNullable<Validator<T>>> => {
+    const validate = question.validate;
+    return (value: unknown, previousAnswers?: Partial<T>): ReturnType<NonNullable<Validator<T>>> => {
         // Allow non-prompt answer (derived answers) values to be passed to the validate function
         const combinedAnswers = { ...cloneDeep(previousAnswers), ...cloneDeep(promptState) } as T;
         const extVal = validateFunc?.(value, combinedAnswers);
@@ -64,11 +70,11 @@ export function extendValidate<T extends Answers = Answers>(
  * @returns the extended question
  */
 export function applyExtensionFunction<T extends Answers = Answers>(
-    question: YUIQuestion,
+    question: YUIQuestionBase<T>,
     promptOption: CommonPromptOptions<T>,
     funcName: 'validate' | 'additionalMessages',
     promptState?: Answers
-): YUIQuestion {
+): YUIQuestionBase<T> {
     let extendedFunc;
 
     if (funcName === 'validate' && promptOption.validate) {
@@ -90,7 +96,10 @@ export function applyExtensionFunction<T extends Answers = Answers>(
  * @param condition function which returns true or false
  * @returns the passed questions reference
  */
-export function withCondition(questions: Question[], condition: (answers: Answers) => boolean): Question[] {
+export function withCondition<Q extends YUIQuestionBase<any>>(
+    questions: Q[],
+    condition: (answers: Answers) => boolean
+): Q[] {
     questions.forEach((question) => {
         if (question.when !== undefined) {
             if (typeof question.when === 'function') {
@@ -123,12 +132,12 @@ export function withCondition(questions: Question[], condition: (answers: Answer
  * @param promptState - the runtime state of the prompts, this can be used to provide additional answers not defined by the prompt answers object
  * @returns - the extended questions
  */
-export function extendWithOptions<T extends YUIQuestion = YUIQuestion>(
+export function extendWithOptions<T extends YUIQuestionBase<any> = YUIQuestionBase>(
     questions: T[],
     promptOptions: Record<string, Omit<CommonPromptOptions, 'hide'> & PromptDefaultValue<string | boolean>>,
     promptState?: Answers
-): YUIQuestion[] {
-    questions.forEach((question: YUIQuestion) => {
+): T[] {
+    questions.forEach((question: YUIQuestionBase) => {
         const promptOptKey = question.name;
         const promptOpt = promptOptions[question.name];
         if (promptOpt) {
@@ -140,7 +149,7 @@ export function extendWithOptions<T extends YUIQuestion = YUIQuestion>(
                 }
                 // Provided defaults will override built in defaults
                 const defaultOverride = (promptOptions[promptOptKey] as PromptDefaultValue<string | boolean>).default;
-                if (defaultOverride) {
+                if (defaultOverride && 'type' in question) {
                     question.default = defaultOverride;
                 }
             }

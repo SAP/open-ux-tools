@@ -5,7 +5,7 @@ import { applyAnswers, getChoices, getCodeSnippet, getWebSocket, validateAnswers
 import { Questions, PromptsLayoutType, setAnswer } from '@sap-ux/ui-prompting';
 import type { ValidationResults, ValidationResult } from '@sap-ux/ui-prompting';
 import { useChoices, useI18nBundle, useQuestions } from './utils/hooks.js';
-import type { Answers } from 'inquirer';
+import type { Answers } from '@sap-ux/inquirer-common';
 
 initIcons();
 getWebSocket();
@@ -54,7 +54,7 @@ export const BuildingBlockQuestions = (props: {
         setAnswers(newAnswers);
         if (name) {
             if (liveValidation) {
-                await validateAnswers(type, [{ name }], newAnswers).then((validationResults) =>
+                await validateAnswers(type, [{ name, type: 'input' }], newAnswers).then((validationResults) =>
                     setValidation({ ...validation, ...validationResults })
                 );
             } else {

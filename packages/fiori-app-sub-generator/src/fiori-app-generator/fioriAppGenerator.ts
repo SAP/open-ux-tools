@@ -227,7 +227,7 @@ export class FioriAppGenerator extends Generator {
 
             // Freestyle templates require a view name
             if (isFioriFreestyleTemplate) {
-                const viewNameAnswer: ViewNameAnswer = await this.prompt([getViewQuestion()]);
+                const viewNameAnswer = await this.prompt<ViewNameAnswer>([getViewQuestion()]);
                 this.state.viewName = viewNameAnswer.viewName;
             } else if (this.state.service.edmx) {
                 // Fiori Elements templates require entity and related settings

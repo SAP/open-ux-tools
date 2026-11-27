@@ -50,7 +50,6 @@ jest.unstable_mockModule('../../src/prompts/index.js', () => ({
 }));
 
 const { getPrompts, prompt, promptNames } = await import('../../src/index.js');
-const AutocompletePrompt = (await import('inquirer-autocomplete-prompt')).default;
 
 /**
  * Tests the exported ui5-application-inquirer APIs
@@ -150,7 +149,7 @@ describe('ui5-application-inquirer API', () => {
         );
     });
 
-    test('prompt, prompt module registers plugin', async () => {
+    test('prompt, search arm needs no plugin registration', async () => {
         const adapterRegisterPromptSpy = jest.fn();
         const mockPromptsModule = {
             registerPrompt: adapterRegisterPromptSpy
@@ -168,8 +167,8 @@ describe('ui5-application-inquirer API', () => {
         expect(await prompt(mockInquirerAdapter, promptOpts)).toMatchObject({
             aPrompt: 'a prompt answer'
         });
-        // Ensure autocomplete plugin is registered
-        expect(adapterRegisterPromptSpy).toHaveBeenCalledWith('autocomplete', AutocompletePrompt);
+        // inquirer 13's `search` arm is built-in; no plugin is registered
+        expect(adapterRegisterPromptSpy).not.toHaveBeenCalled();
     });
 
     test('prompt, defaults are applied from prompt options and prompt defaults if advanced option', async () => {

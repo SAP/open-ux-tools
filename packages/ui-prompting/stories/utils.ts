@@ -1,4 +1,4 @@
-import { Answers } from 'inquirer';
+import type { Answers } from '@sap-ux/inquirer-common';
 
 const storageKey = 'storybook-answers';
 

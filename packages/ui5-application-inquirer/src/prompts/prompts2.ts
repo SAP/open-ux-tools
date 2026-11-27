@@ -2,9 +2,8 @@ import { getUI5ThemesChoices } from '@sap-ux/inquirer-common';
 import { defaultVersion, getDefaultUI5Theme } from '@sap-ux/ui5-info';
 import { t } from '../i18n.js';
 import { promptNames } from '../types.js';
-import type { ListChoiceOptions } from 'inquirer';
 import type { UI5ApplicationAnswers, UI5ApplicationQuestion } from '../types.js';
-import type { ConfirmQuestion, ListQuestion } from '@sap-ux/inquirer-common';
+import type { ChoiceOptions, ConfirmQuestion, ListQuestion } from '@sap-ux/inquirer-common';
 
 /**
  * Get the `showAdvanced` prompt.
@@ -37,7 +36,7 @@ export function getUI5ThemePrompt(): UI5ApplicationQuestion {
             applyDefaultWhenDirty: true,
             breadcrumb: true
         },
-        choices: async ({ ui5Version = defaultVersion }): Promise<ListChoiceOptions[]> =>
+        choices: async ({ ui5Version = defaultVersion }): Promise<ChoiceOptions[]> =>
             await getUI5ThemesChoices(ui5Version),
         default: ({ ui5Theme, ui5Version }: UI5ApplicationAnswers): string => {
             ui5Theme ??= getDefaultUI5Theme(ui5Version);

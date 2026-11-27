@@ -3,7 +3,7 @@ import { Questions } from '../src/components';
 import type { PromptQuestion } from '../src';
 import { initIcons } from '@sap-ux/ui-components';
 import { useStorage } from './utils';
-import { Answers } from 'inquirer';
+import type { Answers } from '@sap-ux/inquirer-common';
 
 export default { title: 'Misc/Examples' };
 

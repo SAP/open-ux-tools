@@ -7,7 +7,7 @@ import { UI5Config } from '@sap-ux/ui5-config';
 import type { EntityType } from '@sap-ux/vocabularies-types';
 import type { CollectionFacet } from '@sap-ux/vocabularies-types/vocabularies/UI';
 import type { Specification } from '@sap/ux-specification/dist/types/src';
-import type { CheckboxChoiceOptions } from 'inquirer';
+import type { CheckboxChoiceOptions } from '@sap-ux/inquirer-common';
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { TelemetryHelper } from '../../telemetry/index.js';

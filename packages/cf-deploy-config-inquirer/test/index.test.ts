@@ -18,7 +18,6 @@ import type { CfDeployConfigPromptOptions, CfDeployConfigAnswers } from '../src/
 import type { Logger } from '@sap-ux/logger';
 import type { InquirerAdapter } from '@sap-ux/inquirer-common';
 import inquirer from 'inquirer';
-import AutocompletePrompt from 'inquirer-autocomplete-prompt';
 
 describe('index', () => {
     const mockLog = {
@@ -66,11 +65,11 @@ describe('index', () => {
             promptModule: mockPromptsModule
         };
 
-        // Return an autocomplete question so plugin registration is triggered
-        mockGetQuestions.mockResolvedValue([{ name: 'destinationName', type: 'autocomplete' }]);
+        mockGetQuestions.mockResolvedValue([{ name: 'destinationName', type: 'search' }]);
 
         expect(await prompt(mockInquirerAdapter, promptOptions)).toMatchObject(answers);
-        expect(adapterRegisterPromptSpy).toHaveBeenCalledWith('autocomplete', AutocompletePrompt);
+        // inquirer 13's `search` arm is built-in; no plugin is registered
+        expect(adapterRegisterPromptSpy).not.toHaveBeenCalled();
     });
 
     it('should return prompts from getPrompts with router options enabled', async () => {
@@ -82,41 +81,5 @@ describe('index', () => {
         const prompts = await getPrompts(routerEnabledPromptOptions, mockLog);
         expect(prompts.length).toBe(3);
         expect(mockGetQuestions).toHaveBeenCalledWith(routerEnabledPromptOptions, mockLog);
-    });
-});
-
-describe('registerAutocompletePlugin (via getPrompts)', () => {
-    const mockOptions: CfDeployConfigPromptOptions = {
-        [promptNames.destinationName]: { defaultValue: 'dest', useAutocomplete: true }
-    };
-
-    beforeEach(() => {
-        jest.clearAllMocks();
-        mockGetQuestions.mockImplementation((...args) => realCfPrompts.getQuestions(...args));
-    });
-
-    test('registers autocomplete plugin when promptModule provided and question has autocomplete type', async () => {
-        const mockRegisterPrompt = jest.fn();
-        const mockPromptModule = { registerPrompt: mockRegisterPrompt } as unknown as ReturnType<
-            typeof inquirer.createPromptModule
-        >;
-        mockGetQuestions.mockResolvedValue([{ name: 'destinationName', type: 'autocomplete' }]);
-        await getPrompts(mockOptions, undefined, mockPromptModule);
-        expect(mockRegisterPrompt).toHaveBeenCalledWith('autocomplete', AutocompletePrompt);
-    });
-
-    test('does not register when no autocomplete questions returned', async () => {
-        const mockRegisterPrompt = jest.fn();
-        const mockPromptModule = { registerPrompt: mockRegisterPrompt } as unknown as ReturnType<
-            typeof inquirer.createPromptModule
-        >;
-        mockGetQuestions.mockResolvedValue([{ name: 'destinationName', type: 'list' }]);
-        await getPrompts(mockOptions, undefined, mockPromptModule);
-        expect(mockRegisterPrompt).not.toHaveBeenCalled();
-    });
-
-    test('does not register when promptModule is not provided', async () => {
-        mockGetQuestions.mockResolvedValue([{ name: 'destinationName', type: 'autocomplete' }]);
-        await expect(getPrompts(mockOptions, undefined, undefined)).resolves.not.toThrow();
     });
 });

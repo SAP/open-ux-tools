@@ -6,11 +6,11 @@ import {
     MIN_UI5_VERSION_PAGE_BUILDING_BLOCK,
     MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT
 } from '@sap-ux/fe-fpm-writer';
-import type { ConfirmQuestion, ListQuestion, InputQuestion } from '@sap-ux/inquirer-common';
+import type { ChoiceOptions, ConfirmQuestion, ListQuestion, InputQuestion } from '@sap-ux/inquirer-common';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
 import { readFile } from 'node:fs/promises';
-import type { ListChoiceOptions, Question } from 'inquirer';
+import type { Question } from 'inquirer';
 import type { EntityAnswer } from '../../../../src/prompts/edmx/entity-helper.js';
 import type { EntitySelectionAnswers, PageBuildingBlockAnswers } from '../../../../src/types.js';
 import { dirname, join } from 'node:path';
@@ -92,10 +92,10 @@ describe('Test entity prompts', () => {
         const mainEntityPrompt = questions.find(
             (question) => question.name === EntityPromptNames.mainEntity
         ) as ListQuestion;
-        const mainEntityIndex = (mainEntityPrompt.choices as ListChoiceOptions<EntitySelectionAnswers>[]).findIndex(
-            (choice) => choice.name === 'SEPMRA_C_PD_Product'
-        );
-        expect(mainEntityPrompt?.default).toBe(mainEntityIndex);
+        const mainEntityChoices = mainEntityPrompt.choices as ChoiceOptions<EntitySelectionAnswers>[];
+        const mainEntityIndex = mainEntityChoices.findIndex((choice) => choice.name === 'SEPMRA_C_PD_Product');
+        // inquirer 13's `select`/`search` default is the choice value, not the list index
+        expect(mainEntityPrompt?.default).toBe(mainEntityChoices[mainEntityIndex].value);
 
         // Hide the table layout prompts using option `hideTableLayoutPrompts`
         questions = getEntitySelectionQuestions(metadataV2, 'lrop', false, {
@@ -104,11 +104,11 @@ describe('Test entity prompts', () => {
         expect(questions.find((question) => question.name === EntityPromptNames.tableType)).toBeUndefined();
         expect(questions.find((question) => question.name === EntityPromptNames.hierarchyQualifier)).toBeUndefined();
 
-        // Enable autocomplete for specific prompts using option `autoComplete`
+        // Enable search for specific prompts using option `useAutoComplete`
         questions = getEntitySelectionQuestions(metadataV2, 'lrop', false, {
             useAutoComplete: true
         });
-        const autoCompletePrompts = questions.filter((question) => (question as Question).type === 'autocomplete');
+        const autoCompletePrompts = questions.filter((question) => (question as Question).type === 'search');
         expect(autoCompletePrompts).toEqual(
             expect.arrayContaining([
                 expect.objectContaining({ name: EntityPromptNames.mainEntity }),
@@ -174,10 +174,10 @@ describe('Test entity prompts', () => {
         ) as ListQuestion;
         // Specific entity choices should be tested by the entity helper tests
         expect((mainEntityPrompt.choices as []).length).toBe(38);
-        const mainEntityIndex = (mainEntityPrompt.choices as ListChoiceOptions<EntitySelectionAnswers>[]).findIndex(
-            (choice) => choice.name === 'Customer'
-        );
-        expect(mainEntityPrompt?.default).toBe(mainEntityIndex);
+        const mainEntityChoices = mainEntityPrompt.choices as ChoiceOptions<EntitySelectionAnswers>[];
+        const mainEntityIndex = mainEntityChoices.findIndex((choice) => choice.name === 'Customer');
+        // inquirer 13's `select`/`search` default is the choice value, not the list index
+        expect(mainEntityPrompt?.default).toBe(mainEntityChoices[mainEntityIndex].value);
         questions = getEntitySelectionQuestions(metadataV4WithAggregateTransforms, 'lrop', false, {
             defaultMainEntityName: 'NotFoundEntity'
         });

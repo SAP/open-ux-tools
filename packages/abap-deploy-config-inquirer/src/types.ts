@@ -1,6 +1,14 @@
 import type { AbapTarget } from '@sap-ux/system-access';
 import type { AdaptationProjectType, ServiceProvider } from '@sap-ux/axios-extension';
-import type { CommonPromptOptions, YUIQuestion } from '@sap-ux/inquirer-common';
+import type {
+    Answers,
+    ChoiceOptions,
+    CommonPromptOptions,
+    GuiOptions,
+    YUIQuestionBase,
+    YUIQuestion
+} from '@sap-ux/inquirer-common';
+import type { IMessageSeverity } from '@sap-devx/yeoman-ui-types';
 
 export const enum TargetSystemType {
     Url = 'Url'
@@ -169,7 +177,7 @@ export type IndexPromptOptions = {
 export type PackageAutocompletePromptOptions = PackagePromptOptions & {
     /**
      * Determines if the package autocomplete prompt should use auto complete prompt for packages.
-     * Note that the auto-complete module must be registered with the inquirer instance to use this feature.
+     * When enabled, the package prompt is rendered using inquirer's native `search` arm.
      */
     useAutocomplete?: boolean;
 };
@@ -318,4 +326,33 @@ export enum TransportChoices {
     CreateDuringDeployChoice = 'CreateDuringDeployChoice'
 }
 
-export type AbapDeployConfigQuestion = YUIQuestion<AbapDeployConfigAnswersInternal>;
+/**
+ * YUI autocomplete (type-ahead) question. The App Wizard renders a prompt from its `type` string and
+ * recognises `'autocomplete'` (a text box that calls `source` on each keystroke); it does not render
+ * inquirer 13's native `'search'` arm. inquirer-common has no autocomplete question type (the
+ * `inquirer-autocomplete-prompt` plugin and its `AutocompleteQuestionOptions` were dropped in the
+ * inquirer 8 → 13 migration), so the YUI-renderable shape is declared locally here. The CLI path uses
+ * inquirer 13's `SearchQuestion` instead; the two are produced by a `PromptState.isYUI` ternary.
+ */
+export type AutoCompleteQuestion<A extends Answers = Answers> = {
+    type: 'autocomplete';
+    name: string;
+    message: string | ((answers: A) => string);
+    guiOptions?: GuiOptions;
+    when?: boolean | ((answers: A) => boolean | Promise<boolean>);
+    default?: unknown;
+    /**
+     * Called by the YUI autocomplete renderer on each keystroke with the current answers and typed
+     * input; returns the matching choices to display.
+     */
+    source: (previousAnswers: A, input: string) => Promise<string[] | undefined>;
+    /** Extra text the YUI autocomplete renderer shows beneath the choices (e.g. a "more results" note). */
+    additionalInfo?: () => string;
+    validate?: (input: string | ChoiceOptions, answers: A) => boolean | string | Promise<boolean | string>;
+    additionalMessages?: (input: string) => IMessageSeverity | undefined;
+};
+
+export type AbapDeployConfigQuestion =
+    | YUIQuestion<AbapDeployConfigAnswersInternal>
+    | YUIQuestionBase<AbapDeployConfigAnswersInternal>
+    | AutoCompleteQuestion<AbapDeployConfigAnswersInternal>;

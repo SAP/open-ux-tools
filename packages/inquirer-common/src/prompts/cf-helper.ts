@@ -1,8 +1,8 @@
 import type { ServiceInstanceInfo } from '@sap/cf-tools';
 import { apiGetServicesInstancesFilteredByType as getServicesInstances } from '@sap/cf-tools';
-import type { ListChoiceOptions } from 'inquirer';
 import { ERROR_TYPE, type ErrorHandler } from '../error-handler/error-handler.js';
 import { t } from '../i18n.js';
+import type { ChoiceOptions } from '../types.js';
 import { AbapEnvType } from '@sap-ux/btp-utils';
 
 /**
@@ -13,8 +13,8 @@ import { AbapEnvType } from '@sap-ux/btp-utils';
  */
 export async function getCFAbapInstanceChoices(
     errorHandler: ErrorHandler
-): Promise<ListChoiceOptions<ServiceInstanceInfo>[]> {
-    const choices: ListChoiceOptions[] = [];
+): Promise<ChoiceOptions<ServiceInstanceInfo>[]> {
+    const choices: ChoiceOptions<ServiceInstanceInfo>[] = [];
     try {
         const filteredInstances = [
             AbapEnvType.ABAP,

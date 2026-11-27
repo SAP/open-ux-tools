@@ -1,5 +1,5 @@
 import type { UIAnnotationTerms } from '@sap-ux/vocabularies-types/vocabularies/UI';
-import type { Answers } from 'inquirer';
+import type { Answers } from '@sap-ux/inquirer-common';
 import { join, relative } from 'node:path';
 import { getAnnotationPathQualifiers } from './service.js';
 import { getCapServiceName } from '@sap-ux/project-access';
@@ -65,7 +65,7 @@ export function getAnnotationPathQualifierPrompt(
         type: 'list',
         name: 'buildingBlockData.metaPath.qualifier',
         choices: project
-            ? async (answers) => {
+            ? async (answers: Answers) => {
                   const { entitySet, bindingContextType } = answers.buildingBlockData?.metaPath ?? {};
                   if (!entitySet) {
                       return [];
@@ -415,7 +415,10 @@ export function getFilterBarIdPrompt(
 ): ListPromptQuestion | InputPromptQuestion {
     const { fs, project, appPath } = context;
     const { guiOptions } = properties;
-    const prompt: InputPromptQuestion = {
+    // `properties` is a List|Input union, so spreading it cannot resolve to a single arm (the
+    // select-only `choices`/`filter`/`theme` fields leak). A single assertion to the input arm is
+    // irreducible here; the object is otherwise input-shaped (type/name/guiOptions set below).
+    const prompt = {
         ...properties,
         type: 'input',
         name: 'buildingBlockData.filterBar',
@@ -423,7 +426,7 @@ export function getFilterBarIdPrompt(
             ...guiOptions,
             placeholder: guiOptions?.placeholder ?? (t('filterBar.defaultPlaceholder') as string)
         }
-    };
+    } as InputPromptQuestion;
     if (properties.type === 'input') {
         return prompt;
     }

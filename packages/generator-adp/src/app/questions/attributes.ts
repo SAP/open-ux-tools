@@ -1,6 +1,6 @@
 import type { Prompts as YeomanUiSteps } from '@sap-devx/yeoman-ui-types';
 
-import type { ConfirmQuestion, InputQuestion, ListQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
+import type { ConfirmQuestion, InputQuestion, YUIQuestionBase } from '@sap-ux/inquirer-common';
 import {
     type AttributesAnswers,
     FlexLayer,
@@ -160,13 +160,13 @@ function getNamespacePrompt(isCustomerBase: boolean, options?: NamespacePromptOp
         type: 'input',
         name: attributePromptNames.namespace,
         message: t('prompts.namespaceLabel'),
-        default: (answers: AttributesAnswers) =>
-            options?.default ?? getDefaultNamespace(answers.projectName, isCustomerBase),
+        default: (answers: Partial<AttributesAnswers> = {}) =>
+            options?.default ?? getDefaultNamespace(answers.projectName ?? '', isCustomerBase),
         guiOptions: {
             applyDefaultWhenDirty: true
         },
         store: false
-    } as InputQuestion;
+    };
 
     if (!isCustomerBase) {
         prompt.guiOptions!.type = 'label';
@@ -174,8 +174,8 @@ function getNamespacePrompt(isCustomerBase: boolean, options?: NamespacePromptOp
     } else {
         prompt.guiOptions!.mandatory = true;
         prompt.guiOptions!.breadcrumb = true;
-        prompt.validate = (value, answers: AttributesAnswers) =>
-            validateNamespaceAdp(value, answers.projectName, isCustomerBase);
+        prompt.validate = (value, answers?: Partial<AttributesAnswers>) =>
+            validateNamespaceAdp(value, answers?.projectName ?? '', isCustomerBase);
     }
 
     return prompt;
@@ -232,15 +232,15 @@ function getUi5VersionPrompt(
         validate: async (version: string) => await validateUI5VersionExists(version),
         default: async () => await getDefaultVersion(ui5Versions),
         additionalMessages: () => getVersionAdditionalMessages(isVersionDetected)
-    } as ListQuestion<AttributesAnswers>;
+    };
 }
 
 /**
  * Only used in the CLI context when prompt is of type `list` because the validation does not run on CLI for the UI5 Version list prompt.
  *
- * @returns {YUIQuestion<AttributesAnswers>} Dummy prompt that runs in the CLI only.
+ * @returns {YUIQuestionBase<AttributesAnswers>} Dummy prompt that runs in the CLI only.
  */
-function getUi5VersionValidationPromptForCli(): YUIQuestion<AttributesAnswers> {
+function getUi5VersionValidationPromptForCli(): YUIQuestionBase<AttributesAnswers> {
     return {
         name: attributePromptNames.ui5ValidationCli,
         when: async (answers: AttributesAnswers): Promise<boolean> => {
@@ -255,7 +255,7 @@ function getUi5VersionValidationPromptForCli(): YUIQuestion<AttributesAnswers> {
 
             return false;
         }
-    } as YUIQuestion;
+    };
 }
 
 /**

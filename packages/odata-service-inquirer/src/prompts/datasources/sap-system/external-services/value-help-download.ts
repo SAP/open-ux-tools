@@ -1,4 +1,4 @@
-import type { ConfirmQuestion } from '@sap-ux/inquirer-common';
+import type { ConfirmQuestion, YUIQuestionBase, YUIQuestion } from '@sap-ux/inquirer-common';
 import { sendTelemetryEvent, getTelemetryClient } from '@sap-ux/inquirer-common';
 import { promptNames } from '../../../../types.js';
 import type { ConnectionValidator } from '../../../connectionValidator.js';
@@ -12,7 +12,6 @@ import { t } from '../../../../i18n.js';
 import { getPromptHostEnvironment, PromptState } from '../../../../utils/index.js';
 import { hostEnvironment, TelemetryHelper } from '@sap-ux/fiori-generator-shared';
 import { SampleRate } from '@sap-ux/telemetry';
-import type { Question } from 'inquirer';
 
 // Telemetry event names
 const telemEventValueHelpDownloadPrompted = 'VALUE_HELP_DOWNLOAD_PROMPTED';
@@ -130,7 +129,7 @@ export function getValueHelpDownloadPrompt(
     convertedMetadataRef?: {
         convertedMetadata: ConvertedMetadata | undefined;
     }
-): Question[] {
+): (YUIQuestion | YUIQuestionBase)[] {
     const promptNamespacePart = `${promptNamespace ? promptNamespace + ':' : ''}`;
     const promptName = `${promptNamespacePart}${promptNames.valueHelpDownload}`;
     const servicePromptName = `${promptNamespacePart}${promptNames.serviceSelection}`;
@@ -157,17 +156,20 @@ export function getValueHelpDownloadPrompt(
         validate: async (downloadMetadata: boolean) => {
             // Only run download in YUI mode - CLI mode will use the hidden prompt below
             if (getPromptHostEnvironment() !== hostEnvironment.cli) {
-                await performValueHelpDownload(downloadMetadata, connectionValidator, externalServiceRefs);
+                await performValueHelpDownload(downloadMetadata as boolean, connectionValidator, externalServiceRefs);
             }
             return true;
         }
     };
 
-    const questions: Question[] = [valueHelpPrompt];
+    const questions: (YUIQuestion | YUIQuestionBase)[] = [valueHelpPrompt];
 
     // Add CLI-specific hidden prompt to handle the download
     // This is necessary because validate functions don't execute for confirm prompts in CLI mode
     if (getPromptHostEnvironment() === hostEnvironment.cli) {
+        // Hidden CLI hook: `when` always returns false so it never renders; the vestigial `type: 'input'`
+        // (retained from the pre-inquirer-13 object) is an excess property on `YUIQuestionBase`,
+        // so a narrow cast bridges the retained shape.
         questions.push({
             when: async (answers: Record<string, any>) => {
                 const downloadMetadata = answers?.[promptName] as boolean | undefined;
@@ -178,7 +180,7 @@ export function getValueHelpDownloadPrompt(
             },
             name: cliDownloadPromptName,
             type: 'input'
-        } as Question);
+        } as YUIQuestionBase);
     }
 
     return questions;

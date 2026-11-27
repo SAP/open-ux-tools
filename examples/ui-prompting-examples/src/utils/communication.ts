@@ -1,4 +1,4 @@
-import type { Answers } from 'inquirer';
+import type { Answers } from '@sap-ux/inquirer-common';
 import {
     GET_PROJECT_PATH,
     SET_PROJECT_PATH,
@@ -146,9 +146,9 @@ const QUESTIONS_TYPE_MAP = new Map([
  * @param type Prompt type
  * @returns Prompt with questions for passed prompt type.
  */
-export function getQuestions<T extends Answers>(
+export function getQuestions(
     type: PromptsType
-): Promise<{ questions: PromptQuestion<T>[]; groups?: PromptsGroup[]; initialAnswers?: Subset<T> }> {
+): Promise<{ questions: PromptQuestion[]; groups?: PromptsGroup[]; initialAnswers?: Subset<Answers> }> {
     return new Promise((resolve, reject) => {
         const getAction: GetQuestions = {
             type: GET_QUESTIONS,

@@ -5,9 +5,10 @@ import { t } from '../../../i18n.js';
 import {
     promptNames,
     type AbapDeployConfigAnswersInternal,
-    type AbapDeployConfigPromptOptions
+    type AbapDeployConfigPromptOptions,
+    type AbapDeployConfigQuestion
 } from '../../../types.js';
-import type { InputQuestion, Question } from 'inquirer';
+import type { InputQuestion } from '@sap-ux/inquirer-common';
 
 /**
  * Returns the UI5 ABAP repository prompt.
@@ -15,7 +16,7 @@ import type { InputQuestion, Question } from 'inquirer';
  * @param options - aba deploy config prompt options
  * @returns input question for UI5 ABAP repository
  */
-function getUi5AbapRepoPrompt(options: AbapDeployConfigPromptOptions): Question<AbapDeployConfigAnswersInternal> {
+function getUi5AbapRepoPrompt(options: AbapDeployConfigPromptOptions): AbapDeployConfigQuestion {
     return {
         when: (): boolean => showUi5AppDeployConfigQuestion(options.ui5AbapRepo),
         type: 'input',
@@ -46,7 +47,7 @@ function getUi5AbapRepoPrompt(options: AbapDeployConfigPromptOptions): Question<
  * @param options - abap deploy config prompt options
  * @returns input question for description
  */
-function getDescriptionPrompt(options: AbapDeployConfigPromptOptions): Question<AbapDeployConfigAnswersInternal> {
+function getDescriptionPrompt(options: AbapDeployConfigPromptOptions): AbapDeployConfigQuestion {
     return {
         when: (): boolean => showUi5AppDeployConfigQuestion(options.ui5AbapRepo),
         type: 'input',
@@ -69,8 +70,6 @@ function getDescriptionPrompt(options: AbapDeployConfigPromptOptions): Question<
  * @param options - abap deploy config prompt options
  * @returns list of list of questions for app config prompting
  */
-export function getAppConfigPrompts(
-    options: AbapDeployConfigPromptOptions
-): Question<AbapDeployConfigAnswersInternal>[] {
+export function getAppConfigPrompts(options: AbapDeployConfigPromptOptions): AbapDeployConfigQuestion[] {
     return [getUi5AbapRepoPrompt(options), getDescriptionPrompt(options)];
 }

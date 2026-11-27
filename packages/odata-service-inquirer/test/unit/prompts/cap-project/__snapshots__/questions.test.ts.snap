@@ -12,7 +12,6 @@ exports[`getLocalCapProjectPrompts getLocalCapProjectPrompts, returns expected p
     },
     "message": "Choose a CAP Project",
     "name": "capProject",
-    "source": [Function],
     "type": "list",
     "when": [Function],
   },

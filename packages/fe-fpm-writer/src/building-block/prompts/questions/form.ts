@@ -1,4 +1,4 @@
-import type { Answers } from 'inquirer';
+import type { Answers } from '@sap-ux/inquirer-common';
 import { SapShortTextType } from '@sap-ux/i18n';
 import { UIAnnotationTerms } from '@sap-ux/vocabularies-types/vocabularies/UI';
 

@@ -1,8 +1,8 @@
 import { jest } from '@jest/globals';
 import type { UI5Version } from '@sap-ux/ui5-info';
-import type { InquirerAdapter } from '@sap-ux/inquirer-common';
+import type { InquirerAdapter, ListQuestion } from '@sap-ux/inquirer-common';
 import type { UI5LibraryAnswers } from '../../src/types.js';
-import type { Answers, ListQuestion } from 'inquirer';
+import type { Answers } from 'inquirer';
 
 const mockGetUI5Versions = jest.fn<() => Promise<UI5Version[]>>();
 const mockExecuteNpmUI5VersionsCmd = jest.fn<() => Promise<string[]>>();
@@ -39,10 +39,6 @@ jest.unstable_mockModule('inquirer', () => ({
         createPromptModule: mockCreatePromptModule
     },
     createPromptModule: mockCreatePromptModule
-}));
-
-jest.unstable_mockModule('inquirer-autocomplete-prompt', () => ({
-    default: jest.fn()
 }));
 
 const { getPrompts, prompt } = await import('../../src/index.js');
@@ -215,7 +211,7 @@ describe('API test', () => {
         `);
         expect(mockGetUI5Versions).toHaveBeenCalled();
         expect(mockGetQuestions).toHaveBeenCalled();
-        expect(mockRegisterPrompt).toHaveBeenCalledWith('autocomplete', expect.any(Function));
+        expect(mockRegisterPrompt).not.toHaveBeenCalled();
         expect(mockPrompt).toHaveBeenCalledWith(questions);
     });
 
@@ -267,6 +263,6 @@ describe('API test', () => {
         expect(mockRegisterPrompt).not.toHaveBeenCalled();
         expect(mockPrompt).not.toHaveBeenCalled();
         expect(mockAdapterPrompt).toHaveBeenCalledWith([{ message: 'Test Prompt', name: 'testPrompt' }]);
-        expect(mockAdapterRegisterPrompt).toHaveBeenCalledWith('autocomplete', expect.any(Function));
+        expect(mockAdapterRegisterPrompt).not.toHaveBeenCalled();
     });
 });

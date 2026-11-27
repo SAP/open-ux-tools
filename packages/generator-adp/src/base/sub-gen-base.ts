@@ -3,7 +3,7 @@ import type { Prompts, AppWizard as AppWizardType } from '@sap-devx/yeoman-ui-ty
 import { AppWizard } from '@sap-devx/yeoman-ui-types';
 
 import type { ToolsLogger } from '@sap-ux/logger';
-import type { InputQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
+import type { InputQuestion } from '@sap-ux/inquirer-common';
 
 import { t } from '../utils/i18n.js';
 import type { GeneratorTypes } from '../types.js';
@@ -104,9 +104,9 @@ export default class SubGeneratorBase extends Generator {
      * Builds a Yeoman question that simply displays the error message and blocks the wizard.
      *
      * @param {string} errorMessage - Human-readable error message.
-     * @returns {YUIQuestion<InputQuestion>} The Yeoman question that displays the error message.
+     * @returns {InputQuestion} The Yeoman question that displays the error message.
      */
-    private _getErrorMessagePrompt(errorMessage: string): YUIQuestion<InputQuestion> {
+    private _getErrorMessagePrompt(errorMessage: string): InputQuestion {
         return {
             type: 'input',
             name: 'errorMessagePrompt',

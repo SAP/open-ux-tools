@@ -1,5 +1,6 @@
-import type { Answers, DistinctChoice } from 'inquirer';
 import type {
+    Answers,
+    ChoiceOptions,
     CheckBoxQuestion,
     InputQuestion,
     ListQuestion,
@@ -87,10 +88,18 @@ export interface InputGuiOptions extends GuiOptions {
 }
 
 /**
+ * `message` is rendered by the `@sap-ux/ui-prompting` React layer rather than inquirer's CLI
+ * renderer, so builder functions may construct these questions without it and the consumer
+ * supplies it later. inquirer 13 made `message` required on the underlying arms, so it is
+ * widened back to optional here to preserve that contract.
+ */
+type OptionalMessage<T extends { message?: unknown }> = Omit<T, 'message'> & { message?: T['message'] };
+
+/**
  * Represents a question prompt for list question with dropdown visualization.
  * Combines properties of ListQuestion and BasePromptQuestion.
  */
-export interface ListPromptQuestion<T extends Answers = Answers> extends ListQuestion<T> {
+export interface ListPromptQuestion<T extends Answers = Answers> extends OptionalMessage<ListQuestion<T>> {
     /**
      * Additional properties for ui.
      */
@@ -101,7 +110,7 @@ export interface ListPromptQuestion<T extends Answers = Answers> extends ListQue
  * Represents a question prompt for input with simple input visualization.
  * Combines properties of ListQuestion and BasePromptQuestion.
  */
-export interface InputPromptQuestion<T extends Answers = Answers> extends InputQuestion<T> {
+export interface InputPromptQuestion<T extends Answers = Answers> extends OptionalMessage<InputQuestion<T>> {
     /**
      * Additional properties for ui.
      */
@@ -112,7 +121,7 @@ export interface InputPromptQuestion<T extends Answers = Answers> extends InputQ
  * Represents a question prompt for checkbox.
  * Combines properties of CheckboxQuestion and BasePromptQuestion.
  */
-export interface CheckboxPromptQuestion<T extends Answers = Answers> extends CheckBoxQuestion<T> {
+export interface CheckboxPromptQuestion<T extends Answers = Answers> extends OptionalMessage<CheckBoxQuestion<T>> {
     /**
      * Additional properties for ui.
      */
@@ -131,7 +140,7 @@ export interface ValidationResults {
     [questionName: string]: ValidationResult;
 }
 
-export type PromptListChoices = ReadonlyArray<DistinctChoice>;
+export type PromptListChoices = ReadonlyArray<string | ChoiceOptions<AnswerValue>>;
 
 export interface DynamicChoices {
     [key: string]: PromptListChoices;
