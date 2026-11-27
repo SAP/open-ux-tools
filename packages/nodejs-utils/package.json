@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/nodejs-utils",
-    "version": "1.0.15",
+    "version": "1.0.16",
     "description": "Nodejs utility wrappers",
     "type": "module",
     "repository": {
@@ -31,7 +31,7 @@
         "fast-glob": "3.3.3",
         "i18next": "26.5.11",
         "read-package-up": "12.0.0",
-        "semver": "7.8.5"
+        "semver": "7.8.6"
     },
     "devDependencies": {
         "@jest/globals": "30.5.2",

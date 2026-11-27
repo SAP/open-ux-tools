@@ -18,7 +18,6 @@ await initI18n();
 /**
  * Builds a `OpaPageWriteInfo` with the same shape that the writer produces:
  * `fileName` carries the `.gen` suffix and `dotFileExtension` is the file's extension with leading dot.
- *
  * @param targetKey - the page's target key (matches the manifest target id)
  * @returns a fully populated OpaPageWriteInfo
  */
@@ -57,7 +56,6 @@ const JOURNEY_RUNNER_FILE = `sap.ui.define([
 
 /**
  * Builds a TS-shaped `OpaPageWriteInfo` with all the metadata fields the TS splicer needs.
- *
  * @param targetKey - the page's target key
  * @param template - the framework template
  * @returns a fully populated OpaPageWriteInfo

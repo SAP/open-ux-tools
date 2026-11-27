@@ -1,5 +1,22 @@
 # @sap-ux-private/adaptation-editor-tests
 
+## 1.0.35
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.3.6 → 2.3.7
+
+## 1.0.34
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.3.5 → 2.3.6
+- @sap-ux/ui5-info 1.0.8 → 1.0.9
+
 ## 1.0.33
 
 ### Patch Changes

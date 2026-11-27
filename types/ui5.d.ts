@@ -161,7 +161,6 @@ declare module '@ui5/fs/resourceFactory' {
 
     /**
      * Creates a filesystem reader with paths rooted in a virtual namespace.
-     *
      * @param options Filesystem and virtual root paths.
      * @param options.fsBasePath Filesystem directory containing the source files.
      * @param options.virBasePath Virtual namespace root for the source files.
@@ -171,7 +170,6 @@ declare module '@ui5/fs/resourceFactory' {
 
     /**
      * Creates a workspace backed by a reader and an in-memory writer.
-     *
      * @param options Source reader.
      * @param options.reader Reader providing the workspace's source files.
      * @returns A workspace for reading and modifying resources.

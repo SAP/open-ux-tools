@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/ui-components",
-    "version": "4.0.1",
+    "version": "4.0.2",
     "license": "Apache-2.0",
     "description": "SAP UI Components Library",
     "type": "module",
@@ -34,11 +34,11 @@
         "test-u": "cross-env NODE_OPTIONS='--experimental-vm-modules' jest --ci --forceExit --colors  --silent -u"
     },
     "dependencies": {
-        "@fluentui/react": "8.125.8",
+        "@fluentui/react": "8.125.10",
         "react-movable": "3.4.1",
         "react-select": "5.10.2",
         "react-virtualized": "9.22.6",
-        "sanitize-html": "2.18.1",
+        "sanitize-html": "2.18.2",
         "uuid": "14.0.3"
     },
     "peerDependencies": {
@@ -52,8 +52,8 @@
         "@babel/preset-react": "7.28.5",
         "@babel/preset-typescript": "7.28.5",
         "@jest/globals": "30.5.2",
-        "@storybook/react": "10.5.1",
-        "@storybook/react-webpack5": "10.5.1",
+        "@storybook/react": "10.6.8",
+        "@storybook/react-webpack5": "10.6.8",
         "@testing-library/jest-dom": "6.9.1",
         "@testing-library/react": "12.1.5",
         "@types/react": "18.3.23",
@@ -69,13 +69,13 @@
         "eslint-plugin-storybook": "0.6.15",
         "jest-environment-jsdom": "30.5.2",
         "jest-scss-transform": "1.0.4",
-        "npm-run-all2": "9.0.4",
+        "npm-run-all2": "9.1.0",
         "react": "18.3.1",
         "react-dom": "18.3.1",
         "require-from-string": "2.0.2",
-        "sass": "1.102.0",
+        "sass": "1.108.2",
         "sass-loader": "16.0.7",
-        "storybook": "10.5.1",
+        "storybook": "10.6.8",
         "storybook-addon-turbo-build": "2.0.1",
         "style-loader": "4.0.0",
         "ts-loader": "9.6.2"

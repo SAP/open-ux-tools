@@ -5,7 +5,7 @@ import type { Manifest } from '@sap-ux/project-access';
 import type { InputQuestion, ListQuestion } from '@sap-ux/inquirer-common';
 import type { CfConfig, CFApp, ServiceInfo, CfServicesAnswers, CfServiceInstanceChoice } from '@sap-ux/adp-tooling';
 
-const mockValidateBusinessSolutionName = jest.fn<typeof realValidators.validateBusinessSolutionName>();
+const mockValidateBusinessSolutionName = jest.fn<typeof realAdpTooling.validateBusinessSolutionName>();
 const mockGetAppRouterChoices = jest.fn<typeof realChoices.getAppRouterChoices>();
 const mockGetCFAppChoices = jest.fn<typeof realChoices.getCFAppChoices>();
 const mockGetServiceInstanceChoices = jest.fn<typeof realChoices.getServiceInstanceChoices>();
@@ -23,12 +23,6 @@ const mockDownloadAppContent = jest.fn<typeof realAdpTooling.downloadAppContent>
 const mockValidateSmartTemplateApplication = jest.fn<typeof realAdpTooling.validateSmartTemplateApplication>();
 const mockValidateODataEndpoints = jest.fn<typeof realAdpTooling.validateODataEndpoints>();
 const mockGetBusinessServiceInfo = jest.fn<typeof realAdpTooling.getBusinessServiceInfo>();
-
-const realValidators = await import('../../../src/app/questions/helper/validators.js');
-jest.unstable_mockModule('../../../src/app/questions/helper/validators', () => ({
-    ...realValidators,
-    validateBusinessSolutionName: mockValidateBusinessSolutionName
-}));
 
 const realChoices = await import('../../../src/app/questions/helper/choices.js');
 jest.unstable_mockModule('../../../src/app/questions/helper/choices', () => ({
@@ -59,7 +53,8 @@ jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
     downloadAppContent: mockDownloadAppContent,
     validateSmartTemplateApplication: mockValidateSmartTemplateApplication,
     validateODataEndpoints: mockValidateODataEndpoints,
-    getBusinessServiceInfo: mockGetBusinessServiceInfo
+    getBusinessServiceInfo: mockGetBusinessServiceInfo,
+    validateBusinessSolutionName: mockValidateBusinessSolutionName
 }));
 
 const { AppRouterType, cfServicesPromptNames } = await import('@sap-ux/adp-tooling');
@@ -125,7 +120,8 @@ const mockCFApp: CFApp = {
 describe('CFServicesPrompter', () => {
     const mockLogger: ToolsLogger = {
         log: jest.fn(),
-        error: jest.fn()
+        error: jest.fn(),
+        info: jest.fn()
     } as unknown as ToolsLogger;
 
     beforeAll(async () => {

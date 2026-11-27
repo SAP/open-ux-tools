@@ -5,8 +5,8 @@ import type { CfConfig, CfServiceInstanceChoice } from '@sap-ux/adp-tooling';
 const mockGetAdpServiceInstances = jest.fn<typeof realAdpTooling.getAdpServiceInstances>();
 const mockGetModuleNames = jest.fn<typeof realAdpTooling.getModuleNames>();
 const mockHasApprouter = jest.fn<typeof realAdpTooling.hasApprouter>();
-const mockValidateProjectPath = jest.fn<typeof realValidators.validateProjectPath>();
-const mockValidateMtaId = jest.fn<typeof realValidators.validateMtaId>();
+const mockValidateProjectPath = jest.fn<typeof realAdpTooling.validateProjectPath>();
+const mockValidateMtaId = jest.fn<typeof realAdpTooling.validateMtaId>();
 const mockRealpathSync = jest.fn<(typeof realFs.realpathSync)['native']>();
 
 const realFs = await import('node:fs');
@@ -21,12 +21,7 @@ jest.unstable_mockModule('@sap-ux/adp-tooling', () => ({
     ...realAdpTooling,
     getAdpServiceInstances: mockGetAdpServiceInstances,
     getModuleNames: mockGetModuleNames,
-    hasApprouter: mockHasApprouter
-}));
-
-const realValidators = await import('../../../../src/app/questions/helper/validators.js');
-jest.unstable_mockModule('../../../../src/app/questions/helper/validators', () => ({
-    ...realValidators,
+    hasApprouter: mockHasApprouter,
     validateProjectPath: mockValidateProjectPath,
     validateMtaId: mockValidateMtaId
 }));

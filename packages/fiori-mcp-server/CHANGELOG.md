@@ -1,5 +1,73 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.18.1
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade fast-xml-parser 5.11.2→5.12.1, qs 6.16.0→6.17.1, @sap/approuter 23.3.0→23.5.0, @langchain/core 1.3.1→1.5.0, @sap-ai-sdk/foundation-models+langchain 2.17.0→2.18.0 [[814f624](https://github.com/SAP/open-ux-tools/commit/814f624adf781f14a9af469d247a732439d92fc5)]
+
+## 1.18.0
+
+### Minor Changes
+
+#### Features
+
+- Support headless Cloud Foundry adaptation generation with shared validators, MCP preflight, and explicit service selection when discovery is incomplete [[183e9dd](https://github.com/SAP/open-ux-tools/commit/183e9ddff96dc793767b20541b2980c99affdc61)]
+
+## 1.17.5
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-26
+
+#### Bug Fixes
+
+- Validate the configured SAPUI5 version before opening the adaptation editor, starting or restarting RTA, and reading OData metadata, including internal snapshot versions and the latest-version default for Cloud Foundry projects without a configured version.
+
+    Report thrown validation failures as MCP tool errors so clients can display them for tools with output schemas.
+    Validation errors instruct callers to report unsupported versions and stop without suggesting, offering, or performing version changes unless the user explicitly requests them.
+    Allow these checks to be skipped by setting `SAP_FIORI_MCP_SKIP_UI5_VERSION_VALIDATION=true` in the server environment; validation remains enabled by default. [[ffc9e92](https://github.com/SAP/open-ux-tools/commit/ffc9e92be08e5b92d33a9235d7ea5d2974ba995b)]
+
+## 1.17.4
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-26
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/adp-tooling and @sap-ux/axios-extension [[9689a3a](https://github.com/SAP/open-ux-tools/commit/9689a3a6c5df2ef001b4dd16db188f7bcdc273b4)]
+
+## 1.17.3
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-26
+
+#### Bug Fixes
+
+- Add bb-sync.test.ts to catch unwired BuildingBlockType entries and developer skill for wiring new types [[5661178](https://github.com/SAP/open-ux-tools/commit/56611784c00520886bcc4faef21fbdfaf9a52a7c)]
+
+## 1.17.2
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade @sap/service-provider-apis 2.13.2→2.13.4, @fluentui/react 8.125.8→8.125.10, @langchain/mcp-adapters 2.0.1→2.0.3, @modelcontextprotocol/sdk 1.32.1→1.32.2 [[4b49abf](https://github.com/SAP/open-ux-tools/commit/4b49abf8d3b80759fc6ecfdc1a65f999523b3b15)]
+
+#### Dependency Updates
+
+- Rebuild bundles with updated @sap-ux/adp-tooling, @sap-ux/project-access, @sap-ux-private/preview-middleware-client [[adfa16e](https://github.com/SAP/open-ux-tools/commit/adfa16e598c7a609fd5eeaca458fc02ad73a10c1)]
+
 ## 1.17.1
 
 ### Patch Changes

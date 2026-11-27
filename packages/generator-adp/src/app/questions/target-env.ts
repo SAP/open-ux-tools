@@ -3,14 +3,14 @@ import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { CfConfig } from '@sap-ux/adp-tooling';
-import { isMtaProject } from '@sap-ux/adp-tooling';
+import { isMtaProject, validateMtaId, validateProjectPath } from '@sap-ux/adp-tooling';
 import { getDefaultTargetFolder } from '@sap-ux/fiori-generator-shared';
 import type { InputQuestion, ListQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
 
 import { t } from '../../utils/i18n.js';
 import { MtaMode, TargetEnv } from '../types.js';
 import { getTargetEnvAdditionalMessages } from './helper/additional-messages.js';
-import { validateEnvironment, validateMtaId, validateProjectPath } from './helper/validators.js';
+import { validateEnvironment } from './helper/validators.js';
 import type { ProjectLocationAnswers, TargetEnvAnswers, TargetEnvQuestion } from '../types.js';
 
 type EnvironmentChoice = { name: string; value: TargetEnv };

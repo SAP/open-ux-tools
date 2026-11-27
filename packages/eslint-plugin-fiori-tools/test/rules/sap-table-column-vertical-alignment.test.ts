@@ -22,7 +22,6 @@ const { createValidTest, createInvalidTest } = setup(TEST_NAME);
 
 /**
  * Updates manifest for testing tableColumnVerticalAlignment rule.
- *
  * @param tableColumnVerticalAlignment Tested property value.
  * @param page Page that has a Responsive type table.
  * @param ui5Version Minimum UI5 version.

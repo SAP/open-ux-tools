@@ -1,5 +1,41 @@
 # sap-ux-sap-systems-ext
 
+## 1.0.58
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-26
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/axios-extension, @sap-ux/project-access [[814f624](https://github.com/SAP/open-ux-tools/commit/814f624adf781f14a9af469d247a732439d92fc5)]
+
+## 1.0.57
+
+### Patch Changes
+
+#### Features
+
+- Enhanced loging in Adaptation project creation wizard [[9689a3a](https://github.com/SAP/open-ux-tools/commit/9689a3a6c5df2ef001b4dd16db188f7bcdc273b4)]
+
+## 1.0.56
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-25
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/axios-extension, @sap-ux/project-access, @sap-ux/ui5-config, @sap-ux/telemetry, @sap-ux/store, @sap-ux/nodejs-utils, @sap-ux/ui-components [[c9cb1de](https://github.com/SAP/open-ux-tools/commit/c9cb1de93fd3859f95618b8041b033e8c12ca55f)]
+
+#### Dependency Updates
+
+- Rebuild bundles with updated @sap-ux/adp-tooling, @sap-ux/project-access, @sap-ux-private/preview-middleware-client [[adfa16e](https://github.com/SAP/open-ux-tools/commit/adfa16e598c7a609fd5eeaca458fc02ad73a10c1)]
+
 ## 1.0.55
 
 ### Patch Changes
