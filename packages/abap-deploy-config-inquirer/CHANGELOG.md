@@ -1,5 +1,17 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 2.0.65
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-27
+
+#### Bug Fixes
+
+- [ADP] Remove scp flag from the deploy wizard prompt's visibility check. [[719754f](https://github.com/SAP/open-ux-tools/commit/719754ff41d9e5cc170b60fa2e721f4a7682894d)]
+
 ## 2.0.64
 
 ### Patch Changes

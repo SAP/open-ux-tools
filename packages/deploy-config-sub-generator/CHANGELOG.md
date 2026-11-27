@@ -1,5 +1,17 @@
 # @sap-ux/deploy-config-sub-generator
 
+## 1.0.100
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-27
+
+#### Workspace Updates
+
+- @sap-ux/abap-deploy-config-sub-generator 1.0.86 → 1.0.87
+
 ## 1.0.99
 
 ### Patch Changes
