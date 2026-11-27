@@ -17,9 +17,9 @@ const __testdirname = dirname(fileURLToPath(import.meta.url));
 // CJS mock for 'fs' — intercepted by yeoman-generator and other CJS consumers
 jest.mock('fs', () => {
     const fsLib = jest.requireActual('fs');
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+
     const Union = require('unionfs').Union;
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+
     const vol = require('memfs').vol;
     const _fs = new Union().use(fsLib);
     const unionFs = _fs.use(vol as unknown as typeof fs);
@@ -43,7 +43,7 @@ jest.unstable_mockModule('node:fs', () => ({
 
 const mockHasbinSync = jest.fn() as jest.Mock;
 
-jest.unstable_mockModule('hasbin', () => ({
+jest.unstable_mockModule('which', () => ({
     default: { sync: mockHasbinSync },
     sync: mockHasbinSync
 }));
@@ -1053,7 +1053,7 @@ describe('Cloud foundry generator tests', () => {
                 .withPrompts({})
                 .run()
         ).resolves.not.toThrow();
-        expect(mockHasbinSync).toHaveBeenCalledWith('mta');
+        expect(mockHasbinSync).toHaveBeenCalledWith('mta', { nothrow: true });
         expect(mockFindCapProjectRoot).toHaveBeenCalled();
     });
 

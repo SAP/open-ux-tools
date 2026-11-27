@@ -57,7 +57,6 @@ const { downloadODataServiceMetadata } = await import('../../../src/tools/downlo
  *
  * Override options only in tests that specifically exercise one of the fs guards.
  * Paths not handled here fall through to the real fs implementation.
- *
  * @param appPath - the appPath value passed to the tool under test
  * @param options - override options for specific guard scenarios (all default to happy-path values)
  * @param options.appPathExists - whether appPath exists on the filesystem (default true)

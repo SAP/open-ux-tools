@@ -34,7 +34,6 @@ describe('waitForLogin', () => {
      * Builds a fake `Page` whose `waitForFunction` is driven by `impl` and whose
      * `isClosed()` reflects `closed`. Lets a test simulate a live page with a slow
      * probe, a live page whose UI5 loader appears, or a closed/gone target.
-     *
      * @param impl The `waitForFunction` behaviour; invoked once per probe iteration.
      * @param closed Whether the page reports itself as closed.
      * @returns A fake page plus the `waitForFunction` spy.

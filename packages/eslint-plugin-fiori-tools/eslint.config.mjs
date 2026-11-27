@@ -1,4 +1,4 @@
-import base from '../../eslint.config.mjs';
+import { createConfig } from '../../eslint.config.mjs';
 import eslintPlugin from 'eslint-plugin-eslint-plugin';
 
 
@@ -11,6 +11,6 @@ export default [
             'test/babel-eslint-parser.transformer.cjs'
         ]
     },
-    ...base,
+    ...createConfig(import.meta.dirname),
     eslintPlugin.configs.recommended
 ];

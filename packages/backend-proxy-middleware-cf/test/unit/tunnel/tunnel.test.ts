@@ -46,7 +46,6 @@ function createMockChildProcess(): EventEmitter & { killed: boolean; kill: jest.
 
 /**
  * Create a mock server that simulates net.createServer() for isPortInUse.
- *
  * @param portInUse - Whether the port should appear in use.
  * @returns A mock server EventEmitter.
  */
@@ -68,7 +67,6 @@ function createMockServer(portInUse: boolean): EventEmitter & { listen: jest.Moc
 
 /**
  * Create a mock socket that simulates net.connect() for waitForPort.
- *
  * @param connectSucceeds - Whether the connection should succeed.
  * @returns A mock socket EventEmitter.
  */

@@ -1,10 +1,10 @@
-import baseConfig from '../../eslint.config.mjs';
+import { createConfig } from '../../eslint.config.mjs';
 
 export default [
     {
-        ignores: ['test/input/**']
+        ignores: ['test/input/**', 'test-output/**']
     },
-    ...baseConfig,
+    ...createConfig(import.meta.dirname),
     {
         files: ['test/**/*.ts'],
         rules: {

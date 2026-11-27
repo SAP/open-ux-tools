@@ -1,5 +1,57 @@
 # @sap-ux/control-property-editor
 
+## 1.0.22
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-25
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/ui-components [[adfa16e](https://github.com/SAP/open-ux-tools/commit/adfa16e598c7a609fd5eeaca458fc02ad73a10c1)]
+
+## 1.0.21
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade uuid 11.1.1 → 14.0.3 [[0ade21d](https://github.com/SAP/open-ux-tools/commit/0ade21d80bbbe39fecb4681e4bd18cd3471a5264)]
+
+## 1.0.20
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-20
+
+#### Bug Fixes
+
+- Replace ReactDOM.render with createRoot for React 19 compatibility [[7952e31](https://github.com/SAP/open-ux-tools/commit/7952e3192861a3eb96f2f37e5cb09ed8a0701fd9)]
+
+## 1.0.19
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/ui-components and @sap-ux/fe-fpm-writer [[d1377b8](https://github.com/SAP/open-ux-tools/commit/d1377b8d249e4fec9c3a4d48020376adb46383df)]
+
+## 1.0.18
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-10
+
+#### Bug Fixes
+
+- Show tooltip for all nodes in the outline tree, not just extension points. Also fix truncated tooltip for extension points with default content by using the full display text. [[489c3d0](https://github.com/SAP/open-ux-tools/commit/489c3d0a83ddb4e8e10e5631b2f9e04db6eccbeb)]
+
 ## 1.0.17
 
 ### Patch Changes

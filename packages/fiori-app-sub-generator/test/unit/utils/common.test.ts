@@ -8,8 +8,7 @@ import type { Editor } from 'mem-fs-editor';
 import memFsEditor from 'mem-fs-editor';
 import { join } from 'node:path';
 import { FloorplanFE, FloorplanFF } from '../../../src/types/index.js';
-import { ApiHubType } from '@sap-ux/fiori-generator-shared';
-import { SapSystemSourceType } from '../../../src/types/constants.js';
+import { ApiHubType, SapSystemSourceType } from '../../../src/types/constants.js';
 import {
     MIN_UI5_VERSION_PAGE_BUILDING_BLOCK,
     MIN_UI5_VERSION_PAGE_BUILDING_BLOCK_FULL_LAYOUT

@@ -1,5 +1,169 @@
 # @sap-ux/fiori-tools-plugin
 
+## 1.17.9
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-26
+
+#### Dependency Updates
+
+- Sync version with @sap-ux/fiori-mcp-server [[814f624](https://github.com/SAP/open-ux-tools/commit/814f624adf781f14a9af469d247a732439d92fc5)]
+
+## 1.17.8
+
+### Patch Changes
+
+#### Features
+
+- Support headless Cloud Foundry adaptation generation with shared validators, MCP preflight, and explicit service selection when discovery is incomplete [[183e9dd](https://github.com/SAP/open-ux-tools/commit/183e9ddff96dc793767b20541b2980c99affdc61)]
+
+## 1.17.7
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-26
+
+#### Dependency Updates
+
+- Sync version with @sap-ux/fiori-mcp-server [[ffc9e92](https://github.com/SAP/open-ux-tools/commit/ffc9e92be08e5b92d33a9235d7ea5d2974ba995b)]
+
+## 1.17.6
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-26
+
+#### Dependency Updates
+
+- Sync version with @sap-ux/fiori-mcp-server [[9689a3a](https://github.com/SAP/open-ux-tools/commit/9689a3a6c5df2ef001b4dd16db188f7bcdc273b4)]
+
+## 1.17.5
+
+### Patch Changes
+
+#### Bug Fixes
+
+- Add bb-sync.test.ts to catch unwired BuildingBlockType entries and developer skill for wiring new types [[5661178](https://github.com/SAP/open-ux-tools/commit/56611784c00520886bcc4faef21fbdfaf9a52a7c)]
+
+## 1.17.4
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-25
+
+#### Dependency Updates
+
+- Sync version with @sap-ux/fiori-mcp-server [[c9cb1de](https://github.com/SAP/open-ux-tools/commit/c9cb1de93fd3859f95618b8041b033e8c12ca55f)]
+
+#### Dependency Updates
+
+- Rebuild bundles with updated @sap-ux/adp-tooling, @sap-ux/project-access, @sap-ux-private/preview-middleware-client [[adfa16e](https://github.com/SAP/open-ux-tools/commit/adfa16e598c7a609fd5eeaca458fc02ad73a10c1)]
+
+#### Bug Fixes
+
+- revert building block skill [[9f8cc39](https://github.com/SAP/open-ux-tools/commit/9f8cc39828986bc24589c84ae083d0fd42b49e32)]
+
+## 1.17.3
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-24
+
+#### Dependency Updates
+
+- Sync version with @sap-ux/fiori-mcp-server [[07a23e3](https://github.com/SAP/open-ux-tools/commit/07a23e3a07e4116e54ad78c5ee4eb8543595ac5a)]
+
+#### Dependency Updates
+
+- Sync version with @sap-ux/fiori-mcp-server [[95b4f5a](https://github.com/SAP/open-ux-tools/commit/95b4f5aa4feea8210150d1144693ee36d2f289e3)]
+
+#### Dependency Updates
+
+- Sync version with @sap-ux/fiori-mcp-server [[0ade21d](https://github.com/SAP/open-ux-tools/commit/0ade21d80bbbe39fecb4681e4bd18cd3471a5264)]
+
+## 1.17.2
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-20
+
+#### Bug Fixes
+
+- Streamline sap-fiori-text-and-id skill guidance [[29f121a](https://github.com/SAP/open-ux-tools/commit/29f121acf3b71313c767e4a342dcda2916bd246f)]
+
+## 1.17.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-17
+
+#### Dependency Updates
+
+- Sync version with @sap-ux/fiori-mcp-server [[6ecb16c](https://github.com/SAP/open-ux-tools/commit/6ecb16c7f4a2b26742b36f80adc6a8d0e03cb0b4)]
+
+## 1.17.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-11-16
+
+#### Features
+
+- add new skill to configure text and ID [[c1e6928](https://github.com/SAP/open-ux-tools/commit/c1e692854b953226eb33cfa7e05f017810b37d78)]
+
+## 1.16.16
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-13
+
+#### Dependency Updates
+
+- Sync version with @sap-ux/fiori-mcp-server [[73fdfbf](https://github.com/SAP/open-ux-tools/commit/73fdfbfe2a371d5b9666d2a69b55d1ed977bb69e)]
+
+## 1.16.15
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-11
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/eslint-plugin-fiori-tools [[6852d73](https://github.com/SAP/open-ux-tools/commit/6852d7345205fcfc1fa99976a21fed9bf89faedb)]
+
+## 1.16.14
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-10
+
+#### Dependency Updates
+
+- Sync version with @sap-ux/fiori-mcp-server [[c0973dc](https://github.com/SAP/open-ux-tools/commit/c0973dc03a4f7bcd6376cbd50d04bfb45661bf1a)]
+
 ## 1.16.13
 
 ### Patch Changes

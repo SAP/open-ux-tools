@@ -1,5 +1,92 @@
 # @sap-ux/fe-fpm-writer
 
+## 1.5.3
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.3.6 → 2.3.7
+- @sap-ux/fiori-annotation-api 1.1.9 → 1.1.10
+
+## 1.5.2
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade dotenv 18.0.8→18.0.10, semver 7.8.5→7.8.6, sanitize-html 2.18.1→2.18.2, sanitize-filename 1.6.4→1.6.5, xml-formatter 3.7.0→3.7.1, fast-xml-validator 1.4.2→1.4.4, applicationinsights 3.17.0→3.17.1, @ui5/fs 4.0.6→4.0.7, @zowe/secrets-for-zowe-sdk 8.35.3→8.39.1, xpath 0.0.36→0.1.0 [[df4b038](https://github.com/SAP/open-ux-tools/commit/df4b038c7178d0e373aef0a7036b294c465eae8d)]
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.3.5 → 2.3.6
+- @sap-ux/fiori-annotation-api 1.1.8 → 1.1.9
+
+## 1.5.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-24
+
+#### Dependency Updates
+
+- Upgrade xpath 0.0.35 → 0.0.36 [[07a23e3](https://github.com/SAP/open-ux-tools/commit/07a23e3a07e4116e54ad78c5ee4eb8543595ac5a)]
+
+#### Release Date
+
+2026-11-24
+
+#### Workspace Updates
+
+- @sap-ux/fiori-annotation-api 1.1.7 → 1.1.8
+- @sap-ux/i18n 1.0.7 → 1.0.8
+- @sap-ux/project-access 2.3.4 → 2.3.5
+
+## 1.5.0
+
+### Minor Changes
+
+#### Features
+
+- add `add-building-block` functionality for Fiori Elements building blocks
+
+    Adds building-block support to `@sap-ux/fiori-mcp-server` as a first-class `add-building-block` functionality in the
+    existing `list_functionality` → `get_functionality_details` → `execute_functionality` registry — not a standalone
+    tool — so there is one consistent way to add functionality to the server. It delegates to `@sap-ux/fe-fpm-writer`'s
+    `generateBuildingBlock()` (the same generator as the SAP Page Editor) to add building blocks (table, chart,
+    filter-bar, field, form, page, rich-text-editor, rich-text-editor-button-groups, custom-column, custom-filter-field,
+    custom-form-field, action) to an FPM view or fragment with correct XML and manifest wiring.
+    Property semantics are sourced from the generated `bb_macro_api.md` via the existing `search_docs` tool rather than
+    duplicated as inline schemas, so the per-type Zod schema stays lean (`zod.looseObject`) and only enforces the fields
+    the LLM must always provide; the per-type map is exhaustiveness-guarded against `BuildingBlockType` so adding a new
+    type upstream without a schema breaks the build. The functionality description carries the real UI5 version
+    constraints (RichTextEditor and RichTextEditorButtonGroups require UI5 >= 1.117.0; Page requires >= 1.136.0 basic /
+
+    > = 1.145.0 full layout) and the universal OData V4 requirement. `get_functionality_details` enriches its response with
+    > the app's actual view/fragment files and their valid aggregation XPaths, so the client never has to read the XML. For
+    > Table, FilterBar and Form on an OData app it auto-writes the required UI annotation shell (`UI.LineItem` /
+    > `UI.SelectionFields` / `UI.FieldGroup`) when it is missing; failure to write the shell is non-fatal and surfaced as a
+    > warning. Client-supplied view/fragment paths are validated to stay inside the app root.
+    > `@sap-ux/fe-fpm-writer` now exports the `BuildingBlock` type, the `getFragmentAndViewFiles` /
+    > `getXPathStringsForXmlFile` discovery helpers, and `MIN_UI5_VERSION_RICH_TEXT_EDITOR`.
+    > `@sap-ux/fiori-docs-embeddings` adds `bb_macro_api.md` (generated from the `@public`-annotated `sap.fe` macro source
+    > by the new `build-bb-macro-docs` script and wired into the embeddings build) so `search_docs` can return building
+    > block property documentation. [[6ecb16c](https://github.com/SAP/open-ux-tools/commit/6ecb16c7f4a2b26742b36f80adc6a8d0e03cb0b4)]
+
+## 1.4.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-12
+
+#### Features
+
+- Enabled Replacing Standard Navigation in LR with navigation to an external app [[d1377b8](https://github.com/SAP/open-ux-tools/commit/d1377b8d249e4fec9c3a4d48020376adb46383df)]
+
 ## 1.4.0
 
 ### Minor Changes

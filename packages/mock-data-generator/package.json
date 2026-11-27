@@ -48,7 +48,7 @@
     ],
     "dependencies": {
         "@sap-ux/logger": "workspace:*",
-        "fast-xml-parser": "5.11.2",
+        "fast-xml-parser": "5.12.1",
         "i18next": "26.5.11",
         "onnxruntime-node": "1.24.3"
     },

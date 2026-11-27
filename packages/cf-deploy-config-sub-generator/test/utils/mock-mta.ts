@@ -12,7 +12,6 @@ type MtaInterface = Pick<Mta, keyof Mta>;
 
 /**
  * Mocks Mta for testing.
- *
  * @class MockMta
  * @implements {Mta}
  */

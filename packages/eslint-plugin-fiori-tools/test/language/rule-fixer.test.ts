@@ -8,7 +8,6 @@ import type { DeepestExistingPathResult } from '../../src/utils/helpers.js';
 /**
  * Helper function to create a MemberNode from JSON text and a property path.
  * Parses the JSON and finds the node at the specified path.
- *
  * @param jsonText - The JSON text to parse
  * @param path - Array of property names to navigate to the target node
  * @returns The MemberNode and AST at the specified path

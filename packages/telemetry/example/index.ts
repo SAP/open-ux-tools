@@ -6,7 +6,6 @@ const logger = getDefaultLogger();
 
 /**
  * Helper function to detect if env var is provided before returning it.
- *
  * @param name Environment variable name
  * @returns Environment variable value
  */

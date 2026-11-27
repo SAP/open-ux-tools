@@ -341,14 +341,13 @@ export async function getCfUi5AppInfo(
     cfConfig: CfConfig,
     logger?: ToolsLogger
 ): Promise<CfUi5AppInfo> {
+    logger?.log('Fetching ui5AppInfo.json');
     const requestArguments = await getFDCRequestArguments(cfConfig);
 
     const appHostIdParams = appHostIds.map((id) => `appHostId=${encodeURIComponent(id)}`).join('&');
     const url = `${requestArguments.url}/api/business-service/ui5appinfo?appId=${encodeURIComponent(
         appId
     )}&${appHostIdParams}`;
-
-    logger?.log(`Fetching ui5AppInfo.json`);
 
     try {
         const response = await axios.get(url, requestArguments.options);

@@ -24,7 +24,6 @@ const { getMergedManifest, downloadAppResources } = await import('../../../src/b
 
 /**
  * Mocks the adaptation module resolved from a project directory.
- *
  * @param name - Unique project name.
  * @param exports - The module's exports.
  * @returns The absolute project path.
@@ -37,7 +36,6 @@ function mockTaskModule(name: string, exports: object): string {
 
 /**
  * Mocks the ESM entry loaded from the adaptation project.
- *
  * @param appPath Project root.
  * @param exports Task exports.
  */

@@ -1,5 +1,122 @@
 # @sap-ux/preview-middleware
 
+## 1.2.49
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.3.6 → 2.3.7
+- @sap-ux/adp-tooling 1.3.0 → 1.3.1
+- @sap-ux/system-access 1.0.23 → 1.0.24
+
+## 1.2.48
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.2.5 → 1.3.0
+
+## 1.2.47
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.2.4 → 1.2.5
+- @sap-ux/system-access 1.0.22 → 1.0.23
+
+## 1.2.46
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-25
+
+#### Dependency Updates
+
+- Update pinned version of @sap-ux/control-property-editor [[c9cb1de](https://github.com/SAP/open-ux-tools/commit/c9cb1de93fd3859f95618b8041b033e8c12ca55f)]
+
+#### Dependency Updates
+
+- Rebuild bundles with updated @sap-ux/adp-tooling, @sap-ux/project-access, @sap-ux-private/preview-middleware-client [[adfa16e](https://github.com/SAP/open-ux-tools/commit/adfa16e598c7a609fd5eeaca458fc02ad73a10c1)]
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.3.5 → 2.3.6
+- @sap-ux/adp-tooling 1.2.3 → 1.2.4
+- @sap-ux/system-access 1.0.21 → 1.0.22
+
+## 1.2.45
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Rebuild bundle with updated dependencies (uuid 14.0.3) [[0ade21d](https://github.com/SAP/open-ux-tools/commit/0ade21d80bbbe39fecb4681e4bd18cd3471a5264)]
+
+#### Workspace Updates
+
+- @sap-ux/i18n 1.0.7 → 1.0.8
+- @sap-ux/adp-tooling 1.2.2 → 1.2.3
+- @sap-ux/btp-utils 2.0.8 → 2.0.9
+- @sap-ux/system-access 1.0.20 → 1.0.21
+- @sap-ux/project-access 2.3.4 → 2.3.5
+
+## 1.2.44
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-20
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/control-property-editor (React 19 fix) [[7952e31](https://github.com/SAP/open-ux-tools/commit/7952e3192861a3eb96f2f37e5cb09ed8a0701fd9)]
+
+## 1.2.43
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-13
+
+#### Dependency Updates
+
+- Update pinned version of @sap-ux-private/preview-middleware-client [[facd5f5](https://github.com/SAP/open-ux-tools/commit/facd5f58212dc23d6426179f9495217d35c6bc9d)]
+
+## 1.2.42
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/ui-components and @sap-ux/fe-fpm-writer [[d1377b8](https://github.com/SAP/open-ux-tools/commit/d1377b8d249e4fec9c3a4d48020376adb46383df)]
+
+## 1.2.41
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.2.1 → 1.2.2
+
+## 1.2.40
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-10
+
+#### Dependency Updates
+
+- Update pinned version of @sap-ux/control-property-editor [[489c3d0](https://github.com/SAP/open-ux-tools/commit/489c3d0a83ddb4e8e10e5631b2f9e04db6eccbeb)]
+
 ## 1.2.39
 
 ### Patch Changes

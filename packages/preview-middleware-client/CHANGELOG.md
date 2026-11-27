@@ -1,5 +1,41 @@
 # @sap-ux-private/preview-middleware-client
 
+## 1.2.49
+
+## 1.2.48
+
+## 1.2.47
+
+## 1.2.46
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade @ui5/task-adaptation 1.6.8→1.7.0, @ui5/manifest 1.89.0→1.92.0, ui5-tooling-modules 3.35.0→3.43.2, ui5-tooling-transpile 3.11.3→3.14.1 [[adfa16e](https://github.com/SAP/open-ux-tools/commit/adfa16e598c7a609fd5eeaca458fc02ad73a10c1)]
+
+## 1.2.45
+
+## 1.2.44
+
+## 1.2.43
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-13
+
+#### Dependency Updates
+
+- Upgrade eslint-plugin-jsdoc 62.8.1 → 65.4.2 [[facd5f5](https://github.com/SAP/open-ux-tools/commit/facd5f58212dc23d6426179f9495217d35c6bc9d)]
+
+## 1.2.42
+
+## 1.2.41
+
+## 1.2.40
+
 ## 1.2.39
 
 ## 1.2.38

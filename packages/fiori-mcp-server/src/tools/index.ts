@@ -46,38 +46,20 @@ const adpTools = [
     },
     {
         name: 'generate_adaptation_project',
-        description: `Generates a new SAP Fiori adaptation project by calling the @sap-ux/adp generator.
-
-        This tool requires:
-        - system: The name of the SAP system (from list_sap_systems)
-        - application: The application ID to adapt
-        - appPath: The current working directory — the project subfolder is created INSIDE this folder
-
-        The generated project folder will be at: <appPath>/<projectName> (default: <appPath>/app.variant)
-
-        Optional parameters: projectType, targetFolder (overrides appPath), projectName, namespace, applicationTitle, client, importKeyUserChanges.
-
-        PROJECT TYPE SELECTION: Leave projectType UNSET on the first call UNLESS the user has already stated
-        which type they want — in that case pass their choice through on the first call. When the selected system
-        AND application both support CloudReady and Classic (on-premise) adaptation projects and projectType is
-        unset, the tool does NOT generate anything and instead returns status 'InputRequired' with a message. When
-        you receive 'InputRequired', ask the user which type they want, then call this tool again with
-        projectType set to 'cloudReady' or 'onPremise'. If only one type is supported, the tool resolves
-        it automatically and you never need to set projectType. Do NOT guess or default this value yourself.
-        Passing a projectType the system or application cannot support returns status 'Error'.
-
-        Set importKeyUserChanges to true to automatically fetch the DEFAULT adaptation's key user
-        changes from LREP (using the same system) and include them in the generated
-        project. Generation aborts if the fetch fails or no DEFAULT adaptation exists.
-
-        Use 'list_sap_systems' first to discover available systems.
-        The generator will be executed with the provided JSON configuration.`,
+        description: `Generates SAP Fiori adaptation projects for ABAP or CF with @sap-ux/generator-adp.
+Require application, absolute appPath, and targetEnvironment selected for this request; never infer it.
+ABAP: system required (list_sap_systems fallback). Unset projectType resolves or returns InputRequired.
+CF: requires CLI login to an org/space; never logs in. Existing MTA needs its root; new needs mtaId/existing parent. Validates serviceInstanceName; auto-selects one match only from complete discovery. Multiple/partial results need selection; complete/no match is Error.
+InputRequired: no project files; ask using missingFields/choices, retry with answers, preserve selections.
+Error: inspect issues; phase validation precedes creation, generation may leave partial files.
+Success: projectPath for editor; CF mtaRoot contains it.
+Overwrites files/updates MTAs; CF may create keys/HTML5 runtime service. Schema lists constraints/defaults.`,
         annotations: {
             title: 'Generate Adaptation Project',
             readOnlyHint: false,
             destructiveHint: true,
             idempotentHint: false,
-            openWorldHint: false
+            openWorldHint: true
         },
         inputSchema: convertToSchema(Input.GenerateAdaptationProjectInputSchema),
         outputSchema: convertToSchema(Output.GenerateAdaptationProjectOutputSchema)
@@ -131,11 +113,12 @@ const adpTools = [
         description: `Drives Runtime Authoring (RTA) in the SAP Fiori adaptation editor through a dispatched step protocol. Each call advances one step of the workflow; steps must be called in sequence. \`site\` is the editor URL from \`open_adaptation_editor\` — pass it on every step.
 
         Steps:
-        - **start** — \`site\` (required, top-level), \`frameId\` (required, top-level, always \`"preview"\`), \`appPath\` (required, top-level — absolute path to the adaptation project root, the same path used to open the editor; it identifies the project so an authenticated CF session is reused per project and ABAP projects skip session handling). Launches the editor URL, starts RTA, returns \`{ site, frameId?, rtaStarted: true }\`. Echo \`site\` and \`frameId\` back on every subsequent step.
+        - **start** — \`site\` (required, top-level), \`frameId\` (required, top-level, always \`"preview"\`), \`appPath\` (required, top-level — absolute path to the adaptation project root, the same path used to open the editor; it identifies the project so an authenticated CF session is reused per project and ABAP projects skip session handling). Launches the editor URL, starts RTA, returns \`{ site, frameId?, rtaStarted: true }\`. Echo \`site\` and \`frameId\` back on every subsequent step. Optional payload: \`{ agentName?: string }\` — driver name adopted by the status reporter.
         - **get_overlays** — site + optional frameId. Returns \`{ overlays: Overlay[], actionsCatalog }\`. Each overlay carries the \`actionIds\` it supports; the rich per-action metadata (label, description, parameters) lives in \`actionsCatalog\` keyed by action id.
         - **get_context** — site + optional frameId, payload: \`{ controlId: string, actionId: string }\`. Returns \`{ context }\`.
         - **call_action** — site + optional frameId, payload: \`{ controlId: string, actionId: string, actionPayload: object }\`. Returns \`{ success: boolean }\`.
         - **save** — site + optional frameId. Returns \`{ saved: boolean }\`.
+        - **cleanup** — site + optional frameId, payload: \`{ reason?: string }\` (optional informational reason). Removes the page's blocking status overlay so interaction can resume. Returns \`{ cleaned: boolean }\`.
         - **stop** — site + optional frameId. Closes the page for the given site; if no pages remain open, the browser shuts down. Returns \`{ stopped: true }\`.
         - **restart** — site + optional frameId + \`appPath\` (required, top-level, same as \`start\`). Closes the current page, reloads the editor (picks up files written since \`start\`), and returns \`{ site, frameId?, rtaStarted: true }\`. Use this instead of \`stop\`+\`start\` when you need the editor to reload mid-workflow (e.g. after writing fragment files for validation).
         - **describe_ui** — site + optional frameId, payload: \`{ rootElementId?: string }\`. Returns \`{ uiTree }\` — an array of the current UI element nodes; each node carries \`id\` (UI5 control id), \`type\`, \`label\`, and \`children\`. Without \`rootElementId\` the result is a SHALLOW overview (top levels only): a node whose children were omitted is marked \`truncated: true\` with a \`childCount\` — call \`describe_ui\` again with \`rootElementId\` set to that node's \`id\` to expand just that subtree at full depth. Use this to inspect what is on screen and get element ids for \`execute_page_action\`.

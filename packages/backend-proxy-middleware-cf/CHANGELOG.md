@@ -1,5 +1,66 @@
 # @sap-ux/backend-proxy-middleware-cf
 
+## 0.3.81
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade fast-xml-parser 5.11.2→5.12.1, qs 6.16.0→6.17.1, @sap/approuter 23.3.0→23.5.0, @langchain/core 1.3.1→1.5.0, @sap-ai-sdk/foundation-models+langchain 2.17.0→2.18.0 [[814f624](https://github.com/SAP/open-ux-tools/commit/814f624adf781f14a9af469d247a732439d92fc5)]
+
+#### Release Date
+
+2026-11-26
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.3.0 → 1.3.1
+
+## 0.3.80
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.2.5 → 1.3.0
+
+## 0.3.79
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.2.4 → 1.2.5
+
+## 0.3.78
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade dotenv 18.0.8→18.0.10, semver 7.8.5→7.8.6, sanitize-html 2.18.1→2.18.2, sanitize-filename 1.6.4→1.6.5, xml-formatter 3.7.0→3.7.1, fast-xml-validator 1.4.2→1.4.4, applicationinsights 3.17.0→3.17.1, @ui5/fs 4.0.6→4.0.7, @zowe/secrets-for-zowe-sdk 8.35.3→8.39.1, xpath 0.0.36→0.1.0 [[df4b038](https://github.com/SAP/open-ux-tools/commit/df4b038c7178d0e373aef0a7036b294c465eae8d)]
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.2.3 → 1.2.4
+
+## 0.3.77
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.2.2 → 1.2.3
+- @sap-ux/btp-utils 2.0.8 → 2.0.9
+
+## 0.3.76
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/adp-tooling 1.2.1 → 1.2.2
+
 ## 0.3.75
 
 ### Patch Changes

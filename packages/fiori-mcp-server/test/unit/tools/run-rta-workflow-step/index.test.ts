@@ -8,6 +8,11 @@ const mockStopBrowser = jest.fn<() => Promise<void>>().mockResolvedValue(undefin
 const mockCallFrontendAction = jest.fn<FrontendActionTransport['callFrontendAction']>();
 const mockFetchViaContext = jest.fn<FrontendActionTransport['fetchViaContext']>();
 const mockRegisterSite = jest.fn<(site: string, appPath: string) => Promise<void>>().mockResolvedValue(undefined);
+const mockValidateAdpUi5Version = jest.fn<(appPath: string) => Promise<void>>().mockResolvedValue(undefined);
+
+jest.unstable_mockModule('../../../../src/utils/utils.js', () => ({
+    validateAdpUi5Version: mockValidateAdpUi5Version
+}));
 let registryEmpty = true;
 
 jest.unstable_mockModule('../../../../src/tools/run-rta-workflow-step/browser/index.js', () => ({
@@ -29,6 +34,7 @@ const mockGetOverlays = jest.fn<any>();
 const mockGetElementContext = jest.fn<any>();
 const mockExecuteAction = jest.fn<any>();
 const mockSaveChanges = jest.fn<any>();
+const mockCleanup = jest.fn<any>();
 const mockDescribeUi = jest.fn<any>();
 const mockExecuteUfaAction = jest.fn<any>();
 const mockGetODataMetadata = jest.fn<any>();
@@ -39,6 +45,7 @@ jest.unstable_mockModule('../../../../src/tools/run-rta-workflow-step/rta/index.
     getElementContext: mockGetElementContext,
     executeAction: mockExecuteAction,
     saveChanges: mockSaveChanges,
+    cleanup: mockCleanup,
     describeUi: mockDescribeUi,
     executeUfaAction: mockExecuteUfaAction,
     getODataMetadata: mockGetODataMetadata,
@@ -67,6 +74,43 @@ describe('runRtaWorkflowStep dispatcher', () => {
         registryEmpty = true;
     });
 
+    test.each(['start', 'restart'] as const)(
+        'rejects an unsupported UI5 version before the %s step has side effects',
+        async (step) => {
+            mockValidateAdpUi5Version.mockRejectedValueOnce(new Error('Unsupported SAPUI5 version'));
+
+            await expect(runRtaWorkflowStep({ step, site: SITE, appPath: '/tmp/app' })).rejects.toThrow(
+                'Unsupported SAPUI5 version'
+            );
+
+            expect(mockValidateAdpUi5Version).toHaveBeenCalledWith('/tmp/app');
+            for (const action of [
+                mockDisconnectSite,
+                mockStopBrowser,
+                mockRegisterSite,
+                mockStartRta,
+                mockGetOverlays,
+                mockGetElementContext,
+                mockExecuteAction,
+                mockSaveChanges,
+                mockCleanup,
+                mockDescribeUi,
+                mockExecuteUfaAction,
+                mockGetODataMetadata
+            ]) {
+                expect(action).not.toHaveBeenCalled();
+            }
+        }
+    );
+
+    test('subsequent steps keep working without appPath or repeating version validation', async () => {
+        mockSaveChanges.mockResolvedValue(true);
+
+        await expect(runRtaWorkflowStep({ step: 'save', site: SITE })).resolves.toEqual({ saved: true });
+
+        expect(mockValidateAdpUi5Version).not.toHaveBeenCalled();
+    });
+
     describe('start step', () => {
         test('disconnects existing page then starts RTA, echoes site and frameId', async () => {
             mockStartRta.mockResolvedValue({ rtaStarted: true });
@@ -77,8 +121,27 @@ describe('runRtaWorkflowStep dispatcher', () => {
                 appPath: '/tmp/app'
             });
             expect(mockDisconnectSite).toHaveBeenCalledWith(SITE);
-            expect(mockStartRta).toHaveBeenCalled();
+            expect(mockStartRta).toHaveBeenCalledWith(expect.anything(), { site: SITE, frameId: FRAME }, undefined);
             expect(result).toMatchObject({ site: SITE, frameId: FRAME, rtaStarted: true });
+        });
+
+        test('forwards agentName from payload to startRta', async () => {
+            mockStartRta.mockResolvedValue({ rtaStarted: true });
+            await runRtaWorkflowStep({
+                step: 'start',
+                site: SITE,
+                frameId: FRAME,
+                appPath: '/tmp/app',
+                payload: { agentName: 'Joule' }
+            });
+            expect(mockStartRta).toHaveBeenCalledWith(expect.anything(), { site: SITE, frameId: FRAME }, 'Joule');
+        });
+
+        test('throws when payload.agentName is present but empty, without disconnecting the existing session', async () => {
+            await expect(
+                runRtaWorkflowStep({ step: 'start', site: SITE, appPath: '/tmp/app', payload: { agentName: '' } })
+            ).rejects.toThrow('payload.agentName must be a non-empty string when provided');
+            expect(mockDisconnectSite).not.toHaveBeenCalled();
         });
 
         test('registers the site with appPath before starting', async () => {
@@ -209,6 +272,21 @@ describe('runRtaWorkflowStep dispatcher', () => {
             mockSaveChanges.mockResolvedValue(true);
             const result = await runRtaWorkflowStep({ step: 'save', site: SITE });
             expect(result).toEqual({ saved: true });
+        });
+    });
+
+    describe('cleanup step', () => {
+        test('calls cleanup without a reason and returns cleaned flag', async () => {
+            mockCleanup.mockResolvedValue({ cleaned: true });
+            const result = await runRtaWorkflowStep({ step: 'cleanup', site: SITE });
+            expect(mockCleanup).toHaveBeenCalledWith(expect.anything(), expect.anything(), undefined);
+            expect(result).toEqual({ cleaned: true });
+        });
+
+        test('forwards reason from payload', async () => {
+            mockCleanup.mockResolvedValue({ cleaned: true });
+            await runRtaWorkflowStep({ step: 'cleanup', site: SITE, payload: { reason: 'done' } });
+            expect(mockCleanup).toHaveBeenCalledWith(expect.anything(), expect.anything(), 'done');
         });
     });
 

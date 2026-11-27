@@ -1,5 +1,166 @@
 # @sap-ux/fiori-mcp-server
 
+## 1.18.1
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade fast-xml-parser 5.11.2→5.12.1, qs 6.16.0→6.17.1, @sap/approuter 23.3.0→23.5.0, @langchain/core 1.3.1→1.5.0, @sap-ai-sdk/foundation-models+langchain 2.17.0→2.18.0 [[814f624](https://github.com/SAP/open-ux-tools/commit/814f624adf781f14a9af469d247a732439d92fc5)]
+
+## 1.18.0
+
+### Minor Changes
+
+#### Features
+
+- Support headless Cloud Foundry adaptation generation with shared validators, MCP preflight, and explicit service selection when discovery is incomplete [[183e9dd](https://github.com/SAP/open-ux-tools/commit/183e9ddff96dc793767b20541b2980c99affdc61)]
+
+## 1.17.5
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-26
+
+#### Bug Fixes
+
+- Validate the configured SAPUI5 version before opening the adaptation editor, starting or restarting RTA, and reading OData metadata, including internal snapshot versions and the latest-version default for Cloud Foundry projects without a configured version.
+
+    Report thrown validation failures as MCP tool errors so clients can display them for tools with output schemas.
+    Validation errors instruct callers to report unsupported versions and stop without suggesting, offering, or performing version changes unless the user explicitly requests them.
+    Allow these checks to be skipped by setting `SAP_FIORI_MCP_SKIP_UI5_VERSION_VALIDATION=true` in the server environment; validation remains enabled by default. [[ffc9e92](https://github.com/SAP/open-ux-tools/commit/ffc9e92be08e5b92d33a9235d7ea5d2974ba995b)]
+
+## 1.17.4
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-26
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/adp-tooling and @sap-ux/axios-extension [[9689a3a](https://github.com/SAP/open-ux-tools/commit/9689a3a6c5df2ef001b4dd16db188f7bcdc273b4)]
+
+## 1.17.3
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-26
+
+#### Bug Fixes
+
+- Add bb-sync.test.ts to catch unwired BuildingBlockType entries and developer skill for wiring new types [[5661178](https://github.com/SAP/open-ux-tools/commit/56611784c00520886bcc4faef21fbdfaf9a52a7c)]
+
+## 1.17.2
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade @sap/service-provider-apis 2.13.2→2.13.4, @fluentui/react 8.125.8→8.125.10, @langchain/mcp-adapters 2.0.1→2.0.3, @modelcontextprotocol/sdk 1.32.1→1.32.2 [[4b49abf](https://github.com/SAP/open-ux-tools/commit/4b49abf8d3b80759fc6ecfdc1a65f999523b3b15)]
+
+#### Dependency Updates
+
+- Rebuild bundles with updated @sap-ux/adp-tooling, @sap-ux/project-access, @sap-ux-private/preview-middleware-client [[adfa16e](https://github.com/SAP/open-ux-tools/commit/adfa16e598c7a609fd5eeaca458fc02ad73a10c1)]
+
+## 1.17.1
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/axios-extension, @sap-ux/i18n, @sap-ux/fiori-annotation-api [[07a23e3](https://github.com/SAP/open-ux-tools/commit/07a23e3a07e4116e54ad78c5ee4eb8543595ac5a)]
+
+#### Dependency Updates
+
+- Rebuild bundle with updated dependencies (axios 1.21.1) [[95b4f5a](https://github.com/SAP/open-ux-tools/commit/95b4f5aa4feea8210150d1144693ee36d2f289e3)]
+
+#### Dependency Updates
+
+- Rebuild bundle with updated dependencies (uuid 14.0.3) [[0ade21d](https://github.com/SAP/open-ux-tools/commit/0ade21d80bbbe39fecb4681e4bd18cd3471a5264)]
+
+## 1.17.0
+
+### Minor Changes
+
+#### Release Date
+
+2026-11-17
+
+#### Features
+
+- add `add-building-block` functionality for Fiori Elements building blocks
+
+    Adds building-block support to `@sap-ux/fiori-mcp-server` as a first-class `add-building-block` functionality in the
+    existing `list_functionality` → `get_functionality_details` → `execute_functionality` registry — not a standalone
+    tool — so there is one consistent way to add functionality to the server. It delegates to `@sap-ux/fe-fpm-writer`'s
+    `generateBuildingBlock()` (the same generator as the SAP Page Editor) to add building blocks (table, chart,
+    filter-bar, field, form, page, rich-text-editor, rich-text-editor-button-groups, custom-column, custom-filter-field,
+    custom-form-field, action) to an FPM view or fragment with correct XML and manifest wiring.
+    Property semantics are sourced from the generated `bb_macro_api.md` via the existing `search_docs` tool rather than
+    duplicated as inline schemas, so the per-type Zod schema stays lean (`zod.looseObject`) and only enforces the fields
+    the LLM must always provide; the per-type map is exhaustiveness-guarded against `BuildingBlockType` so adding a new
+    type upstream without a schema breaks the build. The functionality description carries the real UI5 version
+    constraints (RichTextEditor and RichTextEditorButtonGroups require UI5 >= 1.117.0; Page requires >= 1.136.0 basic /
+
+    > = 1.145.0 full layout) and the universal OData V4 requirement. `get_functionality_details` enriches its response with
+    > the app's actual view/fragment files and their valid aggregation XPaths, so the client never has to read the XML. For
+    > Table, FilterBar and Form on an OData app it auto-writes the required UI annotation shell (`UI.LineItem` /
+    > `UI.SelectionFields` / `UI.FieldGroup`) when it is missing; failure to write the shell is non-fatal and surfaced as a
+    > warning. Client-supplied view/fragment paths are validated to stay inside the app root.
+    > `@sap-ux/fe-fpm-writer` now exports the `BuildingBlock` type, the `getFragmentAndViewFiles` /
+    > `getXPathStringsForXmlFile` discovery helpers, and `MIN_UI5_VERSION_RICH_TEXT_EDITOR`.
+    > `@sap-ux/fiori-docs-embeddings` adds `bb_macro_api.md` (generated from the `@public`-annotated `sap.fe` macro source
+    > by the new `build-bb-macro-docs` script and wired into the embeddings build) so `search_docs` can return building
+    > block property documentation. [[6ecb16c](https://github.com/SAP/open-ux-tools/commit/6ecb16c7f4a2b26742b36f80adc6a8d0e03cb0b4)]
+
+### Patch Changes
+
+#### Features
+
+- Split adp-controller-extension skill into workflow core and reference files (hitl-gating, rta-actions, example-session) add enhancement to knowledge base [[6ecb16c](https://github.com/SAP/open-ux-tools/commit/6ecb16c7f4a2b26742b36f80adc6a8d0e03cb0b4)]
+
+## 1.16.3
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-13
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/fiori-docs-embeddings [[73fdfbf](https://github.com/SAP/open-ux-tools/commit/73fdfbfe2a371d5b9666d2a69b55d1ed977bb69e)]
+
+## 1.16.2
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-11
+
+#### Dependency Updates
+
+- Rebuild bundle with updated @sap-ux/fiori-generator-shared [[75d0823](https://github.com/SAP/open-ux-tools/commit/75d0823084c6499c04fa4c564ea28a76b9e32df4)]
+
+## 1.16.1
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-10
+
+#### Features
+
+- Add agentName parameter to start step, add cleanup step, remove startVisualization [[c0973dc](https://github.com/SAP/open-ux-tools/commit/c0973dc03a4f7bcd6376cbd50d04bfb45661bf1a)]
+
 ## 1.16.0
 
 ### Minor Changes

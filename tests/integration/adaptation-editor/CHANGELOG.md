@@ -1,5 +1,43 @@
 # @sap-ux-private/adaptation-editor-tests
 
+## 1.0.35
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.3.6 → 2.3.7
+
+## 1.0.34
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.3.5 → 2.3.6
+- @sap-ux/ui5-info 1.0.8 → 1.0.9
+
+## 1.0.33
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/ui5-info 1.0.7 → 1.0.8
+- @sap-ux/project-access 2.3.4 → 2.3.5
+
+## 1.0.32
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade @playwright/test 1.60.0 → 1.65.1 to support Ubuntu 26.04 runners [[9dd7c8d](https://github.com/SAP/open-ux-tools/commit/9dd7c8da9094c7906c57198b58a394c366e758c5)]
+
+#### Workspace Updates
+
+- @sap-ux-private/playwright 1.0.8 → 1.0.9
+
 ## 1.0.31
 
 ### Patch Changes

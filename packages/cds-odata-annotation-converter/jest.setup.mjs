@@ -12,7 +12,7 @@ const CDS_PROJECTS = [
 function npmInstall(projectPath) {
     console.log(`Installing packages in ${projectPath}. Max time allocated is 5 min.`);
     const cmd = platform() === 'win32' ? `npm.cmd` : 'npm';
-    const npm = spawnSync(cmd, ['install', '--ignore-engines'], {
+    const npm = spawnSync(cmd, ['install'], {
         cwd: projectPath,
         env: process.env,
         shell: true,

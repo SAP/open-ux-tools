@@ -1,5 +1,57 @@
 # @sap-ux/ui5-application-inquirer
 
+## 1.0.60
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/project-access 2.3.6 → 2.3.7
+- @sap-ux/inquirer-common 1.0.58 → 1.0.59
+- @sap-ux/project-input-validator 1.0.29 → 1.0.30
+
+## 1.0.59
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/inquirer-common 1.0.57 → 1.0.58
+
+## 1.0.58
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade dotenv 18.0.8→18.0.10, semver 7.8.5→7.8.6, sanitize-html 2.18.1→2.18.2, sanitize-filename 1.6.4→1.6.5, xml-formatter 3.7.0→3.7.1, fast-xml-validator 1.4.2→1.4.4, applicationinsights 3.17.0→3.17.1, @ui5/fs 4.0.6→4.0.7, @zowe/secrets-for-zowe-sdk 8.35.3→8.39.1, xpath 0.0.36→0.1.0 [[df4b038](https://github.com/SAP/open-ux-tools/commit/df4b038c7178d0e373aef0a7036b294c465eae8d)]
+
+#### Workspace Updates
+
+- @sap-ux/inquirer-common 1.0.56 → 1.0.57
+- @sap-ux/project-access 2.3.5 → 2.3.6
+- @sap-ux/ui5-info 1.0.8 → 1.0.9
+- @sap-ux/project-input-validator 1.0.28 → 1.0.29
+
+## 1.0.57
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/inquirer-common 1.0.55 → 1.0.56
+- @sap-ux/ui5-info 1.0.7 → 1.0.8
+- @sap-ux/project-access 2.3.4 → 2.3.5
+- @sap-ux/project-input-validator 1.0.27 → 1.0.28
+
+## 1.0.56
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/inquirer-common 1.0.54 → 1.0.55
+
 ## 1.0.55
 
 ### Patch Changes

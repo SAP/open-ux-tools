@@ -14,10 +14,10 @@ jest.unstable_mockModule('@sap-ux/btp-utils', () => ({
     isAppStudio: jest.fn().mockReturnValue(false)
 }));
 
-const realHasbin = await import('hasbin');
-jest.unstable_mockModule('hasbin', () => ({
-    ...realHasbin,
-    sync: jest.fn()
+const syncMock = jest.fn();
+jest.unstable_mockModule('which', () => ({
+    default: Object.assign(jest.fn(), { sync: syncMock }),
+    sync: syncMock
 }));
 
 const { MockMta } = await import('./mockMta.js');
@@ -25,7 +25,6 @@ jest.unstable_mockModule('@sap/mta-lib', () => ({
     Mta: MockMta
 }));
 
-const hasbin = await import('hasbin');
 const { generateAppConfig } = await import('../../src/index.js');
 const { CommandRunner } = await import('@sap-ux/nodejs-utils');
 
@@ -39,7 +38,7 @@ describe('CF Writer App - Application Frontend', () => {
     beforeEach(() => {
         jest.resetAllMocks();
         jest.restoreAllMocks();
-        hasSyncMock = (hasbin.sync as jest.Mock).mockImplementation(() => true);
+        hasSyncMock = syncMock.mockImplementation(() => true);
         commandRunnerMock = jest.spyOn(CommandRunner.prototype, 'run').mockImplementation(() => ({ status: 0 }) as any);
         unitTestFs = create(createStorage());
     });

@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/eslint-plugin-fiori-tools",
-    "version": "10.18.2",
+    "version": "10.18.6",
     "description": "Custom linting plugin for Fiori tools apps",
     "type": "module",
     "repository": {
@@ -23,7 +23,7 @@
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint",
         "lint:fix": "eslint --fix",
-        "test": "cross-env \"NODE_OPTIONS=--experimental-vm-modules\" jest --ci --forceExit --detectOpenHandles --colors --maxWorkers=50%",
+        "test": "cross-env \"NODE_OPTIONS=--experimental-vm-modules\" jest --ci --forceExit --colors --maxWorkers=2",
         "tgz:package": "pnpm pack"
     },
     "dependencies": {
@@ -33,8 +33,8 @@
     },
     "devDependencies": {
         "@babel/core": "8.0.1",
-        "@babel/eslint-parser": "8.0.1",
-        "@babel/parser": "8.0.4",
+        "@babel/eslint-parser": "8.0.7",
+        "@babel/parser": "8.0.10",
         "@eslint/config-helpers": "0.5.3",
         "@eslint/core": "1.1.1",
         "@eslint/js": "10.0.1",
@@ -61,7 +61,7 @@
         "globals": "17.13.0",
         "lodash": "4.18.1",
         "requireindex": "^1.2.0",
-        "semver": "7.8.5",
+        "semver": "7.8.6",
         "synckit": "0.11.12",
         "yaml": "2.9.1"
     },

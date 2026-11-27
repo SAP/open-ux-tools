@@ -1,5 +1,119 @@
 # @sap-ux/deploy-config-sub-generator
 
+## 1.0.99
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/odata-service-inquirer 3.2.36 → 3.2.37
+- @sap-ux/project-access 2.3.6 → 2.3.7
+- @sap-ux/abap-deploy-config-sub-generator 1.0.85 → 1.0.86
+- @sap-ux/deploy-config-generator-shared 1.0.54 → 1.0.55
+- @sap-ux/fiori-generator-shared 1.4.3 → 1.4.4
+- @sap-ux/inquirer-common 1.0.58 → 1.0.59
+- @sap-ux/cf-deploy-config-sub-generator 1.0.67 → 1.0.68
+
+## 1.0.98
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-26
+
+#### Workspace Updates
+
+- @sap-ux/abap-deploy-config-sub-generator 1.0.84 → 1.0.85
+- @sap-ux/odata-service-inquirer 3.2.36 → 3.2.36
+
+## 1.0.97
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/abap-deploy-config-sub-generator 1.0.83 → 1.0.84
+- @sap-ux/deploy-config-generator-shared 1.0.53 → 1.0.54
+- @sap-ux/fiori-generator-shared 1.4.2 → 1.4.3
+- @sap-ux/odata-service-inquirer 3.2.35 → 3.2.36
+- @sap-ux/cf-deploy-config-sub-generator 1.0.66 → 1.0.67
+- @sap-ux/inquirer-common 1.0.57 → 1.0.58
+
+## 1.0.96
+
+### Patch Changes
+
+#### Dependency Updates
+
+- Upgrade dotenv 18.0.8→18.0.10, semver 7.8.5→7.8.6, sanitize-html 2.18.1→2.18.2, sanitize-filename 1.6.4→1.6.5, xml-formatter 3.7.0→3.7.1, fast-xml-validator 1.4.2→1.4.4, applicationinsights 3.17.0→3.17.1, @ui5/fs 4.0.6→4.0.7, @zowe/secrets-for-zowe-sdk 8.35.3→8.39.1, xpath 0.0.36→0.1.0 [[df4b038](https://github.com/SAP/open-ux-tools/commit/df4b038c7178d0e373aef0a7036b294c465eae8d)]
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.4.1 → 1.4.2
+- @sap-ux/inquirer-common 1.0.56 → 1.0.57
+- @sap-ux/project-access 2.3.5 → 2.3.6
+- @sap-ux/ui5-config 1.0.12 → 1.0.13
+- @sap-ux/store 2.0.8 → 2.0.9
+- @sap-ux/abap-deploy-config-sub-generator 1.0.82 → 1.0.83
+- @sap-ux/odata-service-inquirer 3.2.34 → 3.2.35
+- @sap-ux/cf-deploy-config-sub-generator 1.0.65 → 1.0.66
+- @sap-ux/deploy-config-generator-shared 1.0.52 → 1.0.53
+
+## 1.0.95
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/btp-utils 2.0.8 → 2.0.9
+- @sap-ux/inquirer-common 1.0.55 → 1.0.56
+- @sap-ux/odata-service-inquirer 3.2.33 → 3.2.34
+- @sap-ux/ui5-config 1.0.11 → 1.0.12
+- @sap-ux/abap-deploy-config-sub-generator 1.0.81 → 1.0.82
+- @sap-ux/deploy-config-generator-shared 1.0.51 → 1.0.52
+- @sap-ux/fiori-generator-shared 1.4.0 → 1.4.1
+- @sap-ux/project-access 2.3.4 → 2.3.5
+- @sap-ux/cf-deploy-config-sub-generator 1.0.64 → 1.0.65
+
+## 1.0.94
+
+### Patch Changes
+
+#### Release Date
+
+2026-11-16
+
+#### Workspace Updates
+
+- @sap-ux/cf-deploy-config-sub-generator 1.0.63 → 1.0.64
+
+## 1.0.93
+
+### Patch Changes
+
+#### Bug Fixes
+
+- Replace abandoned hasbin (10yr, no releases) with which for binary detection [[73fdfbf](https://github.com/SAP/open-ux-tools/commit/73fdfbfe2a371d5b9666d2a69b55d1ed977bb69e)]
+
+#### Workspace Updates
+
+- @sap-ux/cf-deploy-config-sub-generator 1.0.62 → 1.0.63
+- @sap-ux/odata-service-inquirer 3.2.33 → 3.2.33
+
+## 1.0.92
+
+### Patch Changes
+
+#### Workspace Updates
+
+- @sap-ux/fiori-generator-shared 1.3.0 → 1.4.0
+- @sap-ux/abap-deploy-config-sub-generator 1.0.80 → 1.0.81
+- @sap-ux/cf-deploy-config-sub-generator 1.0.61 → 1.0.62
+- @sap-ux/deploy-config-generator-shared 1.0.50 → 1.0.51
+- @sap-ux/inquirer-common 1.0.54 → 1.0.55
+- @sap-ux/odata-service-inquirer 3.2.32 → 3.2.33
+
 ## 1.0.91
 
 ### Patch Changes

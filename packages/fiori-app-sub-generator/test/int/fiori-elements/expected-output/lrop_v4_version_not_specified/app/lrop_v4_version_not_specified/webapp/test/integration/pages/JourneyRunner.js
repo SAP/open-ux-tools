@@ -11,6 +11,7 @@ sap.ui.define([
 			onTheBooksListGenerated: BooksListGenerated,
 			onTheBooksObjectPageGenerated: BooksObjectPageGenerated
         },
+        opaConfig: { autoWait: true },
         async: true
     });
 

@@ -24,8 +24,10 @@ describe('getFirstArg', () => {
 });
 
 describe('parseJsonInput', () => {
-    it('should return undefined if invalid json string is passed', () => {
-        expect(parseJsonInput('invalid json', logger)).toBeUndefined();
+    it('should fail with reason "syntax" when the string is not valid json', () => {
+        for (const jsonString of ['invalid json', '{"targetEnv":"CF",', '   ']) {
+            expect(parseJsonInput(jsonString, logger)).toEqual({ ok: false, reason: 'syntax' });
+        }
     });
 
     it('should return the adp json input in case the json string matches the expected format', () => {
@@ -41,15 +43,16 @@ describe('parseJsonInput', () => {
             namespace: 'namespace'
         };
         const jsonString = JSON.stringify(jsonInput);
-        expect(parseJsonInput(jsonString, logger)).toEqual(jsonInput);
+        expect(parseJsonInput(jsonString, logger)).toEqual({ ok: true, input: jsonInput });
     });
 
-    it('should return undefined in case the json does NOT match the expected format', () => {
-        const invalidJsonInput = {
-            system: 'system'
-        };
-        const jsonString = JSON.stringify(invalidJsonInput);
-        expect(parseJsonInput(jsonString, logger)).toBeUndefined();
+    it('should fail with reason "abap-shape" when the json does NOT match the ABAP format', () => {
+        for (const invalidJsonInput of [null, [], {}, { system: 'system' }]) {
+            expect(parseJsonInput(JSON.stringify(invalidJsonInput), logger)).toEqual({
+                ok: false,
+                reason: 'abap-shape'
+            });
+        }
     });
 
     it('should return the adp json input including optional id', () => {
@@ -59,7 +62,7 @@ describe('parseJsonInput', () => {
             id: '123.5'
         };
         const jsonString = JSON.stringify(jsonInput);
-        expect(parseJsonInput(jsonString, logger)).toEqual(jsonInput);
+        expect(parseJsonInput(jsonString, logger)).toEqual({ ok: true, input: jsonInput });
     });
 
     it('should return valid input even when keyUserChanges is present in CLI json', () => {
@@ -68,11 +71,36 @@ describe('parseJsonInput', () => {
             application: 'application',
             keyUserChanges: [{ content: { fileName: 'id_123_propertyChange' } }]
         });
-        expect(parseJsonInput(jsonString, logger)).toEqual(
-            expect.objectContaining({
+        expect(parseJsonInput(jsonString, logger)).toEqual({
+            ok: true,
+            input: expect.objectContaining({
                 system: 'system',
                 application: 'application'
             })
-        );
+        });
+    });
+
+    it('should route to the CF shape when targetEnv is CF', () => {
+        const cfInput = {
+            targetEnv: 'CF',
+            application: 'base.app.id',
+            serviceInstanceName: 'my-live-instance',
+            projectName: 'app.variant'
+        };
+        expect(parseJsonInput(JSON.stringify(cfInput), logger)).toEqual({ ok: true, input: cfInput });
+    });
+
+    it('should fail with reason "cf-shape" for a CF targetEnv that fails CF validation', () => {
+        const invalidCf = {
+            targetEnv: 'CF',
+            application: 'base.app.id'
+            // missing serviceInstanceName
+        };
+        expect(parseJsonInput(JSON.stringify(invalidCf), logger)).toEqual({ ok: false, reason: 'cf-shape' });
+    });
+
+    it('should treat absent targetEnv as ABAP (backwards compatible)', () => {
+        const abapInput = { system: 'system', application: 'application' };
+        expect(parseJsonInput(JSON.stringify(abapInput), logger)).toEqual({ ok: true, input: abapInput });
     });
 });
