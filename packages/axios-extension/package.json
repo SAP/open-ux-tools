@@ -39,8 +39,8 @@
         "qs": "6.17.1",
         "xpath": "0.1.0",
         "@xmldom/xmldom": "0.9.12",
-        "https-proxy-agent": "7.0.6",
-        "http-proxy-agent": "7.0.2",
+        "https-proxy-agent": "9.1.0",
+        "http-proxy-agent": "9.1.0",
         "proxy-from-env": "2.1.0"
     },
     "devDependencies": {

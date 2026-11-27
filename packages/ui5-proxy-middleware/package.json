@@ -41,7 +41,7 @@
         "@sap-ux/ui5-config": "workspace:*",
         "dotenv": "18.0.10",
         "http-proxy-middleware": "3.0.7",
-        "https-proxy-agent": "7.0.6",
+        "https-proxy-agent": "9.1.0",
         "i18next": "26.5.11",
         "proxy-from-env": "2.1.0"
     },
