@@ -1,14 +1,14 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the
 // README at: https://github.com/devcontainers/templates/tree/main/src/typescript-node
 {
-    "name": "Node v20 | TypeScript | pnpm v8.14.0",
+    "name": "Node v22 | TypeScript | pnpm v11.22.0",
 
     // Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
-    "image": "mcr.microsoft.com/devcontainers/typescript-node:dev-20-bookworm",
+    "image": "mcr.microsoft.com/devcontainers/typescript-node:dev-22-bookworm",
     // Features to add to the dev container. More info: https://containers.dev/features.
     "features": {
         "ghcr.io/devcontainers-contrib/features/pnpm:2": {
-            "version": "8.14.0"
+            "version": "11.22.0"
         }
     },
 

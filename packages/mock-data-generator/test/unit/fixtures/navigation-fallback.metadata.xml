@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Synthetic service with meaningless names: a parent Za lists Zb children through a to-many navigation that
+     declares no referential constraint, and Zb has no navigation back, so the SAP Fiori elements mockserver
+     links each child to the parent whose key values it shares by name (Zp, Zr). Za also lists Zd rows, whose
+     only key the parent does not declare, so the mockserver matches the parent's keys Zd declares (Zp, Zr). -->
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+    <edmx:DataServices>
+        <Schema Namespace="Zs" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+            <EntityContainer Name="EntityContainer">
+                <EntitySet Name="Zas" EntityType="Zs.Za">
+                    <NavigationPropertyBinding Path="Zbs" Target="Zbs"/>
+                    <NavigationPropertyBinding Path="Zds" Target="Zds"/>
+                </EntitySet>
+                <EntitySet Name="Zbs" EntityType="Zs.Zb"/>
+                <EntitySet Name="Zds" EntityType="Zs.Zd"/>
+            </EntityContainer>
+            <EntityType Name="Za">
+                <Key>
+                    <PropertyRef Name="Zp"/>
+                    <PropertyRef Name="Zr"/>
+                </Key>
+                <Property Name="Zp" Type="Edm.String" Nullable="false" MaxLength="4"/>
+                <Property Name="Zr" Type="Edm.String" Nullable="false" MaxLength="10"/>
+                <Property Name="Zn" Type="Edm.String" MaxLength="40"/>
+                <NavigationProperty Name="Zbs" Type="Collection(Zs.Zb)"/>
+                <NavigationProperty Name="Zds" Type="Collection(Zs.Zd)"/>
+            </EntityType>
+            <EntityType Name="Zb">
+                <Key>
+                    <PropertyRef Name="Zp"/>
+                    <PropertyRef Name="Zr"/>
+                    <PropertyRef Name="Zc"/>
+                </Key>
+                <Property Name="Zp" Type="Edm.String" Nullable="false" MaxLength="4"/>
+                <Property Name="Zr" Type="Edm.String" Nullable="false" MaxLength="10"/>
+                <Property Name="Zc" Type="Edm.String" Nullable="false" MaxLength="3"/>
+                <Property Name="Zv" Type="Edm.Int32"/>
+            </EntityType>
+            <EntityType Name="Zd">
+                <Key>
+                    <PropertyRef Name="Zu"/>
+                </Key>
+                <Property Name="Zu" Type="Edm.Guid" Nullable="false"/>
+                <Property Name="Zp" Type="Edm.String" MaxLength="4"/>
+                <Property Name="Zr" Type="Edm.String" MaxLength="10"/>
+                <Property Name="Zw" Type="Edm.Date"/>
+            </EntityType>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>

@@ -4,12 +4,17 @@ on:
     schedule:
         - cron: '0 2 * * 1' # Every Monday at 02:00 UTC
     workflow_dispatch:
+    workflow_call:
+        outputs:
+            ui5_versions:
+                description: Maintained UI5 versions as a JSON array
+                value: ${{ jobs.ui5-versions.outputs.ui5_versions }}
 jobs:
     ui5-versions:
         runs-on: ubuntu-latest
         timeout-minutes: 10
         outputs:
-            ui5_versions: ${{ steps.output-ui5-versions.outputs.ui5_versions }}
+            ui5_versions: ${{ steps.current-ui5-versions.outputs.versions }}
         steps:
             - name: Checkout code repository
               uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
@@ -31,32 +36,12 @@ jobs:
                   restore-keys: |
                       ubuntu-latest-build-$cache-pnpm-modules-22.x-
             - name: Install pnpm modules
-              run: pnpm install
+              run: pnpm install --frozen-lockfile
             - name: Run build
-              run: pnpm --filter @sap-ux/ui5-info... build 
-            - name: Cache UI5 maintenance versions 
-              id: cache-ui5-versions
-              uses: actions/cache/restore@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
-              with:
-                  path: tests/integration/adaptation-editor/versions.json
-                  key: ui5-versions
-            - name: List previously cached UI5 maintenance versions
-              id: previous-ui5-versions
-              run: |
-                if [[ -f tests/integration/adaptation-editor/versions.json ]]; then
-                  cat tests/integration/adaptation-editor/versions.json
-                else
-                  echo "No previous versions found."
-                fi
+              run: pnpm --filter @sap-ux/ui5-info... build
             - name: Load UI5 maintenance versions
               id: current-ui5-versions
+              working-directory: tests/integration/adaptation-editor
               run: |
-                  cd tests/integration/adaptation-editor && pnpm exec node version.js
-                  cat versions.json
-                  echo "versions=$(cat versions.json)" >> $GITHUB_OUTPUT
-                  echo "hash=$(cat versions.json | sha256sum | cut -d' ' -f1)" >> $GITHUB_OUTPUT
-            - name: Cache ui5-versions modules
-              uses: actions/cache/save@0057852bfaa89a56745cba8c7296529d2fc39830 # v4
-              with:
-                  path: tests/integration/adaptation-editor/versions.json
-                  key: ui5-versions-${{ steps.current-ui5-versions.outputs.hash }}
+                  pnpm exec node version.js
+                  echo "versions=$(cat versions.json)" >> "$GITHUB_OUTPUT"

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Synthetic OData V2 service with meaningless names. Tb and Td both list Tc children through associations
+     whose referential constraints name them as principal through their key Tu. Ta lists Tb rows through an
+     association whose constraint names Ta as principal through Tu, which is not the key of Ta but is the key
+     of Tb. -->
+<edmx:Edmx Version="1.0" xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx"
+    xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata">
+    <edmx:DataServices m:DataServiceVersion="2.0">
+        <Schema Namespace="Ts" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
+            <EntityType Name="Ta">
+                <Key>
+                    <PropertyRef Name="Tk"/>
+                </Key>
+                <Property Name="Tk" Type="Edm.Guid" Nullable="false"/>
+                <Property Name="Tu" Type="Edm.Guid"/>
+                <NavigationProperty Name="Tbs" Relationship="Ts.TaTb" FromRole="FromTa" ToRole="ToTb"/>
+            </EntityType>
+            <EntityType Name="Tb">
+                <Key>
+                    <PropertyRef Name="Tu"/>
+                </Key>
+                <Property Name="Tu" Type="Edm.Guid" Nullable="false"/>
+                <Property Name="Tn" Type="Edm.String" MaxLength="40"/>
+                <NavigationProperty Name="Tcs" Relationship="Ts.TbTc" FromRole="FromTb" ToRole="ToTc"/>
+            </EntityType>
+            <EntityType Name="Td">
+                <Key>
+                    <PropertyRef Name="Tu"/>
+                </Key>
+                <Property Name="Tu" Type="Edm.Guid" Nullable="false"/>
+                <NavigationProperty Name="Tcs" Relationship="Ts.TdTc" FromRole="FromTd" ToRole="ToTc"/>
+            </EntityType>
+            <EntityType Name="Tc">
+                <Key>
+                    <PropertyRef Name="Tj"/>
+                </Key>
+                <Property Name="Tj" Type="Edm.Guid" Nullable="false"/>
+                <Property Name="Tu" Type="Edm.Guid"/>
+                <Property Name="Tm" Type="Edm.Decimal" Precision="13" Scale="2"/>
+            </EntityType>
+            <Association Name="TaTb">
+                <End Type="Ts.Ta" Multiplicity="1" Role="FromTa"/>
+                <End Type="Ts.Tb" Multiplicity="*" Role="ToTb"/>
+                <ReferentialConstraint>
+                    <Principal Role="FromTa">
+                        <PropertyRef Name="Tu"/>
+                    </Principal>
+                    <Dependent Role="ToTb">
+                        <PropertyRef Name="Tu"/>
+                    </Dependent>
+                </ReferentialConstraint>
+            </Association>
+            <Association Name="TbTc">
+                <End Type="Ts.Tb" Multiplicity="1" Role="FromTb"/>
+                <End Type="Ts.Tc" Multiplicity="*" Role="ToTc"/>
+                <ReferentialConstraint>
+                    <Principal Role="FromTb">
+                        <PropertyRef Name="Tu"/>
+                    </Principal>
+                    <Dependent Role="ToTc">
+                        <PropertyRef Name="Tu"/>
+                    </Dependent>
+                </ReferentialConstraint>
+            </Association>
+            <Association Name="TdTc">
+                <End Type="Ts.Td" Multiplicity="1" Role="FromTd"/>
+                <End Type="Ts.Tc" Multiplicity="*" Role="ToTc"/>
+                <ReferentialConstraint>
+                    <Principal Role="FromTd">
+                        <PropertyRef Name="Tu"/>
+                    </Principal>
+                    <Dependent Role="ToTc">
+                        <PropertyRef Name="Tu"/>
+                    </Dependent>
+                </ReferentialConstraint>
+            </Association>
+            <EntityContainer Name="Ts_Entities" m:IsDefaultEntityContainer="true">
+                <EntitySet Name="Tas" EntityType="Ts.Ta"/>
+                <EntitySet Name="Tbs" EntityType="Ts.Tb"/>
+                <EntitySet Name="Tcs" EntityType="Ts.Tc"/>
+                <EntitySet Name="Tds" EntityType="Ts.Td"/>
+                <AssociationSet Name="TaTbSet" Association="Ts.TaTb">
+                    <End EntitySet="Tas" Role="FromTa"/>
+                    <End EntitySet="Tbs" Role="ToTb"/>
+                </AssociationSet>
+                <AssociationSet Name="TbTcSet" Association="Ts.TbTc">
+                    <End EntitySet="Tbs" Role="FromTb"/>
+                    <End EntitySet="Tcs" Role="ToTc"/>
+                </AssociationSet>
+                <AssociationSet Name="TdTcSet" Association="Ts.TdTc">
+                    <End EntitySet="Tds" Role="FromTd"/>
+                    <End EntitySet="Tcs" Role="ToTc"/>
+                </AssociationSet>
+            </EntityContainer>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>

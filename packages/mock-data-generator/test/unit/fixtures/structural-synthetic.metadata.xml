@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Synthetic service with meaningless names. It carries only structure (keys, semantic keys, relationships,
+     text links, unit links, temporal types, facets), so a check or fix that passes on it cannot depend on a name. -->
+<edmx:Edmx xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx" Version="4.0">
+    <edmx:DataServices>
+        <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="Zq" Alias="SAP__self">
+            <EntityType Name="Kor">
+                <Key><PropertyRef Name="Kua"/></Key>
+                <Property Name="Kua" Type="Edm.Guid" Nullable="false"/>
+                <Property Name="Kbe" Type="Edm.String" MaxLength="10" Nullable="false"/>
+                <Property Name="Kci" Type="Edm.String" MaxLength="6"/>
+                <Property Name="Kdo" Type="Edm.String" MaxLength="40"/>
+                <Property Name="Kef" Type="Edm.TimeOfDay"/>
+                <Property Name="Kfg" Type="Edm.TimeOfDay"/>
+                <Property Name="Kgh" Type="Edm.Decimal" Precision="10" Scale="2"/>
+                <Property Name="Khi" Type="Edm.String" MaxLength="3"/>
+                <Property Name="Kij" Type="Edm.String" MaxLength="8"/>
+                <Property Name="Kjk" Type="Edm.String" MaxLength="20"/>
+                <NavigationProperty Name="toLom" Type="Zq.Lom"/>
+                <NavigationProperty Name="toMup" Type="Collection(Zq.Mup)" Partner="toKor"/>
+            </EntityType>
+            <EntityType Name="Lom">
+                <Key><PropertyRef Name="Kci"/></Key>
+                <Property Name="Kci" Type="Edm.String" MaxLength="6" Nullable="false"/>
+                <Property Name="Lna" Type="Edm.String" MaxLength="40"/>
+            </EntityType>
+            <EntityType Name="Mup">
+                <Key><PropertyRef Name="Mva"/></Key>
+                <Property Name="Mva" Type="Edm.Guid" Nullable="false"/>
+                <Property Name="Kua" Type="Edm.Guid" Nullable="false"/>
+                <Property Name="Kbe" Type="Edm.String" MaxLength="10"/>
+                <Property Name="Mwb" Type="Edm.String" MaxLength="40"/>
+                <NavigationProperty Name="toKor" Type="Zq.Kor" Nullable="false" Partner="toMup">
+                    <ReferentialConstraint Property="Kua" ReferencedProperty="Kua"/>
+                </NavigationProperty>
+            </EntityType>
+            <EntityContainer Name="Container">
+                <EntitySet Name="Kors" EntityType="Zq.Kor">
+                    <NavigationPropertyBinding Path="toLom" Target="Lomen"/>
+                    <NavigationPropertyBinding Path="toMup" Target="Mups"/>
+                </EntitySet>
+                <EntitySet Name="Lomen" EntityType="Zq.Lom"/>
+                <EntitySet Name="Mups" EntityType="Zq.Mup">
+                    <NavigationPropertyBinding Path="toKor" Target="Kors"/>
+                </EntitySet>
+            </EntityContainer>
+            <Annotations Target="SAP__self.Kor">
+                <Annotation Term="Common.SemanticKey">
+                    <Collection><PropertyPath>Kbe</PropertyPath></Collection>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="SAP__self.Kor/Kci">
+                <Annotation Term="Common.Text" Path="Kdo"/>
+            </Annotations>
+            <Annotations Target="SAP__self.Kor/Kij">
+                <Annotation Term="Common.IsDigitSequence"/>
+            </Annotations>
+            <Annotations Target="SAP__self.Kor/Kjk">
+                <Annotation Term="Common.IsUpperCase"/>
+            </Annotations>
+            <Annotations Target="SAP__self.Kor/Kgh">
+                <Annotation Term="Measures.Unit" Path="Khi"/>
+            </Annotations>
+            <Annotations Target="SAP__self.Lom/Kci">
+                <Annotation Term="Common.Text" Path="Lna"/>
+            </Annotations>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>

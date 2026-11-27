@@ -1,0 +1,107 @@
+name: Publish @sap-ux/mock-data-generator
+
+# The package ships ONNX models that are not tracked in git. They are built here from public base
+# models and the committed row-model adapter, checked against resources/models/manifest.json, and
+# only then published. The package stays "private" in the workspace so the shared changesets
+# release skips it; this workflow publishes each new version once.
+
+on:
+    push:
+        branches: [main]
+        paths: ['packages/mock-data-generator/package.json']
+    workflow_dispatch:
+        inputs:
+            dry-run:
+                description: 'Build and verify the package without publishing'
+                type: boolean
+                default: true
+
+concurrency:
+    group: mock-data-generator-release
+    cancel-in-progress: false
+
+jobs:
+    publish:
+        if: github.repository == 'SAP/open-ux-tools'
+        runs-on: ubuntu-latest
+        environment: npm-release
+        timeout-minutes: 60
+        permissions:
+            id-token: write
+            contents: read
+        defaults:
+            run:
+                working-directory: packages/mock-data-generator
+        steps:
+            - name: Checkout code repository
+              uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+            - name: Use Node.js 22.x
+              uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+              with:
+                  node-version: 22.x
+            - name: Setup pnpm
+              uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
+            - name: Check whether this version is already published
+              id: version
+              run: |
+                  VERSION=$(node -p "require('./package.json').version")
+                  echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+                  # 0.0.0 is the placeholder before the first changeset version; it is never published.
+                  if [ "$VERSION" = "0.0.0" ]; then
+                    echo "publish=false" >> "$GITHUB_OUTPUT"
+                    exit 0
+                  fi
+                  # Only a registry answer that the version does not exist (E404) allows a publish; any other
+                  # failure, such as a network error, stops the job instead of publishing blindly.
+                  if npm view "@sap-ux/mock-data-generator@$VERSION" version > "$RUNNER_TEMP/view.out" 2> "$RUNNER_TEMP/view.err"; then
+                    echo "publish=false" >> "$GITHUB_OUTPUT"
+                  elif grep -q "E404" "$RUNNER_TEMP/view.err"; then
+                    echo "publish=true" >> "$GITHUB_OUTPUT"
+                  else
+                    cat "$RUNNER_TEMP/view.err"
+                    exit 1
+                  fi
+            - name: Setup Python
+              if: steps.version.outputs.publish == 'true'
+              uses: actions/setup-python@e797f83bcb11b83ae66e0230d6156d7c80228e7c # v6.0.0
+              with:
+                  python-version: '3.12'
+            - name: Install model build dependencies
+              if: steps.version.outputs.publish == 'true'
+              run: |
+                  python -m pip install --index-url https://download.pytorch.org/whl/cpu torch==2.11.0
+                  python -m pip install -r training/requirements.txt
+            - name: Install pnpm modules
+              if: steps.version.outputs.publish == 'true'
+              working-directory: .
+              run: pnpm install --frozen-lockfile
+            - name: Build the package
+              if: steps.version.outputs.publish == 'true'
+              run: pnpm build
+            - name: Lint the package
+              if: steps.version.outputs.publish == 'true'
+              run: pnpm lint
+            - name: Test the package
+              if: steps.version.outputs.publish == 'true'
+              run: pnpm test
+            - name: Build and verify the models
+              if: steps.version.outputs.publish == 'true'
+              run: pnpm build:models --python python
+            # The workspace keeps the package private so the shared changesets release skips it; the verified
+            # tarball is the published one, so the flag is removed before verification.
+            - name: Make the package publishable
+              if: steps.version.outputs.publish == 'true'
+              run: npm pkg delete private
+            - name: Pack and verify the release archive
+              if: steps.version.outputs.publish == 'true'
+              run: |
+                  mkdir -p "$RUNNER_TEMP/mockgen-release"
+                  pnpm pack --pack-destination "$RUNNER_TEMP/mockgen-release"
+                  archive="$RUNNER_TEMP/mockgen-release/sap-ux-mock-data-generator-${{ steps.version.outputs.version }}.tgz"
+                  pnpm check:package --archive "$archive"
+                  sha256sum "$archive" > "$RUNNER_TEMP/mockgen-release.sha256"
+            - name: Publish to npmjs
+              if: steps.version.outputs.publish == 'true' && !(github.event_name == 'workflow_dispatch' && inputs.dry-run)
+              run: |
+                  sha256sum --check "$RUNNER_TEMP/mockgen-release.sha256"
+                  pnpm publish "$RUNNER_TEMP/mockgen-release/sap-ux-mock-data-generator-${{ steps.version.outputs.version }}.tgz" --access public --no-git-checks

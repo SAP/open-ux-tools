@@ -186,7 +186,7 @@ pnpm test
 # Coverage reports are in: packages/[package-name]/coverage/lcov-report/index.html
 ```
 
-**Coverage Configuration** (from [jest.base.js](jest.base.js:6)):
+**Coverage Configuration** (from [jest.base.mjs](jest.base.mjs:6)):
 - `collectCoverageFrom: ['src/**/*.ts']`
 - Reports: text and lcov formats
 - SonarCloud integration via jest-sonar reporter
@@ -627,7 +627,7 @@ This ensures packages always use the local workspace version during development 
 
 **Framework**: Jest with ts-jest
 
-**Base config**: [jest.base.js](jest.base.js)
+**Base config**: [jest.base.mjs](jest.base.mjs)
 
 **Run tests:**
 ```bash

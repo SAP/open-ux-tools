@@ -1,0 +1,1452 @@
+{
+    "format": "mockgen-semantic-rules",
+    "version": 1,
+    "sapAbbreviations": [
+        {
+            "abbreviation": "qty",
+            "word": "quantity",
+            "appliedInLexicalRules": true,
+            "notes": "SAP CDS element-name abbreviation of quantity."
+        },
+        {
+            "abbreviation": "cnvrsn",
+            "word": "conversion",
+            "appliedInLexicalRules": true,
+            "notes": "SAP CDS element-name abbreviation of conversion, as in I_UnitOfMeasure.SIUnitCnvrsnRateNumerator."
+        },
+        {
+            "abbreviation": "dcmls",
+            "word": "decimals",
+            "appliedInLexicalRules": true,
+            "notes": "SAP CDS element-name abbreviation of decimals."
+        },
+        {
+            "abbreviation": "tran",
+            "word": "transaction",
+            "appliedInLexicalRules": true,
+            "notes": "SAP CDS element-name abbreviation of transaction."
+        },
+        {
+            "abbreviation": "waers",
+            "word": "currency",
+            "appliedInLexicalRules": true,
+            "notes": "ABAP Dictionary field name WAERS (currency key), used as a column name in V2 services."
+        },
+        {
+            "abbreviation": "pmnt",
+            "word": "payment",
+            "appliedInLexicalRules": false,
+            "notes": "SAP CDS element-name abbreviation of payment. Not applied: the payment-file and payment-terms rules accept only the full word, so expanding it would widen them."
+        },
+        {
+            "abbreviation": "tech",
+            "word": "technical",
+            "appliedInLexicalRules": false,
+            "notes": "SAP CDS element-name abbreviation of technical. Not applied: the equipment-id rule accepts only the full word."
+        },
+        {
+            "abbreviation": "obj",
+            "word": "object",
+            "appliedInLexicalRules": false,
+            "notes": "SAP CDS element-name abbreviation of object. Not applied: the object-type and equipment rules accept only the full word."
+        },
+        {
+            "abbreviation": "doc",
+            "word": "document",
+            "appliedInLexicalRules": false,
+            "notes": "SAP CDS element-name abbreviation of document. Not applied: most document rules accept only the full word."
+        },
+        {
+            "abbreviation": "nmbr",
+            "word": "number",
+            "appliedInLexicalRules": false,
+            "notes": "SAP CDS element-name abbreviation of number. Not applied: the statement-page, account-number and identifier rules accept only the full word."
+        },
+        {
+            "abbreviation": "descr",
+            "word": "description",
+            "appliedInLexicalRules": false,
+            "notes": "Abbreviation of description (CAP sap.common uses descr). Not applied: the exclusion lists of many rules name only the full word."
+        },
+        {
+            "abbreviation": "uom",
+            "word": "unit",
+            "appliedInLexicalRules": false,
+            "notes": "Abbreviation of unit of measure. Not applied: the specialized unit rules (length, temperature, pressure, ISO code) accept only the word unit."
+        }
+    ],
+    "lexicalRules": [
+        {
+            "role": "manufacturer",
+            "primitiveTypes": ["string"],
+            "any": ["manufacturer", "producer"],
+            "none": ["url", "uri", "link", "id", "code", "number", "no", "country", "date", "part"]
+        },
+        {
+            "role": "distance",
+            "primitiveTypes": ["int", "decimal"],
+            "any": ["mileage", "distance", "odometer"],
+            "none": ["unit", "uom", "root", "hierarchy"]
+        },
+        {
+            "role": "rating",
+            "primitiveTypes": ["int", "decimal"],
+            "any": ["rating", "stars"],
+            "none": ["credit", "risk", "text", "description", "comment", "count"]
+        },
+        {
+            "role": "email",
+            "any": ["email", "mail"]
+        },
+        {
+            "role": "mobile_phone",
+            "any": ["mobile"]
+        },
+        {
+            "role": "phone",
+            "any": ["phone", "telephone", "fax"]
+        },
+        {
+            "role": "url",
+            "any": ["url", "uri", "website", "homepage"]
+        },
+        {
+            "role": "person_first_name",
+            "any": ["firstname", "given"]
+        },
+        {
+            "role": "person_first_name",
+            "all": ["first", "name"],
+            "adjacent": true,
+            "notes": "First Name as one compound; first and name apart (FirstApprovedByName) name something else."
+        },
+        {
+            "role": "person_last_name",
+            "any": ["lastname", "surname", "family"]
+        },
+        {
+            "role": "person_last_name",
+            "all": ["last", "name"],
+            "adjacent": true,
+            "notes": "Last Name as one compound; last and name apart (LastChangedByUserName) name something else."
+        },
+        {
+            "role": "person_full_name",
+            "any": ["fullname"]
+        },
+        {
+            "role": "person_full_name",
+            "all": [["full", "display"], "name"]
+        },
+        {
+            "role": "person_full_name",
+            "all": ["artist", "name"]
+        },
+        {
+            "role": "org_name",
+            "all": ["account", "holder"]
+        },
+        {
+            "role": "bank_account_internal_id",
+            "all": ["bank", "account", "internal", "id"]
+        },
+        {
+            "role": "bank_account_type",
+            "all": ["bank", "account", "type"]
+        },
+        {
+            "role": "bank_statement_format",
+            "all": ["statement", "format"]
+        },
+        {
+            "role": "bank_statement_page",
+            "all": ["bank", "statement", "page", "number"]
+        },
+        {
+            "role": "bank_statement_type",
+            "all": ["bank", "statement", "type"]
+        },
+        {
+            "role": "bank_statement_id",
+            "all": ["bank", "statement"],
+            "none": ["page", "format", "short", "type", "item", "items", "record", "records"]
+        },
+        {
+            "role": "house_bank",
+            "all": ["house", "bank"],
+            "none": ["name", "text", "description", "account"]
+        },
+        {
+            "role": "bank_name",
+            "all": ["bank", "name"]
+        },
+        {
+            "role": "payment_file_id",
+            "all": [["incoming", "payment"], "file"]
+        },
+        {
+            "role": "payment_transaction_group",
+            "all": [["payment", "pmnt"], "transaction", "group"]
+        },
+        {
+            "role": "bank_name",
+            "all": ["sending", "bank"]
+        },
+        {
+            "role": "company_code",
+            "all": ["company", "code"],
+            "none": ["name", "text", "description"]
+        },
+        {
+            "role": "storage_location",
+            "all": ["storage", "location"]
+        },
+        {
+            "role": "technical_object_type",
+            "all": [["tech", "technical"], ["obj", "object"], "type"]
+        },
+        {
+            "role": "equipment_name",
+            "all": ["equipment", ["name", "description", "text"]]
+        },
+        {
+            "role": "equipment_name",
+            "all": [["tech", "technical"], "object", ["name", "description", "text"]]
+        },
+        {
+            "role": "unique_item_identifier",
+            "all": ["unique", "item", ["id", "identifier"]]
+        },
+        {
+            "role": "distribution_channel",
+            "all": ["distribution", "channel"]
+        },
+        {
+            "role": "sales_division",
+            "all": ["division"],
+            "none": ["description", "name", "text"]
+        },
+        {
+            "role": "org_name",
+            "all": ["sales", ["organization", "organisation"], ["description", "name"]]
+        },
+        {
+            "role": "sales_organization",
+            "all": ["sales", ["organization", "organisation"]],
+            "none": ["fc"]
+        },
+        {
+            "role": "payment_terms",
+            "all": ["payment", "terms"]
+        },
+        {
+            "role": "employee_id",
+            "all": ["employee"],
+            "none": ["name", "description"]
+        },
+        {
+            "role": "service_organization",
+            "all": ["service", ["organization", "organisation"]],
+            "none": ["name", "text", "description"]
+        },
+        {
+            "role": "service_team",
+            "all": ["service", "team"]
+        },
+        {
+            "role": "indicator",
+            "primitiveTypes": ["string"],
+            "all": [
+                ["is", "has"],
+                ["open", "error"]
+            ]
+        },
+        {
+            "role": "customer_purchase_order",
+            "all": ["purchase", "order", "customer"]
+        },
+        {
+            "role": "service_document_item_category",
+            "all": ["service", ["doc", "document"], "item", "category"]
+        },
+        {
+            "role": "object_type",
+            "all": ["service", "document", "item", ["object", "type"]]
+        },
+        {
+            "role": "document_item",
+            "primitiveTypes": ["string"],
+            "all": ["service", "document", "item"],
+            "none": [
+                "name",
+                "text",
+                "description",
+                "status",
+                "uuid",
+                "guid",
+                "char",
+                "open",
+                "error",
+                "amount",
+                "net",
+                "gross",
+                "quantity",
+                "category"
+            ]
+        },
+        {
+            "role": "service_document_type",
+            "all": ["service", "document", "type"]
+        },
+        {
+            "role": "document_id",
+            "all": ["service", "document"],
+            "none": [
+                "name",
+                "text",
+                "description",
+                "status",
+                "uuid",
+                "guid",
+                "char",
+                "item",
+                "items",
+                "open",
+                "error",
+                "amount",
+                "net",
+                "gross",
+                "quantity",
+                "category"
+            ]
+        },
+        {
+            "role": "sales_document_type",
+            "all": ["sales", "document", "type"]
+        },
+        {
+            "role": "object_type",
+            "all": ["object", "type"]
+        },
+        {
+            "role": "length_unit",
+            "primitiveTypes": ["string"],
+            "all": ["length", "unit"]
+        },
+        {
+            "role": "person_full_name",
+            "all": ["formatted", "name"]
+        },
+        {
+            "role": "timezone",
+            "any": ["timezone"]
+        },
+        {
+            "role": "timezone",
+            "all": ["time", "zone"]
+        },
+        {
+            "role": "source_name",
+            "primitiveTypes": ["string"],
+            "all": ["source", "name"]
+        },
+        {
+            "role": "account_description",
+            "primitiveTypes": ["string"],
+            "all": ["account", ["text", "description"]]
+        },
+        {
+            "role": "guid_text",
+            "primitiveTypes": ["string"],
+            "any": ["uuid", "guid"]
+        },
+        {
+            "role": "batch",
+            "primitiveTypes": ["string"],
+            "any": ["batch"]
+        },
+        {
+            "role": "plant",
+            "primitiveTypes": ["string"],
+            "any": ["plant"]
+        },
+        {
+            "role": "gl_account",
+            "primitiveTypes": ["string"],
+            "all": ["gl", "account"]
+        },
+        {
+            "role": "numeric_identifier",
+            "primitiveTypes": ["string"],
+            "all": ["account", "number"]
+        },
+        {
+            "role": "numeric_identifier",
+            "primitiveTypes": ["string"],
+            "all": ["document", "item"],
+            "none": ["status", "name", "text", "description", "address"],
+            "notes": "Numeric SAP document keys: an accounting document number (DDIC BELNR) and its item are digit strings. Metadata evidence (sap:display-format=\"NonNegative\") is decided before any lexical rule."
+        },
+        {
+            "role": "numeric_identifier",
+            "primitiveTypes": ["string"],
+            "any": ["order"],
+            "none": ["status", "name", "text", "description", "address"],
+            "notes": "Numeric SAP order keys: a sales document number (DDIC VBELN) and other order numbers are digit strings. Metadata evidence is decided before any lexical rule."
+        },
+        {
+            "role": "numeric_identifier",
+            "primitiveTypes": ["string"],
+            "any": ["customer", "supplier", "payer", "party", "owner"],
+            "none": ["name", "text", "description", "address", "status"],
+            "notes": "Numeric SAP business-partner keys: customer (DDIC KUNNR) and supplier (DDIC LIFNR) numbers are digit strings. Metadata evidence is decided before any lexical rule."
+        },
+        {
+            "role": "business_identifier",
+            "primitiveTypes": ["string"],
+            "all": [
+                ["identifier", "reference"],
+                ["id", "number", "key"]
+            ]
+        },
+        {
+            "role": "currency",
+            "any": ["currency"]
+        },
+        {
+            "role": "chart_of_accounts",
+            "all": ["chart", ["account", "accounts"]]
+        },
+        {
+            "role": "equipment_id",
+            "lastWord": ["equipment"]
+        },
+        {
+            "role": "equipment_id",
+            "all": ["technical", "object"]
+        },
+        {
+            "role": "interest_rate",
+            "all": ["interest", "rate"]
+        },
+        {
+            "role": "price",
+            "any": ["price"]
+        },
+        {
+            "role": "monetary_amount",
+            "any": ["amount", "total", "net", "gross", "fee", "charge", "cost"]
+        },
+        {
+            "role": "quantity",
+            "any": ["quantity"]
+        },
+        {
+            "role": "unit_of_measure_iso",
+            "primitiveTypes": ["string"],
+            "all": ["unit", "iso", "code"]
+        },
+        {
+            "role": "measurement_dimension",
+            "any": ["dimension"]
+        },
+        {
+            "role": "conversion_offset",
+            "all": ["additive", ["constant", "value"]]
+        },
+        {
+            "role": "conversion_factor",
+            "all": ["conversion", ["numerator", "denominator"]]
+        },
+        {
+            "role": "decimal_places",
+            "all": [
+                ["decimal", "decimals"],
+                ["place", "places", "number", "nmbr", "rounding"]
+            ]
+        },
+        {
+            "role": "exponent",
+            "any": ["exponent"]
+        },
+        {
+            "role": "temperature_unit",
+            "primitiveTypes": ["string"],
+            "all": ["temperature", "unit"]
+        },
+        {
+            "role": "pressure_unit",
+            "primitiveTypes": ["string"],
+            "all": ["pressure", "unit"]
+        },
+        {
+            "role": "dimension_exponent",
+            "primitiveTypes": ["int", "decimal"],
+            "all": ["unit", "measure", ["pressure", "length", "mass", "temperature", "time"]]
+        },
+        {
+            "role": "temperature",
+            "any": ["temperature"]
+        },
+        {
+            "role": "pressure",
+            "any": ["pressure"]
+        },
+        {
+            "role": "count",
+            "primitiveTypes": ["int", "string"],
+            "any": ["count"]
+        },
+        {
+            "role": "count",
+            "primitiveTypes": ["int", "string"],
+            "all": [
+                ["number", "no", "nmbr"],
+                ["item", "items"]
+            ]
+        },
+        {
+            "role": "unit_of_measure",
+            "any": ["unit", "uom"]
+        },
+        {
+            "role": "unit_of_measure",
+            "primitiveTypes": ["string"],
+            "lastWord": ["measure"]
+        },
+        {
+            "role": "percentage",
+            "primitiveTypes": ["decimal"],
+            "any": ["percentage", "percent", "rate"]
+        },
+        {
+            "role": "start_date",
+            "all": [
+                ["start", "begin", "from"],
+                ["date", "time"]
+            ]
+        },
+        {
+            "role": "end_date",
+            "all": [
+                ["end", "until", "to"],
+                ["date", "time"]
+            ]
+        },
+        {
+            "role": "date",
+            "any": ["date"]
+        },
+        {
+            "role": "datetime",
+            "any": ["datetime", "timestamp"]
+        },
+        {
+            "role": "time",
+            "any": ["time"]
+        },
+        {
+            "role": "country_name",
+            "all": ["country", ["name", "text", "description"]]
+        },
+        {
+            "role": "country",
+            "any": ["country"]
+        },
+        {
+            "role": "city",
+            "any": ["city", "town"]
+        },
+        {
+            "role": "region_name",
+            "all": [
+                ["region", "state", "province"],
+                ["name", "text", "description"]
+            ]
+        },
+        {
+            "role": "region",
+            "any": ["region", "state", "province"]
+        },
+        {
+            "role": "postal_code",
+            "any": ["postal", "postcode", "zipcode"]
+        },
+        {
+            "role": "postal_code",
+            "all": ["zip", "code"]
+        },
+        {
+            "role": "street_address",
+            "any": ["street"]
+        },
+        {
+            "role": "street_address",
+            "all": ["address"],
+            "none": ["email"]
+        },
+        {
+            "role": "org_name",
+            "all": [["company", "organization", "organisation", "supplier", "vendor"], "name"]
+        },
+        {
+            "role": "product_name",
+            "all": [["product", "material"], "name"]
+        },
+        {
+            "role": "description",
+            "any": ["description", "descr"]
+        },
+        {
+            "firstMatchingWord": ["comment", "remark", "notes"],
+            "notes": "Each narrative word is its own role; the first one the name uses wins, whatever its position in this list."
+        },
+        {
+            "role": "approval_status",
+            "all": ["status", "approval"]
+        },
+        {
+            "role": "indicator",
+            "primitiveTypes": ["string"],
+            "all": ["status", "error", "has"]
+        },
+        {
+            "role": "status",
+            "any": ["status"]
+        },
+        {
+            "role": "language",
+            "any": ["language", "locale"]
+        },
+        {
+            "role": "year",
+            "any": ["year"]
+        }
+    ],
+    "dataElements": [
+        {
+            "dataElement": "BANKS",
+            "role": "country",
+            "source": "ABAP Dictionary data element name"
+        },
+        {
+            "dataElement": "LAND1",
+            "role": "country",
+            "source": "ABAP Dictionary data element name"
+        },
+        {
+            "dataElement": "LAND1_GP",
+            "role": "country",
+            "source": "ABAP Dictionary data element name"
+        },
+        {
+            "dataElement": "AD_COMCTRY",
+            "role": "country",
+            "source": "ABAP Dictionary data element name"
+        },
+        {
+            "dataElement": "AD_POBXCTY",
+            "role": "country",
+            "source": "ABAP Dictionary data element name"
+        },
+        {
+            "dataElement": "INTCA",
+            "role": "country",
+            "source": "ABAP Dictionary data element name"
+        },
+        {
+            "dataElement": "FOT_TAX_COUNTRY",
+            "role": "country",
+            "source": "ABAP Dictionary data element name"
+        },
+        {
+            "dataElement": "REGIO",
+            "role": "region",
+            "source": "ABAP Dictionary data element name"
+        },
+        {
+            "dataElement": "AD_POBXREG",
+            "role": "region",
+            "source": "ABAP Dictionary data element name"
+        },
+        {
+            "dataElement": "AD_CITY1",
+            "role": "city",
+            "source": "ABAP Dictionary data element name"
+        },
+        {
+            "dataElement": "AD_CITY3",
+            "role": "city",
+            "source": "ABAP Dictionary data element name"
+        },
+        {
+            "dataElement": "ORT01",
+            "role": "city",
+            "source": "ABAP Dictionary data element name"
+        },
+        {
+            "dataElement": "ORT01_GP",
+            "role": "city",
+            "source": "ABAP Dictionary data element name"
+        },
+        {
+            "dataElement": "AD_MC_CITY",
+            "role": "city",
+            "source": "ABAP Dictionary data element name"
+        },
+        {
+            "dataElement": "AD_STREET",
+            "role": "street_address",
+            "source": "ABAP Dictionary data element name"
+        },
+        {
+            "dataElement": "STRAS",
+            "role": "street_address",
+            "source": "ABAP Dictionary data element name"
+        },
+        {
+            "dataElement": "STRAS_GP",
+            "role": "street_address",
+            "source": "ABAP Dictionary data element name"
+        },
+        {
+            "dataElement": "AD_MC_STRT",
+            "role": "street_address",
+            "source": "ABAP Dictionary data element name"
+        },
+        {
+            "dataElement": "AD_PSTCD1",
+            "role": "postal_code",
+            "source": "ABAP Dictionary data element name"
+        },
+        {
+            "dataElement": "AD_PSTCD2",
+            "role": "postal_code",
+            "source": "ABAP Dictionary data element name"
+        },
+        {
+            "dataElement": "AD_PSTCD3",
+            "role": "postal_code",
+            "source": "ABAP Dictionary data element name"
+        },
+        {
+            "dataElement": "PSTLZ",
+            "role": "postal_code",
+            "source": "ABAP Dictionary data element name"
+        },
+        {
+            "dataElement": "FARP_PSTLZ",
+            "role": "postal_code",
+            "source": "ABAP Dictionary data element name"
+        },
+        {
+            "dataElement": "AD_TLNMBR",
+            "role": "phone",
+            "source": "ABAP Dictionary data element name"
+        },
+        {
+            "dataElement": "AD_FXNMBR",
+            "role": "phone",
+            "source": "ABAP Dictionary data element name",
+            "review": "A fax number; routed as phone because it has the same format."
+        },
+        {
+            "dataElement": "AD_TELNRLG",
+            "role": "phone",
+            "source": "ABAP Dictionary data element name"
+        },
+        {
+            "dataElement": "TELF1",
+            "role": "phone",
+            "source": "ABAP Dictionary data element name"
+        },
+        {
+            "dataElement": "TELFX",
+            "role": "phone",
+            "source": "ABAP Dictionary data element name",
+            "review": "A fax number; routed as phone because it has the same format."
+        },
+        {
+            "dataElement": "AD_SMTPADR",
+            "role": "email",
+            "source": "ABAP Dictionary data element name"
+        },
+        {
+            "dataElement": "BANKA",
+            "role": "bank_name",
+            "source": "ABAP Dictionary data element name",
+            "review": "Short text \"Name of bank\" (sapdatasheet.org/abap/dtel/banka.html): the name of a bank, not of any organisation."
+        },
+        {
+            "dataElement": "NAME1",
+            "role": "org_name",
+            "source": "ABAP Dictionary data element name",
+            "review": "Generic \"Name 1\": an organization or a person, depending on the partner category."
+        },
+        {
+            "dataElement": "NAME1_GP",
+            "role": "org_name",
+            "source": "ABAP Dictionary data element name",
+            "review": "Generic \"Name 1\": an organization or a person, depending on the partner category."
+        },
+        {
+            "dataElement": "BUTXT",
+            "role": "org_name",
+            "source": "ABAP Dictionary data element name"
+        },
+        {
+            "dataElement": "AD_NAME1",
+            "role": "org_name",
+            "source": "ABAP Dictionary data element name",
+            "review": "Generic \"Name 1\": an organization or a person, depending on the address type."
+        },
+        {
+            "dataElement": "BU_NAMEOR1",
+            "role": "org_name",
+            "source": "ABAP Dictionary data element name"
+        },
+        {
+            "dataElement": "BU_NAMEOR2",
+            "role": "org_name",
+            "source": "ABAP Dictionary data element name"
+        },
+        {
+            "dataElement": "BU_NAMEGR1",
+            "role": "org_name",
+            "source": "ABAP Dictionary data element name"
+        },
+        {
+            "dataElement": "WAERS",
+            "role": "currency",
+            "source": "ABAP Dictionary data element name"
+        },
+        {
+            "dataElement": "WAERS_CURC",
+            "role": "currency",
+            "source": "ABAP Dictionary data element name"
+        },
+        {
+            "dataElement": "WAERS_V",
+            "role": "currency",
+            "source": "ABAP Dictionary data element name"
+        },
+        {
+            "dataElement": "WAERK",
+            "role": "currency",
+            "source": "ABAP Dictionary data element name"
+        },
+        {
+            "dataElement": "MEINS",
+            "role": "unit_of_measure",
+            "source": "ABAP Dictionary data element name"
+        },
+        {
+            "dataElement": "MSEHI",
+            "role": "unit_of_measure",
+            "source": "ABAP Dictionary data element name"
+        },
+        {
+            "dataElement": "ISOCD_UNIT",
+            "role": "unit_of_measure_iso",
+            "source": "ABAP Dictionary data element name",
+            "review": "Short text \"ISO code for unit of measurement\" (sapdatasheet.org/abap/dtel/isocd_unit.html): the ISO code (KGM), not the SAP unit (KG)."
+        },
+        {
+            "dataElement": "MSEH3",
+            "role": "unit_of_measure",
+            "source": "ABAP Dictionary data element name"
+        },
+        {
+            "dataElement": "FARR_QUANTITY_UNIT",
+            "role": "unit_of_measure",
+            "source": "ABAP Dictionary data element name"
+        },
+        {
+            "dataElement": "WERKS_D",
+            "role": "plant",
+            "source": "ABAP Dictionary data element name"
+        },
+        {
+            "dataElement": "B_CHARGE",
+            "role": "batch",
+            "source": "ABAP Dictionary data element name"
+        },
+        {
+            "dataElement": "SPRAS",
+            "role": "language",
+            "source": "ABAP Dictionary data element name"
+        },
+        {
+            "dataElement": "LANGU",
+            "role": "language",
+            "source": "ABAP Dictionary data element name"
+        },
+        {
+            "dataElement": "DDLANGUAGE",
+            "role": "language",
+            "source": "ABAP Dictionary data element name"
+        },
+        {
+            "dataElement": "BU_LANGU_CORR",
+            "role": "language",
+            "source": "ABAP Dictionary data element name"
+        },
+        {
+            "dataElement": "EHFND_LANGU",
+            "role": "language",
+            "source": "ABAP Dictionary data element name"
+        },
+        {
+            "dataElement": "AD_NAMTEXT",
+            "role": "person_full_name",
+            "source": "ABAP Dictionary data element name"
+        },
+        {
+            "dataElement": "BU_NAME1TX",
+            "role": "person_full_name",
+            "source": "ABAP Dictionary data element name"
+        },
+        {
+            "dataElement": "AD_NAMEFIR",
+            "role": "person_first_name",
+            "source": "ABAP Dictionary data element name"
+        },
+        {
+            "dataElement": "BU_MCNAME2",
+            "role": "person_first_name",
+            "source": "ABAP Dictionary data element name",
+            "review": "A search-help (match-code) copy of the first name, stored in upper case by SAP."
+        },
+        {
+            "dataElement": "AD_NAMELAS",
+            "role": "person_last_name",
+            "source": "ABAP Dictionary data element name"
+        },
+        {
+            "dataElement": "BU_MCNAME1",
+            "role": "person_last_name",
+            "source": "ABAP Dictionary data element name",
+            "review": "A search-help (match-code) copy of the last name, stored in upper case by SAP."
+        },
+        {
+            "dataElement": "PRODUCTDESCRIPTION",
+            "role": "product_name",
+            "source": "ABAP Dictionary data element name"
+        },
+        {
+            "dataElement": "MAKTX",
+            "role": "product_name",
+            "source": "ABAP Dictionary data element name"
+        },
+        {
+            "dataElement": "VAL_TEXT",
+            "role": "description",
+            "source": "ABAP Dictionary data element name"
+        },
+        {
+            "dataElement": "LTEXT_CDS",
+            "role": "description",
+            "source": "ABAP Dictionary data element name"
+        },
+        {
+            "dataElement": "AS4TEXT",
+            "role": "description",
+            "source": "ABAP Dictionary data element name"
+        },
+        {
+            "dataElement": "EAMS_TEC_OBJ_DES",
+            "role": "description",
+            "source": "ABAP Dictionary data element name"
+        },
+        {
+            "dataElement": "AUFTEXT",
+            "role": "description",
+            "source": "ABAP Dictionary data element name"
+        },
+        {
+            "dataElement": "QKURZTEXT",
+            "role": "description",
+            "source": "ABAP Dictionary data element name"
+        },
+        {
+            "dataElement": "LTXA1",
+            "role": "description",
+            "source": "ABAP Dictionary data element name"
+        },
+        {
+            "dataElement": "PLTXT",
+            "role": "description",
+            "source": "ABAP Dictionary data element name"
+        },
+        {
+            "dataElement": "TEXT50",
+            "role": "description",
+            "source": "ABAP Dictionary data element name"
+        },
+        {
+            "dataElement": "TXT50_SKAT",
+            "role": "description",
+            "source": "ABAP Dictionary data element name"
+        },
+        {
+            "dataElement": "FARP_SGTXT",
+            "role": "description",
+            "source": "ABAP Dictionary data element name"
+        },
+        {
+            "dataElement": "KKATEXT_ABGSL",
+            "role": "description",
+            "source": "ABAP Dictionary data element name"
+        },
+        {
+            "dataElement": "FARP_LTEXT_003T",
+            "role": "description",
+            "source": "ABAP Dictionary data element name"
+        },
+        {
+            "dataElement": "DDTEXT",
+            "role": "description",
+            "source": "ABAP Dictionary data element name"
+        },
+        {
+            "dataElement": "LTEXT",
+            "role": "long_text",
+            "source": "ABAP Dictionary data element name"
+        },
+        {
+            "dataElement": "J_STATUS",
+            "role": "status",
+            "source": "ABAP Dictionary data element name"
+        },
+        {
+            "dataElement": "J_TXT30",
+            "role": "status",
+            "source": "ABAP Dictionary data element name"
+        },
+        {
+            "dataElement": "J_TXT04",
+            "role": "status",
+            "source": "ABAP Dictionary data element name"
+        },
+        {
+            "dataElement": "TZNZONE",
+            "role": "timezone",
+            "source": "ABAP Dictionary data element name"
+        },
+        {
+            "dataElement": "IBAN",
+            "role": "iban",
+            "source": "ABAP Dictionary data element name"
+        },
+        {
+            "dataElement": "SWIFT",
+            "role": "bic",
+            "source": "ABAP Dictionary data element name"
+        }
+    ],
+    "metadataRoles": {
+        "notes": "Roles that an explicit metadata marker decides: an OData V4 vocabulary term (matched by its lower-case qualified-name suffix, first match wins) or a V2 sap:semantics value (lower case).",
+        "vocabularyTerms": [
+            {
+                "termSuffix": ".isemailaddress",
+                "term": "Communication.IsEmailAddress",
+                "role": "email"
+            },
+            {
+                "termSuffix": ".isphonenumber",
+                "term": "Communication.IsPhoneNumber",
+                "role": "phone"
+            },
+            {
+                "termSuffix": ".isurl",
+                "term": "Core.IsURL",
+                "role": "url"
+            },
+            {
+                "termSuffix": ".iscurrency",
+                "term": "Common.IsCurrency",
+                "role": "currency"
+            },
+            {
+                "termSuffix": ".isocurrency",
+                "term": "Measures.ISOCurrency",
+                "role": "monetary_amount"
+            }
+        ],
+        "sapSemantics": [
+            {
+                "value": "email",
+                "role": "email"
+            },
+            {
+                "value": "email-address",
+                "role": "email"
+            },
+            {
+                "value": "tel",
+                "role": "phone"
+            },
+            {
+                "value": "telephone",
+                "role": "phone"
+            },
+            {
+                "value": "phone",
+                "role": "phone"
+            },
+            {
+                "value": "url",
+                "role": "url"
+            },
+            {
+                "value": "uri",
+                "role": "url"
+            },
+            {
+                "value": "currency",
+                "role": "currency"
+            },
+            {
+                "value": "currency-code",
+                "role": "currency"
+            },
+            {
+                "value": "iso-currency",
+                "role": "currency"
+            },
+            {
+                "value": "unit",
+                "role": "unit_of_measure"
+            },
+            {
+                "value": "unit-of-measure",
+                "role": "unit_of_measure"
+            },
+            {
+                "value": "amount",
+                "role": "monetary_amount"
+            }
+        ]
+    },
+    "temporalVocabulary": {
+        "notes": "Words of a field label or name. created/changed mark administrative timestamps; start/end mark interval bounds for the temporal plan. No other pair of business events is ordered: which one comes first is not known from words. datePairStart/datePairEnd are the narrower interval markers of the start/end date coherence rule, kept separate because widening them would pair more fields. clock words name the time of an event (ReceiptDate, ReceiptTime and ReceiptDateTime are one event).",
+        "created": ["create", "created", "creation", "crted", "crt"],
+        "changed": ["change", "changed", "modified", "updated", "chgd", "chg"],
+        "start": ["start", "starting", "begin", "beginning", "from"],
+        "end": ["end", "ending", "finish", "until", "to"],
+        "datePairStart": ["start", "begin", "from"],
+        "datePairEnd": ["end", "until", "to"],
+        "datePairAnchor": ["date", "time"],
+        "clock": ["date", "time", "datetime", "timestamp", "at", "on"]
+    },
+    "coherenceVocabulary": {
+        "notes": "Name tokens of the generic coherence rules. Tokens are compared after splitting camel case, underscores and hyphens, in lower case.",
+        "phone": ["phone", "telephone", "mobile"],
+        "phoneContextIgnored": ["phone", "telephone", "mobile", "number"],
+        "country": ["country"],
+        "countryContextIgnored": ["country", "code"],
+        "countryNameMarkers": ["name", "text", "description"],
+        "statusMarker": "status",
+        "statusTextSuffix": "text",
+        "fieldControlSuffix": "fc",
+        "balance": {
+            "opening": ["opening", "balance"],
+            "debit": ["debit", "amount"],
+            "credit": ["credit", "amount"],
+            "closing": ["closing", "balance"]
+        },
+        "currency": ["currency", "waers"],
+        "currencyDataElements": ["WAERS"],
+        "currencySemantics": ["currency", "currency-code", "iso-currency"],
+        "currencyContextIgnored": ["currency", "code"],
+        "amount": ["amount", "amt", "balance", "price"],
+        "amountContextIgnored": ["amount", "amt", "balance", "price", "net", "gross"]
+    },
+    "vdmFieldGroups": {
+        "notes": "Field-name profiles of SAP S/4HANA interface views. Names are normalized: lower case, without separators. Each profile is applied only when a scenario opts into its coherence rule.",
+        "unitOfMeasure": {
+            "sourceView": "I_UnitOfMeasure",
+            "code": "unitofmeasure",
+            "text": "unitofmeasuretext",
+            "iso": "unitofmeasureisocode",
+            "temperature": "unitofmeasuretemperature",
+            "pressure": "unitofmeasurepressure"
+        },
+        "siUnitConversion": {
+            "sourceView": "I_UnitOfMeasure",
+            "unit": "unitofmeasure",
+            "additive": "siunitcnvrsnadditivevalue",
+            "numerator": "siunitcnvrsnratenumerator",
+            "denominator": "siunitcnvrsnratedenominator",
+            "exponent": "siunitcnvrsnrateexponent",
+            "minimumFields": 3
+        },
+        "lifecycle": {
+            "source": "SAP S/4HANA equipment interface views: equipment lifecycle flags",
+            "suffixes": {
+                "available": "isavailable",
+                "deleted": "isdeleted",
+                "inactive": "isinactive",
+                "installed": "isinstalled",
+                "warehouse": "isinwarehouse",
+                "customer": "isatcustomer"
+            },
+            "minimumFields": 3,
+            "states": [
+                {
+                    "available": true,
+                    "deleted": false,
+                    "inactive": false,
+                    "installed": false,
+                    "warehouse": true,
+                    "customer": false
+                },
+                {
+                    "available": false,
+                    "deleted": false,
+                    "inactive": false,
+                    "installed": true,
+                    "warehouse": false,
+                    "customer": false
+                },
+                {
+                    "available": false,
+                    "deleted": false,
+                    "inactive": true,
+                    "installed": false,
+                    "warehouse": false,
+                    "customer": false
+                },
+                {
+                    "available": false,
+                    "deleted": true,
+                    "inactive": false,
+                    "installed": false,
+                    "warehouse": false,
+                    "customer": false
+                }
+            ]
+        },
+        "processingStatus": {
+            "source": "SAP S/4HANA bank statement interface views: bank statement item posting status",
+            "primaryPostedSuffix": "isposted",
+            "primaryPostedExcludes": "subledger",
+            "secondaryPostedSuffix": "ispostedsuccessfully",
+            "interpretedSuffix": "isinterpreted"
+        }
+    },
+    "modelOutputFilters": {
+        "notes": "Filters for values the fine-tuned model proposes. Patterns are JavaScript regular expressions compiled with the u flag and tested against the value trimmed, with whitespace collapsed and lower-cased (en-US). In a field template, {fields} stands for the escaped alternation of the field's name, label and description, normalized the same way.",
+        "instructionEcho": [
+            "\\b(?:return|output|provide|respond|generate)\\b.{0,80}\\bjson\\s+array\\b",
+            "\\bjson\\s+array\\b.{0,100}\\b(?:with|containing)\\b.{0,80}\\b(?:object|row|key|field)s?\\b"
+        ],
+        "placeholderValues": [
+            "n/a",
+            "na",
+            "none",
+            "null",
+            "unknown",
+            "tbd",
+            "todo",
+            "placeholder",
+            "lorem",
+            "lorem ipsum",
+            "sample",
+            "sample text",
+            "test",
+            "test value",
+            "value",
+            "text"
+        ],
+        "pathOrUrl": "^(?:\\/{1,2}|[a-z][a-z0-9+.-]*:\\/\\/)[^\\s]+$",
+        "fieldInstruction": "^(?:the\\s+)?[\"']?(?:{fields})[\"']?\\s+(?:key|field)\\b.*\\b(?:should|must|contain|include|return)\\b",
+        "fieldPlaceholder": "^(?:{fields})\\s+(?:value|text|description|placeholder)$",
+        "fieldOrdinal": "^(?:{fields})\\s+(?:#\\s*)?\\d+(?:st|nd|rd|th)?$"
+    },
+    "codeTexts": {
+        "notes": "Code/text vocabulary. The text of a code is the field a Common.Text or sap:text annotation names, or a string sibling whose name is the code's name followed by one of textSuffixes (PaymentGroup / PaymentGroupText). A field whose name ends in a text suffix is a name form: it never keeps a role in codeRoles, which yield codes; nameRoleOf gives the role that names such a code, and a code role without one is withdrawn. A code's text comes from a supplied or fixed row, a record name (recordNames: the host's ICU display names of regions, currencies and languages, or the units bank), or the first generated text of the code; nothing is invented for a code none of them names, which keeps what it holds (empty unless a tier wrote a value that is no text). A text holds a run of at least minimumTextLetters letters, and a field shorter than that holds no text. Suffix words are English word forms of OData and ABAP field naming (SAP Fiori design guidelines, text arrangement of codes; ABAP Dictionary data element short, medium and long texts).",
+        "textSuffixes": ["text", "name", "desc", "description", "descr", "txt"],
+        "codeRoles": ["country", "region", "currency", "language", "unit_of_measure", "unit_of_measure_iso"],
+        "nameRoleOf": {
+            "country": "country_name",
+            "region": "region_name",
+            "currency": "currency_name"
+        },
+        "recordNames": {
+            "country": "region",
+            "currency": "currency",
+            "language": "language",
+            "unit_of_measure": "unit",
+            "unit_of_measure_iso": "unit"
+        },
+        "minimumTextLetters": 3
+    },
+    "realismGuard": {
+        "notes": "When a generated string is withheld for echoing a name of the service (a property, entity or entity set name, label or description, or a trailing run of its words) followed by a number. A name of at least minimumEchoedWords words is an echo wherever it occurs (Unit Price 1); a shorter one only when its column counts it up with at least minimumCountedNumbers different numbers, since one word and a number is often a real value (Room 14). A number after a word the service does not use is never withheld.",
+        "minimumEchoedWords": 2,
+        "minimumCountedNumbers": 3
+    },
+    "realismChecks": {
+        "notes": "Vocabulary and thresholds of the realism checks in src/quality, which read final rows to find values no real data would hold. They are kept apart from the generator's own vocabularies so that a check does not share the generator's blind spots. Form words name the form of a field rather than its subject (OData and ABAP naming: description, text, code, key); text field words, as the last word of a name, make a field hold text, never codes; country words name a country key (land: the ABAP country key LAND1). Time, clock, qualifier and event words find the ordered pairs of a row (created before changed, from before to). A column is of a kind, holds codes or holds cities only when at least the given share of its values do; a pattern is shown only from the given number of rows. A code is at most maximumCodeLength capitals, digits, underscores or hyphens. A multi-word value is at least minimumSharedWords words, and two fields share a list only when they share minimumSharedValues such values. A placeholder echoes a service name of at least minimumEchoedWords words, or a service name its column counts up with minimumCountedNumbers different numbers.",
+        "textFormWords": ["description", "descr", "desc", "text", "name", "short", "long"],
+        "identifierFormWords": ["code", "id", "key", "of"],
+        "textFieldWords": ["name", "description", "desc", "text"],
+        "countryWords": ["country", "land"],
+        "timeWords": ["date", "time", "datetime", "timestamp", "at", "on"],
+        "clockWords": ["time", "timestamp", "datetime"],
+        "qualifierWords": ["last", "by"],
+        "eventWords": {
+            "created": ["created", "creation", "create"],
+            "changed": ["changed", "change", "chgd", "modified", "modification", "updated", "update"],
+            "from": ["from", "start", "begin", "starts", "begins"],
+            "to": ["to", "end", "until", "ends", "expiry", "expiration"]
+        },
+        "codeShare": 0.8,
+        "kindShare": 0.8,
+        "cityShare": 0.6,
+        "maximumCodeLength": 4,
+        "minimumPatternRows": 5,
+        "minimumSharedWords": 2,
+        "minimumSharedValues": 2,
+        "minimumEchoedWords": 2,
+        "minimumCountedNumbers": 3
+    },
+    "typedFloor": {
+        "notes": "Generation parameters of the typed floor for strings no role fills. A field the metadata makes a code (a text, value list or value help) takes a code shape with an ordinal drawn from codeOrdinals values, so codes repeat across rows like a code list. Every other string abstains, whatever its length: a short column may hold a flag, a word or a code, and nothing in its metadata says which.",
+        "codeOrdinals": 999
+    },
+    "temporalSpread": {
+        "notes": "Generation parameters, not facts about any domain. When generation wrote both events of an ordered pair (a temporal-plan constraint) at one instant, the later one moves later: in all rows but one in unchangedOneIn, by an exponentially distributed number of days (the inter-event time of a Poisson process) with mean meanGapDays, capped at maximumGapDays, plus a uniform number of minutes in gapMinutes; a time of day moves by the minutes only, within its day.",
+        "unchangedOneIn": 5,
+        "meanGapDays": 14,
+        "maximumGapDays": 365,
+        "gapMinutes": { "minimum": 15, "maximum": 240 }
+    },
+    "generationRanges": {
+        "notes": "Generation parameters, not facts about any domain: the inclusive integer ranges values are drawn from where no metadata bounds them. endDateGapDays: days an end date lies after its start when both come from the date role banks. dateRepairGapDays: days a coherence repair moves an end after its start when a pair came out reversed. streetNumber: the house number before a street name. bankStatementPage: page numbers of a bank statement. count: a count held in a string field, also bounded by the field's length. decimalPlaces and dimensionExponent: the decimal places and the power of ten of a unit dimension. Facets (precision, scale, MaxLength) still apply.",
+        "endDateGapDays": { "minimum": 30, "maximum": 119 },
+        "dateRepairGapDays": { "minimum": 30, "maximum": 89 },
+        "streetNumber": { "minimum": 1, "maximum": 180 },
+        "bankStatementPage": { "minimum": 1, "maximum": 99 },
+        "count": { "minimum": 1, "maximum": 500 },
+        "decimalPlaces": { "minimum": 0, "maximum": 6 },
+        "dimensionExponent": { "minimum": -3, "maximum": 3 }
+    },
+    "geography": {
+        "notes": "Place fields of a row follow one country. The anchor is the row's country code field (a field planned with anchorRole, or named as a country code); every field planned with a leaf role is drawn from the location record of that country. When an entity has several country fields, a place field follows the one sharing the most name words with it. Roles of another party (contextLeafRoles: a bank and its BIC) follow only a country field whose name shares a context word with theirs (PayeeCountry for PayeeBic); a bank is not assumed to be in the record's own country. Roles follow ISO 3166 (country, region), ITU-T E.164 (telephone numbering), ISO 9362 (BIC) and the IANA time zone database.",
+        "anchorRole": "country",
+        "leafRoles": ["city", "region", "region_name", "postal_code", "phone", "mobile_phone", "timezone"],
+        "contextLeafRoles": ["bic", "bank_name"]
+    },
+    "rolePolicy": {
+        "notes": "Runtime routing policy, kept apart from the fingerprinted role registry the classifier head pins: changing it never invalidates a packaged head.",
+        "authoritative": [
+            "account_description",
+            "approval_status",
+            "bank_account_type",
+            "bank_account_internal_id",
+            "bank_name",
+            "bank_statement_format",
+            "bank_statement_id",
+            "bank_statement_page",
+            "bank_statement_type",
+            "business_network_id",
+            "company_code",
+            "count",
+            "customer_purchase_order",
+            "distribution_channel",
+            "document_id",
+            "document_item",
+            "dimension_exponent",
+            "duration_unit",
+            "employee_id",
+            "equipment_name",
+            "gl_account",
+            "guid_text",
+            "house_bank",
+            "indicator",
+            "length_unit",
+            "mobile_phone",
+            "object_type",
+            "org_name",
+            "payment_file_id",
+            "payment_terms",
+            "payment_transaction_group",
+            "plant",
+            "sales_document_type",
+            "sales_division",
+            "sales_organization",
+            "service_document_item_category",
+            "service_document_type",
+            "service_organization",
+            "service_team",
+            "source_name",
+            "storage_location",
+            "technical_object_type",
+            "unit_of_measure_iso",
+            "unique_item_identifier"
+        ],
+        "lexicalBlocked": ["approval_status", "status"],
+        "applicationDomain": [
+            "company_code",
+            "house_bank",
+            "gl_account",
+            "chart_of_accounts",
+            "plant",
+            "storage_location",
+            "sales_organization",
+            "sales_division",
+            "distribution_channel",
+            "payment_terms",
+            "control_code",
+            "approval_status",
+            "status",
+            "fiscal_period",
+            "tax_code",
+            "bank_account_type",
+            "bank_statement_type",
+            "bank_statement_format",
+            "payment_transaction_group",
+            "service_document_type",
+            "sales_document_type",
+            "service_document_item_category",
+            "object_type",
+            "technical_object_type",
+            "product_category"
+        ],
+        "organizationNameEvidence": {
+            "notes": "Name-only evidence that a string field displays the name of an organisation, used by the lexical fallback. The word before the last display word of a field name is the head of the name and names what is displayed (English compound nouns are right-headed): the field qualifies when that word is a subject word, or when there is no such word and the name of its entity has a subject word. A field whose head word names another subject, or a word of the entity other than a subject word, does not qualify. Digits are ignored. Subject words are the organisation words of the org_name lexical rule; display words are the OData and ABAP word forms of a display name.",
+            "subjectWords": ["agency", "organization", "organisation", "company", "supplier", "vendor"],
+            "displayWords": ["name", "text", "display"]
+        },
+        "refinableTo": {
+            "monetary_amount": ["price"],
+            "phone": ["mobile_phone"],
+            "quantity": ["duration"]
+        }
+    },
+    "thresholds": {
+        "notes": "Uncalibrated fallbacks. A calibrated classifier head carries its own per-role route thresholds, which take precedence; these apply only to decisions that arrive without one.",
+        "route": {
+            "value": 0.9,
+            "notes": "Minimum classifier confidence to route a field when neither the head nor the role registry gives a threshold."
+        },
+        "conflict": {
+            "value": 0.95,
+            "notes": "Minimum classifier confidence to overrule a disagreeing lexical candidate when the role registry gives no conflict threshold."
+        },
+        "lexicalConfidence": {
+            "value": 0.8,
+            "notes": "Confidence recorded for a role accepted from the lexical fallback."
+        },
+        "statistics": {
+            "value": 0.5,
+            "notes": "Confidence a decision without its own route threshold must reach to count as routed in coverage statistics and tier attribution."
+        },
+        "bestEffort": {
+            "value": 0.88,
+            "notes": "Minimum classifier confidence of a role given to a field no role was certain for. Calibrated on held-out labelled fields: the lowest confidence at which at least 80% of such roles belong to the family of the field's labelled role."
+        }
+    }
+}

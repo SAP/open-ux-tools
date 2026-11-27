@@ -15,4 +15,5 @@ getUI5Versions({
     .catch((error) => {
         'use strict';
         console.error('Error fetching UI5 versions:', error);
+        process.exitCode = 1;
     });

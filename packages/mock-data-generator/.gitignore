@@ -1,0 +1,10 @@
+# Build output and coverage
+dist/
+coverage/
+*.tsbuildinfo
+
+# Built by `pnpm build:models` from public base models and the committed row-model adapter
+# (see training/README.md); the manifest, the heads and the generation config are tracked.
+resources/models/**/*.onnx
+resources/models/classifier/vocab.txt
+resources/models/sft/tokenizer.json

@@ -208,6 +208,9 @@ test/*-backup.tar.gz
 *.LICENSES.txt
 *.LEGAL.txt
 
+# Local MockGen paper workspace
+/docs/paper/
+
 # Test fixture lock files
 packages/cds-odata-annotation-converter/test/data/bookshop/package-lock.json
 **/.che
