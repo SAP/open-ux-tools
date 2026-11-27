@@ -1,4 +1,4 @@
-import type { AxiosResponse, CustomParamsSerializer } from 'axios';
+import type { AxiosError, AxiosResponse, CustomParamsSerializer } from 'axios';
 import { Axios } from 'axios';
 import { readFileSync } from 'node:fs';
 import { URLSearchParams } from 'node:url';
@@ -282,7 +282,7 @@ export class LayeredRepositoryService extends Axios implements Service {
             return await this.get('/actions/getcsrftoken/');
         } catch (error) {
             if (isAxiosError(error)) {
-                this.tryLogResponse(error.response);
+                this.tryLogAxiosError(error);
             }
             throw error;
         }
@@ -317,7 +317,7 @@ export class LayeredRepositoryService extends Axios implements Service {
             return JSON.parse(response.data);
         } catch (error) {
             if (isAxiosError(error)) {
-                this.tryLogResponse(error.response);
+                this.tryLogAxiosError(error);
             }
             throw error;
         }
@@ -343,7 +343,7 @@ export class LayeredRepositoryService extends Axios implements Service {
             return response;
         } catch (error) {
             if (isAxiosError(error)) {
-                this.tryLogResponse(error.response);
+                this.tryLogAxiosError(error);
                 if (error.response?.status === 404) {
                     return error.response;
                 }
@@ -444,7 +444,7 @@ export class LayeredRepositoryService extends Axios implements Service {
             return response.data;
         } catch (error) {
             if (isAxiosError(error)) {
-                this.tryLogResponse(error.response);
+                this.tryLogAxiosError(error);
             }
             throw error;
         }
@@ -473,7 +473,7 @@ export class LayeredRepositoryService extends Axios implements Service {
             return response.data;
         } catch (error) {
             if (isAxiosError(error)) {
-                this.tryLogResponse(error.response);
+                this.tryLogAxiosError(error);
             }
             throw error;
         }
@@ -504,7 +504,7 @@ export class LayeredRepositoryService extends Axios implements Service {
             return response.data;
         } catch (error) {
             if (isAxiosError(error)) {
-                this.tryLogResponse(error.response);
+                this.tryLogAxiosError(error);
             }
             throw error;
         }
@@ -541,6 +541,20 @@ export class LayeredRepositoryService extends Axios implements Service {
             this.log.debug(error);
 
             throw error;
+        }
+    }
+
+    /**
+     * Log the messages of the response of a failed request. If there is no response (e.g. certificate or proxy problems), log the error itself.
+     *
+     * @param error error thrown by Axios
+     */
+    private tryLogAxiosError(error: AxiosError): void {
+        if (error.response) {
+            this.tryLogResponse(error.response);
+        } else {
+            // no response, e.g. certificate or proxy problems: the root cause is in the error itself
+            this.log.error(error.code ? `${error.code}: ${error.message}` : error.message);
         }
     }
 
