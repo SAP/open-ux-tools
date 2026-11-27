@@ -15,7 +15,6 @@ const property = (name: string, options: Partial<SchemaProperty> = {}): SchemaPr
 /**
  * Two parents keyed by a code and a child whose reference points to the key of both, so both keys are
  * generated from one shared domain.
- *
  * @returns the graph
  */
 function sharedKeyGraph(): SchemaGraph {

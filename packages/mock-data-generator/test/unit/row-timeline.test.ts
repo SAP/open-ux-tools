@@ -8,7 +8,6 @@ import type {
 
 /**
  * A one-entity OData V4 service.
- *
  * @param properties property elements after the `ID` key
  * @returns the generation request
  */
@@ -32,7 +31,6 @@ ${properties}
 
 /**
  * A classifier that routes properties by name to fixed roles and abstains on the rest.
- *
  * @param roles role per property name
  * @returns the runtime
  */
@@ -50,7 +48,6 @@ function routing(roles: Readonly<Record<string, string>>): MockDataGeneratorRunt
 
 /**
  * Generate the records with the date fields routed to the given roles.
- *
  * @param properties property elements after the `ID` key
  * @param roles role per property name
  * @returns the rows
@@ -155,7 +152,6 @@ describe('one timeline per row', () => {
     /**
      * Orders and items whose items reference their order, keyed by the order and an item number or by their
      * own ID only.
-     *
      * @param keyedByOrder whether the item key includes the order
      * @returns the generation request
      */

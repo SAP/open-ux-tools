@@ -3,7 +3,6 @@ import { parseEdmx } from '../../src/schema/edmx.js';
 /**
  * A service with meaningless names: Qa declares one alternate key inline, Qb one of two properties and one
  * naming a property it does not declare through an external target, Qc none.
- *
  * @returns the metadata
  */
 function metadata(): string {

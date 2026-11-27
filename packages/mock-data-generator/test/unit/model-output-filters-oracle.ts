@@ -13,7 +13,6 @@ function escapedRegExp(value: string): string {
 /**
  * Whether a proposed value repeats the prompt's instructions instead of holding content. Such a value
  * shows the model lost track of the task, so the other values of its row are not trusted either.
- *
  * @param property the field
  * @param value proposed value
  * @returns true for an instruction echo

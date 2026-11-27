@@ -48,7 +48,6 @@ interface ServedService {
 
 /**
  * Whether a parsed line is the service description the mockserver process prints.
- *
  * @param value the parsed line
  * @returns true for a service description
  */
@@ -89,7 +88,6 @@ const DRAFT_ADMINISTRATIVE_DATA_TYPE = 'draftadministrativedata';
 
 /**
  * The URL literal of a key value, as UI5 writes it into a key predicate.
- *
  * @param type the key's EDM type
  * @param value the key value
  * @param odataVersion the service's OData version
@@ -108,7 +106,6 @@ function keyLiteral(type: string, value: unknown, odataVersion: '2.0' | '4.0'): 
 
 /**
  * The key predicate of a row, as UI5 writes it after an entity set or a containment navigation.
- *
  * @param keys the keys of the row's entity type
  * @param row the row
  * @param odataVersion the service's OData version
@@ -124,7 +121,6 @@ function keyPredicate(
 
 /**
  * The rows of a collection response in either OData version.
- *
  * @param body the parsed response
  * @returns the rows, or an empty list
  */
@@ -143,7 +139,6 @@ function collectionRows(body: unknown): ReadonlyArray<Record<string, unknown>> {
 /**
  * Whether a single-entity response holds a row with every key: a mockserver answers a read it cannot match
  * with a 404 or, in later releases, with an empty object, and the object page stays empty either way.
- *
  * @param response the read
  * @param response.status the HTTP status
  * @param response.body the parsed body
@@ -167,7 +162,6 @@ function returnedRow(
  * of its rows, and every other set plainly, every
  * listed row by its key, the draft sibling of every row that says it has one, every to-many navigation of
  * every listed row that data can fill, and every row the listed rows contain, at any depth.
- *
  * @param metadata the service metadata (EDMX)
  * @param resources the rows by entity set, as written to the mock data folder
  * @param odataVersion the service's OData version
@@ -221,7 +215,6 @@ export async function replayObjectPages(
          * Replays the reads of the rows a row contains, as an object page section or table reads them: each
          * containment navigation, each contained row by its key, and the rows each of those contains. A navigation
          * to a type that already contains it on the path may end without rows, since its nesting is finite.
-         *
          * @param path the path of the containing row
          * @param navigations the navigations of the containing row's type
          * @param containing the qualified names of the types on the path

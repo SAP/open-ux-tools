@@ -5,7 +5,6 @@ import type { MockDataServiceRequest, SftGenerator } from '../../src/types.js';
 
 /**
  * A one-entity OData V4 service.
- *
  * @param entitySet entity set name
  * @param properties property elements of the entity type, after its `ID` key
  * @returns the generation request

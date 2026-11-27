@@ -85,7 +85,6 @@ const METADATA = `<?xml version="1.0" encoding="utf-8"?>
 
 /**
  * Builds a request for the Yas entity set.
- *
  * @param existingRows - Rows already in the mock data folder.
  * @returns The request.
  */
@@ -107,7 +106,6 @@ function request(existingRows?: ReadonlyArray<MockDataRow>): MockDataServiceRequ
 
 /**
  * The rows a container row holds under a navigation.
- *
  * @param row - The container row.
  * @param navigation - The containment navigation.
  * @returns The contained rows.
@@ -200,7 +198,6 @@ describe('keys of contained rows', () => {
     /**
      * Generate the containers, then give every one of them, and the rows they contain, the first one's value of the
      * property their contained row copies as its key.
-     *
      * @returns the result
      */
     async function containersSharingTheContainedKey(): Promise<{
@@ -246,7 +243,6 @@ describe('keys of contained rows', () => {
 /**
  * A service of types without entity sets that each contain every other, under one root entity set: every order of the
  * types is a containment path, so the paths grow factorially with the number of types.
- *
  * @param types the number of mutually containing types
  * @returns the EDMX document
  */

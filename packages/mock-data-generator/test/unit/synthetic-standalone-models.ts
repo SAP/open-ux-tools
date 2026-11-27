@@ -16,7 +16,6 @@ import { SEMANTIC_RULE_STORE_ID, SEMANTIC_RULE_STORE_PATH } from '../../src/sema
  * package-local manifest lookup and model-root location are redirected; manifest parsing, dataset
  * checks, model verification, classifier-head validation and the public generator remain real.
  * These marker files are deliberately not trained models and must never allocate a native session.
- *
  * @param options test variations
  * @param options.runtimeVersion onnxruntime-node version the manifest requires; the installed one by default
  * @returns synthetic manifest, allocation guard and cleanup

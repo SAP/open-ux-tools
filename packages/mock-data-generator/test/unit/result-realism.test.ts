@@ -6,7 +6,6 @@ import type { MockDataServiceRequest } from '../../src/types.js';
 
 /**
  * A service of one entity with a start and an end date, and the rows the caller supplies for it.
- *
  * @param rows the supplied rows
  * @returns the request
  */

@@ -14,7 +14,6 @@ const request: MockDataServiceRequest = {
 
 /**
  * The country names of generated rows, next to the names a locale gives their codes.
- *
  * @param rows the generated rows
  * @param locale the locale the names are expected in
  * @returns the generated and the expected names

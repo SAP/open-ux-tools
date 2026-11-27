@@ -6,7 +6,6 @@ import { effectiveValueListParameters } from '../../src/generation/value-list-co
 
 /**
  * The mappings every value-list property should carry if they derive from its parameters.
- *
  * @param graph parsed schema
  * @returns per value-list property, the declared and the derived mappings
  */

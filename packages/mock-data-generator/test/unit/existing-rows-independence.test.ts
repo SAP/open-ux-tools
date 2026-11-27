@@ -21,7 +21,6 @@ const SUPPLIED_ROWS = 3;
 /**
  * A value as the standard mockserver generator or a quick hand-written test file writes it: the
  * property name with the row number, cut to the declared length, and the simplest value of other types.
- *
  * @param property - The property.
  * @param index - The row number, from 1.
  * @returns The value.
@@ -55,7 +54,6 @@ function standardValue(property: SchemaProperty, index: number): MockDataRow[str
 /**
  * The entity sets another set's value list reads: their supplied rows are the values new rows choose from, so
  * they are left out of this test.
- *
  * @param graph - The service schema.
  * @returns The names of the value-list sets.
  */
@@ -69,7 +67,6 @@ function domainSets(graph: SchemaGraph): Set<string> {
 
 /**
  * Whether a value is a placeholder made of the start of its property's name and a number.
- *
  * @param property - The property.
  * @param value - The value.
  * @returns True for a placeholder.
@@ -81,7 +78,6 @@ function isPlaceholder(property: SchemaProperty, value: MockDataRow[string]): bo
 
 /**
  * Whether a cell is empty.
- *
  * @param _property - The property.
  * @param value - The value.
  * @returns True for null, a missing value or the empty string.
@@ -92,7 +88,6 @@ function isEmpty(_property: SchemaProperty, value: MockDataRow[string]): boolean
 
 /**
  * Counts the cells a predicate holds for among the rows after the first `skip` rows of every entity.
- *
  * @param entities - The entities.
  * @param resources - The rows by entity set.
  * @param skip - The supplied rows of each set, by name.

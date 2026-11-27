@@ -48,7 +48,6 @@ const METADATA = `<?xml version="1.0" encoding="utf-8"?>
 
 /**
  * Generates both entity sets next to supplied rows.
- *
  * @param existingRows - Rows already in the mock data folder, by entity set.
  * @param seed - The generation seed.
  * @returns The rows and diagnostics of the run.

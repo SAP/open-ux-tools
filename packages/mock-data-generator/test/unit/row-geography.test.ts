@@ -11,7 +11,6 @@ import type {
 
 /**
  * An OData V4 service from entity types and an entity container body.
- *
  * @param entityTypes entity type elements
  * @param container entity container elements
  * @param targets requested entity sets
@@ -34,7 +33,6 @@ ${entityTypes}
 
 /**
  * Planned roles for the named properties of one entity set.
- *
  * @param entitySet entity set name
  * @param roles role per property name
  * @returns the classifications
@@ -50,7 +48,6 @@ function plan(entitySet: string, roles: Readonly<Record<string, string>>): Map<s
 
 /**
  * A classifier that routes properties by name to fixed roles and abstains on the rest.
- *
  * @param roles role per property name
  * @returns the runtime
  */
@@ -68,7 +65,6 @@ function routing(roles: Readonly<Record<string, string>>): MockDataGeneratorRunt
 
 /**
  * The bank location of a country code.
- *
  * @param country ISO 3166 alpha-2 code
  * @returns the location record
  */

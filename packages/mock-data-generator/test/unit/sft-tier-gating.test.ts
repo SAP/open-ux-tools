@@ -23,7 +23,6 @@ const options = { seed: 42, rowsPerEntity: 2 } as const;
 
 /**
  * Number of model calls made for one entity type.
- *
  * @param generate the mocked generator
  * @param entityName the entity type name to count calls for
  * @returns how many times the model was asked to produce rows for that entity

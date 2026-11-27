@@ -31,7 +31,6 @@ const PLATFORM_NAMES = new Set([
 
 /**
  * The graphs of every fixture service the tests generate data for.
- *
  * @returns the parsed fixtures
  */
 function fixtureGraphs(): SchemaGraph[] {
@@ -66,7 +65,6 @@ function fixtureGraphs(): SchemaGraph[] {
 
 /**
  * Whether a name has more than one word: a single word (`Name`, `City`) is vocabulary, not a fixture's name.
- *
  * @param name entity, entity set or property name
  * @returns true for compound names
  */
@@ -76,7 +74,6 @@ function isCompound(name: string): boolean {
 
 /**
  * The compound entity, entity set and property names of the fixtures, platform names left out.
- *
  * @param graphs the fixture graphs
  * @returns the names
  */
@@ -93,7 +90,6 @@ function fixtureNames(graphs: ReadonlyArray<SchemaGraph>): Set<string> {
 
 /**
  * Every file under a directory.
- *
  * @param directory directory to walk
  * @returns absolute file paths
  */
@@ -106,7 +102,6 @@ function filesUnder(directory: string): string[] {
 
 /**
  * The names that occur as whole identifiers in a text.
- *
  * @param text file text
  * @param names the names to look for
  * @returns the names found

@@ -23,7 +23,6 @@ const options = { seed: 5, rowsPerEntity: 3 } as const;
 
 /**
  * A model double answering with fixed rows, recording the coupled groups it was sent.
- *
  * @param rows candidate rows
  * @param groups receives each call's coupled field groups
  * @returns the generator double
@@ -40,7 +39,6 @@ function answering(rows: ReadonlyArray<Record<string, unknown>>, groups: unknown
 
 /**
  * A relevance check that accepts the listed captions only.
- *
  * @param accepted captions to accept
  * @returns the verifier double
  */

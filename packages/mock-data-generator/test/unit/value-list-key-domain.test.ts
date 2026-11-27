@@ -6,7 +6,6 @@ import type { MockDataServiceRequest, SftGenerator } from '../../src/types.js';
 /**
  * Carriers and the routes they fly. A route's key starts with its carrier, which a value list on the
  * carriers declares; no navigation property links the two.
- *
  * @returns the generation request
  */
 function routesService(): MockDataServiceRequest {

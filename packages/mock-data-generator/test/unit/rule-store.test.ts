@@ -22,7 +22,6 @@ const TYPES: ReadonlyArray<PrimitiveType> = ['string', 'int', 'decimal', 'date',
 
 /**
  * Every word a rule, the glossary or the old rule chain names, so single words and pairs reach every rule.
- *
  * @returns the vocabulary, in a stable order
  */
 function ruleVocabulary(): ReadonlyArray<string> {
@@ -47,7 +46,6 @@ const pascal = (word: string): string => `${word.slice(0, 1).toUpperCase()}${wor
 
 /**
  * Names of every property, label and description of the package fixtures, with their declared type.
- *
  * @returns name and type pairs
  */
 function fixtureNames(): ReadonlyArray<readonly [string, PrimitiveType]> {
@@ -73,7 +71,6 @@ function fixtureNames(): ReadonlyArray<readonly [string, PrimitiveType]> {
 
 /**
  * A deterministic pseudo-random sequence (a 32-bit linear congruential generator).
- *
  * @param seed start value
  * @returns the next-value function
  */

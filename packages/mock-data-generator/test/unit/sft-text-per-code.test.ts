@@ -30,7 +30,6 @@ const graph: SchemaGraph = {
 
 /**
  * The order rows the earlier tiers wrote: two rows per stage, with no stage text yet.
- *
  * @returns the rows by entity set
  */
 const resources = (): Record<string, MockDataRow[]> => ({
@@ -44,7 +43,6 @@ const resources = (): Record<string, MockDataRow[]> => ({
 
 /**
  * Run the fine-tuned tier with a model that writes the given stage texts, one per row.
- *
  * @param texts the model's stage texts in row order
  * @returns the stage and stage text of each row
  */

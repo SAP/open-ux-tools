@@ -14,7 +14,6 @@ const ORACLE_DATE_TIME =
 
 /**
  * Deterministic pseudo-random strings over an alphabet, so every run checks the same inputs.
- *
  * @param alphabet characters to draw from
  * @param count number of strings
  * @param maxLength longest string

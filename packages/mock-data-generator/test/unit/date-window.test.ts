@@ -16,7 +16,6 @@ const DAY_MS = 86_400_000;
 
 /**
  * The generated slot rows for options.
- *
  * @param options generation options
  * @returns the rows
  */

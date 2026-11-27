@@ -32,7 +32,6 @@ const request = {
 
 /**
  * A model double whose row i carries the suffix i, recording the entities and row counts it was asked for.
- *
  * @param calls receives entity name and row count per call
  * @returns the generator double
  */

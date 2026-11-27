@@ -103,7 +103,6 @@ function generator(calls: string[][]): SftGenerator {
 
 /**
  * The domain keeps its deterministic rows, the model is not asked, and the result says why.
- *
  * @param run the fine-tuned tier's result
  * @param calls model calls made
  */

@@ -12,7 +12,6 @@ const property = (name: string, options: Partial<SchemaProperty> = {}): SchemaPr
 
 /**
  * Rows of one entity set generated on the typed floor (no classifier, no model).
- *
  * @param properties the entity's properties
  * @param rows rows to generate
  * @returns the generated rows

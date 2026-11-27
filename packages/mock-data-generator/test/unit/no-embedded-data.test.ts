@@ -32,7 +32,6 @@ interface Literal {
 
 /**
  * Every TypeScript source file under a directory.
- *
  * @param directory directory to walk
  * @returns absolute file paths
  */
@@ -48,7 +47,6 @@ function sourceFiles(directory: string): string[] {
 
 /**
  * The name of the variable a node is declared in, if any.
- *
  * @param node AST node
  * @returns the variable name, or an empty string
  */
@@ -63,7 +61,6 @@ function declarationName(node: TypeScript.Node): string {
 
 /**
  * Array literals with many string elements and `new Map([...])` calls with many entries in one source.
- *
  * @param name source name, relative to src with forward slashes
  * @param text source text
  * @returns the literals above the limit
@@ -103,7 +100,6 @@ function literalsIn(name: string, text: string): Literal[] {
 
 /**
  * The large literals of one source file.
- *
  * @param file absolute path under src
  * @returns the literals above the limit
  */

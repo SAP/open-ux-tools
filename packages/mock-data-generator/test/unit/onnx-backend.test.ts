@@ -4,7 +4,6 @@ import { createOnnxBackend } from '../../src/model/minilm-runtime.js';
 /**
  * A stand-in for the native module: `InferenceSession` is a class with a static `create`, as in
  * onnxruntime-node.
- *
  * @returns the module and the recorded session options
  */
 function nativeModule(): { module: Record<string, unknown>; created: Array<{ path: string; options: unknown }> } {

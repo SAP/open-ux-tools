@@ -31,7 +31,6 @@ let findings: RealismFinding[] = [];
 
 /**
  * The fields of the fixtures that fail one check, as `fixture entitySet.property: examples`.
- *
  * @param check realism check
  * @returns failing fields
  */

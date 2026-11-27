@@ -19,7 +19,6 @@ const MARKER_VALUE = 'Relocated Resource Probe';
 
 /**
  * Copy the data resources and the manifest to a new directory.
- *
  * @returns the new resource root
  */
 async function copyResources(): Promise<string> {
@@ -34,7 +33,6 @@ async function copyResources(): Promise<string> {
 /**
  * Replace the first measurement dimension of the copied value banks and declare the new bytes in the copied
  * manifest.
- *
  * @param root the copied resource root
  */
 async function markValueBank(root: string): Promise<void> {

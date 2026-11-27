@@ -10,7 +10,6 @@ const STORE = JSON.parse(
 
 /**
  * A string property with optional label and description.
- *
  * @param name property name
  * @param label property label
  * @param description property description

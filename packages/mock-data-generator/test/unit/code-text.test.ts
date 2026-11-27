@@ -12,7 +12,6 @@ import type {
 
 /**
  * An OData V4 service of the given entity types, one entity set per type named `<Type>s`.
- *
  * @param entityTypes entity type elements
  * @param types entity type names
  * @param existingData supplied rows
@@ -39,7 +38,6 @@ ${entityTypes}
 
 /**
  * A classifier that routes the named properties to fixed roles and abstains on the rest.
- *
  * @param roles role per property name
  * @returns the runtime
  */
@@ -57,7 +55,6 @@ function routing(roles: Readonly<Record<string, string>>): MockDataGeneratorRunt
 
 /**
  * The texts each code of a column pair has across rows.
- *
  * @param rows rows
  * @param code code column
  * @param text text column

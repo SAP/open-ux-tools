@@ -20,7 +20,6 @@ const options = { seed: 7, rowsPerEntity: 2 } as const;
 
 /**
  * Request for the given entity sets of the two-entity test service.
- *
  * @param names entity sets to generate
  * @returns the service request
  */
@@ -35,7 +34,6 @@ function request(names: ReadonlyArray<string>): MockDataServiceRequest {
 
 /**
  * A model double that answers every call with the given rows.
- *
  * @param rows candidate rows, one per requested row
  * @returns the generator double
  */

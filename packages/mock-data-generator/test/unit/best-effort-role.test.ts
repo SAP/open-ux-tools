@@ -25,7 +25,6 @@ const graph: SchemaGraph = { namespace: 'Demo', entities: [carriers], relationsh
 
 /**
  * An arbitrated abstention that keeps the classifier's ranked candidates.
- *
  * @param reason why the field abstained
  * @param top the classifier's ranked candidates
  * @returns the decision

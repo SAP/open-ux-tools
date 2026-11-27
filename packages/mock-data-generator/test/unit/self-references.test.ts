@@ -8,7 +8,6 @@ const FIXTURES = new URL('./fixtures/', import.meta.url);
 
 /**
  * The rows of a parent chain that leads back to a row already on it, for every row of a self-referencing set.
- *
  * @param rows the generated rows
  * @param key the referenced key property
  * @param reference the referencing property

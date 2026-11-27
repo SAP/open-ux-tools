@@ -14,7 +14,6 @@ import type { MockDataServiceRequest } from '../../src/types.js';
 
 /**
  * A logger that records what it is given, standing in for the console logger.
- *
  * @returns the logger and the recorded messages by level
  */
 function recordingLogger(): { logger: Logger; errors: string[]; infos: string[] } {

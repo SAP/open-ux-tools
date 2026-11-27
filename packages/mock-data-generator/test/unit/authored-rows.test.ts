@@ -4,7 +4,6 @@ import type { ExistingMockData, MockDataRow } from '../../src/types.js';
 
 /**
  * An entity of string properties.
- *
  * @param keys names of the key properties
  * @returns the entity
  */

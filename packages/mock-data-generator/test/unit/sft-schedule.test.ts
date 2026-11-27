@@ -32,7 +32,6 @@ const SIMULATED_MS_PER_FIELD = 1_000;
 /**
  * A model double for a slow machine: each call costs a fixed time per field and only the calls that end
  * within the request's budget return their fields, as the packaged generator does. No time passes.
- *
  * @param budgets receives the budget of each request by entity
  * @returns the generator double
  */
@@ -63,7 +62,6 @@ function slowModel(budgets: Map<string, number>): SftGenerator {
 
 /**
  * Generate the service with the slow model double.
- *
  * @param options the generation options besides the shared ones
  * @param budgets receives the budget of each request by entity
  * @returns the generation result

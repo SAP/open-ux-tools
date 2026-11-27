@@ -3,7 +3,6 @@ import { generateServiceForTesting } from '../../src/index.js';
 /**
  * A service with meaningless names: each Mb references one Ma, and the single boolean key of Mb allows two
  * rows only.
- *
  * @param valueList - Whether a value list of an Mb field reads Ma.
  * @returns the metadata
  */
@@ -44,7 +43,6 @@ function metadata(valueList = false): string {
 
 /**
  * Generates both sets.
- *
  * @param content - The metadata.
  * @returns the diagnostics
  */

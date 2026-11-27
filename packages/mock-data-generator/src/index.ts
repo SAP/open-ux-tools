@@ -1510,10 +1510,9 @@ function assembleGenerationResult(
     const resources = world.graph
         ? nestContainedRows(world.graph, world.resources, request.existingData, diagnostics)
         : world.resources;
-    const tierResources =
-        world.graph && world.graph.entities.some(({ containedBy }) => containedBy)
-            ? flattenContainedRows(world.graph, resources, request.existingData)
-            : resources;
+    const tierResources = world.graph?.entities.some(({ containedBy }) => containedBy)
+        ? flattenContainedRows(world.graph, resources, request.existingData)
+        : resources;
     const tierStatistics = valueTierStatistics(
         world.graph,
         valueTiers,

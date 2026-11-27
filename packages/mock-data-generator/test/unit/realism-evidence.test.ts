@@ -16,7 +16,6 @@ interface Evidence {
 
 /**
  * A passing report of one profile.
- *
  * @param profile the sweep profile
  * @returns the report
  */

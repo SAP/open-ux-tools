@@ -59,7 +59,6 @@ function expectFacetValid(content: string, resources: Readonly<Record<string, Re
 
 /**
  * A classifier stub that routes only the named fields and abstains everywhere else.
- *
  * @param roles - Property name to routed role.
  * @returns A runtime whose classifier returns the given roles with full confidence.
  */

@@ -21,7 +21,6 @@ const FIXTURES = [
 
 /**
  * A request for every entity set of an EDMX fixture.
- *
  * @param file fixture path below test/unit
  * @param version OData version
  * @returns the request and the parsed graph
@@ -42,7 +41,6 @@ function edmxRequest(file: string, version: '2.0' | '4.0') {
 
 /**
  * The reference-text outcome of generated rows.
- *
  * @param graph service schema
  * @param resources generated rows
  * @returns failing fields and examined fields
@@ -143,7 +141,6 @@ describe('semantic keys repeated beside a reference', () => {
 
 /**
  * EDMX of one schema with Common.SemanticKey annotations.
- *
  * @param types the entity types
  * @param container the entity container content
  * @param semanticKeys the semantic key property of each entity type

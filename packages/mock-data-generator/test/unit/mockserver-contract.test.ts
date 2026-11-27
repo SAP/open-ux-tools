@@ -129,7 +129,6 @@ describe('generated rows on the mockserver', () => {
 
 /**
  * Generates the rows of every entity set of a service.
- *
  * @param content - The service metadata.
  * @param odataVersion - The OData version.
  * @param seed - The generation seed.

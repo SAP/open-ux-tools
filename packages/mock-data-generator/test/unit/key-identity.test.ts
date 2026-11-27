@@ -17,7 +17,6 @@ const property = (name: string, options: Partial<SchemaProperty> = {}): SchemaPr
 
 /**
  * A view whose key is every column: a running number, a name, a price and a flag.
- *
  * @param numberOptions facets of the number column
  * @returns the entity
  */

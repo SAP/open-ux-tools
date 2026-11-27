@@ -45,7 +45,6 @@ const sha256 = (content: string) => createHash('sha256').update(content).digest(
 
 /**
  * Independently authored artifacts exercise the real loader; the native encoder is deterministic.
- *
  * @param directory temporary artifact directory
  * @returns the runtime manifest and its verified artifacts
  */

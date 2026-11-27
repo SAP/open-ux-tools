@@ -77,7 +77,6 @@ const ORACLE_RANGES: ReadonlyArray<readonly [string, number, number]> = [
 
 /**
  * A property of a primitive type with optional facets.
- *
  * @param primitiveType the primitive type
  * @param facets precision, scale and numeric bounds
  * @returns the property

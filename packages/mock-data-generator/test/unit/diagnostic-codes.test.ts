@@ -13,7 +13,6 @@ const ERROR_CODES = new Set([
 
 /**
  * Every TypeScript source file under a directory.
- *
  * @param directory directory to walk
  * @returns absolute file paths
  */
@@ -29,7 +28,6 @@ function sourceFiles(directory: string): string[] {
 
 /**
  * The members of the diagnostic code union, read from its declaration in src/types.ts.
- *
  * @returns the declared codes
  */
 function declaredCodes(): Set<string> {
@@ -40,7 +38,6 @@ function declaredCodes(): Set<string> {
 
 /**
  * The upper-snake-case string literals of the sources outside the type declaration and the error codes.
- *
  * @returns the literals that can be diagnostic codes
  */
 function codeLiterals(): Set<string> {

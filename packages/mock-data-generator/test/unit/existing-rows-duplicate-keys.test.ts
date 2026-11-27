@@ -19,7 +19,6 @@ const SERVICES = [
 /**
  * The entity sets another set's value list reads: their supplied rows are the whole list, so nothing is added to
  * them and they are left out of this test.
- *
  * @param graph - The service schema.
  * @returns The names of the value-list sets.
  */

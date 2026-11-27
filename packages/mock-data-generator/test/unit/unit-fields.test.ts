@@ -11,7 +11,6 @@ const UNITS = new Set([...rec20.codes, ...rec20.symbols].map((unit) => unit.toUp
 
 /**
  * Generate every entity set of a fixture deterministically.
- *
  * @param format metadata format
  * @param file fixture path below test/unit
  * @param alias CSN service

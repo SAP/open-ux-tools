@@ -9,7 +9,6 @@ const UNIT = fileURLToPath(new URL('.', import.meta.url));
 
 /**
  * Generate every entity set of an EDMX fixture and return its rows with the record-consistency findings.
- *
  * @param file fixture path below test/unit
  * @param version OData version
  * @returns rows and failing fields

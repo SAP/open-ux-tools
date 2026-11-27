@@ -116,7 +116,6 @@ describe('CAP CSN generation', () => {
 
 /**
  * A CSN request for every entity of the definitions.
- *
  * @param definitions the CSN definitions
  * @returns the request
  */

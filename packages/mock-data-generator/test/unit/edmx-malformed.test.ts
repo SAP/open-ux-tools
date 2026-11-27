@@ -20,7 +20,6 @@ const MALFORMED: ReadonlyArray<readonly [string, string]> = [
 
 /**
  * The error a call throws.
- *
  * @param call the call
  * @returns what it threw
  */

@@ -3,7 +3,6 @@ import type { MockDataServiceRequest, SemanticClassification, SftGenerator } fro
 
 /**
  * A service of one entity with a free-text field and a name field.
- *
  * @returns the request
  */
 function request(): MockDataServiceRequest {

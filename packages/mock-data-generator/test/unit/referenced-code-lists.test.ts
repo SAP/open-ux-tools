@@ -50,7 +50,6 @@ interface CodeListService {
 
 /**
  * EDMX of a requested V4 service with one measured field whose code list lives in another service.
- *
  * @param service names of the service
  * @returns the EDMX document
  */
@@ -92,7 +91,6 @@ function measuredServiceEdmx(service: MeasuredService): string {
 
 /**
  * EDMX of a referenced V4 code-list service.
- *
  * @param list names of the code-list entity
  * @returns the EDMX document
  */
@@ -135,7 +133,6 @@ function codeListServiceEdmx(list: CodeListService): string {
 
 /**
  * A request for a measured service, with its referenced code-list service when given.
- *
  * @param service names of the requested service
  * @param list names of the code-list entity; no referenced service is passed when absent
  * @param existingRows rows already in the code list's data file
@@ -166,7 +163,6 @@ function request(
 
 /**
  * Completes the referenced code lists for rows of the requested service.
- *
  * @param serviceRequest the request
  * @param rows rows of the requested service by entity set
  * @returns the referenced resources and the diagnostics
