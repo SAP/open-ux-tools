@@ -364,6 +364,12 @@ function getImportKeyUserChangesPrompt(
     } as ConfirmQuestion<AttributesAnswers>;
 }
 
+/**
+ * Creates the Import Mock Server confirm prompt.
+ *
+ * @param {ImportMockServerPromptOptions} [options] - Optional prompt options to control default value.
+ * @returns {ConfirmQuestion<AttributesAnswers>} The prompt configuration for importing mock server files.
+ */
 function getImportMockServerPrompt(options?: ImportMockServerPromptOptions): ConfirmQuestion<AttributesAnswers> {
     return {
         type: 'confirm',
@@ -373,6 +379,12 @@ function getImportMockServerPrompt(options?: ImportMockServerPromptOptions): Con
     };
 }
 
+/**
+ * Creates the Import OPA Tests confirm prompt.
+ *
+ * @param {ImportOpaTestsPromptOptions} [options] - Optional prompt options to control default value.
+ * @returns {ConfirmQuestion<AttributesAnswers>} The prompt configuration for importing OPA test files.
+ */
 function getImportOpaTestsPrompt(options?: ImportOpaTestsPromptOptions): ConfirmQuestion<AttributesAnswers> {
     return {
         type: 'confirm',

@@ -1105,6 +1105,16 @@ export default class extends Generator {
         }
     }
 
+    /**
+     * Checks whether OPA or mock server artifacts can be imported from the base app.
+     *
+     * Returns `false` immediately when the OPA_TESTS feature flag is off, the layer is
+     * CUSTOMER_BASE, the application is not supported, or an extension project is being created.
+     * Otherwise queries the ABAP system to verify the given folder exists in the BSP application.
+     *
+     * @param {string} artifactsRoot - The BSP sub-path to check (e.g. `test` or `localService`).
+     * @returns {Promise<boolean>} `true` if the folder exists and contains files; `false` otherwise.
+     */
     private async _canImportOpaArtifacts(artifactsRoot: string): Promise<boolean> {
         const isAdpOpaTestsFeatureEnabled = isFeatureEnabled(Feature.OPA_TESTS);
         if (
@@ -1131,6 +1141,15 @@ export default class extends Generator {
         }
     }
 
+    /**
+     * Downloads the base app archive and extracts OPA test and/or mock server files into the
+     * project's `webapp/` directory, based on the user's answers.
+     *
+     * Skips silently when neither `importOpaTests` nor `importMockServer` is set, or when the
+     * downloaded archive is empty.
+     *
+     * @returns {Promise<void>}
+     */
     private async _importOpaArtifactsIfNeeded(): Promise<void> {
         if (!this.attributeAnswers.importMockServer && !this.attributeAnswers.importOpaTests) {
             return;
