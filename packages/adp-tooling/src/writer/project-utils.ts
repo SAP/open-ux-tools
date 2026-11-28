@@ -1,23 +1,28 @@
-import { fileURLToPath } from 'node:url';
-import { dirname, join } from 'node:path';
-import { readFileSync } from 'node:fs';
 import type { Editor } from 'mem-fs-editor';
+import { readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+import type { AbapServiceProvider } from '@sap-ux/axios-extension';
+import { FileStoreService } from '@sap-ux/axios-extension';
 
 import { getTemplatePath } from '../templates.js';
-import type { CloudApp, AdpWriterConfig, TypesConfig, CfAdpWriterConfig, DescriptorVariant } from '../types.js';
+import type { AdpWriterConfig, CfAdpWriterConfig, CloudApp, DescriptorVariant, TypesConfig } from '../types.js';
 import {
     enhanceUI5DeployYaml,
     enhanceUI5Yaml,
-    hasDeployConfig,
+    enhanceUI5YamlWithCfCustomTask,
     enhanceUI5YamlWithCustomConfig,
     enhanceUI5YamlWithCustomTask,
+    enhanceUI5YamlWithFioriToolsMiddleware,
     enhanceUI5YamlWithTranspileMiddleware,
-    enhanceUI5YamlWithCfCustomTask,
-    enhanceUI5YamlWithFioriToolsMiddleware
+    hasDeployConfig
 } from './options.js';
 
+import type { ToolsLogger } from '@sap-ux/logger';
 import type { Package } from '@sap-ux/project-access';
 import { UI5Config, UI5_DEFAULT, getEsmTypesVersion, getTypesPackage, getTypesVersion } from '@sap-ux/ui5-config';
+import AdmZip from 'adm-zip';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -112,15 +117,32 @@ export function getCfVariant(config: CfAdpWriterConfig): DescriptorVariant {
  * @param {Editor} fs - The `mem-fs-editor` instance used for file operations.
  * @returns {void}
  */
-export function writeOpaTestFiles(baseTmplPath: string, projectPath: string, data: AdpWriterConfig, fs: Editor): void {
+export function writeNewOpaTestProjectFiles(
+    baseTmplPath: string,
+    projectPath: string,
+    data: AdpWriterConfig,
+    fs: Editor
+): void {
     const tmplPath = join(baseTmplPath, 'opa', '**/*.*');
-    try {
-        fs.copyTpl(tmplPath, projectPath, data, undefined, {
+    fs.copyTpl(tmplPath, projectPath, data, undefined, {
+        globOptions: { dot: true }
+    });
+}
+
+export function writeExistingOpaTestProjectFiles(
+    baseTmplPath: string,
+    projectPath: string,
+    data: AdpWriterConfig,
+    fs: Editor
+): void {
+    ['.adptest', '.eslintignore', '.eslintrc', 'pom.xml', 'ui5-ci.yaml'].forEach((fileName) => {
+        const tmplPath = join(baseTmplPath, 'opa', fileName);
+        const destPath = join(projectPath, fileName);
+        fs.copyTpl(tmplPath, destPath, data, undefined, {
             globOptions: { dot: true }
         });
-    } catch (error) {
-        throw new Error(`Could not write OPA test files. Reason: ${error.message}`);
-    }
+    });
+    // TODO avasilev: edit base app opa tests to match adp project policies.
 }
 
 /**
@@ -142,13 +164,9 @@ export function writeMockServerFiles(
     fs: Editor
 ): void {
     const tmplPath = join(baseTmplPath, 'mockServer', '**/*.*');
-    try {
-        fs.copyTpl(tmplPath, projectPath, data, undefined, {
-            globOptions: { dot: true }
-        });
-    } catch (error) {
-        throw new Error(`Could not write Mock server files. Reason: ${error.message}`);
-    }
+    fs.copyTpl(tmplPath, projectPath, data, undefined, {
+        globOptions: { dot: true }
+    });
 }
 
 /**
@@ -324,4 +342,42 @@ export async function writeCfTemplates(
             projectName: project.xsSecurityAppName
         });
     }
+}
+
+export async function downloadBaseApp({
+    bspName,
+    provider,
+    logger
+}: {
+    bspName: string;
+    provider: AbapServiceProvider;
+    logger: ToolsLogger;
+}): Promise<Buffer | undefined> {
+    const ui5AbapRepository = provider.getUi5AbapRepository();
+
+    try {
+        return ui5AbapRepository.downloadFiles(bspName);
+    } catch (error) {
+        // ABAP_REPOSITORY_SRV may not be available on older systems (e.g. ABAP 731 / SAP_UI < 754).
+        // Fall through to the ADT FileStoreService fallback below.
+        logger.info(`ABAP_REPOSITORY_SRV unavailable, falling back to ADT.`);
+        logger.debug(error);
+    }
+
+    const fileStoreService = await provider.getAdtService<FileStoreService>(FileStoreService);
+    if (!fileStoreService) {
+        logger.info('ADT FileStore not available for this system — skipping file listing.');
+        return undefined;
+    }
+
+    return ui5AbapRepository.downloadFilesViaAdt(bspName, fileStoreService);
+}
+
+export function extractEntryFromArchive(archive: Buffer, srcPath: string, targetPath: string): void {
+    const zip = new AdmZip(archive);
+    zip.getEntries()
+        .filter(({ entryName }) => entryName.startsWith(srcPath))
+        .forEach((entry) => {
+            zip.extractEntryTo(entry, targetPath, true, true);
+        });
 }

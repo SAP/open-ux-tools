@@ -1,4 +1,5 @@
 import type { AbapServiceProvider, App } from '@sap-ux/axios-extension';
+import { FileStoreService, isAxiosError } from '@sap-ux/axios-extension';
 import type { ToolsLogger } from '@sap-ux/logger';
 
 import { t } from '../i18n.js';
@@ -171,4 +172,35 @@ function getAppFilters(isCustomerBase: boolean, supportedProject: SupportedProje
     }
 
     return displayAllAppsFilters;
+}
+
+export async function isExistingAppFolder({
+    bspName,
+    provider,
+    logger,
+    folderPath
+}: {
+    bspName: string;
+    provider: AbapServiceProvider;
+    logger: ToolsLogger;
+    folderPath: string;
+}): Promise<boolean> {
+    const fileStoreService = await provider.getAdtService<FileStoreService>(FileStoreService);
+    if (!fileStoreService) {
+        logger.info('ADT FileStore not available for this system — skipping file listing.');
+        return false;
+    }
+
+    const ui5AbapRepository = provider.getUi5AbapRepository();
+
+    try {
+        const fileMetadataList = await ui5AbapRepository.getFileMetadataList(bspName, fileStoreService, folderPath);
+        return !!fileMetadataList.length;
+    } catch (error) {
+        if (isAxiosError(error) && error.status === 404) {
+            logger.info('Could not list BSP files.');
+            return false;
+        }
+        throw error;
+    }
 }

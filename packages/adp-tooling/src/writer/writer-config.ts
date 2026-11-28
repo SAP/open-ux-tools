@@ -1,9 +1,12 @@
 import { join } from 'node:path';
 
+import { type AbapServiceProvider, AdaptationProjectType, type KeyUserChangeContent } from '@sap-ux/axios-extension';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest, Package } from '@sap-ux/project-access';
-import { type AbapServiceProvider, AdaptationProjectType, type KeyUserChangeContent } from '@sap-ux/axios-extension';
 
+import { getProviderConfig } from '../abap/index.js';
+import { t } from '../i18n.js';
+import { getFlpIntent, getSupportedProject } from '../source/index.js';
 import type {
     AdpWriterConfig,
     AttributesAnswers,
@@ -15,6 +18,7 @@ import type {
     OnpremApp,
     UI5Version
 } from '../types.js';
+import { AppRouterType, FlexLayer } from '../types.js';
 import {
     getFormattedVersion,
     getLatestVersion,
@@ -23,10 +27,6 @@ import {
     getVersionToBeUsed,
     shouldSetMinUI5Version
 } from '../ui5/index.js';
-import { getProviderConfig } from '../abap/index.js';
-import { AppRouterType, FlexLayer } from '../types.js';
-import { t } from '../i18n.js';
-import { getSupportedProject, getFlpIntent } from '../source/index.js';
 import { isFeatureEnabled } from '@sap-ux/feature-toggle';
 import { Feature } from '../feature.js';
 
@@ -120,13 +120,12 @@ export async function getConfig(options: ConfigOptions): Promise<AdpWriterConfig
 
     const isCloudSystem = await provider.isAbapCloud();
     const isCustomerBase = layer === FlexLayer.CUSTOMER_BASE;
-    const isVendorLayer = !isCustomerBase;
 
     const ui5Version = isCloudSystem
         ? getLatestVersion(publicVersions)
         : getVersionToBeUsed(attributeAnswers.ui5Version, isCustomerBase, publicVersions);
 
-    const { namespace, title, enableTypeScript } = attributeAnswers;
+    const { namespace, title, enableTypeScript, importMockServer, importOpaTests } = attributeAnswers;
     const {
         application: { id, bspName },
         fioriId,
@@ -155,7 +154,6 @@ export async function getConfig(options: ConfigOptions): Promise<AdpWriterConfig
     }
 
     const ui5 = getUi5Config(ui5Version, publicVersions, systemVersion);
-    const isAdpOpaTestsFeatureEnabled = isFeatureEnabled(Feature.OPA_TESTS);
 
     return {
         app,
@@ -176,8 +174,9 @@ export async function getConfig(options: ConfigOptions): Promise<AdpWriterConfig
         options: {
             fioriTools: true,
             enableTypeScript,
-            addOpaTests: isAdpOpaTestsFeatureEnabled && isVendorLayer,
-            addMockServer: isAdpOpaTestsFeatureEnabled && attributeAnswers.addMockServer,
+            importOpaTests,
+            importMockServer,
+            isOpaTestingEnabled: !isCustomerBase && isFeatureEnabled(Feature.OPA_TESTS),
             flpIntent: getFlpIntent(manifest)
         },
         keyUserChanges

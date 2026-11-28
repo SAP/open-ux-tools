@@ -1,17 +1,17 @@
-import type { UI5FlexLayer, ManifestNamespace, Manifest, Package } from '@sap-ux/project-access';
-import type { DestinationAbapTarget, UrlAbapTarget } from '@sap-ux/system-access';
-import type { Adp, BspApp } from '@sap-ux/ui5-config';
 import type {
     AdaptationProjectType,
     AxiosRequestConfig,
     KeyUserChangeContent,
     OperationsType
 } from '@sap-ux/axios-extension';
-import type { Editor } from 'mem-fs-editor';
 import type { Destination } from '@sap-ux/btp-utils';
 import type { YUIQuestion } from '@sap-ux/inquirer-common';
-import type AdmZip from 'adm-zip';
 import type { ToolsLogger } from '@sap-ux/logger';
+import type { Manifest, ManifestNamespace, Package, UI5FlexLayer } from '@sap-ux/project-access';
+import type { DestinationAbapTarget, UrlAbapTarget } from '@sap-ux/system-access';
+import type { Adp, BspApp } from '@sap-ux/ui5-config';
+import type AdmZip from 'adm-zip';
+import type { Editor } from 'mem-fs-editor';
 import type { SupportedProject } from './source/index.js';
 
 export type DataSources = Record<string, ManifestNamespace.DataSource>;
@@ -160,16 +160,12 @@ export interface AdpWriterConfig {
          * Optional: path to the template files to be used for generation
          */
         templatePathOverwrite?: string;
-        /**
-         * Optional: if set to true then OPA5 test scaffolding will be generated.
-         * Automatically set for VENDOR-layer (internal developer) projects.
-         */
-        addOpaTests?: boolean;
-        /**
-         * Optional: if set to true then mock server template files will be generated,
-         * enabling local development against mock data without a live backend.
-         */
-        addMockServer?: boolean;
+
+        isOpaTestingEnabled?: boolean;
+
+        importOpaTests?: boolean;
+
+        importMockServer?: boolean;
         /**
          * Optional: FLP intent (SemanticObject-action) derived from the base app manifest inbounds.
          * Used as the hash fragment in the OPA test launch URL.
@@ -207,7 +203,8 @@ export interface AttributesAnswers {
     addDeployConfig?: boolean;
     addFlpConfig?: boolean;
     importKeyUserChanges?: boolean;
-    addMockServer?: boolean;
+    importOpaTests?: boolean;
+    importMockServer?: boolean;
 }
 
 export interface SourceApplication {

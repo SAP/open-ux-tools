@@ -9,8 +9,9 @@ import { FlexLayer, type AdpWriterConfig, type InternalInboundNavigation } from 
 import { getI18nDescription, getI18nModels, writeI18nModels } from './i18n/index.js';
 import { getManifestContent } from './manifest/index.js';
 import {
+    writeExistingOpaTestProjectFiles,
     writeMockServerFiles,
-    writeOpaTestFiles,
+    writeNewOpaTestProjectFiles,
     writeTemplateToFolder,
     writeUI5DeployYaml,
     writeUI5Yaml
@@ -76,11 +77,14 @@ export async function generate(basePath: string, config: AdpWriterConfig, fs?: E
     await writeUI5Yaml(basePath, fullConfig, fs);
     await writeKeyUserChanges(basePath, fullConfig, fs);
 
-    if (fullConfig.options?.addOpaTests) {
-        writeOpaTestFiles(templatePath, basePath, fullConfig, fs);
+    const { importOpaTests, isOpaTestingEnabled, importMockServer } = fullConfig.options ?? {};
+    if (importOpaTests) {
+        writeExistingOpaTestProjectFiles(templatePath, basePath, fullConfig, fs);
+    } else if (isOpaTestingEnabled) {
+        writeNewOpaTestProjectFiles(templatePath, basePath, fullConfig, fs);
     }
 
-    if (fullConfig.options?.addMockServer) {
+    if (importMockServer) {
         writeMockServerFiles(templatePath, basePath, fullConfig, fs);
     }
 

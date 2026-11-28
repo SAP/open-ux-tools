@@ -1,9 +1,10 @@
-import { type AxiosResponse, type AxiosRequestConfig } from 'axios';
-import { logError, getErrorMessageFromString, prettyPrintError, prettyPrintMessage } from './message.js';
-import { ODataService } from '../base/odata-service.js';
-import { isAxiosError } from '../base/odata-request-error.js';
-import type { FileStoreService } from './adt-catalog/services/filestore-service.js';
 import AdmZip from 'adm-zip';
+import { type AxiosRequestConfig, type AxiosResponse } from 'axios';
+import { isAxiosError } from '../base/odata-request-error.js';
+import { ODataService } from '../base/odata-service.js';
+import type { FileStoreService } from './adt-catalog/services/filestore-service.js';
+import { getErrorMessageFromString, logError, prettyPrintError, prettyPrintMessage } from './message.js';
+import type { ArchiveFileNode } from './types/adt-types.js';
 /**
  * Required configuration a transportable object.
  */
@@ -223,6 +224,25 @@ export class Ui5AbapRepositoryService extends ODataService {
         let fileCount = 0;
         await this.collectFilesIntoZip(fileStoreService, zip, app, '', () => fileCount++);
         return fileCount > 0 ? zip.toBuffer() : undefined;
+    }
+
+    public async getFileMetadataList(
+        appName: string,
+        fileStoreService: FileStoreService,
+        rootPath: string = ''
+    ): Promise<ArchiveFileNode[]> {
+        // Call file store service always with type `folder` even for files,
+        // to avoid fetching the actual file. We only need the file metadata - ArchiveFileNode.
+        const nodes = await fileStoreService.getAppArchiveContent('folder', appName, rootPath);
+        return (
+            await Promise.all(
+                nodes.map((node) =>
+                    node.type === 'folder'
+                        ? this.getFileMetadataList(appName, fileStoreService, node.path)
+                        : Promise.resolve([node])
+                )
+            )
+        ).flat();
     }
 
     /**
