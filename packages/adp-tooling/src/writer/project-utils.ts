@@ -382,7 +382,7 @@ export async function downloadBaseApp({
     const ui5AbapRepository = provider.getUi5AbapRepository();
 
     try {
-        return ui5AbapRepository.downloadFiles(bspName);
+        return await ui5AbapRepository.downloadFiles(bspName);
     } catch (error) {
         // ABAP_REPOSITORY_SRV may not be available on older systems (e.g. ABAP 731 / SAP_UI < 754).
         // Fall through to the ADT FileStoreService fallback below.

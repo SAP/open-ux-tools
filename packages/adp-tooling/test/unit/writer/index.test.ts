@@ -308,7 +308,7 @@ describe('ADP writer', () => {
                     },
                     options: {
                         fioriTools: true,
-                        addOpaTests: true
+                        isOpaTestingEnabled: true
                     }
                 },
                 fs
@@ -333,7 +333,7 @@ describe('ADP writer', () => {
                     },
                     options: {
                         fioriTools: true,
-                        addOpaTests: true,
+                        isOpaTestingEnabled: true,
                         flpIntent: 'PurchaseOrder-ppsmanage'
                     }
                 },
@@ -368,7 +368,7 @@ describe('ADP writer', () => {
                     },
                     options: {
                         fioriTools: true,
-                        addMockServer: true
+                        importMockServer: true
                     }
                 },
                 fs
@@ -411,8 +411,8 @@ describe('ADP writer', () => {
                     },
                     options: {
                         fioriTools: true,
-                        addOpaTests: true,
-                        addMockServer: true
+                        isOpaTestingEnabled: true,
+                        importMockServer: true
                     }
                 },
                 fs
@@ -448,7 +448,7 @@ describe('ADP writer', () => {
                     },
                     options: {
                         fioriTools: true,
-                        addMockServer: true
+                        importMockServer: true
                     }
                 },
                 fs
@@ -491,8 +491,8 @@ describe('ADP writer', () => {
                     },
                     options: {
                         fioriTools: true,
-                        addOpaTests: true,
-                        addMockServer: true
+                        isOpaTestingEnabled: true,
+                        importMockServer: true
                     }
                 },
                 fs
