@@ -226,6 +226,19 @@ export class Ui5AbapRepositoryService extends ODataService {
         return fileCount > 0 ? zip.toBuffer() : undefined;
     }
 
+    /**
+     * Recursively walks the ADT file store tree and returns a flat list of `ArchiveFileNode` metadata
+     * for every file in the BSP application, without fetching file contents.
+     *
+     * Sibling folders at each level are traversed in parallel via `Promise.all`. Always calls
+     * `getAppArchiveContent` with type `'folder'` — even for leaf entries — so only folder-listing
+     * requests are made and no file content is downloaded.
+     *
+     * @param appName - BSP application name.
+     * @param fileStoreService - `FileStoreService` instance obtained via `AbapServiceProvider.getAdtService`.
+     * @param rootPath - Folder path to start from (empty string for the app root).
+     * @returns Flat array of `ArchiveFileNode` objects representing all files in the tree.
+     */
     public async getFileMetadataList(
         appName: string,
         fileStoreService: FileStoreService,

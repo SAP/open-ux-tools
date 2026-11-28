@@ -160,11 +160,21 @@ export interface AdpWriterConfig {
          * Optional: path to the template files to be used for generation
          */
         templatePathOverwrite?: string;
-
+        /**
+         * Optional: if set to true then OPA5 setup is enabled. When `importOpaTests` is also true,
+         * test files are imported from the base app. Otherwise a fresh OPA5 scaffold with a single
+         * welcome FirstJourney test is generated.
+         */
         isOpaTestingEnabled?: boolean;
-
+        /**
+         * Optional: if set to true (alongside `isOpaTestingEnabled`), test files are imported from
+         * the base app instead of generating a new FirstJourney scaffold.
+         */
         importOpaTests?: boolean;
-
+        /**
+         * Optional: if set to true then mock server template files will be generated,
+         * enabling local development against mock data without a live backend.
+         */
         importMockServer?: boolean;
         /**
          * Optional: FLP intent (SemanticObject-action) derived from the base app manifest inbounds.
@@ -203,7 +213,9 @@ export interface AttributesAnswers {
     addDeployConfig?: boolean;
     addFlpConfig?: boolean;
     importKeyUserChanges?: boolean;
+    /** If true, test files are imported from the base app instead of generating a new FirstJourney scaffold. */
     importOpaTests?: boolean;
+    /** If true, mock server template files are generated for local development without a live backend. */
     importMockServer?: boolean;
 }
 
