@@ -488,7 +488,7 @@ metadata:
     });
 
     describe('downloadBaseApp', () => {
-        const mockLogger = { info: jest.fn(), debug: jest.fn() };
+        const mockLogger = { info: jest.fn(), error: jest.fn(), debug: jest.fn() };
         const mockDownloadFiles = jest.fn();
         const mockDownloadFilesViaAdt = jest.fn();
         const mockGetAdtService = jest.fn();
@@ -533,7 +533,9 @@ metadata:
             });
 
             expect(result).toBe(archiveBuffer);
-            expect(mockLogger.info).toHaveBeenCalledWith('ABAP_REPOSITORY_SRV unavailable, falling back to ADT.');
+            expect(mockLogger.error).toHaveBeenCalledWith(
+                'ABAP_REPOSITORY_SRV unavailable, falling back to ADT. service unavailable'
+            );
             expect(mockDownloadFilesViaAdt).toHaveBeenCalledWith('MY_BSP', mockFileStoreService);
         });
 

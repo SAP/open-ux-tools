@@ -1118,14 +1118,14 @@ export default class extends Generator {
 
         try {
             const folderPath = join('/', artifactsRoot);
-            return isExistingAppFolder({
+            return await isExistingAppFolder({
                 bspName: this.configAnswers.application.bspName,
                 provider: this.prompter.provider,
                 logger: this.logger,
                 folderPath
             });
         } catch (error) {
-            this.logger.info(`Base app artifacts under ${artifactsRoot} are unavailable.`);
+            this.logger.error(`Base app artifacts under ${artifactsRoot} are unavailable. ${error.message}`);
             this.logger.debug(error);
             return false;
         }

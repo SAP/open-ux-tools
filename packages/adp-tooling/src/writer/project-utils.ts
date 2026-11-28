@@ -386,7 +386,7 @@ export async function downloadBaseApp({
     } catch (error) {
         // ABAP_REPOSITORY_SRV may not be available on older systems (e.g. ABAP 731 / SAP_UI < 754).
         // Fall through to the ADT FileStoreService fallback below.
-        logger.info(`ABAP_REPOSITORY_SRV unavailable, falling back to ADT.`);
+        logger.error(`ABAP_REPOSITORY_SRV unavailable, falling back to ADT. ${error.message}`);
         logger.debug(error);
     }
 
