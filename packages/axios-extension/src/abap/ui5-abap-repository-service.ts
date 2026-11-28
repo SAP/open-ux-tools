@@ -1,9 +1,10 @@
-import { type AxiosResponse, type AxiosRequestConfig } from 'axios';
-import { logError, getErrorMessageFromString, prettyPrintError, prettyPrintMessage } from './message.js';
-import { ODataService } from '../base/odata-service.js';
-import { isAxiosError } from '../base/odata-request-error.js';
-import type { FileStoreService } from './adt-catalog/services/filestore-service.js';
 import AdmZip from 'adm-zip';
+import { type AxiosRequestConfig, type AxiosResponse } from 'axios';
+import { isAxiosError } from '../base/odata-request-error.js';
+import { ODataService } from '../base/odata-service.js';
+import type { FileStoreService } from './adt-catalog/services/filestore-service.js';
+import { getErrorMessageFromString, logError, prettyPrintError, prettyPrintMessage } from './message.js';
+import type { ArchiveFileNode } from './types/adt-types.js';
 /**
  * Required configuration a transportable object.
  */
@@ -223,6 +224,38 @@ export class Ui5AbapRepositoryService extends ODataService {
         let fileCount = 0;
         await this.collectFilesIntoZip(fileStoreService, zip, app, '', () => fileCount++);
         return fileCount > 0 ? zip.toBuffer() : undefined;
+    }
+
+    /**
+     * Recursively walks the ADT file store tree and returns a flat list of `ArchiveFileNode` metadata
+     * for every file in the BSP application, without fetching file contents.
+     *
+     * Sibling folders at each level are traversed in parallel via `Promise.all`. Always calls
+     * `getAppArchiveContent` with type `'folder'` — even for leaf entries — so only folder-listing
+     * requests are made and no file content is downloaded.
+     *
+     * @param appName - BSP application name.
+     * @param fileStoreService - `FileStoreService` instance obtained via `AbapServiceProvider.getAdtService`.
+     * @param rootPath - Folder path to start from (empty string for the app root).
+     * @returns Flat array of `ArchiveFileNode` objects representing all files in the tree.
+     */
+    public async getFileMetadataList(
+        appName: string,
+        fileStoreService: FileStoreService,
+        rootPath: string = ''
+    ): Promise<ArchiveFileNode[]> {
+        // Call file store service always with type `folder` even for files,
+        // to avoid fetching the actual file. We only need the file metadata - ArchiveFileNode.
+        const nodes = await fileStoreService.getAppArchiveContent('folder', appName, rootPath);
+        return (
+            await Promise.all(
+                nodes.map((node) =>
+                    node.type === 'folder'
+                        ? this.getFileMetadataList(appName, fileStoreService, node.path)
+                        : Promise.resolve([node])
+                )
+            )
+        ).flat();
     }
 
     /**

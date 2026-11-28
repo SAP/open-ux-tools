@@ -1,12 +1,21 @@
 import { jest } from '@jest/globals';
+import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { readFileSync } from 'node:fs';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
+import { type AbapServiceProvider, AdaptationProjectType } from '@sap-ux/axios-extension';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest, Package } from '@sap-ux/project-access';
-import { type AbapServiceProvider, AdaptationProjectType } from '@sap-ux/axios-extension';
+import type {
+    AttributesAnswers,
+    ConfigAnswers,
+    ConfigOptions,
+    Language,
+    SourceApplication,
+    VersionDetail
+} from '../../../src/index.js';
+import type { CfConfig, CfServicesAnswers, CreateCfConfigParams } from '../../../src/types.js';
 
 const mockGetProviderConfig = jest.fn() as jest.Mock;
 const mockGetSupportedProject = jest.fn() as jest.Mock;
@@ -37,15 +46,6 @@ const { getCfConfig } = await import('../../../src/writer/writer-config.js');
 const { t } = await import('../../../src/i18n.js');
 const { AppRouterType } = await import('../../../src/types.js');
 const { Feature } = await import('../../../src/feature.js');
-import type {
-    AttributesAnswers,
-    ConfigAnswers,
-    ConfigOptions,
-    Language,
-    SourceApplication,
-    VersionDetail
-} from '../../../src/index.js';
-import type { CfConfig, CfServicesAnswers, CreateCfConfigParams } from '../../../src/types.js';
 
 const basePath = join(__dirname, '../../fixtures/base-app/manifest.json');
 const manifest = JSON.parse(readFileSync(basePath, 'utf-8'));
@@ -143,59 +143,70 @@ describe('getConfig', () => {
                 shouldSetMinVersion: true,
                 version: '1.135.0'
             },
-            options: { fioriTools: true, enableTypeScript: false, addMockServer: false, addOpaTests: false },
+            options: {
+                fioriTools: true,
+                enableTypeScript: false,
+                importMockServer: undefined,
+                isOpaTestingEnabled: false,
+                importOpaTests: undefined,
+                flpIntent: undefined
+            },
             keyUserChanges: []
         });
     });
 
-    it('sets addOpaTests to true and addMockServer to undefined for VENDOR layer when feature flag is enabled', async () => {
+    it('sets isOpaTestingEnabled to true and importMockServer to undefined for VENDOR layer when feature flag is enabled', async () => {
         isAbapCloudMock.mockResolvedValue(false);
         mockIsFeatureEnabled.mockReturnValue(true);
         const config = await getConfig({ ...baseConfig, layer: FlexLayer.VENDOR });
 
         expect(mockIsFeatureEnabled).toHaveBeenCalledWith(Feature.OPA_TESTS);
-        expect(config.options?.addOpaTests).toBe(true);
-        expect(config.options?.addMockServer).toBeUndefined();
+        expect(config.options?.isOpaTestingEnabled).toBe(true);
+        expect(config.options?.importMockServer).toBeUndefined();
     });
 
-    it('sets addOpaTests to false for VENDOR layer when feature flag is disabled', async () => {
+    it('sets isOpaTestingEnabled to false for VENDOR layer when feature flag is disabled', async () => {
         isAbapCloudMock.mockResolvedValue(false);
         const config = await getConfig({ ...baseConfig, layer: FlexLayer.VENDOR });
 
         expect(mockIsFeatureEnabled).toHaveBeenCalledWith(Feature.OPA_TESTS);
-        expect(config.options?.addOpaTests).toBe(false);
-        expect(config.options?.addMockServer).toBe(false);
+        expect(config.options?.isOpaTestingEnabled).toBe(false);
+        expect(config.options?.importMockServer).toBeUndefined();
     });
 
-    it('sets addOpaTests to false for CUSTOMER_BASE layer', async () => {
+    it('sets isOpaTestingEnabled to false for CUSTOMER_BASE layer', async () => {
         isAbapCloudMock.mockResolvedValue(false);
         const config = await getConfig({ ...baseConfig, layer: FlexLayer.CUSTOMER_BASE });
 
-        expect(config.options?.addOpaTests).toBe(false);
-        expect(config.options?.addMockServer).toBe(false);
+        expect(config.options?.isOpaTestingEnabled).toBe(false);
+        expect(config.options?.importMockServer).toBeUndefined();
     });
 
-    it('passes addMockServer: true from attributeAnswers into options when feature flag is enabled', async () => {
+    it('passes importMockServer: true from attributeAnswers into options when feature flag is enabled', async () => {
         isAbapCloudMock.mockResolvedValue(false);
         mockIsFeatureEnabled.mockReturnValue(true);
         const config = await getConfig({
             ...baseConfig,
             layer: FlexLayer.VENDOR,
-            attributeAnswers: { ...attributeAnswers, addMockServer: true }
+            attributeAnswers: { ...attributeAnswers, importMockServer: true }
         });
 
-        expect(config.options?.addMockServer).toBe(true);
+        expect(config.options?.importMockServer).toBe(true);
+        expect(config.options?.isOpaTestingEnabled).toBe(true);
     });
 
-    it('passes addMockServer: false when feature flag is disabled even if attributeAnswers has addMockServer: true', async () => {
+    it('passes importMockServer: false when feature flag is disabled even if attributeAnswers has importMockServer: true', async () => {
         isAbapCloudMock.mockResolvedValue(false);
         const config = await getConfig({
             ...baseConfig,
             layer: FlexLayer.VENDOR,
-            attributeAnswers: { ...attributeAnswers, addMockServer: true }
+            attributeAnswers: { ...attributeAnswers, importMockServer: true }
         });
 
-        expect(config.options?.addMockServer).toBe(false);
+        // importMockServer is passed through from attributeAnswers regardless of feature flag;
+        // only isOpaTestingEnabled is gated by the feature flag
+        expect(config.options?.importMockServer).toBe(true);
+        expect(config.options?.isOpaTestingEnabled).toBe(false);
     });
 
     it('sets flpIntent from manifest crossNavigation inbounds', async () => {

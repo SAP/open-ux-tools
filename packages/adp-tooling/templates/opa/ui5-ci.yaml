@@ -15,7 +15,7 @@ server:
             - /resources
             - /test-resources
           url: <%- ui5.frameworkUrl %>
-          version: <%- ui5.version %><% if (options?.addMockServer) { %>
+          version: <%- ui5.version %><% if (options?.importMockServer) { %>
     - name: sap-fe-mockserver
       beforeMiddleware: csp
       configuration:

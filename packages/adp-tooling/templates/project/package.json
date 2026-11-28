@@ -1,6 +1,6 @@
 <%
-    const $isOpaTestingEnabled = locals.options?.addOpaTests;
-    const $isMockServerConfigured = locals.options?.addMockServer;
+    const $isOpaTestingEnabled = locals.options?.isOpaTestingEnabled;
+    const $isMockServerConfigured = locals.options?.importMockServer;
     const $uxUi5ToolingVersion = $isOpaTestingEnabled ? "^1.25.0" : "1";
     const $taskAdaptationVersion = $isOpaTestingEnabled ? "^1.6.5" : "^1.3.0";
     const $ui5CliVersion = $isOpaTestingEnabled ? "^4.0.55" : "^4.0.33";

@@ -37,6 +37,7 @@ import {
     getSupportedProject,
     getYamlContent,
     isCfInstalled,
+    isExistingAppFolder,
     isLoggedInCf,
     isMtaProject,
     loadApps,
@@ -62,6 +63,7 @@ import { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
 import { validateNamespaceAdp, validateProjectName } from '@sap-ux/project-input-validator';
 
+import { downloadBaseApp, extractEntryFromArchive } from '@sap-ux/adp-tooling';
 import { initTelemetrySettings } from '@sap-ux/telemetry';
 import { EventName, TelemetryCollector } from '../telemetry/index.js';
 import type { AdpTelemetryData } from '../types.js';
@@ -125,6 +127,10 @@ const generatorTitle = 'Adaptation Project';
  * @extends Generator
  */
 export default class extends Generator {
+    private readonly APP_MOCKED_DATA_FOLDER_NAME: string = 'localService';
+    private readonly APP_TEST_FOLDER_NAME: string = 'test';
+    private readonly WEBAPP_FOLDER_NAME: string = 'webapp';
+
     setPromptsCallback: (fn: object) => void;
     private readonly appWizard: AppWizardType;
     private readonly vscode: any;
@@ -362,12 +368,9 @@ export default class extends Generator {
                 projectType: this.prompter.projectType,
                 systemType: this.prompter.systemType,
                 layer: this.layer,
-                prompts: this.prompts,
-                isApplicationSupported: this.prompter.isAppSupported,
-                shouldCreateExtProject: this.shouldCreateExtProject
+                prompts: this.prompts
             };
             const defaultFolder = getDefaultTargetFolder(this.options.vscode) ?? process.cwd();
-            const isAdpOpaTestsFeatureEnabled = isFeatureEnabled(Feature.OPA_TESTS);
             const options: AttributePromptOptions = {
                 targetFolder: { default: defaultFolder, hide: this.shouldCreateExtProject },
                 ui5ValidationCli: { hide: !this.isCli },
@@ -378,7 +381,12 @@ export default class extends Generator {
                 },
                 addDeployConfig: { hide: this.shouldCreateExtProject || !this.isCustomerBase },
                 importKeyUserChanges: { hide: this.shouldCreateExtProject },
-                addMockServer: { hide: !isAdpOpaTestsFeatureEnabled }
+                importOpaTests: {
+                    hide: !(await this._canImportOpaArtifacts(this.APP_TEST_FOLDER_NAME))
+                },
+                importMockServer: {
+                    hide: !(await this._canImportOpaArtifacts(this.APP_MOCKED_DATA_FOLDER_NAME))
+                }
             };
             const attributesQuestions = getPrompts(this.destinationPath(), optionalPromptsConfig, options);
             this.attributeAnswers = await this.prompt(attributesQuestions);
@@ -495,6 +503,7 @@ export default class extends Generator {
                 config.options.templatePathOverwrite = getTemplatesOverwritePath();
             }
 
+            await this._importOpaArtifactsIfNeeded();
             await generate(this._getProjectPath(), config, this.fs);
         } catch (e) {
             const message = e instanceof Error ? e.message : String(e);
@@ -690,9 +699,7 @@ export default class extends Generator {
                 isVersionDetected: false,
                 layer: this.layer,
                 prompts: this.prompts,
-                isCfEnv: true,
-                isApplicationSupported: true,
-                shouldCreateExtProject: false
+                isCfEnv: true
             },
             options
         );
@@ -1095,6 +1102,79 @@ export default class extends Generator {
                 this.attributeAnswers.projectName,
                 !!this.attributeAnswers.addFlpConfig
             );
+        }
+    }
+
+    /**
+     * Checks whether OPA or mock server artifacts can be imported from the base app.
+     *
+     * Returns `false` immediately when the OPA_TESTS feature flag is off, the layer is
+     * CUSTOMER_BASE, the application is not supported, or an extension project is being created.
+     * Otherwise queries the ABAP system to verify the given folder exists in the BSP application.
+     *
+     * @param {string} artifactsRoot - The BSP sub-path to check (e.g. `test` or `localService`).
+     * @returns {Promise<boolean>} `true` if the folder exists and contains files; `false` otherwise.
+     */
+    private async _canImportOpaArtifacts(artifactsRoot: string): Promise<boolean> {
+        const isAdpOpaTestsFeatureEnabled = isFeatureEnabled(Feature.OPA_TESTS);
+        if (
+            !isAdpOpaTestsFeatureEnabled ||
+            this.isCustomerBase ||
+            !this.prompter.isAppSupported ||
+            this.shouldCreateExtProject
+        ) {
+            return false;
+        }
+
+        try {
+            const folderPath = join('/', artifactsRoot);
+            return await isExistingAppFolder({
+                bspName: this.configAnswers.application.bspName,
+                provider: this.prompter.provider,
+                logger: this.logger,
+                folderPath
+            });
+        } catch (error) {
+            this.logger.error(`Base app artifacts under ${artifactsRoot} are unavailable. ${error.message}`);
+            this.logger.debug(error);
+            return false;
+        }
+    }
+
+    /**
+     * Downloads the base app archive and extracts OPA test and/or mock server files into the
+     * project's `webapp/` directory, based on the user's answers.
+     *
+     * Skips silently when neither `importOpaTests` nor `importMockServer` is set, or when the
+     * downloaded archive is empty.
+     *
+     * @returns {Promise<void>}
+     */
+    private async _importOpaArtifactsIfNeeded(): Promise<void> {
+        if (!this.attributeAnswers.importMockServer && !this.attributeAnswers.importOpaTests) {
+            return;
+        }
+
+        const archive = await downloadBaseApp({
+            bspName: this.configAnswers.application.bspName,
+            provider: this.prompter.provider,
+            logger: this.logger
+        });
+
+        if (!archive?.length) {
+            this.logger.info('Base app OPA artifacts archive is empty.');
+            return;
+        }
+
+        const projectPath = this._getProjectPath();
+        const webappPath = join(projectPath, this.WEBAPP_FOLDER_NAME);
+
+        if (this.attributeAnswers.importOpaTests) {
+            extractEntryFromArchive(archive, this.APP_TEST_FOLDER_NAME, webappPath);
+        }
+
+        if (this.attributeAnswers.importMockServer) {
+            extractEntryFromArchive(archive, this.APP_MOCKED_DATA_FOLDER_NAME, webappPath);
         }
     }
 }

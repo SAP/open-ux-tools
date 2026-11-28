@@ -20,12 +20,13 @@ import { getDeployPage, getKeyUserImportPage, updateFlpWizardSteps, updateWizard
 import type {
     AddDeployConfigPromptOptions,
     AddFlpConfigPromptOptions,
-    AddMockServerPromptOptions,
     ApplicationTitlePromptOptions,
     AttributePromptOptions,
     AttributesQuestion,
     EnableTypeScriptPromptOptions,
     ImportKeyUserChangesPromptOptions,
+    ImportMockServerPromptOptions,
+    ImportOpaTestsPromptOptions,
     NamespacePromptOptions,
     OptionalPromptsConfig,
     ProjectNamePromptOptions,
@@ -49,17 +50,7 @@ export function getPrompts(
     config: OptionalPromptsConfig,
     promptOptions?: AttributePromptOptions
 ): AttributesQuestion[] {
-    const {
-        isVersionDetected,
-        ui5Versions,
-        systemType,
-        projectType,
-        layer,
-        prompts,
-        isCfEnv = false,
-        isApplicationSupported,
-        shouldCreateExtProject
-    } = config;
+    const { isVersionDetected, ui5Versions, systemType, projectType, layer, prompts, isCfEnv = false } = config;
     const isCustomerBase = layer === FlexLayer.CUSTOMER_BASE;
 
     const keyedPrompts: Record<attributePromptNames, AttributesQuestion> = {
@@ -94,12 +85,12 @@ export function getPrompts(
             prompts,
             promptOptions?.[attributePromptNames.importKeyUserChanges]
         ),
-        [attributePromptNames.addMockServer]: getAddMockServerPrompt({
-            options: promptOptions?.[attributePromptNames.addMockServer],
-            isApplicationSupported,
-            shouldCreateExtProject,
-            isCustomerBase
-        })
+        [attributePromptNames.importOpaTests]: getImportOpaTestsPrompt(
+            promptOptions?.[attributePromptNames.importOpaTests]
+        ),
+        [attributePromptNames.importMockServer]: getImportMockServerPrompt(
+            promptOptions?.[attributePromptNames.importMockServer]
+        )
     };
 
     const questions = Object.entries(keyedPrompts)
@@ -374,35 +365,31 @@ function getImportKeyUserChangesPrompt(
 }
 
 /**
- * Creates the Add Mock Server confirm prompt for the Attributes step.
- * Shown only for VENDOR-layer projects where the application is supported and no extension project is being created.
+ * Creates the Import Mock Server confirm prompt.
  *
- * @param {object} params - Prompt parameters.
- * @param {AddMockServerPromptOptions} [params.options] - Optional prompt options (hide, default).
- * @param {boolean} params.isCustomerBase - Whether the layer is CUSTOMER_BASE.
- * @param {boolean} params.shouldCreateExtProject - Whether an extension project is being created.
- * @param {boolean} params.isApplicationSupported - Whether the selected application is supported.
- * @returns {ConfirmQuestion<AttributesAnswers>} The prompt configuration for mock server toggle.
+ * @param {ImportMockServerPromptOptions} [options] - Optional prompt options to control default value.
+ * @returns {ConfirmQuestion<AttributesAnswers>} The prompt configuration for importing mock server files.
  */
-function getAddMockServerPrompt({
-    options,
-    isCustomerBase,
-    shouldCreateExtProject,
-    isApplicationSupported
-}: {
-    options?: AddMockServerPromptOptions;
-    isCustomerBase: boolean;
-    shouldCreateExtProject: boolean;
-    isApplicationSupported: boolean;
-}): ConfirmQuestion<AttributesAnswers> {
+function getImportMockServerPrompt(options?: ImportMockServerPromptOptions): ConfirmQuestion<AttributesAnswers> {
     return {
         type: 'confirm',
-        name: attributePromptNames.addMockServer,
-        message: t('prompts.addOpaMockServerLabel'),
-        default: options?.default ?? false,
-        guiOptions: {
-            applyDefaultWhenDirty: true
-        },
-        when: () => !isCustomerBase && isApplicationSupported && !shouldCreateExtProject
+        name: attributePromptNames.importMockServer,
+        message: t('prompts.importMockServerLabel'),
+        default: options?.default ?? false
+    };
+}
+
+/**
+ * Creates the Import OPA Tests confirm prompt.
+ *
+ * @param {ImportOpaTestsPromptOptions} [options] - Optional prompt options to control default value.
+ * @returns {ConfirmQuestion<AttributesAnswers>} The prompt configuration for importing OPA test files.
+ */
+function getImportOpaTestsPrompt(options?: ImportOpaTestsPromptOptions): ConfirmQuestion<AttributesAnswers> {
+    return {
+        type: 'confirm',
+        name: attributePromptNames.importOpaTests,
+        message: t('prompts.importOpaTestsLabel'),
+        default: options?.default ?? false
     };
 }

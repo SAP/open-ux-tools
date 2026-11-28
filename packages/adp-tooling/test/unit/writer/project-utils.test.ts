@@ -1,7 +1,9 @@
 import { jest } from '@jest/globals';
-import path, { join, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import type AdmZip from 'adm-zip';
 import type { Editor } from 'mem-fs-editor';
+import path, { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import type { AdpWriterConfig } from '../../../src/index.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -27,6 +29,16 @@ jest.unstable_mockModule('@sap-ux/ui5-config', () => ({
     getTypesVersion: mockGetTypesVersion
 }));
 
+const mockAdmZip = jest.fn().mockImplementation(() => ({
+    getEntries: jest.fn().mockReturnValue([]),
+    extractEntryTo: jest.fn()
+}));
+
+jest.unstable_mockModule('adm-zip', () => ({
+    default: mockAdmZip,
+    __esModule: true
+}));
+
 const {
     writeTemplateToFolder,
     writeUI5Yaml,
@@ -34,11 +46,13 @@ const {
     writeCfUI5Yaml,
     getPackageJSONInfo,
     getTypes,
-    writeOpaTestFiles,
-    writeMockServerFiles
+    writeNewOpaTestProjectFiles,
+    writeExistingOpaTestProjectFiles,
+    writeMockServerFiles,
+    downloadBaseApp,
+    extractEntryFromArchive
 } = await import('../../../src/writer/project-utils.js');
 const { AppRouterType, FlexLayer } = await import('../../../src/types.js');
-import type { AdpWriterConfig } from '../../../src/index.js';
 
 const UI5_DEFAULT = {
     TYPES_PACKAGE_NAME: '@sapui5/types',
@@ -400,7 +414,7 @@ metadata:
         });
     });
 
-    describe('writeOpaTestFiles', () => {
+    describe('writeNewOpaTestProjectFiles', () => {
         const templatePath = '../../../templates';
         const projectPath = 'project';
         const copyTplSpy = jest.fn();
@@ -410,8 +424,8 @@ metadata:
             jest.clearAllMocks();
         });
 
-        it('should copy OPA templates to the project path', () => {
-            writeOpaTestFiles(templatePath, projectPath, data, mockFs as unknown as Editor);
+        it('should copy the full OPA template tree to the project path', () => {
+            writeNewOpaTestProjectFiles(templatePath, projectPath, data, mockFs as unknown as Editor);
 
             expect(copyTplSpy).toHaveBeenCalledWith(
                 join(templatePath, 'opa', '**', '*.*'),
@@ -421,16 +435,32 @@ metadata:
                 { globOptions: { dot: true } }
             );
         });
+    });
 
-        it('should throw a descriptive error when copyTpl fails', () => {
-            const errMsg = 'Disk full';
-            copyTplSpy.mockImplementation(() => {
-                throw new Error(errMsg);
-            });
+    describe('writeExistingOpaTestProjectFiles', () => {
+        const templatePath = '../../../templates';
+        const projectPath = 'project';
+        const copyTplSpy = jest.fn();
+        const mockFs = { copyTpl: copyTplSpy };
 
-            expect(() => writeOpaTestFiles(templatePath, projectPath, data, mockFs as unknown as Editor)).toThrow(
-                `Could not write OPA test files. Reason: ${errMsg}`
-            );
+        beforeEach(() => {
+            jest.clearAllMocks();
+        });
+
+        it('should copy only the root-level OPA config files to the project path', () => {
+            writeExistingOpaTestProjectFiles(templatePath, projectPath, data, mockFs as unknown as Editor);
+
+            const expectedFiles = ['.adptest', '.eslintignore', '.eslintrc', 'pom.xml', 'ui5-ci.yaml'];
+            expect(copyTplSpy).toHaveBeenCalledTimes(expectedFiles.length);
+            for (const fileName of expectedFiles) {
+                expect(copyTplSpy).toHaveBeenCalledWith(
+                    join(templatePath, 'opa', fileName),
+                    join(projectPath, fileName),
+                    data,
+                    undefined,
+                    { globOptions: { dot: true } }
+                );
+            }
         });
     });
 
@@ -455,16 +485,108 @@ metadata:
                 { globOptions: { dot: true } }
             );
         });
+    });
 
-        it('should throw a descriptive error when copyTpl fails', () => {
-            const errMsg = 'Permission denied';
-            copyTplSpy.mockImplementation(() => {
-                throw new Error(errMsg);
+    describe('downloadBaseApp', () => {
+        const mockLogger = { info: jest.fn(), error: jest.fn(), debug: jest.fn() };
+        const mockDownloadFiles = jest.fn();
+        const mockDownloadFilesViaAdt = jest.fn();
+        const mockGetAdtService = jest.fn();
+        const mockProvider = {
+            getUi5AbapRepository: jest.fn().mockReturnValue({
+                downloadFiles: mockDownloadFiles,
+                downloadFilesViaAdt: mockDownloadFilesViaAdt
+            }),
+            getAdtService: mockGetAdtService
+        } as any;
+
+        beforeEach(() => {
+            jest.clearAllMocks();
+        });
+
+        it('should return the archive buffer from ABAP_REPOSITORY_SRV when available', async () => {
+            const archiveBuffer = Buffer.from('zip-content');
+            mockDownloadFiles.mockResolvedValue(archiveBuffer);
+
+            const result = await downloadBaseApp({
+                bspName: 'MY_BSP',
+                provider: mockProvider,
+                logger: mockLogger as any
             });
 
-            expect(() => writeMockServerFiles(templatePath, projectPath, data, mockFs as unknown as Editor)).toThrow(
-                `Could not write Mock server files. Reason: ${errMsg}`
+            expect(result).toBe(archiveBuffer);
+            expect(mockDownloadFiles).toHaveBeenCalledWith('MY_BSP');
+            expect(mockGetAdtService).not.toHaveBeenCalled();
+        });
+
+        it('should fall back to ADT FileStoreService when ABAP_REPOSITORY_SRV throws', async () => {
+            const archiveBuffer = Buffer.from('adt-zip');
+            const mockFileStoreService = {};
+            mockDownloadFiles.mockRejectedValue(new Error('service unavailable'));
+            mockGetAdtService.mockResolvedValue(mockFileStoreService);
+            mockDownloadFilesViaAdt.mockResolvedValue(archiveBuffer);
+
+            const result = await downloadBaseApp({
+                bspName: 'MY_BSP',
+                provider: mockProvider,
+                logger: mockLogger as any
+            });
+
+            expect(result).toBe(archiveBuffer);
+            expect(mockLogger.error).toHaveBeenCalledWith(
+                'ABAP_REPOSITORY_SRV unavailable, falling back to ADT. service unavailable'
             );
+            expect(mockDownloadFilesViaAdt).toHaveBeenCalledWith('MY_BSP', mockFileStoreService);
+        });
+
+        it('should return undefined when ADT FileStoreService is not available', async () => {
+            mockDownloadFiles.mockRejectedValue(new Error('service unavailable'));
+            mockGetAdtService.mockResolvedValue(undefined);
+
+            const result = await downloadBaseApp({
+                bspName: 'MY_BSP',
+                provider: mockProvider,
+                logger: mockLogger as any
+            });
+
+            expect(result).toBeUndefined();
+            expect(mockLogger.info).toHaveBeenCalledWith(
+                'ADT FileStore not available for this system — skipping file listing.'
+            );
+        });
+    });
+
+    describe('extractEntryFromArchive', () => {
+        beforeEach(() => {
+            jest.clearAllMocks();
+        });
+
+        it('should extract only entries matching the srcPath prefix', () => {
+            const mockExtractEntryTo = jest.fn();
+            const matchingEntry = { entryName: 'webapp/localService/metadata.xml' } as AdmZip.IZipEntry;
+            const otherEntry = { entryName: 'webapp/Component.js' } as AdmZip.IZipEntry;
+            mockAdmZip.mockImplementation(() => ({
+                getEntries: jest.fn().mockReturnValue([matchingEntry, otherEntry]),
+                extractEntryTo: mockExtractEntryTo
+            }));
+
+            extractEntryFromArchive(Buffer.from(''), 'webapp/localService/', '/output');
+
+            expect(mockExtractEntryTo).toHaveBeenCalledTimes(1);
+            expect(mockExtractEntryTo).toHaveBeenCalledWith(matchingEntry, '/output', true, true);
+        });
+
+        it('should not extract any entries when no paths match the prefix', () => {
+            const mockExtractEntryTo = jest.fn();
+            const entry = { entryName: 'webapp/Component.js' } as AdmZip.IZipEntry;
+            mockAdmZip.mockImplementation(() => ({
+                getEntries: jest.fn().mockReturnValue([entry]),
+                extractEntryTo: mockExtractEntryTo
+            }));
+
+            extractEntryFromArchive(Buffer.from(''), 'webapp/test/', '/output');
+
+            expect(mockExtractEntryTo).not.toHaveBeenCalled();
         });
     });
 });

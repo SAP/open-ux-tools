@@ -2,6 +2,7 @@ import { type AbapServiceProvider } from '@sap-ux/axios-extension';
 import type { ToolsLogger } from '@sap-ux/logger';
 
 import { isAppSupported, loadApps, SupportedProject } from '../../../src/index.js';
+import { isExistingAppFolder } from '../../../src/source/applications.js';
 import { initI18n, t } from '../../../src/i18n.js';
 
 describe('Target Applications', () => {
@@ -234,6 +235,73 @@ describe('Target Applications', () => {
             expect(logger.debug).toHaveBeenCalledWith(
                 `Application '${fakeAppId}' is not supported by Adaptation Project`
             );
+        });
+    });
+
+    describe('isExistingAppFolder', () => {
+        const logger: jest.Mocked<ToolsLogger> = { info: jest.fn(), debug: jest.fn() } as any;
+        const mockGetFileMetadataList = jest.fn();
+        const mockGetAdtService = jest.fn();
+        const mockProvider = {
+            getAdtService: mockGetAdtService,
+            getUi5AbapRepository: jest.fn().mockReturnValue({
+                getFileMetadataList: mockGetFileMetadataList
+            })
+        } as unknown as AbapServiceProvider;
+        const params = { bspName: 'MY_BSP', provider: mockProvider, logger, folderPath: '/test' };
+
+        beforeEach(() => {
+            jest.clearAllMocks();
+        });
+
+        it('should return true when the folder contains files', async () => {
+            mockGetAdtService.mockResolvedValue({});
+            mockGetFileMetadataList.mockResolvedValue([{ basename: 'file.js', path: '/test/file.js', type: 'file' }]);
+
+            const result = await isExistingAppFolder(params);
+
+            expect(result).toBe(true);
+            expect(mockGetFileMetadataList).toHaveBeenCalledWith('MY_BSP', {}, '/test');
+        });
+
+        it('should return false when the folder is empty', async () => {
+            mockGetAdtService.mockResolvedValue({});
+            mockGetFileMetadataList.mockResolvedValue([]);
+
+            const result = await isExistingAppFolder(params);
+
+            expect(result).toBe(false);
+        });
+
+        it('should return false and log when ADT FileStore is not available', async () => {
+            mockGetAdtService.mockResolvedValue(undefined);
+
+            const result = await isExistingAppFolder(params);
+
+            expect(result).toBe(false);
+            expect(logger.info).toHaveBeenCalledWith(
+                'ADT FileStore not available for this system — skipping file listing.'
+            );
+            expect(mockGetFileMetadataList).not.toHaveBeenCalled();
+        });
+
+        it('should return false and log when getFileMetadataList throws a 404', async () => {
+            mockGetAdtService.mockResolvedValue({});
+            const axiosError = Object.assign(new Error('Not Found'), { isAxiosError: true, status: 404 });
+            mockGetFileMetadataList.mockRejectedValue(axiosError);
+
+            const result = await isExistingAppFolder(params);
+
+            expect(result).toBe(false);
+            expect(logger.info).toHaveBeenCalledWith('Could not list BSP files.');
+        });
+
+        it('should rethrow when getFileMetadataList throws a non-404 error', async () => {
+            mockGetAdtService.mockResolvedValue({});
+            const error = new Error('Network error');
+            mockGetFileMetadataList.mockRejectedValue(error);
+
+            await expect(isExistingAppFolder(params)).rejects.toThrow('Network error');
         });
     });
 });
